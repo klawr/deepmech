@@ -69,14 +69,15 @@ def create_and_populate(raw_dir, target_dir, segmentation, raw_classes=None):
 def reset(target_dir):
     from shutil import rmtree
     from os import listdir, unlink
-    from os.path import join, isfile
+    from os.path import join, isfile, isdir
 
     for file in listdir(target_dir):
         file_path = join(target_dir, file)
         try:
             if isfile(file_path):
                 unlink(file_path)
-            elif os.path.isdir(file_path): rmtree(file_path)
+            elif isdir(file_path):
+                rmtree(file_path)
         except Exception as e:
             print(e)
 
