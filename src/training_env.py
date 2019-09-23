@@ -1,15 +1,17 @@
 
+from os import listdir, mkdir, unlink
+from os.path import exists, isdir, isfile, join
+from shutil import copyfile, rmtree
+from sys import exit
+
+def mkdir_ex(path):
+    if not exists(path):
+        mkdir(path)
+
 # Create a training environment in the target directory.
 # Create one directory in target_dir/{train, validate, test} for each directory in raw.
 # Returns the paths for the raw "classes" (3 each).
 def create(raw_classes, target_dir):
-    from os import mkdir, listdir
-    from os.path import join, exists
-
-    def mkdir_ex(path):
-        if not exists(path):
-            mkdir(path)
-
     mkdir_ex(target_dir)
 
     train_dir = join(target_dir, 'train')
@@ -38,11 +40,6 @@ def create(raw_classes, target_dir):
 
 # Populate directories made by create
 def populate(raw_dir, paths, seg, raw_classes=None):
-    from shutil import copyfile
-    from sys import exit
-    from os import listdir
-    from os.path import join
-
     def dist(src_dir, dest, begin, limit):
         for i in range(begin, limit):
             filename = str(i) + '.jpeg'
@@ -67,10 +64,6 @@ def create_and_populate(raw_dir, target_dir, segmentation, raw_classes=None):
 
 # Remove all files inside of the interim and processed directory. Don't touch the raw data!
 def reset(target_dir):
-    from shutil import rmtree
-    from os import listdir, unlink
-    from os.path import join, isfile, isdir
-
     for file in listdir(target_dir):
         file_path = join(target_dir, file)
         try:
@@ -82,7 +75,8 @@ def reset(target_dir):
             print(e)
 
 def reset_and_populate(raw_dir, target_dir, segmentation, raw_classes=None):
-    from os import listdir
+    mkdir_ex(raw_dir)
+    mkdir_ex(target_dir)
 
     if raw_classes is None:
         raw_classes = listdir(raw_dir)
