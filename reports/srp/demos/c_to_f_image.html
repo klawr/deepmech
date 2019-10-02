@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="cv1" width=400 height=400 style="border:solid"></canvas>
+    <canvas id="cv2"></canvas>
+    <script src="https://goessner.github.io/g2/g2.js"></script>
+    <script>
+        const ctx1 = document.getElementById('cv1').getContext('2d');
+
+        const s = Math.SQRT1_2;
+
+        g2().view({scl:2}) // double the resolution...
+            .cir({x:50, y:150, r:30})
+            .label({str:'Input X'})
+
+            .vec({x1:80,y1:150,x2:120,y2:150})
+            .label({str:'m', off:5, loc:0.4})
+            
+            .cir({x:50, y:50, r:30})
+            .label({str:'1'})
+            
+            .vec({x1:50+s*30,y1:50+s*30,x2:150-s*30,y2:150-s*30})
+            .label({str:'b', off:20})
+            
+            .cir({x:150, y:150, r:30})
+            .label({str:'Output Y'})
+
+            .exe(ctx1);
+    </script>
+</body>
+</html>
