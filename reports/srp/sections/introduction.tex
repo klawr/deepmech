@@ -1,0 +1,43 @@
+\section{Introduction}
+
+Artificial Intelligence (AI) is a term which was coined in TODO \footnote{ ... } and promised to
+outsmart humans multiple times in its former history.
+Not delivering these promises more silent phases which are now known as
+AI-Winter \footnote { TODO } emerged.
+In recent times however research and application of these techniques are again attracting more
+attention which is shown by figure TODO .
+
+This is due to some factors which are becoming prevalent in current times. On one hand it is the
+shear amount of computing power which is now standard in computers. Even home computers are
+nowadays capable of training simple to even not so simple TODO models which are capable of
+impressive tasks \footnote { TODO }. Modern super computers are capable of very complex tasks like
+TODO \footnote { TODO }.
+
+Another catalysing TODO factor is the amount of data which is available due to the internet.
+To train a reasonable model for an artificial network for a specific task suitable data is needed
+make correct predictions given new data (generalization).
+Since data is available in abundancy this is no concern in modern times.
+Therefore AI is getting more attention in fields of research and more and more practical fields
+are considering this technique as solution for various problems.
+
+Even though artificial intelligence is used to describe the broader spectrum of appliances,
+this project focusses on the machine learning part of this interesting TODO.
+In this project I want to introduce machine learning to the field of kinematics for two
+dimensional sketching and prototyping with \name{deepmech}.
+
+\name{deepmech} takes images as input and outputs the type and location of handwritten
+mechanical symbols inside of it.
+The models created by the presented approach are small and mostly language agnostic,
+which is provided by the usage of the popular Keras\footnote{ TODO } library on top
+of TensorFlow\footnote{ TODO }.
+
+In this paper, simple demonstrations are done using JavaScript, connecting to a new emerging
+field in kinematics using web technologies\footnote{ TODO }.
+For training of the actual model the Python implementation of TensorFlow is used,
+because of the better utilization of the GPU using backends like CUDA and CUDNN\footnote{ TODO }
+which results in faster training. Thanks to mostly language agnostic model descriptions,
+this allows for seamless transitions between different approaches.
+
+Before showing how deepmech was developed, the basics of machine learning shall be covered,
+showing some simple examples as introduction and by doing so introduce common terminology used in
+this paper.
