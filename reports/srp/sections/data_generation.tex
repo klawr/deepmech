@@ -1,0 +1,24 @@
+\section{Data Generation}
+
+Having introduced all concepts used in this project, I want to get to the creation of
+\name{deepmech}. Before talking about how to create appropriate models for the detection of
+mechanical symbols, it is necessary to gather appropriate data for that task.
+
+Since the goal is to read handwritten data, it is obvious that this is accomplished by
+creating the data myself. For this a Python script is written which allows to rapidly
+draw simple symbols and safe them on the disk\footnote{ Python is used because of easy integration
+to the file system, which allows for easy saving images without the need for intermediate
+steps. }.
+There were several requests for the script to be fulfilled. The images had to be drawn on a
+canvas which is set to 
+
+The code can be reviewed at \url{https://klawr.github.io/deepmech/src/data/data_generation.py}
+and is also in Appendix~\ref{appendix:a}.
+
+For the data generation a few things had to be considered:
+
+\begin{enumerate}
+\item In which state are the images going to be read?
+\item Which symbols are to be tested first?
+\item How should the images be tested?
+\end{enumerate}
