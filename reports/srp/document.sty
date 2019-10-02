@@ -1,0 +1,43 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Language %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% NOTE: Project is written in english
+% \usepackage[ngerman]{babel}
+% \usepackage[autostyle,german=quotes]{csquotes}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Packages %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{hyperref}
+\usepackage{enumitem}
+
+\usepackage[toc,page]{appendix}
+
+\usepackage{amsmath}
+
+\usepackage{graphicx}
+\usepackage{sidecap}
+
+\usepackage[automark,headsepline]{scrlayer-scrpage}
+\pagestyle{scrheadings}
+
+% \usepackage[style=alphabetic]{biblatex}
+% \addbibresource{document.bib}
+
+% \usepackage{fontspec}
+% TODO font
+\usepackage[onehalfspacing]{setspace}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Custom %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{color}
+\definecolor{codeColor}{rgb}{0.25,0.25,1}
+
+\usepackage{listings}
+\lstset{
+  basicstyle=
+    \linespread{1}
+    \ttfamily
+    \footnotesize
+    \color{codeColor},
+  frame=single,
+}
+\newcommand\code[1]{\textcolor{codeColor}{\texttt{#1}}}
+
+\newcommand\name[1]{\texttt{#1}}
