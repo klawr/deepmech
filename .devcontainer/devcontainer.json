@@ -1,0 +1,60 @@
+// For format details, see https://aka.ms/vscode-remote/devcontainer.json or the definition README at
+// https://github.com/microsoft/vscode-dev-containers/tree/master/containers/docker-existing-dockerfile
+{
+	"name": "klawr/latex",
+	"context": "..",
+	"dockerFile": "Dockerfile",
+	
+	// https://code.visualstudio.com/docs/remote/containers#_using-ssh-keys
+	"runArgs": [ "-v", "${env:HOME}${env:USERPROFILE}/.ssh:/root/.ssh-localhost:ro" ],
+	"postCreateCommand": "mkdir -p ~/.ssh && cp -r ~/.ssh-localhost/* ~/.ssh && chmod 700 ~/.ssh && chmod 600 ~/.ssh/*",
+
+	"settings": { 
+		"terminal.integrated.shell.linux": null,
+		"latex-workshop.latex.outDir": "%DIR%/meta",
+		"latex-workshop.latex.recipes": [
+			{
+				"name": "luatelatex",
+				"tools": [
+					"luatelatex"
+				]
+			},
+			{
+				"name": "luatelatex ➞ biber ➞ luatelatex ",
+				"tools": [
+					"luatelatex",
+					"biber",
+					"luatelatex"
+				]
+			}
+		],
+		"latex-workshop.latex.tools": [
+			{
+				"name": "luatelatex",
+				"command": "lualatex",
+				"args": [
+					"--synctex=1",
+					"--interaction=nonstopmode",
+					"--output-directory=meta",
+					"--output-format=pdf",
+					"%DOCFILE%"
+				]
+			},
+			{
+				"name": "biber",
+				"command": "biber",
+				"args": [
+					"--input-directory=meta",
+					"--output-directory=meta",
+					"%DOCFILE%"
+				]
+			}
+		],
+		"latex-workshop.view.pdf.viewer": "tab"
+	},
+
+	"extensions": [
+		"james-yu.latex-workshop",
+		"ban.spellright"
+	]
+}
