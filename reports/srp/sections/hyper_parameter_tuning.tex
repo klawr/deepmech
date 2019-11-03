@@ -69,6 +69,31 @@ test_generator = create_generator('test', 10, test_datagen)
 Instead of \code{datagen = ImageDataGenerator(rescale = 1./255)} this object is given as parameter, because the training set adds random deviations to the data loaded. Namely a random rotation and a chance to be horizontally and vertically flipped.
 Please note that no deviations are applied to the test data.
 
+Applying these changes gives a loss of 0.61 and a 78.75\% accurarcy on the training data.
+Loss and accuracy on the test set are 0.63 and 78\% respectively.
+
+\begin{figure} \label{fig:first_model_data_augmentation_graphs}
+    \centering
+    \begin{subfigure}[b]{0.4\textwidth}
+        \includegraphics[width=\textwidth]{images/first_model_data_augmentation_acc.png}
+        \caption{Accuracy}
+        \label{fig:first_model_data_augmentation_acc}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.4\textwidth}
+        \includegraphics[width=\textwidth]{images/first_model_data_augmentation_loss.png}
+        \caption{Loss}
+        \label{fig:first_model_data_augmentation_loss}
+    \end{subfigure}
+    \caption{In comparison to figure~\ref{fig:first_model_graphs} the accuracy and loss are increasing at slower pace. More epochs may improve the results do not seem to be converging after 20 epochs.}
+\end{figure}
+
+So it is obvious that accuracy on the training data actually decreased.
+This is not surprising, since no data is given twice to the model anymore, so no memorization is happening.
+The model accuracy on the training set also seems to be increasing at a lower rate.
+More epochs or bigger batches may resolve that problem.
+
+The target to decrease overfitting seems to be resolved this since the difference between training accuracy and test accuracy is negligible small.
+
 \subsection{Grid search}
 One way to adjust hyper parameters is to test each with various values alongside all other hyper parameters being fixed.
 This procedure ensures that the optimal set of hyper parameters is used, but may take an inacceptable amount of time, since the number of models created is exponentially growing to the number of hyper parameters which are do be adjusted.
