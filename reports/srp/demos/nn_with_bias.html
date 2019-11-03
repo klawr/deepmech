@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>nn_with_bias</title>
+</head>
+
+<body>
+    <canvas id="cv1" width=1500 height=1000 style="border:solid"></canvas>
+    <canvas id="cv2"></canvas>
+    <script src="https://goessner.github.io/g2/g2.js"></script>
+    <script src="g2.helper.js"></script>
+    <script>
+        const cv1 = document.getElementById('cv1')
+        const ctx1 = cv1.getContext('2d');
+        g2().view({scl:1.15, x:-115, y: -50})
+            .nn_with_bias([3, 5, 5, 3], cv1.width, cv1.height - 100, 50)
+            .exe(ctx1);
+    </script>
+</body>
+
+</html>
