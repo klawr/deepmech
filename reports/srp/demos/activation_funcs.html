@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>activation_funcs</title>
+</head>
+
+<body>
+    <canvas id="cv1" width=500 height=400 style="border:solid"></canvas>
+    <canvas id="cv2" width=500 height=400 style="border:solid"></canvas>
+    <canvas id="cv3" width=500 height=400 style="border:solid"></canvas>
+    <canvas id="cv2"></canvas>
+    <script src="https://goessner.github.io/g2/g2.js"></script>
+    <script>
+        const cv1 = document.getElementById('cv1');
+        const ctx1 = cv1.getContext('2d');
+
+        const cv2 = document.getElementById('cv2');
+        const ctx2 = cv2.getContext('2d');
+
+        const cv3 = document.getElementById('cv3');
+        const ctx3 = cv3.getContext('2d');
+
+        const chart = {
+            x: cv1.width / 7,
+            y: cv1.height / 6,
+            b: cv1.width * 0.8,
+            h: cv1.height * 0.8,
+            grid: true,
+            xmin: -5,
+            xmax: 5,
+            xaxis: {
+                title: {
+                    offset: 6,
+                    text: "a",
+                    style: {
+                        font: 'normal 50px serif'
+                    }
+                },
+                labels: {
+                    offset: -3,
+                    style: {
+                        font: 'normal 20px serif'
+                    }
+                },
+                origin: true
+            },
+            yaxis: {
+                title: {
+                    text: "g(a)",
+                    offset: 23,
+                    style: {
+                        font: 'normal 50px serif'
+                    }
+                },
+                labels: {
+                    offset: -3, 
+                    style: {
+                        font: 'normal 20px serif'
+                    }
+                },
+                origin: true,
+            }
+        }
+
+        function sigmoid(x) {
+            return 1 / (1 + Math.exp(-x));
+        }
+
+        function relu(x) {
+            return Math.max(0, x);
+        }
+
+        g2().view({ cartesian: true })
+            .chart({
+                ...chart,
+                ymin: 0,
+                ymax: 1,
+                funcs: [
+                    { fn: sigmoid, dx: 0.001, style: { lw: 3 } }
+                ]
+            }).exe(ctx1);
+
+        g2().view({ cartesian: true })
+            .chart({
+                ...chart,
+                ymin: -2,
+                ymax: 5,
+                funcs: [
+                    { fn: relu, dx: 0.001, style: { lw: 3 } }
+                ]
+            }).exe(ctx2);
+
+        g2().view({ cartesian: true })
+            .chart({
+                ...chart,
+                ymin: -5,
+                ymax: 5,
+                funcs: [
+                    { fn: (x) => x, dx: 0.001, style: { lw: 3 } }
+                ]
+            }).exe(ctx3);
+    </script>
+</body>
+
+</html>

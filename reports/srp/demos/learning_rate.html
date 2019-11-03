@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>activation_funcs</title>
+</head>
+
+<body>
+    <canvas id="cv1" width=500 height=400 style="border:solid"></canvas>
+    <canvas id="cv2" width=500 height=400 style="border:solid"></canvas>
+    <canvas id="cv3" width=500 height=400 style="border:solid"></canvas>
+    <canvas id="cv2"></canvas>
+    <script src="https://goessner.github.io/g2/g2.js"></script>
+    <script src="g2.helper.js"></script>
+    <script>
+        const cv1 = document.getElementById('cv1');
+        const ctx1 = cv1.getContext('2d');
+
+        const cv2 = document.getElementById('cv2');
+        const ctx2 = cv2.getContext('2d');
+
+        const cv3 = document.getElementById('cv3');
+        const ctx3 = cv3.getContext('2d');
+
+        const quad = x => x * x;
+        const fn = (x) => ({
+            x: x,
+            y: quad(x)
+        });
+
+        g2().view({ cartesian: true })
+        const chart = {
+            x: 12.5, y: 12.5, b: 475, h: 375, xmin: -5, xmax: 5,
+            funcs: [
+                { fn: quad, dx: Math.PI / 20, style: { lw: 3 } }
+            ],
+        };
+        const g = g2().view({ cartesian: true })
+            .chart(chart).exe(ctx1);
+
+        const lr_ok = g2().view({ cartesian: true });
+        for (let i = -5; i < 0; ++i) {
+            const pnt = chart.pntOf(fn(i));
+            const pnt2 = chart.pntOf(fn(i + 1));
+            lr_ok.vec({ x1: pnt.x, y1: pnt.y, x2: pnt2.x, y2: pnt2.y, lw: 2, ls: 'blue' })
+                .nod({ ...pnt, scl: 2 });
+        }
+        lr_ok.nod({ ...chart.pntOf(fn(0)), scl: 2 });
+
+        const lr_too_high = g2().view({ cartesian: true });
+        for (let i = -1; i <= 6; i *= - 1.2) {
+            const pnt = chart.pntOf(fn(i));
+            const pnt2 = chart.pntOf(fn(i / -1.2));
+            lr_too_high.vec({ x1: pnt2.x, y1: pnt2.y, x2: pnt.x, y2: pnt.y, lw: 2, ls: 'blue' })
+                .nod({ ...pnt, scl: 2 });
+        }
+
+        const lr_too_low = g2().view({ cartesian: true });
+        for (let i = -5; i < -2; i += 0.3) {
+            const pnt = chart.pntOf(fn(i));
+            const pnt2 = chart.pntOf(fn(i + 0.3));
+            lr_too_low.vec({ x1: pnt.x, y1: pnt.y, x2: pnt2.x, y2: pnt2.y, lw: 2, ls: 'blue' })
+                .nod({ ...pnt, scl: 2 });
+        }
+
+        g.exe(ctx1).exe(ctx2).exe(ctx3);
+        lr_ok.exe(ctx1);
+        lr_too_high.exe(ctx2);
+        lr_too_low.exe(ctx3);
+    </script>
+</body>
+
+</html>
