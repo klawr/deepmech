@@ -69,7 +69,7 @@ test_generator = create_generator('test', 10, test_datagen)
 Instead of \code{datagen = ImageDataGenerator(rescale = 1./255)} this object is given as parameter, because the training set adds random deviations to the data loaded. Namely a random rotation and a chance to be horizontally and vertically flipped.
 Please note that no deviations are applied to the test data.
 
-Applying these changes gives a loss of 0.61 and a 78.75\% accurarcy on the training data.
+Applying these changes gives a loss of 0.61 and a 78.75\% accuracy on the training data.
 Loss and accuracy on the test set are 0.63 and 78\% respectively.
 
 \begin{figure} \label{fig:first_model_data_augmentation_graphs}
@@ -93,6 +93,37 @@ The model accuracy on the training set also seems to be increasing at a lower ra
 More epochs or bigger batches may resolve that problem.
 
 The target to decrease overfitting seems to be resolved this since the difference between training accuracy and test accuracy is negligible small.
+
+\subsection{Feature reduction}
+
+Another thing which may be improving model performance is to reduce the size of the input.
+The phenomenon known as \textit{curse of dimensionality} describes the possibility of distinct configuration possible as the number of variables is increasing and comes from Richard Bellman initially regarding problems in dynamic programming\cite[p.ix]{Bellman1957}.
+
+Looking at the data used in this example, albeit being in grayscales only the input is given as an image with three colors (hence the input size \code{[32, 32, 3]}).
+One way to reduce the input size is to project the data into one dimension, as suggested by Géron\cite[p.215]{Geron2019}.
+Therefore calling the \code{flow\_from\_directory} with another parameter \code{ color\_mode='grayscale'} projects the 3-dimensional \code{color\_mode='rgb'} (which is set as default) onto one dimension, changing virtually nothing.
+
+The model is subsequently summarized as:
+\begin{lstlisting}
+Model: "sequential"
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+flatten (Flatten)            (None, 1024)              0         
+_________________________________________________________________
+dense (Dense)                (None, 32)                32800     
+_________________________________________________________________
+dense_1 (Dense)              (None, 32)                1056      
+_________________________________________________________________
+dense_2 (Dense)              (None, 3)                 99        
+=================================================================
+Total params: 33,955
+Trainable params: 33,955
+Non-trainable params: 0
+_________________________________________________________________
+\end{lstlisting}
+
+Thus almost dividing the number of trainable parameters by three and therefore reducing the size of the model from 807kb (from the previous models with 99491 params) to 295kb without losing any measurable performance.
 
 \subsection{Grid search}
 One way to adjust hyper parameters is to test each with various values alongside all other hyper parameters being fixed.
