@@ -13,27 +13,26 @@ Project Organization
     │   ├── processed      <- The final, canonical data sets for modeling.
     │   └── raw            <- The original, immutable data dump.
     │
-    ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
+    ├── logs               <- TensorBoard logs. Runs are distributed in ISO8601 format.
     │
-    ├── logs               <- TensorBoard logs
-    │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
-    │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
-    │
-    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
+    ├── models             <- Trained and serialized models, model predictions, or model summaries.
     │
     ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │   └── figures        <- Generated graphics and figures to be used in reporting
+    │   └── srp            <- Student Research Project.
+    │       └── demos      <- Code used to generate demonstrations like listings and images.
+    │       └── images
+    │       └── notebooks  <- Jupyter notebooks. Naming convention is a number (for ordering),
+    │                         the creator's initials, and a short `-` delimited description, e.g.
+    │                         `1.0-jqp-initial-data-exploration`.
+    │       └── sections
+    │       └── document.bib
+    │       └── document.sty
+    │       └── document.tex
+    │       └── README.md
     │
-    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-    │                         generated with `pip freeze > requirements.txt`
+    ├── requirements.txt   <- The requirements file for reproducing the analysis environment.
     │
     └── src                <- Source code for use in this project.
-        ├── __init__.py    <- Makes src a Python module
-        │
         ├── data           <- Scripts to download or generate data
         │   └── make_dataset.py
         │
@@ -46,7 +45,11 @@ Project Organization
         │   └── train_model.py
         │
         └── visualization  <- Scripts to create exploratory and results oriented visualizations
-            └── visualize.py
+        │   └── visualize.py
+        └── training_env.py   <- Create the environment to train the model. This methods ensure
+                                 that the raw data is never touched, the intermediate data is
+                                 accessible and the processed data can be fed into the model
+                                 in an orderly way.
 
 
 --------
