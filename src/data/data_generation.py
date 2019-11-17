@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from numpy.random import rand
+from numpy.random import uniform
 from sys import exit
 from os import listdir, mkdir
 from os.path import join, exists, dirname, abspath
@@ -10,8 +10,10 @@ if target != "x" and target != "o" and target != "n":
     exit("Bad input")
 src_path = abspath(dirname(__file__))
 dir = join(src_path, '..', '..', 'data', 'raw', target)
-if not exists(dir):
+try:
     mkdir(dir)
+except:
+    pass
 
 image_name = "data"
 drawing = False
@@ -42,10 +44,10 @@ def draw(event, x, y, r1, r2):
 
 def new_image():
     global img, color, thickness
-    w_on_b = round(np.random.rand())
-    thickness = 5 + (round(rand() * 95))
+    w_on_b = round(uniform())
+    thickness = 5 + round(uniform(0, 255))
     img = np.ones((512,512,3), np.uint8)
-    img *= round(rand() * 255)
+    img *= round(uniform(0, 255))
     color = (255,255,255) if w_on_b else (0,0,0)
 
 new_image()
