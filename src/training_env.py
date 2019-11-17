@@ -1,12 +1,9 @@
 
-from os import listdir, mkdir, unlink
-from os.path import exists, isdir, isfile, join
+from os import listdir, unlink
+from os.path import isdir, isfile, join
 from shutil import copyfile, rmtree
-from sys import exit
 
-def mkdir_ex(path):
-    if not exists(path):
-        mkdir(path)
+from src.utils import mkdir_ex
 
 # Create a training environment in the target directory.
 # Create one directory in target_dir/{train, validate, test} for each directory in raw.
@@ -64,15 +61,22 @@ def create_and_populate(raw_dir, target_dir, segmentation, raw_classes=None):
 
 # Remove all files inside of the interim and processed directory. Don't touch the raw data!
 def reset(target_dir):
-    for file in listdir(target_dir):
-        file_path = join(target_dir, file)
+    try:
+        for file in listdir(target_dir):
+            file_path = join(target_dir, file)
+            try:
+                if isfile(file_path):
+                    unlink(file_path)
+                elif isdir(file_path):
+                    rmtree(file_path)
+            except Exception as e:
+                print(e)
         try:
-            if isfile(file_path):
-                unlink(file_path)
-            elif isdir(file_path):
-                rmtree(file_path)
+                rmtree(target_dir)
         except Exception as e:
             print(e)
+    except:
+        pass
 
 def reset_and_populate(raw_dir, target_dir, segmentation, raw_classes=None):
     mkdir_ex(raw_dir)
