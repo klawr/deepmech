@@ -56,7 +56,7 @@ def create_example_decoder(feature_description, shape):
 def decode_record(record_path, feature_description, shape,
     batch_size=32, shuffle_buffer_size=1000):
 
-    decoder=create_example_decoder(feature_description)
+    decoder=create_example_decoder(feature_description, shape)
     autotune = tf.data.experimental.AUTOTUNE
 
     data = (tf.data.TFRecordDataset(record_path)
@@ -71,8 +71,7 @@ def decode_record(record_path, feature_description, shape,
 def augment_images_by_label(src_dir, target_dir, label, target_size=(None, None),
     repetitions=1, h_flip=False, v_flip=False, rotation_range=0, quantity=None):
     data_list = []
-    filenames = listdir(src_dir)
-    list(filter(lambda x: x[-5:] == '.jpeg', filenames))
+    filenames =  list(filter(lambda x: x[-5:] == '.jpeg', listdir(src_dir)))
     for filename in filenames[:quantity]:
         image_path = join(src_dir, filename)
         data = { 'label': label }
