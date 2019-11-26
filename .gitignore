@@ -1,6 +1,7 @@
 # TensorBoard logs
 *logs/
 reports/*/meta
+auth.json
 
 # NOTE: Cookiecutter
 # Byte-compiled / optimized / DLL files
