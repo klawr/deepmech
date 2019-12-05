@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>conv_layer</title>
+</head>
+
+<body>
+    <canvas id="cv1" width=450 height=275 style="border:solid"></canvas>
+    <canvas id="cv2"></canvas>
+    <script src="https://goessner.github.io/g2/g2.js"></script>
+    <script src="g2.helper.js"></script>
+    <script>
+        const cv1 = document.getElementById('cv1')
+        const ctx1 = cv1.getContext('2d');
+        const s=30
+        g2().beg({matrix:[1, 0, -0.75, 0.5, 290, -10]})
+            .egrid({x: 0, y: 75, ky: 5, kx: 5, s})
+            .egrid({x: 150, y: 325, ky: 7, kx: 7, s, padding:1})
+            .grid_connect({
+                x1: 150+s, y1: 325+4*s, s, x2: s,
+                y2: 75+4*s, color:'blue', ld:[10, 10]})
+            .grid_connect({x1: 150, y1: 325+4*s, s,
+                x2: 0, y2: 75+4*s, color:'red'})
+            .grid_connect({x1: 150+4*s, y1: 325, s,
+                x2: 4*s, y2: 75, color:'green', ld:[10, 5]})
+            .exe(ctx1);
+    </script>
+</body>
+
+</html>
