@@ -4,7 +4,7 @@ The Jupyter Notebook described in this chapter can be accessed via \url{https://
 
 \subsection{Structure}
 The project structure is an important part of efficiently testing models and evaluation them against another to determine the best performing one.
-\name{deepmech} is structured using a modified version of the Cookiecutter Data Science\cite{drivendata2019} structure. It is appended in TODO Appendix A or here....
+\name{deepmech} is structured using a modified version of the Cookiecutter Data Science \cite{drivendata2019} structure. It is appended in TODO Appendix A or here....
 
 % root
 The root folder contains files like the License of the whole project.
@@ -22,7 +22,7 @@ Logs are filled during training using \name{Tensorboard}\footnote{Tensorboard is
 % reports
 A folder containing all reports used in the project are found in the respective directory, including this very article.
 In the notebook folder in reports for this project (abbreviated as \name{srp}) one can find the code used to determine the best model.
-Models are trained using \name{Jupyter Notebooks}\cite{Jupyter2019}.
+Models are trained using \name{Jupyter Notebooks} \cite{Jupyter2019}.
 Jupyter Notebooks an interactive editor to develop Python code, which provide an easy way to write and test code efficiently.
 All notebooks with respective code are to be found in the \name{notebooks} directory in the root of this project\footnote{\url{https://github.com/klawr/deepmech/tree/master/notebooks}}.
 % src
@@ -77,7 +77,7 @@ These generators also detect the structure of the raw data (distributed in repec
 
 \subsection{Creation of the model}
 
-\begin{lstlisting}
+\begin{lstlisting}[label={lst:first_model}]
 from tensorflow.keras import layers
 from tensorflow.keras import models
 
@@ -159,7 +159,7 @@ Where $\eta$ is the value of the learning rate.
 If the learning rate is set to a value too small, the loss takes a lot of iterations to converge to zero.
 On the other hand a learning rate set to a high value may fail to converge at all.
 
-\begin{figure} \label{fig:learning_rate}
+\begin{figure}
     \centering
     \begin{subfigure}[b]{0.3\textwidth}
         \includegraphics[width=\textwidth]{images/lr_ok.png}
@@ -180,6 +180,7 @@ On the other hand a learning rate set to a high value may fail to converge at al
     If it is too high it diverges.
     If the learning rate is too low, the values converge but they take too many steps to do so.
     Please note that these images represent the parameter space in a very simplified way, as the presented function it is fully convex and only two dimensional.}
+    \label{fig:learning_rate}
 \end{figure}
 
 \subsubsection{Momentum}
@@ -190,28 +191,30 @@ The direction of the correction through the gradient should be consistent over s
 This is useful if the data is noisy or some of the training examples are falsy.
 Hence another parameter $\nu$ is introduced to equation~\eqref{eq:backprop_update}:
 
-\begin{equation}\label{eq:momentum}
+\begin{equation}
     \begin{split}
         \nu_{i} &:= \alpha \nu_{i-1} - \eta \varDelta \\
         \theta_{i+1} &:= \theta_i + \nu_i
     \end{split}
+    \label{eq:momentum}
 \end{equation}
 
 Whereas $\alpha$ is another parameter which can be set to regulate the influence of $\eta$ on the parameters of the next iteration.
 So if one training example would change the "direction" of the next step with a high deviation from the median of the last few steps the impact would be reduced and may improve the rate of convergence.
 
-In 2013 Sutskever, Martens, Dahl and Hinton\cite{Sutskever2013} introduced another variant of momentum which was inspired by Nesterov's Accelerated Gradient\cite{Nesterov1983}.
+In 2013 Sutskever, Martens, Dahl and Hinton \cite{Sutskever2013} introduced another variant of momentum which was inspired by Nesterov's Accelerated Gradient \cite{Nesterov1983}.
 This variant updates the previous discussed equation to change the parameter used to calculate $\varDelta$ using $\nu$.
 Please note that $\varDelta$ in equation~\eqref{eq:momentum} and ~\eqref{eq:backprop_update} is itself a function of the parameter $\theta$ (see equation~\eqref{eq:hidden_error}).
 
-\begin{equation}\label{eq:nesterov}
+\begin{equation}
     \begin{split}
     \nu_i & := \alpha \nu_i - \eta \varDelta(\theta_i + \alpha \nu_i) \\
     \theta_{i+1} & := \theta_i + \nu_i
     \end{split}
+    \label{eq:nesterov}
 \end{equation}
 
-The idea of momentum being that the directional vector points in the right direction, using Nesterov Accelerated Gradient is likely to be more accurate by starting to measure the next error slightly shifted into the respective direction\cite[p.353]{Geron2019}\cite[p.291]{Goodfellow2017}.
+The idea of momentum being that the directional vector points in the right direction, using Nesterov Accelerated Gradient is likely to be more accurate by starting to measure the next error slightly shifted into the respective direction \cite[p.353]{Geron2019} \cite[p.291]{Goodfellow2017}.
 
 \subsubsection{Actual training}
 
@@ -245,7 +248,7 @@ Herein it is defined that 20 images are fed into the model each iteration, which
 An epoch being one run-through, so the optimizer updates the parameters 20 times.
 
 \subsubsection{Results}
-\begin{figure} \label{fig:first_model_graphs}
+\begin{figure}
     \centering
     \begin{subfigure}[b]{0.4\textwidth}
         \includegraphics[width=\textwidth]{images/first_model_acc.png}
@@ -258,6 +261,7 @@ An epoch being one run-through, so the optimizer updates the parameters 20 times
         \label{fig:first_model_loss}
     \end{subfigure}
     \caption{The callbacks of the training algorithm provide logs which can be used by TensorBoard to provide useful graphs to evaluate the model. The vertical axis represents the value on the respective epoch (shown on the horizontal axis).}
+    \label{fig:first_model_graphs}
 \end{figure}
 
 As it is expected the model begins with an accuracy of approximately 33\% by trying to classify training data into three classes.
