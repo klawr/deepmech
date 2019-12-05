@@ -5,11 +5,12 @@
 Usually programming consists of applying rules to certain problems to get solutions.
 By using machine learning we want to build a model which uses solutions to certain problem to figure out the respective rules, shown in figure~\ref{fig:cp_vs_ml}.
 
-\begin{figure} \label{fig:cp_vs_ml}
+\begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{images/classical_prog_vs_ml.png}
     \caption{Machine learning, a new programming paradigm, from
         \cite[p.5]{Chollet2017}}
+    \label{fig:cp_vs_ml}
 \end{figure}
 
 The promise made by machine learning is that the rules learned can be significantly more complex than it is feasible to program them by hand.
@@ -17,15 +18,16 @@ A good example for this is image recognition (which will be the focus of this pr
 Relations between pixels have to be figured out resulting in a fairly complex model.
 This is not feasible to program in traditional manner even for the simplest tasks.
 
-The universal approximation theorem\cite{Cybenko1989}\cite{Hornik1989} states that for an arbitrary input $x$ there is a function $h$ approximating the mapping $y$, whereas the mapping is only the input to the respective correct output (often labeled by a human).
+The universal approximation theorem \cite{Cybenko1989} \cite{Hornik1989} states that for an arbitrary input $x$ there is a function $h$ approximating the mapping $y$, whereas the mapping is only the input to the respective correct output (often labeled by a human).
 This relationship is shown in equation~\eqref{eq:universal_approx} \footnote{In literature there is often a bias inside the sum.
 Following the convention to prepend a 1 to the input vector $x$, this is always included.
 Please note that this is mathematically the same but just a matter of taste.
 }
 % TODO define sets X and Y of \theta and x
-\begin{equation}\label{eq:universal_approx}
+\begin{equation}
     \forall \epsilon > 0 :
     \exists h(\theta, x) : \forall x \in I : | h(\theta, x) - y(x) | < \epsilon
+    \label{eq:universal_approx}
 \end{equation}
 % TODO the text here can be changed with a class of functions (see UAT paper)
 The mathematical description of $h$ is called the model (e.g.  $h(x) = \sum_{i=1}^n{\lambda (\theta^T * x)}$).
@@ -33,17 +35,20 @@ $\lambda \in \mathbb{R}$ is a constant and $\theta$ is a tensor defining the par
 The universal approximation theorem makes no assertions over the shape of $\theta$; therefore $h$ is called the hypothesis, because it states that for a specific composition of $\theta$ this equation holds to be true.
 This notion is summarized in equation~\eqref{eq:hypothesis}.
 
-\begin{equation} \label{eq:hypothesis}
+\begin{equation}
     \forall \epsilon > 0 : \exists \theta \in X : \forall x \in I : |
     h_\theta(x) - y(x) | < \epsilon
+    \label{eq:hypothesis}
 \end{equation}
 
 For model evaluation a loss function is used; it compares the result of the hypothesis with provided data.
 The most prominent loss function is called \name{mean squared error}.
 It takes the sum of the deviation of $n$ examples squared and divides them by $2*n$.
 
-\begin{equation} \label{eq:mse}
-    L_{mse}(\theta, x) = \frac{1}{2 n} \sum_{i=1}^n (h_\theta(x) - y(x))^2\end{equation} 
+\begin{equation}
+    L_{mse}(\theta, x) = \frac{1}{2 n} \sum_{i=1}^n (h_\theta(x) - y(x))^2
+    \label{eq:mse}
+\end{equation} 
 
 The task of machine learning is to determine a $\theta$ for a model confirming equations~\ref{eq:universal_approx} and \ref{eq:hypothesis}, which is done by iteratively updating $\theta$. 
 Before training $\theta$ is initiated randomly and then adjusted iteratively to let the $\epsilon$ converge to zero, thus minimizing the value of $L$.
@@ -52,12 +57,13 @@ Before training $\theta$ is initiated randomly and then adjusted iteratively to 
 For the loss function to gradually decrease $\theta$ is adjusted using an optimizer function which is famously done using gradient descent or some variant of it.
 Gradient descent is performed by calculating the gradient of the loss function and subtracting it from the respective parameters, shown in equation~\eqref{eq:gradient_descent}.
 
-\begin{equation} \label{eq:gradient_descent}
+\begin{equation}
     \theta_{i+1} := \theta_i - \eta \nabla_\theta L(\theta, x)
+    \label{eq:gradient_descent}
 \end{equation}
 
 Herein $\eta$ is a constant, called the learning rate which helps the loss function to converge to 0 using gradient descent.
-It is one of many hyper parameter which are not adjusted, but determined before training. An optimal setting of hyper parameters is an important task which is hard to automate and therefore focus of a lot of research\footnote{There are algorithms to adjust the learning rate, namely AdaGrad\cite{Duchi2010} and derived algorithms.}.
+It is one of many hyper parameter which are not adjusted, but determined before training. An optimal setting of hyper parameters is an important task which is hard to automate and therefore focus of a lot of research\footnote{There are algorithms to adjust the learning rate, namely \name{AdaGrad} \cite{Duchi2010} and derived algorithms.}.
 If equation~\eqref{eq:hypothesis} holds to be true for the model, it is going to be a sufficient fit for the given input.
 
 Subsequently these concepts are introduced presenting a simple example.
@@ -93,13 +99,14 @@ In listing~\ref{lst:c_to_f} equation~\eqref{eq:gradient_descent} is implemented 
     each iteration.}
 It represents the optimizer function, updating the parameters of the model by taking the gradient of the loss for each individual parameter and updating them simultaneously.
 
-\begin{equation} \label{eq:sgd_mse_here}
+\begin{equation}
     \begin{split}
         \theta_{0} & := \theta_{0} - \frac{\partial L}{\partial \theta_{0}} =
         \theta_{0} - (h(x) - y(x))  \\
         \theta_{1} & := \theta_{1} - \frac{\partial L}{\partial \theta_{1}} =
         \theta_{0} - (h(x) - y(x)) * x
     \end{split}
+    \label{eq:sgd_mse_here}
 \end{equation}
 
 The respective output may look like:
