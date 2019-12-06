@@ -21,8 +21,7 @@ This is not feasible to program in traditional manner even for the simplest task
 The universal approximation theorem \cite{Cybenko1989} \cite{Hornik1989} states that for an arbitrary input $x$ there is a function $h$ approximating the mapping $y$, whereas the mapping is only the input to the respective correct output (often labeled by a human).
 This relationship is shown in equation~\eqref{eq:universal_approx} \footnote{In literature there is often a bias inside the sum.
 Following the convention to prepend a 1 to the input vector $x$, this is always included.
-Please note that this is mathematically the same but just a matter of taste.
-}
+Please note that this is mathematically the same but just a matter of taste.}
 % TODO define sets X and Y of \theta and x
 \begin{equation}
     \forall \epsilon > 0 :
@@ -31,7 +30,8 @@ Please note that this is mathematically the same but just a matter of taste.
 \end{equation}
 % TODO the text here can be changed with a class of functions (see UAT paper)
 The mathematical description of $h$ is called the model (e.g.  $h(x) = \sum_{i=1}^n{\lambda (\theta^T * x)}$).
-$\lambda \in \mathbb{R}$ is a constant and $\theta$ is a tensor defining the parameters of $h$, composed of so called weights and biases. % TODO was biased already defined? ...
+$\lambda \in \mathbb{R}$ is a constant and $\theta$ is a tensor defining the parameters of $h$, composed of so called weights and biases, which will be introduced later.
+
 The universal approximation theorem makes no assertions over the shape of $\theta$; therefore $h$ is called the hypothesis, because it states that for a specific composition of $\theta$ this equation holds to be true.
 This notion is summarized in equation~\eqref{eq:hypothesis}.
 
@@ -42,7 +42,7 @@ This notion is summarized in equation~\eqref{eq:hypothesis}.
 \end{equation}
 
 For model evaluation a loss function is used; it compares the result of the hypothesis with provided data.
-The most prominent loss function is called \name{mean squared error}.
+The arguably most prominent loss function is \name{mean squared error}.
 It takes the sum of the deviation of $n$ examples squared and divides them by $2*n$.
 
 \begin{equation}
@@ -63,8 +63,9 @@ Gradient descent is performed by calculating the gradient of the loss function a
 \end{equation}
 
 Herein $\eta$ is a constant, called the learning rate which helps the loss function to converge to 0 using gradient descent.
-It is one of many hyper parameter which are not adjusted, but determined before training. An optimal setting of hyper parameters is an important task which is hard to automate and therefore focus of a lot of research\footnote{There are algorithms to adjust the learning rate, namely \name{AdaGrad} \cite{Duchi2010} and derived algorithms.}.
-If equation~\eqref{eq:hypothesis} holds to be true for the model, it is going to be a sufficient fit for the given input.
+It is one of many hyper-parameters which are not adjusted automatically during training, but determined beforehand.
+An optimal setting of hyper-parameters is an important task which is hard to automate and therefore focus of a lot of research\footnote{There are algorithms to adjust the learning rate, namely \name{AdaGrad} \cite{Duchi2010} and derived algorithms.} and is the main topic of chapter \ref{ch:hyper_parameter_tuning}.
+If equation~\eqref{eq:hypothesis} holds to be true for the respective model, it subsequently is a sufficient fit for the given input.
 
 Subsequently these concepts are introduced presenting a simple example.
 
@@ -74,14 +75,14 @@ Subsequently these concepts are introduced presenting a simple example.
 As an illustrative example a model translating Fahrenheit into Celsius will be created.
 The original equation is given by the linear function $y = mx + b$ as $F = C * 1.8 + 32$, with $F$ as degree Fahrenheit and $C$ as degree Celsius respectively.
 
-A model designed to learn this relationship is defined in listing~\ref{lst:c_to_f} \footnote{\url{https://klawr.github.io/deepmech/reports/srp/demos/c\_to\_f.js}} .
+A model designed to learn this relationship is defined in listing~\ref{lst:c_to_f} \footnote{Also available at \url{https://srp.klawr.de/\#2}} .
 
 % TODO add JavaScript as language
 \lstinputlisting[label={lst:c_to_f}, caption={Celsius to Fahrenheit}]{demos/c_to_f.js}
 
 The model described has $\theta$ implemented through \code{w} and the hypothesis function by \code{h}.
 Since we know that the relationship is linear, the model represents a one dimensional polynomial, using the first index as dimensionless (emulating the bias as previously mentioned) and the first as input x.
-We will add one dimension later to demonstrate the behavior on polynomials which do not represent the target function immediately.
+We will add one dimension later to demonstrate the behavior on polynomials which do not immediately represent the target function.
 
 \code{y} provides the correct answer.
 Please note that \code{y} is only used in training and can be omitted once the model parameters are properly adjusted.
@@ -130,7 +131,7 @@ By increasing the iteration count, the result can be increased to the point wher
 
 \begin{SCfigure}
     \centering
-    \caption{ The provided example may be visualized like this.
+    \caption{ The provided example may be visualized like this (possibly the        simplest model imaginable).
         The bias can be interpreted as an extra input which is always 1.
         The input is multiplied by the parameters labelling their respective arrows, which are in turn summed up (resulting in $y = mx + b$) }
     \includegraphics[width=0.4\textwidth]{images/1_simplest_nn.png}
@@ -138,4 +139,4 @@ By increasing the iteration count, the result can be increased to the point wher
 
 Provided this hypothesis is initially well suited for the task, it is important to note that by modify the hypothesis to represent a polynomial of a higher degree (e.g. $y = nx^2 + mx + b$) the extra parameters are converging to zero, effectively providing the same result as before
 \footnote{But to achieve similar results the iteration count has to be increased by at least a factor of 20.
-You can review the experiment at \url{https://klawr.github.io/deepmech/reports/srp/demos/c_to_f_adv.js}}.
+You can review the experiment at \url{https://srp.klawr.de/\#3}}.

@@ -1,7 +1,7 @@
 \section{Introduction}
 
 The first work now considered to be in the field of Artificial Intelligence (AI) was done by McCulloch and Pitts in 1943 \cite{McCulloch1943}.
-They took inspiration from neurons in the brain, applied logic to their state of being either activated or not, including a switch determined by the activation of other neurons.
+They took inspiration from neurons in the brain and applied logic to their state of being either activated or not, including a switch determined by the activation of other neurons.
 The term artificial intelligence itself was coined in 1956 by McCarthy by organizing a two-month workshop in Dartmouth \cite{McCarthy1955}.
 
 After early great expectations on artificial intelligence without delivering promised results, the field got less attention.
@@ -21,7 +21,7 @@ Even home computers are nowadays capable of training models of remarkable comple
 On the other hand the amount of data which is available due to the internet is easing the training for various tasks.
 To train a model for a specific task suitable data is needed to make correct predictions on never seen data (generalization).
 Since data is available in great amount\footnote{Several databases exist for research, training and evaluation.
-A list can be inspected at \cite{Wikipedia2019}}.
+A list of databases be inspected at \url{https://srp.klawr.de/\#1}}.
 
 Therefore artificial intelligence is getting more attention in research and more and more practical fields are considering this technique as solution for various problems.
 If recent enthusiasm are just excessive expectations, or if the "last invention of humankind" \cite{Good1965} is near remains to be seen.
@@ -37,12 +37,17 @@ This correlation is shown in figure \ref{fig:ai_ml_dl}.
 \end{figure}
 
 In this project I want to introduce machine learning to the field of kinematics for two dimensional sketching and prototyping with \name{deepmech}.
-\name{deepmech} takes images as input and outputs the type and location of
-handwritten mechanical symbols inside of it. % TODO location remains to be seen.
+The first solution implemented in this project takes images as input and outputs the respective type of handwritten mechanical symbols.
 The models created by the presented approach are small and mostly language agnostic, which is provided by the usage of the popular Keras \cite{Chollet} library on top of TensorFlow \cite{Google}.
 
-Simple demonstrations are done using JavaScript, connecting to an emerging field in kinematics using web technologies\footnote{ TODO }.
+Simple demonstrations are done using JavaScript, connecting to an emerging field in kinematics using web technologies like \name{mec2}\footnote{\url{https://github.com/goessner/mec2}} \cite{Goessner2019} and \name{mecEdit}\footnote{\url{https://mecedit.com}} \cite{Uhlig2019}.
 For training of the actual model the Python implementation of TensorFlow is used, because of better utilization of the GPU using CUDA \cite{nvidia2019} as backend which results in faster training.
 Thanks to mostly language agnostic model descriptions this allows for seamless transitions between different approaches.
-% TODO put complete structure here.
+
 Before showing how deepmech was developed, the basics of machine learning shall be covered, showing some simple examples as introduction and by doing so introduce common terminology used in this paper.
+In chapter 3 the concepts are extended by introducing neural networks, which are the key to implement the workings of machine learning into practical models.
+Another topic which has to be covered is data generation. Data is a major part of training statistical models, so the data generation and augmentation is done in chapter 4.
+Next the first working model will be discussed.
+All major components will be examined in further detail to get a better understanding of every part.
+The 6. chapter is about the tuning of said model to optimize the accuracy and minimize the size of the model which will be loaded in future applications.
+Then the project is ended with a conclusion which will discuss the findings in further detail.
