@@ -9,7 +9,7 @@ from tensorflow.keras.callbacks import ModelCheckpoint, TensorBoard
 from tensorflow.keras.optimizers import Adam, RMSprop
 
 from src.image_handling import decode_record
-from src.spot import Spot
+from src.utils import Spot
 
 processed = join('data', 'processed')
 

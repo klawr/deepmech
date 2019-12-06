@@ -4,7 +4,7 @@ sys.path.append('.')
 import tensorflow as tf
 from os.path import join
 from src.image_handling import decode_record
-from src.spot import Spot
+from src.utils import Spot
 
 features = {
     'image': tf.io.FixedLenFeature([], tf.string),

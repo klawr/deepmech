@@ -14,7 +14,7 @@ from tensorflow.keras.optimizers import Adam, RMSprop, SGD
 from tensorboard.plugins.hparams import api
 
 from src.image_handling import decode_record
-from src.spot import Spot
+from src.utils import Spot
 
 spot = Spot('auth.json')
 
