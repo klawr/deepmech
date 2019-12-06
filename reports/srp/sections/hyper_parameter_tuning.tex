@@ -1,23 +1,23 @@
-\section{Hyper parameter tuning}
+\section{Hyper parameter tuning}\label{ch:hyper_parameter_tuning}
 
 Unfortunately there is no obvious optimal model for each problem.
 A model maps input to output.
-To reliably determine which data is to be discarded (and thus does not help to generalize) and which is to keep, there are assumptions to be made. % TODO terrible sentence
+To reliably determine which information is to be discarded (and thus does not help to generalize) and which to emphasize, assumptions have to be made. % TODO terrible sentence
 
 In 1996 David Wolpert pointed out that if no assumptions are made on the dataset there is no reason to prefer one model over another.
-This line of reasoning is now known as the \textit{No Free Lunch Theorem}\cite{Wolpert1996}.
-Some of these assumptions are already made beforehand, e.g. a feed forward neural network is used, but others are subject to optimization. % TODO terrible sentence
+This line of reasoning is now known as the \textit{No Free Lunch Theorem} \cite{Wolpert1996}.
+Some of these assumptions are already made beforehand (e.g. the usage of feed forward neural networks), but others are subject to optimization. % TODO terrible sentence
 
-Hyper parameter optimization is an optimization problem by minimizing the loss (or another metric like accuracy) of the model on the training data.
+Hyper-parameter optimization is an optimization problem by minimizing the loss (or another metric like accuracy) of the model on the given training data.
 Hyper parameters used in the first model which may be object to optimize are:
 
 \begin{enumerate}
     \item Training data:
     \begin{tasks}(2)
-        \task Number of training examples\footnote{Or augmenting the existing training data}
+        \task Number of training examples
         \task Image size
         \task Batch size
-        \task Input color\footnote{It may be useful to set images to grayscale to divide the input size by three}
+        \task Feature reduction
     \end{tasks}
     \item Model:
     \begin{tasks}(2)
@@ -28,9 +28,9 @@ Hyper parameters used in the first model which may be object to optimize are:
     \end{tasks}
     \item Optimizer:
     \begin{tasks}(2)
+        \task Type of optimizer
         \task Learning rate
         \task Momentum
-        \task Decay
         \task Nesterov
     \end{tasks}
     \item Training:
@@ -39,9 +39,8 @@ Hyper parameters used in the first model which may be object to optimize are:
         \task Number of epochs
     \end{tasks}
 \end{enumerate}
-% TODO the footnotes in this list are not working
 
-Some hyper parameters have to be tested and are not obvious, but others can be improved without any obvious negative side effects so they are discussed first. Then algorithms to test different models with different hyper parameters to improve the model are explored.
+Some hyper-parameters have to be tested and are not obvious, but others can be improved without any obvious negative side effects so they are discussed first. Then algorithms to test different models with different hyper-parameters to improve the model are explored.
 
 \subsection{Data augmentation}\label{ch:data_augmentation}
 % TODO Add citation to Chollet p.138
@@ -51,7 +50,7 @@ In the previous tests the models saw every image approximately 20 times during t
 To increase the training set size thereby seems to be a reasonable approach.
 
 Data augmentation on images changes some properties of the image which are reasonable for the purpose at hand.
-In the case of symbol detection the symbol may be rotated or mirrored thus adding training examples without adding much redundancy to the dataset and in this very case not invalidating the data in any sense.
+In the case of symbol detection the symbol may be rotated or mirrored thus adding training examples without adding much redundancy to the dataset and in this very case not invalidating the data.
 
 Data augmentation is performed by adjusting the \code{create\_generator} function used before:
 
@@ -78,7 +77,8 @@ train_generator = create_generator('train', 20, train_datagen)
 test_generator = create_generator('test', 10, test_datagen)
 \end{lstlisting}
 
-Instead of \code{datagen = ImageDataGenerator(rescale = 1./255)} this object is given as parameter, because the training set adds random deviations to the data loaded. Namely a random rotation and a chance to be horizontally and vertically flipped.
+Instead of \code{datagen = ImageDataGenerator(rescale = 1./255)} this object is given as parameter, because the training set adds random deviations to the loaded data.
+Namely a random rotation and a chance to be horizontally and vertically flipped.
 Please note that no deviations are applied to the test data.
 
 Applying these changes gives a loss of 0.61 and a 78.75\% accuracy on the training data.
@@ -106,14 +106,18 @@ The model accuracy on the training set also seems to be increasing at a lower ra
 
 Please note that the training set virtually grew by a factor of 1440 (360 degree + rotations in two axis), therefore enabling the possibility to feed way more data into the model during training without having to expect too much overfitting.
 
-The goal to decrease overfitting seems to be resolved; the difference between training accuracy and test accuracy is negligible small.
+The goal to decrease overfitting seems to be resolved; the difference between training accuracy and test accuracy is negligible small\footnote{Link to respective notebook: \url{https://srp.klawr.de/\#7}}.
 
 \subsection{Feature reduction}
 % TODO curse of dimensionality should reduce accuracy... this is not fixed here
 Another thing which may be improving model performance is to reduce the size of the input.
 The phenomenon known as \textit{curse of dimensionality} describes the possibility of distinct configuration possible as the number of variables is increasing and comes from Richard Bellman initially regarding problems in dynamic programming \cite[p.ix]{Bellman1957}.
 
-Looking at the data used in this example, albeit being in grayscales only the input is given as an image with three colors (hence the input size \code{[32, 32, 3]}).
+The data is already heavily reduced by submitting the data as images with width and height of 32, even though the data is generated as 512 by 512 images. This is because of manual tuning when the data is reasonably small but all features are still recognizable.
+
+
+The data is initially given in grayscale, because the intended usage allows the images to be converted to grayscale even if the original image has color, because it should not affect the prediction of the symbol.
+Albeit being only in grayscales the input is given as an image with three colors (hence the input size \code{[32, 32, 3]}).
 One way to reduce the input size is to project the data into one dimension, as suggested by Géron \cite[p.215]{Geron2019}.
 Therefore calling the \code{flow\_from\_directory} with another parameter \code{color\_mode='grayscale'} projects the 3-dimensional \code{color\_mode='rgb'} (which is set as default) onto one dimension, changing virtually nothing (the input size is consequently adjusted to \code{[32, 32, 1]}).
 
@@ -137,15 +141,16 @@ Non-trainable params: 0
 _________________________________________________________________
 \end{lstlisting}
 
-This is dividing the number of trainable parameters almost by a factor of three and therefore reducing the size of the model from 807kb (from the previous models with 99491 params) to 295kb without losing any measurable performance.
+This is dividing the number of trainable parameters almost by a factor of three and therefore reducing the size of the model from 807kb (from the previous models with 99491 params) to 295kb without losing any measurable performance\footnote{Link to respective notebook: \url{https://srp.klawr.de/\#8}}.
 
 \subsection{Optimizers}
 
 Hitherto the only optimizer looked at was stochastic gradient descent.
-Stochastic gradient descent has multiple parameters which can be tweaked like the learning rate, momentum and if nesterov is used or not.
+Stochastic gradient descent has multiple parameters which can be tweaked like the learning rate, momentum and whether nesterov is used or not.
 
 Although these parameters are helpful to get better results, attempts have been made to automate the search for them to reduce the number of hyper-parameters.
-In this project three alternative optimizers are examined, but not explained into too much detail. For further explanation please refer to the citations.
+In this project three alternative optimizers are examined, but not explained into too much detail.
+For further explanation please refer to the citations.
 
 In stochastic gradient descent the learning rate is the same for all parameters.
 To adjust it for every parameter or even for individual dimensions of the layers may be helpful, but this would need an unproportional increase of cost.
@@ -161,12 +166,12 @@ RMSProp is considered to be "generally a good enough choice, whatever your probl
 Adam \cite{Kingma2014}\cite{Reddi2018} is the last optimizer included in this project, which is another method of applying an adaptive learning rate for each parameter.
 Adam incorporates the previously mentioned idea of momentum into an algorithm similar of RMSProp.
 
-There are other optimizers worth mentioning (namely AdaDelta, which is another extension of AdaGrad, or Adam which is basically Adam but with Nesterov-Momentum) and they may be subject of further inspection later on.
+There are other optimizers worth mentioning (namely AdaDelta, which is another extension of AdaGrad, or Nadam which is basically Adam but with Nesterov-Momentum) and they may be subject of further inspection later on.
 
 \subsection{Convolutional layers}
 
 Convolutional layers are widely used for image recognition and it therefore is a sensible notion to implement them into the model.
-Introduced by Yann LeCun in a 1998 paper \cite{LeCun1998} to detect handwritten digit numbers convolutional layers are now widely used for image recognition.
+They were introduced by Yann LeCun in a 1998 paper \cite{LeCun1998} to detect handwritten digits.
 
 In this project only two dimensional convolutional layers are used, because the input is two dimensional (after the images are transferred to grayscale).
 The difference of convolutional layers to the previously described dense layers is that the parameters trained are not representing the connections of all the nodes of the previous layer to a next one, but a kernel which slides over the input layer and acts as a filter constructing the output layer.
@@ -182,7 +187,7 @@ z_{i,j,k} = b_k + \sum_{u=1}^{h} \sum_{v=1}^{w} \sum_{k'=1}^{n'} x_{i', j', k'} 
 
 Whereas $z$ is the activation value with indices $i$ and $j$ being the position of the node in the output layer and $k$ is representing the index of the filter.
 The sum of all input nodes is given by taking the sum of the nodes in the respective directions, which is given by iterating over three axes using the height ($h$), width ($w$) and filter size ($n'$) of the previous layer.
-For each of these combinations the respective connection weight $w_{u, v, k', k}$ is multiplied by the input $x_{i', j', k'}$ at the respective position in the previous layer, whereas $i' = i \times s_h + u$ and $j' = j \times s_w$ respectively, with $s_h$ and $s_w$ being the strides.
+For each of these combinations the respective connection weight $w_{u, v, k', k}$ is multiplied by the input $x_{i', j', k'}$ at the respective position in the previous layer, whereas $i' = i \times s_h + u$ and $j' = j \times s_w$ respectively, with $s_h$ and $s_w$ being the strides\footnote{Strides being the steps taken in each direction for every step. Strides thereby reduce the size of the subsequent layer}.
 Additionally each filter has its own bias $b_k$, which is added to the activation.
 
 \begin{figure}
@@ -192,37 +197,34 @@ Additionally each filter has its own bias $b_k$, which is added to the activatio
     \label{fig:conv_layer}
 \end{figure}
 
-In order for the output to have the same size as the input, numbers have to be added to the input, because a kernel greater than one in any direction can not cross an edge for the input.
-Therefore padding is used to solve this issue usually by adding zeros around the input (resulting in a technique called zero-padding).
+In order for the output to have the same size as the input, numbers have to be added to the input, because a kernel greater than one in any direction can not cross an edge for the input (and the stride has to be 1 by 1).
+Therefore padding is used to solve this issue usually by adding zeros around the input, resulting in a technique called zero-padding.
 
-The notebook which is going to be put here % TODO
-shows that by again reducing the size of the model again by a factor of three (807kb to 231kb), the accuracy is even increased by a few percentages.
-
-
+By using convolutional instead of dense layers the model size can be again reduced by again by a factor of three (807kb to 231kb), by increasing the accuracy by a few percentages\footnote{Link to respective notebook: https://srp.klawr.de/\#9}.
 
 \subsection{Tuning algorithms}
 
-Attributing to all the possibilities to optimize the model even before training some approaches were developed to tune these automatically.
-One way to adjust hyper parameters is to test each with various values alongside all other hyper parameters being fixed.
+Attributing to all the possibilities to optimize the model before training some approaches were developed to tune the hyper-parameters automatically.
+One way to adjust hyper-parameters is to test each with various values alongside all other hyper parameters being fixed.
 This procedure ensures that the optimal set of hyper parameters is used, but may take an inacceptable amount of time, since the number of models created is exponentially growing to the number of hyper parameters which are do be adjusted.
 For two hyper parameters this would be equivalent to checking every value on a two dimensional grid, hence the method is called grid search\footnote{If only one hyper parameter is adjusted the procedure is called linear search.}.
 
 Another approach often used in practice is random search.
-Random search goes by the notion to randomly assign the hyperparameters and thus testing different models without giving any notion an advantage.
-Obviously this does (most likely) not result in optimal result, but in practice this approach is often used because it does typically provide an acceptable result by checking a broad spectrum of possible configurations.
+Random search goes by the notion to randomly assign hyper-parameters and thus testing different models without giving any combination an advantage.
+Obviously this does (most likely) not result in optimal result, but in practice this approach is often used, because it does typically provide an acceptable result by checking a broad spectrum of possible configurations.
 
 Another method is based on the random search approach by repeatedly examining the results of random search and then tuning the hyperparameters favoring those which promise to result in better models.
 This approach is called zooming, since one can picture to zoom into the right area of hyperparameters after every iteration.
 
-Other approaches try to automate this process.
-Often algorithms based on Bayesian optimization are used, but these should not be covered in this project and is therefore not explained in further detail here.
+Other approaches try to automate this process entirely.
+Popular algorithms are based on Bayesian optimization, but these are not covered in this project and are therefore omitted.
 
-The tuner used in this project is called hyperband \cite{Li2018}, which is implemented the library keras-tuner \cite{Google2019a}.
-In essence hyperband trains model using random search, but limits training for a broad spectrum of hyperparameters but only for a few epochs, checking which models perform best and then only keeping the most promising ones.
+The tuner used in this project is called \name{hyperband} \cite{Li2018}, which is implemented by the library \name{keras-tuner} \cite{Google2019a}.
+In essence \name{hyperband} trains models using random search, but limits training for a broad spectrum of hyper-parameters for a few epochs.
+By checking which models perform best and keep the most promising ones.
 This method promises to be a much better usage of resources and will most likely show the best hyperparameters to choose from.
 
-The final model tuner % TODO
-is designed to accept a \code{Hyperparameters} object which is fed to a function returning the respective model:
+The final model tuner is designed to accept a \code{Hyperparameters} object which is fed to a function returning the respective model:
 
 % TODO python
 \begin{lstlisting}
@@ -263,7 +265,7 @@ def create_model(hp):
     return model
 \end{lstlisting}
 
-This function enhances \ref{lst:first_model} by implementing hyperparameters using the \code{Hyperparameters} from \name{keras tuner}.
+This function enhances \ref{lst:first_model} by implementing hyper-parameters using the \code{Hyperparameters} from \name{keras tuner}.
 This is later implemented using the a custom class\footnote{The results were logged using the \name{TensorBoard} API, which is not yet implemented by \name{keras tuner} itself just yet, therefore the tuner is inherited from a custom class}:
 
 \begin{lstlisting}
@@ -290,15 +292,15 @@ tuner.search(
     callbacks=callbacks)
 \end{lstlisting}
 
-Another note to take here is that the generators used in \ref{ch:data_augmentation} were replaced by manual augmenting the data and later preprocessing them using \name{protobufs} % TODO
-to increase the speed the model can process the data significantly reducing training time.
-The code used for this can be reviewed % TODO .
+Another note to take here is that the generators used in \ref{ch:data_augmentation} were replaced by manual augmenting the data and later preprocessing them using protocol buffers(\name{protobufs}).
+By preprocessing the image data beforehand significantly reduces training time.
+The code used for this can be reviewed here: \url{https://srp.klawr.de/\#10}.
 
-After reviewing the data the data increased accuracy to 96,7\% on the test data with a model which is 4,3mb big.
+After reviewing the data the data increased accuracy to 96,7\% on the test data with a model size of 4,3mb.
 
 \subsection{Increasing the training set}
 
-After a lot of time tuning the model and trying to enhance the tuner, the raw training data was more than tripled and then augmented using 96 repetitions resulting in a dataset of 96000 (almost) distinct images.
+After a lot of time tuning the model and trying to enhance the tuner, the raw training data was more than tripled (to 1000 examples for each symbol in the training data) and then augmented using 32 repetitions resulting in a dataset of 96000 (almost) distinct images.
 
 Using this dataset an accuracy of 99,3\% on the test data was reached, which actually made minimizing the model the next goal, resulting in the final model at 212kb without losing any accuracy on the test data:
 
