@@ -21,9 +21,8 @@ Project Organization
     │   └── srp            <- Student Research Project.
     │       └── demos      <- Code used to generate demonstrations like listings and images.
     │       └── images
-    │       └── notebooks  <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
+    │       └── notebooks  <- Jupyter notebooks. Naming convention is the respective chapter
+                              and a short `-` delimited description, e.g. 5-first_model.ipynb.
     │       └── sections
     │       └── document.bib
     │       └── document.sty
