@@ -145,28 +145,33 @@ This is dividing the number of trainable parameters almost by a factor of three 
 
 \subsection{Optimizers}
 
-Hitherto the only optimizer looked at was stochastic gradient descent.
-Stochastic gradient descent has multiple parameters which can be tweaked like the learning rate, momentum and whether nesterov is used or not.
+Hitherto the only optimizer looked at is stochastic gradient descent.
+Stochastic gradient descent has multiple parameters which can be tweaked, e.g. the learning rate, momentum and whether nesterov is used or not.
 
-Although these parameters are helpful to get better results, attempts have been made to automate the search for them to reduce the number of hyper-parameters.
-In this project three alternative optimizers are examined, but not explained into too much detail.
+Attempts have been made to automate the search for these hyper-parameters.
+In this project some alternative optimizers are examined, but not explained into too much detail.
 For further explanation please refer to the citations.
 
 In stochastic gradient descent the learning rate is the same for all parameters.
 To adjust it for every parameter or even for individual dimensions of the layers may be helpful, but this would need an unproportional increase of cost.
 
-AdaGrad \cite{Duchi2010} is changing the learning rate for each parameter.
+\name{AdaGrad} \cite{Duchi2010} is changing the learning rate for each parameter.
 This is done by adjusting the learning rate (starting with a uniform value) on each individual parameter using the magnitude of the gradient for the respective parameter.
 While this approach is performing well on some problems it is not useful for other problems.
-Nonetheless it serves as baseline for many other optimizers which were developed thereafter.
+Nonetheless it serves as baseline for many other optimizers which were developed thereafter, three of which were tested in the tuning algorithm used in this project.
 
-RMSProp \cite{Hinton2012} is a modified algorithm based on AdaGrad, which tries to solve the problem of AdaGrad's notion to reduce the learning rate too rapidly by dividing the learning rate again by a exponential decaying value.
-RMSProp is considered to be "generally a good enough choice, whatever your problem" \cite[p.77]{Chollet2017}.
+ \name{AdaDelta} \cite{Zeiler2012} is a modified algorithm based on \name{AdaGrad}, which tries to solve AdaGrad's notion to reduce the learning rate constantly by dividing the learning rate again by a exponential decaying average of the gradients.
+ This results in a much more stable optimizer which promises to work well in practice.
+
+ \name{RMSProp} \cite{Hinton2012} works similar to \name{AdaDelta} with slightly different update rule.
+It is considered to be "generally a good enough choice, whatever your problem" \cite[p.77]{Chollet2017}.
 
 Adam \cite{Kingma2014}\cite{Reddi2018} is the last optimizer included in this project, which is another method of applying an adaptive learning rate for each parameter.
 Adam incorporates the previously mentioned idea of momentum into an algorithm similar of RMSProp.
 
-There are other optimizers worth mentioning (namely AdaDelta, which is another extension of AdaGrad, or Nadam which is basically Adam but with Nesterov-Momentum) and they may be subject of further inspection later on.
+There are other optimizers worth mentioning (namely AdaMax or Nadam) and they may be subject of further investigation.
+
+Worth noticing is that adaptive methods explained here may not work on every model, so it is always worth to use gradient descent with nesterov\cite[p.358]{Geron2019}.
 
 \subsection{Convolutional layers}
 
@@ -215,8 +220,9 @@ For two hyper parameters this would be equivalent to checking every value on a t
 Another approach often used in practice is random search.
 Random search goes by the notion to randomly assign hyper-parameters and thus testing different models without giving any combination an advantage.
 Obviously this does (most likely) not result in optimal result, but in practice this approach is often used, because it does typically provide an acceptable result by checking a broad spectrum of possible configurations.
+A notebook was created to show the implementation of \name{keras tuner} in this project at \url{https://srp.klawr.de/#12}
 
-A recent method is based on the random search approach by repeatedly examining the results of random search and then tuning the hyperparameters favoring those which promise to result in better models.
+Some more sophisticated methods are based on the random search approach by repeatedly examining the results of random search and then tuning the hyperparameters favoring those which promise to result in better models.
 This approach is called zooming, since one can picture to zoom into the right area of hyperparameters after every iteration.
 % TODO check this chapter...
 Other approaches try to automate this process entirely.
@@ -297,7 +303,7 @@ tuner.search(
 
 Another note to take here is that the generators used in \ref{ch:data_augmentation} were replaced by manual augmenting the data and later preprocessing them using protocol buffers(\name{protobufs})\footnote{For this several advances have been made. The final notebook using those can be reviewed at \url{https://srp.klawr.de/\#11}}.
 By preprocessing the image data beforehand significantly reduces training time.
-The code used for this can be reviewed here: \url{https://srp.klawr.de/\#12}.
+The code used for this can be reviewed here: \url{https://srp.klawr.de/\#13}.
 
 After reviewing the data the data increased accuracy to 96,7\% on the test data with a model size of 4,3mb.
 
