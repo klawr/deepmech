@@ -19,15 +19,7 @@ Project Organization
     │
     ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
     │   └── srp            <- Student Research Project.
-    │       └── demos      <- Code used to generate demonstrations like listings and images.
-    │       └── images
-    │       └── notebooks  <- Jupyter notebooks. Naming convention is the respective chapter
-                              and a short `-` delimited description, e.g. 5-first_model.ipynb.
-    │       └── sections
-    │       └── document.bib
-    │       └── document.sty
-    │       └── document.tex
-    │       └── README.md
+    │                         Please refer to the srp folder for more details.    
     │
     ├── requirements.txt   <- The requirements file for reproducing the analysis environment.
     │
