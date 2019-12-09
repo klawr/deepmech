@@ -220,7 +220,7 @@ For two hyper parameters this would be equivalent to checking every value on a t
 Another approach often used in practice is random search.
 Random search goes by the notion to randomly assign hyper-parameters and thus testing different models without giving any combination an advantage.
 Obviously this does (most likely) not result in optimal result, but in practice this approach is often used, because it does typically provide an acceptable result by checking a broad spectrum of possible configurations.
-A notebook was created to show the implementation of \name{keras tuner} in this project at \url{https://srp.klawr.de/#12}
+A notebook was created to show the implementation of \name{keras tuner} in this project at \url{https://srp.klawr.de/\#12}
 
 Some more sophisticated methods are based on the random search approach by repeatedly examining the results of random search and then tuning the hyperparameters favoring those which promise to result in better models.
 This approach is called zooming, since one can picture to zoom into the right area of hyperparameters after every iteration.
@@ -311,18 +311,21 @@ After reviewing the data the data increased accuracy to 96,7\% on the test data 
 
 After a lot of time tuning the model and trying to enhance the tuner, the raw training data was more than tripled (to 1000 examples for each symbol in the training data) and then augmented using 32 repetitions resulting in a dataset of 96000 (almost) distinct images.
 
-Using this dataset an accuracy of 99,3\% on the test data was reached, which actually made minimizing the model the next goal, resulting in the final model at 212kb without losing any accuracy on the test data:
+Using this dataset an accuracy of of over 99\% got reached on nearly any test. This is making minimizing the model the next goal.
+The final model has a size of 207kb with 99,3\% accuracy and a loss of 0.04, which are satisfactory results.
 
-% TODO reproduce this model again... and begin cleaning up!
-
+The model is defined as:
 \begin{lstlisting}
 model = models.Sequential()
-model.add(layers.Conv2D(32, (2,2), activation='relu', padding='same',
-          input_shape=(32, 32, 1)))
-model.add(layers.Conv2D(64, (4,4), activation='relu', padding='same'))
-model.add(layers.MaxPooling2D(4,4))
+model.add(layers.Conv2D(16, (4,4), activation='relu', padding='same',input_shape=(32, 32, 1)))
+model.add(layers.MaxPooling2D(2,2))
+model.add(layers.Conv2D(32, (4,4), activation='relu', padding='same'))
+model.add(layers.MaxPooling2D(2,2))
 model.add(layers.Flatten())
 model.add(layers.Dense(3, 'softmax'))
 
 optimizer = Adam()
+model.compile(loss='sparse_categorical_crossentropy', optimizer=optimizer,metrics=['acc'])
 \end{lstlisting}
+
+The final code for the model creation can be reviewed at \url{srp.klawr.de/\#14}.
