@@ -106,7 +106,7 @@ The model accuracy on the training set also seems to be increasing at a lower ra
 
 Please note that the training set virtually grew by a factor of 1440 (360 degree + rotations in two axis), therefore enabling the possibility to feed way more data into the model during training without having to expect too much overfitting.
 
-The goal to decrease overfitting seems to be resolved; the difference between training accuracy and test accuracy is negligible small\footnote{Link to respective notebook: \url{https://srp.klawr.de/\#7}}.
+The goal to decrease overfitting seems to be resolved; the difference between training accuracy and test accuracy is negligible small\footnote{Link to respective notebook: \url{https://aka.klawr.de/srp\#7}}.
 
 \subsection{Feature reduction}
 % TODO curse of dimensionality should reduce accuracy... this is not fixed here
@@ -141,7 +141,7 @@ Non-trainable params: 0
 _________________________________________________________________
 \end{lstlisting}
 
-This is dividing the number of trainable parameters almost by a factor of three and therefore reducing the size of the model from 807kb (from the previous models with 99491 params) to 295kb without losing any measurable performance\footnote{Link to respective notebook: \url{https://srp.klawr.de/\#8}}.
+This is dividing the number of trainable parameters almost by a factor of three and therefore reducing the size of the model from 807kb (from the previous models with 99491 params) to 295kb without losing any measurable performance\footnote{Link to respective notebook: \url{https://aka.klawr.de/srp\#8}}.
 
 \subsection{Optimizers}
 
@@ -205,7 +205,7 @@ Additionally each filter has its own bias $b_k$, which is added to the activatio
 In order for the output to have the same size as the input, numbers have to be added to the input, because a kernel greater than one in any direction can not cross an edge for the input (and the stride has to be 1 by 1).
 Therefore padding is used to solve this issue usually by adding zeros around the input, resulting in a technique called zero-padding.
 
-By using convolutional instead of dense layers the model size is again reduced (295kb to 232kb) and the accuracy is increased by a few percentages. By adding pooling the size is again decreased to 149kb and the metrics improve further\footnote{Link to respective notebooks: \url{https://srp.klawr.de/\#9} and \url{https://srp.klawr.de/\#10}}.
+By using convolutional instead of dense layers the model size is again reduced (295kb to 232kb) and the accuracy is increased by a few percentages. By adding pooling the size is again decreased to 149kb and the metrics improve further\footnote{Link to respective notebooks: \url{https://aka.klawr.de/srp\#9} and \url{https://aka.klawr.de/srp\#10}}.
 Pooling is a technique by which a kernel (similar to the kernel of convolutional layers) scan over the input layer.
 In the linked notebook a two by two kernel was used, which takes the max value of the kernel and only forwards the max value, thereby halving the output size in width and height.
 Fittingly this is called \name{MaxPooling}.
@@ -220,7 +220,7 @@ For two hyper parameters this would be equivalent to checking every value on a t
 Another approach often used in practice is random search.
 Random search goes by the notion to randomly assign hyper-parameters and thus testing different models without giving any combination an advantage.
 Obviously this does (most likely) not result in optimal result, but in practice this approach is often used, because it does typically provide an acceptable result by checking a broad spectrum of possible configurations.
-A notebook was created to show the implementation of \name{keras tuner} in this project at \url{https://srp.klawr.de/\#12}
+A notebook was created to show the implementation of \name{keras tuner} in this project at \url{https://aka.klawr.de/srp\#12}
 
 Some more sophisticated methods are based on the random search approach by repeatedly examining the results of random search and then tuning the hyperparameters favoring those which promise to result in better models.
 This approach is called zooming, since one can picture to zoom into the right area of hyperparameters after every iteration.
@@ -301,9 +301,9 @@ tuner.search(
     callbacks=callbacks)
 \end{lstlisting}
 
-Another note to take here is that the generators used in \ref{ch:data_augmentation} were replaced by manual augmenting the data and later preprocessing them using protocol buffers(\name{protobufs})\footnote{For this several advances have been made. The final notebook using those can be reviewed at \url{https://srp.klawr.de/\#11}}.
+Another note to take here is that the generators used in \ref{ch:data_augmentation} were replaced by manual augmenting the data and later preprocessing them using protocol buffers(\name{protobufs})\footnote{For this several advances have been made. The final notebook using those can be reviewed at \url{https://aka.klawr.de/srp\#11}}.
 By preprocessing the image data beforehand significantly reduces training time.
-The code used for this can be reviewed here: \url{https://srp.klawr.de/\#13}.
+The code used for this can be reviewed here: \url{https://aka.klawr.de/srp\#13}.
 
 After reviewing the data the data increased accuracy to 96,7\% on the test data with a model size of 4,3mb.
 
@@ -330,4 +330,4 @@ model.compile(loss='sparse_categorical_crossentropy',
     optimizer=optimizer,metrics=['acc'])
 \end{lstlisting}
 
-The final code for the model creation can be reviewed at \url{https://srp.klawr.de/\#14}.
+The final code for the model creation can be reviewed at \url{https://aka.klawr.de/srp\#14}.
