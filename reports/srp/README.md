@@ -13,7 +13,8 @@ Organization of the Student Research Project:
     ├── document.sty       <- Packages and styles used for the report.
     ├── document.tex       <- The main document.
     ├── README.md          <- The srp README used to navigate the project.
-    ├── demos              <- Code for demos used to create images or examples.
+    ├── code               <- Code for demos used to create images or examples,
+    │                         or if notebooks are not sufficient
     ├── images             <- Images used in the report.
     ├── notebooks          <- Jupyter notebooks. Naming convention is the respective chapter
                               and a short `-` delimited description, e.g. 5-first_model.ipynb.

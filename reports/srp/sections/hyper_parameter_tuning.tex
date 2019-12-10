@@ -317,7 +317,8 @@ The final model has a size of 207kb with 99,3\% accuracy and a loss of 0.04, whi
 The model is defined as:
 \begin{lstlisting}
 model = models.Sequential()
-model.add(layers.Conv2D(16, (4,4), activation='relu', padding='same',input_shape=(32, 32, 1)))
+model.add(layers.Conv2D(16, (4,4), activation='relu', padding='same',
+    input_shape=(32, 32, 1)))
 model.add(layers.MaxPooling2D(2,2))
 model.add(layers.Conv2D(32, (4,4), activation='relu', padding='same'))
 model.add(layers.MaxPooling2D(2,2))
@@ -325,7 +326,8 @@ model.add(layers.Flatten())
 model.add(layers.Dense(3, 'softmax'))
 
 optimizer = Adam()
-model.compile(loss='sparse_categorical_crossentropy', optimizer=optimizer,metrics=['acc'])
+model.compile(loss='sparse_categorical_crossentropy',
+    optimizer=optimizer,metrics=['acc'])
 \end{lstlisting}
 
-The final code for the model creation can be reviewed at \url{srp.klawr.de/\#14}.
+The final code for the model creation can be reviewed at \url{https://srp.klawr.de/\#14}.
