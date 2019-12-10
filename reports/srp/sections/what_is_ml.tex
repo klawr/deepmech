@@ -75,10 +75,10 @@ Subsequently these concepts are introduced presenting a simple example.
 As an illustrative example a model translating Fahrenheit into Celsius will be created.
 The original equation is given by the linear function $y = mx + b$ as $F = C * 1.8 + 32$, with $F$ as degree Fahrenheit and $C$ as degree Celsius respectively.
 
-A model designed to learn this relationship is defined in listing~\ref{lst:c_to_f} \footnote{Also available at \url{https://srp.klawr.de/\#2}} .
+A model designed to learn this relationship is defined in listing~\ref{lst:c_to_f} \footnote{Also available at \url{https://aka.klawr.de/srp\#2}} .
 
 % TODO add JavaScript as language
-\lstinputlisting[label={lst:c_to_f}, caption={Celsius to Fahrenheit}]{demos/c_to_f.js}
+\lstinputlisting[label={lst:c_to_f}, caption={Celsius to Fahrenheit}]{code/c_to_f.js}
 
 The model described has $\theta$ implemented through \code{w} and the hypothesis function by \code{h}.
 Since we know that the relationship is linear, the model represents a one dimensional polynomial, using the first index as dimensionless (emulating the bias as previously mentioned) and the first as input x.
@@ -139,4 +139,4 @@ By increasing the iteration count, the result can be increased to the point wher
 
 Provided this hypothesis is initially well suited for the task, it is important to note that by modify the hypothesis to represent a polynomial of a higher degree (e.g. $y = nx^2 + mx + b$) the extra parameters are converging to zero, effectively providing the same result as before
 \footnote{But to achieve similar results the iteration count has to be increased by at least a factor of 20.
-You can review the experiment at \url{https://srp.klawr.de/\#3}}.
+You can review the experiment at \url{https://aka.klawr.de/srp\#3}}.
