@@ -45,7 +45,7 @@
         const loader = new Loader();
         const upload = document.getElementById('upload');
         const image = document.getElementById('image');
-        const symbol_classifier = tf.loadLayersModel(loader);
+        const symbolClassifier = tf.loadLayersModel(loader);
         const results = document.getElementById('results').children;
 
         async function run() {
@@ -58,7 +58,7 @@
                 async function load() {
                     let tensor = tf.browser.fromPixels(image, 1);
                     tensor = tensor.expandDims().div(255);
-                    prediction = await (await symbol_classifier).predict(tensor, { batchSize: 1 }).array();
+                    prediction = await (await symbolClassifier).predict(tensor, { batchSize: 1 }).array();
                     function round(n) {
                         return Math.round(n * 100) / 100
                     }
