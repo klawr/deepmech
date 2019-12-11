@@ -6,7 +6,7 @@ from numpy.random import uniform
 from sys import exit
 import tensorflow as tf
 
-model_path = join('models', 'symbol_classifier', 'symbol_classifier.h5')
+model_path = join('models', 'symbol_classifier.h5')
 model = tf.keras.models.load_model(model_path)
 
 path = join('data', 'raw', 'n', '1.jpeg')
@@ -31,9 +31,6 @@ def draw(event, x, y, r1, r2):
             cv2.line(img,(pt1_x,pt1_y),(x,y),color=color,thickness=thickness)
             pt1_x,pt1_y=x,y
     elif event==cv2.EVENT_RBUTTONUP:
-        # itr = str(len(listdir(dir)))
-        # cv2.imwrite(join(dir, itr + '.jpeg'), img)
-        # print(itr)
         image =  tf.convert_to_tensor(np.asarray(img, np.uint8), np.uint8)
         tensor = tf.io.encode_jpeg(image)
         print(predict(tensor))
@@ -55,7 +52,7 @@ def predict(image):
     blob = tf.image.convert_image_dtype(blob, tf.float32)
     blob = tf.image.resize(blob, (32, 32))
     blob = tf.reshape(blob, (1, 32, 32, 1))
-    pred = list(model.predict(blob)[0])
+    pred = list(model.predict(blob, steps = 1)[0])
     index = pred.index(max(pred))
 
     return label[index]
