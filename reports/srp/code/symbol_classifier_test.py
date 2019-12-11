@@ -6,7 +6,7 @@ from numpy.random import uniform
 from sys import exit
 import tensorflow as tf
 
-model_path = join('models', 'symbol_classifier.h5')
+model_path = join('models', 'symbol_classifier', 'model.h5')
 model = tf.keras.models.load_model(model_path)
 
 path = join('data', 'raw', 'n', '1.jpeg')
