@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Symbol Classification</title>
+    <style>
+        table,
+        th,
+        td {
+            width: 8em;
+            height: 1.5em;
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+    </style>
+
+</head>
+
+<body>
+    <script src="loader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
+
+    <input type="file" id="upload" accept="image/jpg, image/jpeg">
+    <br>
+    <table>
+        <th colspan='3'>Prediction:</th>
+        <tr>
+            <th>n</th>
+            <th>o</th>
+            <th>x</th>
+        </tr>
+        <tr id="results">
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </table>
+    <br>
+    <img id="image" alt="" width=32 height=32>
+
+    <script>
+        const loader = new Loader();
+        const upload = document.getElementById('upload');
+        const image = document.getElementById('image');
+        const symbol_classifier = tf.loadLayersModel(loader);
+        const results = document.getElementById('results').children;
+
+        async function run() {
+            const reader = new window.FileReader();
+            reader.readAsDataURL(upload.files[0]);
+
+            async function loadend() {
+                image.src = reader.result;
+
+                async function load() {
+                    let tensor = tf.browser.fromPixels(image, 1);
+                    tensor = tensor.expandDims().div(255);
+                    prediction = await (await symbol_classifier).predict(tensor, { batchSize: 1 }).array();
+                    function round(n) {
+                        return Math.round(n * 100) / 100
+                    }
+                    for (const i in prediction[0]) {
+                        result = round(parseFloat(prediction[0][i]));
+                        results[i].innerHTML = result;
+                    }
+                }
+                image.addEventListener('load', load, { once: true });
+            }
+            reader.addEventListener('loadend', loadend);
+        };
+        upload.addEventListener('input', run)
+    </script>
+</body>
+
+</html>
