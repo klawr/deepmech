@@ -37,7 +37,7 @@ model.compile(loss='sparse_categorical_crossentropy', optimizer=optimizer, metri
 print(model.summary())
 
 log_dir=join('logs', 'srp_symbol_detector', datetime.now().strftime("%Y-%m-%dT%H-%M-%S"))
-model_path = join('models', 'symbol_classifier.h5')
+model_path = join('models', 'symbol_classifier', 'model.h5')
 
 callbacks = [
     # TensorBoard(log_dir=log_dir, histogram_freq=1, embeddings_freq=1),
@@ -77,5 +77,5 @@ with Spot('auth.json') as spot:
 # _________________________________________________________________
 
 # Messages sent by spot:
-# Saved model to disk (models\symbol_classifier.h5)
+# Saved model to disk (models\symbol_classifier\model.h5)
 # [0.04019339963328093, 0.9934375]

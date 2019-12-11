@@ -17,7 +17,7 @@ training_dataset = decode_record(join(processed, 'train.tfrecord'), features, sh
 validation_dataset = decode_record(join(processed, 'validation.tfrecord'), features, shape)
 test_dataset = decode_record(join(processed, 'test.tfrecord'), features, shape)
 
-model_path = join('models', 'symbol_classifier', 'symbol_classifier.h5')
+model_path = join('models', 'symbol_classifier', 'model.h5')
 
 model = tf.keras.models.load_model(model_path)
 
