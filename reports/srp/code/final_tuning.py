@@ -83,7 +83,7 @@ class customTuner(Hyperband):
 
 hp=HyperParameters()
 log_dir = join('logs', 'srp_dropout')
-model_path = join('models', 'symbol_classifier','symbol_classifier.h5')
+model_path = join('models', 'devel', 'srp653.h5')
 
 timestamp = datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
 
