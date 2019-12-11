@@ -309,9 +309,12 @@ After reviewing the data the data increased accuracy to 96,7\% on the test data 
 
 \subsection{Increasing the training set}
 
-After a lot of time tuning the model and trying to enhance the tuner, the raw training data was more than tripled (to 1000 examples for each symbol in the training data) and then augmented using 32 repetitions resulting in a dataset of 96000 (almost) distinct images.
+After the model was heavily tuned, another approach was taken to increase accuracy.
+The raw training data was more than tripled (to 1000 examples for each symbol in the training data) and then augmented using 32 repetitions resulting in a dataset of 96000 (almost) distinct images.
 
-Using this dataset an accuracy of of over 99\% got reached on nearly any test. This is making minimizing the model the next goal.
+Using this dataset an accuracy of of over 99\% got reached on nearly any previously tried model.
+This situation is making minimizing the model the next goal.
+The final model is reduced and tuned manually by reducing layers and hyper-parameters.
 The final model has a size of 207kb with 99,3\% accuracy and a loss of 0.04, which are satisfactory results.
 
 The model is defined as:

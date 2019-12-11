@@ -1,10 +1,19 @@
 \section{Conclusion}
 
 After examining the possibilities of machine learning and their impact on the different branches of technology, the idea to extend this into the realm of kinematic seems to be a reasonable one.
-This project was used to learn the basics needed to apply the methods from scratch, beginning with a simple statistical model which is able to classify handwritten mechanical symbols.
-The data suggests that a sufficient algorithm has been found, which not only has a accuracy of over 99\% on the test data, but is remarkably small with only % TODO
-parameters and a size of 212kb.
+This project was used to learn the basics needed to apply machine learning from scratch, beginning with a simple statistical model which is able to classify handwritten mechanical symbols.
 
-To implement the results into a usable application, especially as API for web applications % TODO mec2 and mecEdit
-is the topic of subsequent projects.
-Based on the techniques learned in this endeavor other models are subject to be trained to match complete handwritten planar mechanisms. 
+The data suggests that a sufficient algorithm has been found, which has an accuracy of over 99\% on the test data.
+After removing the training configuration it has a size of 76kb as \name{Keras} model.
+Converting the model to a format which is readable by \name{tensorflow.js}\footnote{\url{https://www.tensorflow.org/js/}} and assembling it into a readable \code{IOHandler}\footnote{The loader.js can be found at \url{https://aka.klawr.de/srp\#15}} does not increase size significantly (81kb).
+
+Applications to test the models have been provided in the repository:
+
+A Python-script to draw images into the environment used to create data, but used to predict the drawn symbol can be found in the \name{code} directory as \name{symbol_classifier_test.py}\footnote{\url{https://aka.klawr.de/srp\#16}}.
+
+A web page which can be loaded directly inside a web-browser\footnote{The test works on Firefox and Google Chrome. Microsoft Edge does not work yet, but this is probably subject to change when Microsoft switches to a Chromium build. }.
+The file can be found in the same directory as the Python-script as \name{symbol_classifier_test.html}\footnote{\url{https://aka.klawr.de/srp\#17}}.
+This test is close to the intended purpose by uploading images to the application and then providing the user with automatic predictions.
+
+Subsequent projects will follow to extend the functionality to detect the position of detected symbols in arbitrary images and possible connections in the form of constraints between them.
+After full mechanism representations can be deduced they can be imported into existing web applications like \name{mec2} \cite{Goessner2019} \cite{Goessner2019a} \cite{Goessner2019b} or \name{mecEdit} \cite{Uhlig2019} \cite{Uhlig2019a}.
