@@ -1,122 +1,88 @@
 
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'    # stop a lot of printing...
+
 from os import path
 import tensorflow as tf
 import cv2
 
-# TODO maybe this image to tensor thing should be a util...
-
-img_path = path.join('data', 'sep_interim_01', '1.png')
-blob = tf.io.read_file(img_path)
-blob = tf.image.decode_jpeg(blob, channels=1)
-blob = tf.image.convert_image_dtype(blob, tf.float32)
+img_path = path.join('data', 'sep_interim_01', '20.png')
+img = tf.io.read_file(img_path)
+img = tf.image.decode_jpeg(img, channels=1)
+blob = tf.image.convert_image_dtype(img, tf.float32)
 blob = tf.image.resize(blob, (360, 360))
 blob = tf.expand_dims(blob, axis = 0)
 
-# Load old model
 old_model_path = path.join('models', 'symbol_classifier', 'model.h5')
 old_model = tf.keras.models.load_model(old_model_path)
 
-# Create new model to build on...
-model = tf.keras.models.Sequential()
-
-# Prepend an input layer:
-model.add(tf.keras.layers.InputLayer(input_shape=(None, None, 1), name='arbitrary_input'))
-
-# Add all convolutional layers (which are the first 4 layers):
-for layer in old_model.layers[:4]:
-    model.add(layer)
+inputs = tf.keras.Input(shape=(None, None, 1))
+for index, layer in enumerate(old_model.layers[:4]):
+    if index == 0:
+        m = layer(inputs)
+    else:
+        m = layer(m)
 
 # Get the input dimensions of the flattened layer:
 f_dim = old_model.layers[4].input_shape
-
 # And use it to convert the next dense layer:
 dense = old_model.layers[5]
 out_dim = dense.get_weights()[1].shape[0]
 W, b = dense.get_weights()
-
 new_shape = (f_dim[1], f_dim[2], f_dim[3], out_dim)
 new_W = W.reshape(new_shape)
-
-model.add(tf.keras.layers.Conv2D(out_dim,
-                                 (f_dim[1], f_dim[2]),
-                                 name = dense.name,
-                                 strides = (1, 1),
-                                 activation = dense.activation,
-                                 padding = 'valid',
-                                 weights = [new_W, b]))
-
-pred = model.predict(blob, steps=1)
+m = tf.keras.layers.Conv2D(out_dim,
+                           (f_dim[1], f_dim[2]),
+                           name = dense.name,
+                           strides = (1, 1),
+                           activation = dense.activation,
+                           padding = 'valid',
+                           weights = [new_W, b])(m)
 
 def get_bounding_boxes(pred):
-    arr = []
-    for idx, col in enumerate(pred[0]):
-        y = idx * 4
-        for jdx, row in enumerate(col):
-            obj = {'y': y}
-            obj['x'] = jdx * 4
-            obj['max_value'] = max(row)
-            obj['max_index'] = list(row).index(obj['max_value'])
-            if obj['max_index']:
-                arr.append(obj)
+    max_index = tf.math.argmax(pred, 3)
+    max_value = tf.math.reduce_max(pred, 3)
+    shape = (pred.shape[1] or 0, pred.shape[2] or 0)
+    max_index = tf.reshape(max_index, shape)
 
-    arr.sort(key=lambda x: x['max_value'])
+    x_indices = tf.subtract(max_index, 1)
+    x_indices = tf.math.maximum(x_indices, 0)
 
-    # now the overlapping have to be removed...
-    winner = []
-    while(len(arr)):
-        champ = arr.pop()
-        winner.append(champ)
+    o_indices = tf.subtract(max_index, tf.multiply(x_indices, 2))
 
-        arr = list(filter(lambda c: abs(c['x'] - champ['x']) >= 32 or abs(c['y'] - champ['y']) >= 32 , arr))
+    # TODO check if batchwise is cool
+    max_value = tf.reshape(max_value, shape)
 
-    final = []
-    for champ in winner:
-        box = [(champ['y']) / 360, (champ['x']) / 360,
-               (champ['y'] + 32) / 360, (champ['x'] + 32) / 360]
-        final.append(box)
+    def non_max_sup(indices):
+        indices = tf.where(indices)
+        scores = tf.gather_nd(max_value, indices)
+        indices = tf.multiply(indices, 4)
+        boxes = tf.concat((indices, tf.add(indices, 32)), 1)
+        boxes = tf.divide(boxes, 360)
+        boxes = tf.dtypes.cast(boxes, tf.float32)
+        final_indices = tf.image.non_max_suppression(boxes, scores, 99, iou_threshold = 0.01)
+        boxes = tf.gather(boxes, final_indices)
 
-    final = tf.convert_to_tensor(final)
-    final = tf.expand_dims(final, axis = 0)
-    return final
+        return tf.expand_dims(boxes, axis = 0)
 
-boxes = get_bounding_boxes(pred)
-colors = tf.convert_to_tensor([[1, 1, 1]], dtype=tf.float32)
+    o_boxes = non_max_sup(o_indices)
+    x_boxes = non_max_sup(x_indices)
 
-boxed_image = tf.image.draw_bounding_boxes(blob, boxes, colors)[:1]
-boxed_image = boxed_image.numpy()[0]
+    return o_boxes, x_boxes
 
-cv2.imshow('show_image', boxed_image)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+prediction = tf.keras.layers.Lambda(get_bounding_boxes)(m)
+model = tf.keras.Model(inputs = inputs, outputs = prediction)
 
-# TODO implement this as layer.
+o_boxes, x_boxes = model(blob)
 
-def non_max_sup(x):
-    # extractInterestingInfo transforms the (h x w x d) tensor and
-    # creates an array with len(h x w) with dictionaries.
-    # these dictionaries contain x and y (times 4) and take the max and maxIndex
+o_color = tf.convert_to_tensor([[0, 0, 1]], dtype=tf.float32)
+x_color = tf.convert_to_tensor([[0, 1, 0]], dtype=tf.float32)
 
-    # if extractInterestingInfo is done manually the flatten should not be necessary
+blob = tf.image.grayscale_to_rgb(blob)
+blob = tf.image.draw_bounding_boxes(blob, o_boxes, o_color)
+blob = tf.image.draw_bounding_boxes(blob, x_boxes, x_color)[0]
+blob *= 255
 
-    # we have an array now...so we can just remove every value with maxIndex == 0
+cv2.imwrite('/home/me/safehaven/synced/input.png', img.numpy())
+cv2.imwrite('/home/me/safehaven/synced/boxed.png', blob.numpy())
 
-    # sort everything
-
-    # then comes the filtering... which is going to be nasty but w/e
-
-    # x.map(extractInterestingInfo)
-    #  .flat() // we flatten the input... so this could be done internatlly tbh
-    #  .filter(e => e.maxIndex) // remove every node which is maxIndex 0 ('n')
-    #  .sort((a, b) => a.max - b.max) // sort by max values
-    #  .map(prepareForFiltering)
-    # removeOverlaps(x) # now we have the array...
-    print('--------------------------')
-    print(list(x))
-    # tf.map_fn(lambda y: print(y), x)
-    # x.numpy()
-    output = x
-    return output
-
-# model.add(tf.keras.layers.Lambda(non_max_sup))
-
-# model.predict(blob, steps=1)
