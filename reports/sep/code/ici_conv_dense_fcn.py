@@ -1,6 +1,6 @@
 
-import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'    # stop a lot of printing...
+import os # TensorFlow prints a lot...
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 from os import path
 import tensorflow as tf
@@ -17,6 +17,7 @@ old_model_path = path.join('models', 'symbol_classifier', 'model.h5')
 old_model = tf.keras.models.load_model(old_model_path)
 
 inputs = tf.keras.Input(shape=(None, None, 1))
+# TODO This is ugly
 for index, layer in enumerate(old_model.layers[:4]):
     if index == 0:
         m = layer(inputs)
@@ -29,8 +30,7 @@ f_dim = old_model.layers[4].input_shape
 dense = old_model.layers[5]
 out_dim = dense.get_weights()[1].shape[0]
 W, b = dense.get_weights()
-new_shape = (f_dim[1], f_dim[2], f_dim[3], out_dim)
-new_W = W.reshape(new_shape)
+new_W = W.reshape((f_dim[1], f_dim[2], f_dim[3], out_dim))
 m = tf.keras.layers.Conv2D(out_dim,
                            (f_dim[1], f_dim[2]),
                            name = dense.name,
@@ -40,33 +40,29 @@ m = tf.keras.layers.Conv2D(out_dim,
                            weights = [new_W, b])(m)
 
 def get_bounding_boxes(pred):
-    max_index = tf.math.argmax(pred, 3)
-    max_value = tf.math.reduce_max(pred, 3)
-    shape = (pred.shape[1] or 0, pred.shape[2] or 0)
-    max_index = tf.reshape(max_index, shape)
+    # Only accept batch_size = 1 for now...
+    squeeze = tf.squeeze(pred)
+    max_idx = tf.math.argmax(squeeze, 2)
+    max_val = tf.math.reduce_max(squeeze, 2)
 
-    x_indices = tf.subtract(max_index, 1)
-    x_indices = tf.math.maximum(x_indices, 0)
+    x_idx = tf.subtract(max_idx, 1)
+    x_idx = tf.math.maximum(x_idx, 1)
+    o_idx = tf.subtract(max_idx, tf.multiply(x_idx, 2))
 
-    o_indices = tf.subtract(max_index, tf.multiply(x_indices, 2))
-
-    # TODO check if batchwise is cool
-    max_value = tf.reshape(max_value, shape)
-
-    def non_max_sup(indices):
-        indices = tf.where(indices)
-        scores = tf.gather_nd(max_value, indices)
-        indices = tf.multiply(indices, 4)
-        boxes = tf.concat((indices, tf.add(indices, 32)), 1)
-        boxes = tf.divide(boxes, 360)
-        boxes = tf.dtypes.cast(boxes, tf.float32)
-        final_indices = tf.image.non_max_suppression(boxes, scores, 99, iou_threshold = 0.01)
-        boxes = tf.gather(boxes, final_indices)
+    def non_max_sup(idx):
+        idx     = tf.where(idx)
+        scores  = tf.gather_nd(max_val, idx)
+        idx     = tf.multiply(idx, 4)
+        boxes   = tf.concat((idx, tf.add(idx, 32)), 1)
+        boxes   = tf.divide(boxes, 360)
+        boxes   = tf.dtypes.cast(boxes, tf.float32)
+        idx     = tf.image.non_max_suppression(boxes, scores, 99, iou_threshold = 0.01)
+        boxes   = tf.gather(boxes, idx)
 
         return tf.expand_dims(boxes, axis = 0)
 
-    o_boxes = non_max_sup(o_indices)
-    x_boxes = non_max_sup(x_indices)
+    o_boxes = non_max_sup(o_idx)
+    x_boxes = non_max_sup(x_idx)
 
     return o_boxes, x_boxes
 
