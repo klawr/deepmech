@@ -69,7 +69,13 @@ def get_bounding_boxes(pred):
 prediction = tf.keras.layers.Lambda(get_bounding_boxes)(m)
 model = tf.keras.Model(inputs = inputs, outputs = prediction)
 
+import time
+
+start = time.time()
 o_boxes, x_boxes = model(blob)
+end = time.time()
+
+print('Time for prediction: ', end - start)
 
 o_color = tf.convert_to_tensor([[0, 0, 1]], dtype=tf.float32)
 x_color = tf.convert_to_tensor([[0, 1, 0]], dtype=tf.float32)
