@@ -56,15 +56,15 @@ for image_idx in tqdm(range(num_examples)):
         M = cv2.getRotationMatrix2D((16, 16), np.random.uniform(0, 360), 1)
         node_image = cv2.warpAffine(node_image, M, node_image.shape)
 
-        image[x-16:x+16, y-16:y+16] = node_image
+        image[y-16:y+16, x-16:x+16] = node_image
 
         cv2.imwrite(image_data['image_path'], image)
 
         image_data['nodes'].append({
             'node_path': node_path,
             'label': label,
-            'x': x - 16,
-            'y': y - 16,
+            'x': x,
+            'y': y,
             'b': 32,
             'h': 32
         })

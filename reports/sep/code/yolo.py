@@ -152,7 +152,6 @@ def get_bounding_boxes(pred):
     results = results * resize
 
     def bounding(result):
-        # This should be x1 - b / 2 etc... ¯\_(ツ)_/¯
         x1 = result[1]
         y1 = result[0]
         x2 = result[1] + result[3]
