@@ -1,12 +1,12 @@
 
-import os # TensorFlow prints a lot...
+import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 from os import path
 import tensorflow as tf
 import cv2
 
-img_path = path.join('data', 'sep_interim_01', '20.png')
+img_path = path.join('data', 'sep_interim_02', '5.png')
 img = tf.io.read_file(img_path)
 img = tf.image.decode_jpeg(img, channels=1)
 blob = tf.image.convert_image_dtype(img, tf.float32)
@@ -56,7 +56,7 @@ def get_bounding_boxes(pred):
         boxes   = tf.concat((idx, tf.add(idx, 32)), 1)
         boxes   = tf.divide(boxes, 360)
         boxes   = tf.dtypes.cast(boxes, tf.float32)
-        idx     = tf.image.non_max_suppression(boxes, scores, 99, iou_threshold = 0.01)
+        idx     = tf.image.non_max_suppression(boxes, scores, 99, iou_threshold = 0.9)
         boxes   = tf.gather(boxes, idx)
 
         return tf.expand_dims(boxes, axis = 0)
@@ -85,6 +85,10 @@ blob = tf.image.draw_bounding_boxes(blob, o_boxes, o_color)
 blob = tf.image.draw_bounding_boxes(blob, x_boxes, x_color)[0]
 blob *= 255
 
-cv2.imwrite('/home/me/safehaven/synced/input.png', img.numpy())
-cv2.imwrite('/home/me/safehaven/synced/boxed.png', blob.numpy())
+# cv2.imshow('test', img.numpy())
+# cv2.waitKey(0)
+cv2.imshow('test', blob.numpy())
+cv2.waitKey(0)
+# cv2.imwrite('/home/me/safehaven/synced/input.png', img.numpy())
+# cv2.imwrite('/home/me/safehaven/synced/boxed.png', blob.numpy())
 
