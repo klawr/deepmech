@@ -1,0 +1,21 @@
+canvas {
+    border-style: solid;
+    border-color: #000;
+    border-width: 2px;
+    touch-action: none;
+}
+.baloon {
+    position: absolute;
+    padding: 5px; 
+    border-style: solid;
+    border-color: #000;
+    border-width: 1px;
+    background-color: #eee;
+}
+.baloonlabel {
+    margin: 0px; 
+}
+.color {
+    height: 20px;
+    width: 10px; 
+}
