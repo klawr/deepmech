@@ -20,7 +20,6 @@
 </head>
 
 <body>
-    <canvas id="c" width=360 height=360></canvas>
     <mec-2 id="mecElement" width=360 height=360 cartesian grid x0="0" y0="0">
         {}
     </mec-2>
@@ -29,14 +28,11 @@
     <script src="loader.js"></script>
     <script src="to_fcn.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
-    <script src="https://gitcdn.xyz/repo/goessner/g2/master/src/g2.js"></script>
 
     <script>
         const logging = false;
-        const mecElement = document.getElementById('mecElement')
-        const b = document.getElementById('b')
-        const c = document.getElementById('c');
-        const ctx = c.getContext('2d');
+        const mecElement = document.getElementById('mecElement');
+        const b = document.getElementById('b');
         const loader = new Loader();
         const crop = new Crop();
         const symbolClassifier = tf.loadLayersModel(loader);
@@ -49,7 +45,7 @@
             };
             const t0 = performance.now();
             console.log('Starting...')
-            let tensor = tf.browser.fromPixels(c, 1);
+            let tensor = tf.browser.fromPixels(mecElement._ctx.canvas, 1);
             tensor = tensor.div(255);
             tensor = tensor.expandDims();
             const newModel = toFullyConv(await symbolClassifier)
@@ -57,7 +53,7 @@
             logging && console.log('Beginning first scan: ', performance.now() - t0);
             const prediction = await newModel.predict(tensor, { batch_size: 1 }).arraySync()[0];
             logging && console.log('First prediction finished: ', performance.now() - t0);
-            const g = g2();
+            const g = g2().view({cartesian: true});
             function extractInterestingInfo(pred, idx) {
                 const y = idx * 4;
                 return pred.map((inner, i) => {
@@ -204,15 +200,21 @@
             // Turning for cartesian
             mec.nodes.forEach(node => node.y = 360 - node.y);
             mecElement.innerHTML = JSON.stringify(mec);
-            mecElement.init()
+            mecElement.init();
+            mec2Deepmech();
             console.log('finished after: ', performance.now() - t0)
             console.log(mecElement.innerHTML)
-            g.exe(ctx)
+            // g.exe(mecElement._ctx)
         }
         b.addEventListener('click', load)
     </script>
-    <script src="draw.js"></script>
-    <script src="mec2.html.js"></script>
+    <script src="bin/g2.js"></script>
+    <script src="bin/g2.selector.js"></script>
+    <script src="bin/mec2.min.js"></script>
+    <script src="bin/canvasInteractor.js"></script>
+    <script src="bin/mec.slider.js"></script>
+    <script src="bin/mec.htmlelement.js"></script>
+    <script src="bin/mec.deepmech.js"></script>
 </body>
 
 </html>
