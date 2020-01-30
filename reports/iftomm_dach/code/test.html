@@ -8,30 +8,10 @@
     <title>mec2deepmech</title>
 </head>
 
+
 <body>
-    <mec-2 id="mecElement" width=500 height=500 cartesian grid x0="0" y0="0">
-        {
-        "nodes":[
-        {"id":"A0","x":0,"y":0,"base":true},
-        {"id":"B0","x":200,"y":0,"base":true},
-        {"id":"A","x":0,"y":50},
-        {"id":"B","x":250,"y":120},
-        {"id":"C","x":125,"y":150},
-        {"id":"C0","x":350,"y":0,"base":true}
-        ],
-        "constraints":[
-        {"id":"a","p1":"A0","p2":"A","len":{"type":"const"},
-        "ori":{"type":"drive","func":"linear","Dt":1, "input": 1}},
-        {"id":"b","p1":"A","p2":"B","len":{"type":"const"}},
-        {"id":"c","p1":"B0","p2":"B","len":{"type":"const"}},
-        {"id":"b2","p1":"A","p2":"C","len":{"type":"const"},"ori":{"type":"const","ref":"b"}}
-        ],
-        "views":[
-        {"show":"pos","of":"C","as":"trace","mode":"preview","Dt":2,"fill":"orange"},
-        {"show":"vel","of":"C","as":"vector","at":"C0"},
-        {"show":"wt", "of": "b","as":"chart","mode":"preview","canvas":1}
-        ]
-        }
+    <mec-2 id="mecElement" width=360 height=360 cartesian grid x0="0" y0="0">
+    {}
     </mec-2>
     <input type="button" id="b" value="click me!">
     <script src="bin/models.js"></script>

@@ -17,7 +17,6 @@ function mec2Deepmech() {
         function draw(e) {
             e.preventDefault();
             const bbox = e.target.getBoundingClientRect && e.target.getBoundingClientRect() || {left:0, top:0};
-            console.log(view.scl)
             const x = (-view.x + e.clientX - Math.floor(bbox.left)) / view.scl;
             const y = (-view.y + element.height - (e.clientY - Math.floor(bbox.top))) / view.scl;
             if (last) {
