@@ -5,18 +5,13 @@ function mec2Deepmech() {
         const c = element._ctx.canvas;
 
         const view = element._interactor.view;
-        const cq = g2().view(view);
-        cq.rec({
-            x: () => -view.x / view.scl,
-            y: () => -view.y / view.scl,
-            b: () => element.height / view.scl,
-            h: () => element.width / view.scl,
-            fs: '#000'
-        });
+        const cq = g2();
 
         function draw(e) {
+            if (!element._drawing) return;
+
             e.preventDefault();
-            const bbox = e.target.getBoundingClientRect && e.target.getBoundingClientRect() || {left:0, top:0};
+            const bbox = e.target.getBoundingClientRect && e.target.getBoundingClientRect() || { left: 0, top: 0 };
             const x = (-view.x + e.clientX - Math.floor(bbox.left)) / view.scl;
             const y = (-view.y + element.height - (e.clientY - Math.floor(bbox.top))) / view.scl;
             if (last) {
@@ -44,22 +39,32 @@ function mec2Deepmech() {
 
             element._drawing = !element._drawing;
             if (element._drawing) {
-                const m = element._model;
-                const grp = {
-                    commands: element._g.commands.filter(
-                        c => m.nodes.includes(c.a) || m.constraints.includes(c.a))
-                }
-                cq.use({ grp });
                 element._interactor.deinit();
                 c.addEventListener('pointerup', cancel);
                 c.addEventListener('pointerdown', drawOnMove);
                 c.addEventListener('contextmenu', preventDefault);
-
-                cq.exe(element._ctx);
+                const grp = {
+                    commands: element._g.commands.filter(c =>
+                        element._model.nodes.includes(c.a) ||
+                        element._model.constraints.includes(c.a))
+                };
+                cq.view(view)
+                    .rec({
+                        x: () => -view.x / view.scl,
+                        y: () => -view.y / view.scl,
+                        // Just a little overhead to be sure.
+                        b: () => element.width * 1.25 / view.scl,
+                        h: () => element.height * 1.25 / view.scl,
+                        fs: '#000'
+                    })
+                    .use({ grp })
+                    .exe(element._ctx);
             } else {
                 c.removeEventListener('pointerdown', drawOnMove);
                 element._interactor.init(element._ctx);
                 element._interactor.startTimer();
+                cq.del();
+
                 element._g.exe(element._ctx);
             }
         }

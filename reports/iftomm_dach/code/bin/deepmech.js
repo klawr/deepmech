@@ -9,16 +9,16 @@ const deepmech = {
     /**
      * Add handwritten nodes to mec
      * @param {object} image (tensor) which contains the image on the canvas. 
-     * @param {object} model model which detects nodes.
+     * @param {object} nodeDetector model which detects nodes.
      */
-    detectNodes(image, model, mec, logging) {
+    detectNodes(image, nodeDetector, model, logging) {
         logging && console.log('Beginning first scan: ', performance.now() - t0);
-        const prediction = model.predict(image, { batch_size: 1 }).arraySync()[0];
+        const prediction = nodeDetector.predict(image, { batch_size: 1 }).arraySync()[0];
         logging && console.log('First prediction finished: ', performance.now() - t0);
 
         function extractInterestingInfo(pred, idx) {
             const y = idx * 4;
-            return pred.flatmap((inner, i) => {
+            return pred.flatMap((inner, i) => {
                 const max = Math.max(...inner);
                 const maxIndex = inner.indexOf(max);
                 const x = i * 4;
@@ -40,63 +40,73 @@ const deepmech = {
             .flatMap(extractInterestingInfo)
             .filter(e => e.maxIndex).sort((a, b) => a.max - b.max));
 
-        if (!mec.nodes) mec.nodes = [];
-
         nodes.forEach(e => {
-            mec.nodes.push({
-                id: 'node' + mec.nodes.length,
-                x: parseInt(e.x) - this.mecElement._interactor.view.x,
-                y: this.mecElement.height - parseInt(e.y) - this.mecElement._interactor.view.y,
-                base: e.ls === 'red' ? false : true
-            });
+            const node = {
+                id: 'node' + model.nodes.length,
+                x: Math.round(e.x - this.mecElement._interactor.view.x + 16),
+                y: Math.round(this.mecElement.height -e.y - this.mecElement._interactor.view.y - 16),
+                base: e.maxIndex > 1 ? true : false // 0 == n, 1 == o, 2 == x (0 is filtered...)
+            };
+            mec.node.extend(node);
+            model.addNode(node);
+            node.init(model);
         });
         logging && console.log('Detected ', nodes.length, 'nodes: ', performance.now() - t0);
     },
 
     /**
-     * @param {object} mec mechanism to create boxes from which are later investigated.
-     * @returns {array} [crops, mirror]
-     *  crops to detect constraints and mirror array which contains info about
+     * @param {object} model mechanism to create boxes from which are later investigated.
+     * @returns {array} [crops, info]
+     *  crops to detect constraints and info array which contains info about
      *  the mirroring of the respective image (to keep y1, x1, y2, x2 aligned)
+     *  and which nodes 
      */
-    getCrops(image, mec, logging) {
-        if (!mec.constraints) mec.constraints = [];
+    getCrops(image, model, logging) {
         const view = this.mecElement._interactor.view;
-        const h = this.mecElement.height - view.y;
 
-        const mirror = [];
-        const boxes = mec.nodes.flatMap(node1 => {
-            return mec.nodes.map(node2 => {
+        const info = [];
+        const boxes = model.nodes.flatMap(node1 => {
+            return model.nodes.map(node2 => {
                 // Return if these nodes already have a mutual constraint
-                if (mec.constraints.find(c =>
+                if (model.constraints.find(c =>
                     c.p1 == node1.id && c.p2 == node2.id ||
                     c.p1 == node2.id && c.p2 == node1.id
                 )) { return; }
 
-                const x1 = Math.min(node1.x, node2.x) - view.x;
-                const x2 = Math.max(node1.x, node2.x) - view.x;
-                const y2 = h - Math.min(node1.y, node2.y);
-                const y1 = h - Math.max(node1.y, node2.y);
+                // y1, y2 are reversed because of cartesian
+                let y1 = Math.max(node1.y, node2.y);
+                let x1 = Math.min(node1.x, node2.x);
+                let y2 = Math.min(node1.y, node2.y);
+                let x2 = Math.max(node1.x, node2.x);
 
                 // Return if the resulting crop would be 1 dimensional.
                 if (x1 === x2 || y1 === y2) return;
 
-                let m = 0
-                // Flip vertically
-                if (x2 == node2.x - view.x) m++;
-                // Flip horizontally
-                if (y2 == h - node2.y) m += 2;
-                mirror.push(m);
+                let o = { mirror: 0, p1: node1.id, p2: node2.id };
+                // Flip vertically if x2 is the second node
+                // NOTE which seems to be the wrong way around...
+                if (x2 == node2.x) o.mirror++;
+                // Flip horizontally if y2 is the second node
+                // NOTE which seems to be okay...
+                if (y2 == node2.y) o.mirror += 2;
+                info.push(o);
 
-                return [y1, x1, y2, x2].map(c => (c + 16) / 360)
+                // Apply cartesian and viewport alterations
+                [y1, y2] = [y1, y2].map(y => this.mecElement.height - (y * view.scl + view.y));
+                [x1, x2] = [x1, x2].map(x => x * view.scl + view.x);
+
+                // Put coordinates in [0, 1] range
+                [y1, y2] = [y1, y2].map(y => y / this.mecElement.height);
+                [x1, x2] = [x1, x2].map(x => x / this.mecElement.width);
+
+                return [y1, x1, y2, x2];
             });
         }).filter(e => e); // Remove the "short circuits"
-
         if (!boxes.length) return [];
 
         const boxInd = new Array(boxes.length).fill(0);
-        // TODO make the crop smaller (update model)
         blob = tf.image.cropAndResize(image, boxes, boxInd, [360, 360]);
+        
         blob = blob.arraySync().map(((b, idx) => {
             // TODO try to remove operations here
             logging && console.log('start_:', idx, ': ', performance.now() - t0)
@@ -113,11 +123,11 @@ const deepmech = {
             logging && console.log('resized_2_:', idx, ': ', performance.now() - t0)
             b = tf.squeeze(b);
 
-            if (mirror[idx] == 1)
+            if (info[idx].mirror == 1)
                 return tf.reverse2d(b, 1)
-            else if (mirror[idx] == 2)
+            else if (info[idx].mirror == 2)
                 return tf.reverse2d(b, 0)
-            else if (mirror[idx] == 3)
+            else if (info[idx].mirror == 3)
                 return tf.reverse2d(b)
             else
                 return b;
@@ -125,80 +135,65 @@ const deepmech = {
 
         blob = tf.stack(blob);
         blob = blob.expandDims(-1);
-        return [blob, boxes, mirror];
+
+        return [blob, info];
     },
 
     /**
      * @param {object} crops - a tensor containing constraint candidates 
      * @param {array} mirror - contains information about the mirroring of the tensor
-     * @param {object} model - model to detect constraints 
+     * @param {object} constraintDetector - model to detect constraints 
      */
-    detectConstraints(crops, boxes, mirror, model, mec, logging) {
+    detectConstraints(crops, info, constraintDetector, model, logging) {
         logging && console.log('Beginning second scan: ', performance.now() - t0);
-        let constraints = model.predict(crops, { batch_size: crops.shape[0] }).arraySync();
+        let constraints = constraintDetector.predict(crops, { batch_size: crops.shape[0] }).arraySync();
         logging && console.log('Second prediction finished: ', performance.now() - t0);
 
-        let num = 0;
-        const view = this.mecElement._interactor.view;
-        const h = this.mecElement.height - view.y;
-
         constraints = constraints.map(c => c.indexOf(Math.max(...c)));
+        let num = 0;
         constraints.forEach((c, idx) => {
             if (!c) return;
             num++;
-            let type = ['rot', 'trans'];
-            const lin = {
-                y1: Math.round(boxes[idx][0] * 360),
-                x1: Math.round(boxes[idx][1] * 360),
-                y2: Math.round(boxes[idx][2] * 360),
-                x2: Math.round(boxes[idx][3] * 360),
-                type: type[c]
-            }
-            if (mirror[idx] === 1 || mirror[idx] === 3) {
-                const tmp = lin.x1;
-                lin.x1 = lin.x2;
-                lin.x2 = tmp;
-            }
-            if (mirror[idx] === 2 || mirror[idx] === 3) {
-                const tmp = lin.y1;
-                lin.y1 = lin.y2;
-                lin.y2 = tmp;
-            }
-            let p1 = mec.nodes.find(node =>
-                node.x === lin.x1 - 16 && node.y === h - lin.y1 + 16)
-            p1 = p1 ? p1.id : undefined
-            let p2 = mec.nodes.find(node =>
-                node.x === lin.x2 - 16 && node.y === h - lin.y2 + 16)
-            p2 = p2 ? p2.id : undefined
+            const p1 = info[idx].p1;
+            const p2 = info[idx].p2;
             if (!p1 || !p2) {
-                console.log('Found no matching nodes for constraint:', lin, mec.nodes);
+                console.warn('Found no matching nodes for constraint:', p1, p2, model.nodes);
+            } else {
+                const constraint = {
+                    id: 'constraint' + model.constraints.length,
+                    p1, p2,
+                    len: { type: c == 1 ? 'const' : 'free' },
+                    ori: { type: c == 2 ? 'const' : 'free' }
+                };
+                mec.constraint.extend(constraint);
+                model.addConstraint(constraint);
+                constraint.init(model);
             }
-            else mec.constraints.push({
-                id: 'constraint' + idx, p1, p2,
-                len: { type: type[c] === 'rot' ? 'const' : 'free' },
-                ori: { type: type[c] === 'trans' ? 'free' : 'const' }
-            });
         });
-        logging && console.log('drew ', num, 'constraints: ', performance.now() - t0);
+        logging && console.log('Found ', num, 'new constraints: ', performance.now() - t0);
     },
 
     async load() {
-        const mec = JSON.parse(this.mecElement.innerHTML);
+        const model = this.mecElement._model;
         const t0 = performance.now();
         console.log('Starting...');
         let tensor = tf.browser.fromPixels(this.mecElement._ctx.canvas, 1);
         tensor = tensor.div(255);
         tensor = tensor.expandDims();
         const nodeDetector = toFullyConv(await this.symbolClassifier);
-        this.detectNodes(tensor, nodeDetector, mec, this.logging);
-        const [crops, boxes, mirror] = this.getCrops(tensor, mec, this.logging);
+        this.detectNodes(tensor, nodeDetector, model, this.logging);
+        const [crops, info] = this.getCrops(tensor, model, this.logging);
         if (crops) {
-            const constraintsDetector = await this.cropIdentifier;
-            this.detectConstraints(crops, boxes, mirror, constraintsDetector, mec, this.logging);
+            const constraintDetector = await this.cropIdentifier;
+            this.detectConstraints(crops, info, constraintDetector, model, this.logging);
         }
-        this.mecElement.innerHTML = JSON.stringify(mec);
-        this.mecElement.init();
-        mec2Deepmech();
+        this.mecElement._model.draw(this.mecElement._g);
+        this.mecElement._g.exe(this.mecElement._ctx);
         console.log('finished after: ', performance.now() - t0)
     }
 }
+
+// TODO improve models (reduce crop size!)
+// TODO improve HTML style (button, only try in "draw mode"...)
+// TODO if both directions are detected, the detection with the higher confidence should win.
+// TODO classify using the mec...
