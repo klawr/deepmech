@@ -88,10 +88,10 @@ function mec2Deepmech() {
                         let o = { mirror: 0, p1: node1.id, p2: node2.id };
                         // Flip vertically if x2 is the second node
                         // NOTE which seems to be the wrong way around...
-                        if (x2 == node2.x) o.mirror++;
+                        if (x2 == node1.x) o.mirror++;
                         // Flip horizontally if y2 is the second node
                         // NOTE which seems to be okay...
-                        if (y2 == node2.y) o.mirror += 2;
+                        if (y2 == node1.y) o.mirror += 2;
                         info.push(o);
         
                         // Apply cartesian and viewport alterations
@@ -108,22 +108,9 @@ function mec2Deepmech() {
                 if (!boxes.length) return [];
         
                 const boxInd = new Array(boxes.length).fill(0);
-                blob = tf.image.cropAndResize(image, boxes, boxInd, [360, 360]);
+                blob = tf.image.cropAndResize(image, boxes, boxInd, [96, 96]);
                 
                 blob = blob.arraySync().map(((b, idx) => {
-                    // TODO try to remove operations here
-                    logging && console.log('start_:', idx, ': ', performance.now() - this.t0)
-                    box = boxes[idx]
-                    const height = parseInt((box[2] - box[0]) / (box[3] - box[1]) * 360)
-                    b = tf.image.resizeBilinear(b, [height, 360])
-                    logging && console.log('resized_1_:', idx, ': ', performance.now() - this.t0)
-                    let pad = parseInt((height - 360) / 2);
-                    pad = pad < 0 ? [[-pad, -pad], [0, 0]] : [[0, 0], [pad, pad]];
-                    b = tf.squeeze(b)
-                    b = tf.pad2d(b, pad)
-                    b = tf.expandDims(b, -1)
-                    b = tf.image.resizeBilinear(b, [360, 360])
-                    logging && console.log('resized_2_:', idx, ': ', performance.now() - this.t0)
                     b = tf.squeeze(b);
         
                     if (info[idx].mirror == 1)
