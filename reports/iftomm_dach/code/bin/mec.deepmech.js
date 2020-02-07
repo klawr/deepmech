@@ -1,5 +1,28 @@
 const mec2Elements = document.getElementsByTagName('mec-2');
 function mec2Deepmech() {
+    // Helper to switch nodes
+    function swapNodes(a, b) {
+        const aParent = a.parentNode;
+        const bParent = b.parentNode;
+
+        const aHolder = document.createElement("div");
+        const bHolder = document.createElement("div");
+
+        aParent.replaceChild(aHolder, a);
+        bParent.replaceChild(bHolder, b);
+
+        aParent.replaceChild(b, aHolder);
+        bParent.replaceChild(a, bHolder);
+    }
+    // Helper to create buttons
+    function buttonFactory(str, fn) {
+        const btn = document.createElement('span');
+        btn.style.paddingLeft = '10px';
+        btn.innerHTML = str;
+        btn.id = str + 'btn';
+        btn.addEventListener('click', fn, false);
+        return btn;
+    }
     for (element of mec2Elements) {
         // Each element gets a deepmech object, which handles the predictions
         const deepmech = {
@@ -184,27 +207,30 @@ function mec2Deepmech() {
             }
         }
 
+        // Copy corview to have coordinates in draw mode (appendChild actually moves the Node...)
         const view = element._interactor.view;
         const _g_draw = g2()
-            // Background for drawing
+            // Background for drawing (and applies a "clr"...)
             .rec({
                 x: () => -view.x / view.scl,
                 y: () => -view.y / view.scl,
-                // Just a little overhead to be sure
                 b: () => element.width / view.scl + 1,
                 h: () => element.height / view.scl + 1,
-                fs: '#000'
+                fs: '#000',
+                isSolid: false // should not be detected by selector
             })
             .view(view); // Same view as the original model
 
         let ply = undefined; // A reference to the "polyline" which is drawn at the moment
+
+        let mode; // Mode to keep track of current action
         const tick = () => {
             let { type, x, y } = element._interactor.evt;
-
+            // Keep the pointer coordinates updated
             element._corview.innerHTML = x.toFixed(0) + ', ' + y.toFixed(0);
-            // "ply" is only defined between "pointerdown" and "pointerup"/"click"
-            if (type === 'pointermove' && ply) {
-                // Keep the coordinates of the pointer updated.
+
+            // "ply" is only defined between "pointerdown" and "pointerup"/"click" in draw mode
+            if (mode === "draw" && type === 'pointermove' && ply) {
                 x = (x - view.x) / view.scl;
                 y = (y - view.y) / view.scl;
 
@@ -214,15 +240,31 @@ function mec2Deepmech() {
                     ply.pts.push({ x, y });
                 }
             }
+            else if (mode === "delete" || mode === "drag") {
+                _g_draw.exe(element._selector);
+            }
             _g_draw.exe(element._ctx);
         }
-
+        let plyShadow = "white";
         const pointerdown = (e) => {
-            // Set ply and add to command queue
-            const x = (e.x - view.x) / view.scl;
-            const y = (e.y - view.y) / view.scl;
-            ply = { pts: [{ x, y }], lw: '2', ls: '#fff', lc: 'round', lj: 'round' };
-            _g_draw.ply(ply);
+            if (mode === "draw") {
+                // Set ply and add to command queue
+                const x = (e.x - view.x) / view.scl;
+                const y = (e.y - view.y) / view.scl;
+                ply = {
+                    pts: [{ x, y }], lw: '2', ls: '#fff', lc: 'round', lj: 'round',
+                    // White shadow to see this on black background
+                    get sh() { return this.state & g2.OVER ? [0, 0, 5, plyShadow] : false; },
+                };
+                _g_draw.ply(ply);
+            }
+            if (mode === "delete") {
+                // Filter selected node from commands array
+                _g_draw.commands = _g_draw.commands.filter(cmd =>
+                    cmd.a !== element._selector.selection);
+                element._selector.evt.hit = false; // selector gets confused
+                element._selector.selection = false; // overwrite selection
+            }
         }
         const pointerup = () => {
             // If pts is a point => remove ply
@@ -235,66 +277,117 @@ function mec2Deepmech() {
         // NOTE This assumes that the respective signal is added first!
         const fetch_tick = element._interactor.signals['tick'][0];
         const fetch_pointermove = element._interactor.pointermove;
-        let drawing = false;
-        function toggle(e) {
-            drawing = !drawing;
-            if (drawing) {
-                navLeft.parentNode.replaceChild(navRightDraw, navRight);
-                // Remove "ontick" in drawing mode and "panning" of view while drawing
-                element._interactor.remove('tick', fetch_tick);
-                // Prevent pointermove "panning" but still cache the event for mouse position:
-                element._interactor.pointermove = () => undefined;
+        function activate(e) {
+            nav.replaceChild(navLeftDraw, navLeft);
+            nav.replaceChild(navRightDraw, navRight);
 
-                element._interactor.on('pointerdown', pointerdown)
-                element._interactor.on(['pointerup', 'click'], pointerup);
-                element._interactor.on('tick', tick);
+            swapNodes(logo, logoPlaceholder);
+            swapNodes(element._corview, corviewPlaceholder);
+            // draw mode is default
+            drawBtn.style.color = '#fff';
+            drawFn();
 
-                // Filter all "nodes" and "constraint" commands from _g command queue
-                const grp = {
-                    commands: element._g.commands.filter(c =>
-                        element._model.nodes.includes(c.a) ||
-                        element._model.constraints.includes(c.a))
-                };
+            element._interactor.on('tick', tick);
 
-                _g_draw.use({ grp }).exe(element._ctx);
-            } else {
-                // Revert previous changes
-                navLeft.parentNode.replaceChild(navRight, navRightDraw);
-                element._interactor.remove('tick', tick);
-                element._interactor.remove('pointerdown', pointerdown);
-                element._interactor.remove('pointerup', pointerup);
-                element._interactor.remove('click', pointerup);
-                element._interactor.on('tick', fetch_tick);
-                element._interactor.pointermove = fetch_pointermove;
+            // Filter all "nodes" and "constraint" commands from _g command queue
+            const grp = {
+                commands: element._g.commands.filter(c =>
+                    element._model.nodes.includes(c.a) ||
+                    element._model.constraints.includes(c.a))
+            };
 
-                _g_draw.del(2); // Delete command queue (except "view" and "rec" (background))
-                element._g.exe(element._ctx);
+            _g_draw.use({ grp }).exe(element._ctx);
+        }
+
+        function reset() {
+            mode = undefined;
+            plyShadow = "white";
+            element._g.exe(element._selector);
+
+            element._interactor.remove('pointerdown', pointerdown);
+            element._interactor.remove('pointerup', pointerup);
+            element._interactor.remove('click', pointerup);
+            for (node of navRightDraw.childNodes) {
+                if (node.tagName !== 'SPAN') continue
+                node.style.color = '';
             }
         }
 
-        const navLeft = element._root.children[1].children[0].children[0];
-        const navRight = element._root.children[1].children[0].children[1];
+        // Revert previous changes
+        function deactivate(e) {
+            reset();
+            nav.replaceChild(navLeft, navLeftDraw);
+            nav.replaceChild(navRight, navRightDraw);
+
+            swapNodes(logo, logoPlaceholder);
+            swapNodes(element._corview, corviewPlaceholder);
+
+            element._interactor.remove('tick', tick);
+            element._interactor.on('tick', fetch_tick);
+            element._interactor.pointermove = fetch_pointermove;
+
+            _g_draw.del(2); // Delete command queue (except "view" and "rec" (background))
+            element._g.exe(element._ctx);
+        }
+
+        function drawFn() {
+            reset();
+            mode = 'draw';
+            drawBtn.style.color = '#fff';
+            // Remove "ontick" in drawing mode and "panning" of view while drawing
+            element._interactor.remove('tick', fetch_tick);
+            // Prevent pointermove "panning" but still cache the event for mouse position:
+            element._interactor.pointermove = () => undefined;
+
+            element._interactor.on('pointerdown', pointerdown)
+            element._interactor.on(['pointerup', 'click'], pointerup);
+        }
+
+        function dragFn() {
+            reset();
+            mode = 'drag';
+            dragBtn.style.color = '#fff';
+            element._interactor.pointermove = fetch_pointermove;
+        }
+
+        function deleteFn() {
+            reset();
+            mode = 'delete';
+            plyShadow = "red";
+            deleteBtn.style.color = '#fff';
+            element._interactor.on('pointerdown', pointerdown)
+            element._interactor.pointermove = fetch_pointermove;
+        }
+
+        const nav = element._root.children[1].children[0];
+        const navLeft = nav.children[0];
+        const activateBtn = buttonFactory('d', activate);
+        const navRight = nav.children[1];
+        const logo = navLeft.children[0];
+
+        const navLeftDraw = document.createElement('span');
+        const logoPlaceholder = document.createElement('div');
+        const deactivateBtn = buttonFactory('reset', deactivate);
 
         const navRightDraw = document.createElement('span');
-        const drawbtn = document.createElement('span');
+        const corviewPlaceholder = document.createElement('div');
 
-        drawbtn.style.paddingLeft = '10px';
-        drawbtn.innerHTML = 'draw';
-        drawbtn.id = 'drawbtn';
-        drawbtn.addEventListener('click', toggle, false);
-        navLeft.appendChild(drawbtn)
+        const drawBtn = buttonFactory('draw', drawFn);
+        const dragBtn = buttonFactory('drag', dragFn);
+        const deleteBtn = buttonFactory('del', deleteFn);
+        const predictBtn = buttonFactory('predict', () => deepmech.load() && deactivate());
 
-        element._drawbtn = drawbtn;
+        navLeft.appendChild(activateBtn);
 
-        const predictBtn = document.createElement('span');
-        predictBtn.style.paddingLeft = '10px';
-        predictBtn.innerHTML = 'predict';
-        predictBtn.id = 'predictbtn';
-        predictBtn.addEventListener('click', () => {
-            deepmech.load();
-            toggle();
-        }, false);
+        navLeftDraw.appendChild(logoPlaceholder);
+        navLeftDraw.appendChild(deactivateBtn);
+
+        navRightDraw.appendChild(corviewPlaceholder);
+        navRightDraw.appendChild(drawBtn);
+        navRightDraw.appendChild(dragBtn);
+        navRightDraw.appendChild(deleteBtn);
         navRightDraw.appendChild(predictBtn);
+
     }
 }
 mec2Deepmech();
