@@ -66,12 +66,13 @@ function mec2Deepmech() {
                 const nodes = removeOverlaps(prediction
                     .flatMap(extractInterestingInfo)
                     .filter(e => e.maxIndex).sort((a, b) => a.max - b.max));
-
+                
+                const view = this.mecElement._interactor.view;
                 nodes.forEach(e => {
                     const node = {
                         id: 'node' + model.nodes.length,
-                        x: Math.round(e.x - this.mecElement._interactor.view.x + 16),
-                        y: Math.round(this.mecElement.height - e.y - this.mecElement._interactor.view.y - 16),
+                        x: Math.round((e.x - view.x + 16) / view.scl),
+                        y: Math.round((this.mecElement.height - e.y - view.y - 16) / view.scl),
                         base: e.maxIndex > 1 ? true : false // 0 == n, 1 == o, 2 == x (0 is filtered...)
                     };
                     mec.node.extend(node);
