@@ -331,6 +331,26 @@ function mec2Deepmech() {
             element._g.exe(element._ctx);
         }
 
+        function upload() {
+            const _input = document.createElement('input');
+            _input.accept = "image";
+            _input.type = "file";
+            _input.click();
+            const reader = new window.FileReader();
+            _input.addEventListener('input', () => {
+                reader.readAsDataURL(_input.files[0]);
+            });
+
+            reader.addEventListener('loadend', () => {
+                // Inject image into command queue (after "view" and "rec")
+                const x = -view.x / view.scl;
+                const y = -view.y / view.scl;
+                const scl = 1 / view.scl;
+                const a = {uri: reader.result, x, y, scl};
+                _g_draw.commands.splice(2, 0, {c: 'img', a});
+            });
+        }
+
         function drawFn() {
             reset();
             mode = 'draw';
@@ -369,6 +389,7 @@ function mec2Deepmech() {
         const navLeftDraw = document.createElement('span');
         const logoPlaceholder = document.createElement('div');
         const deactivateBtn = buttonFactory('reset', deactivate);
+        const uploadBtn = buttonFactory('upload', upload);
 
         const navRightDraw = document.createElement('span');
         const corviewPlaceholder = document.createElement('div');
@@ -381,6 +402,7 @@ function mec2Deepmech() {
         navLeft.appendChild(activateBtn);
 
         navLeftDraw.appendChild(logoPlaceholder);
+        navLeftDraw.appendChild(uploadBtn);
         navLeftDraw.appendChild(deactivateBtn);
 
         navRightDraw.appendChild(corviewPlaceholder);
