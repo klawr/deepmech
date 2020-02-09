@@ -1,0 +1,19 @@
+\section{Aussicht}
+Der aktuelle Prototyp zeigt, dass durch das Anwenden von entsprechend trainierten Algorithmen durchaus Programme geschrieben werden können, welche in der Lage sind von Hand gezeichnete Mechanismen digital verfügbar zu machen um weitere Analysen an ihnen durchzuführen.
+
+Der aktuelle Algorithmus ist jedoch eher als Konzeptnachweis anzusehen, da er trotz guter Genauigkeit auf dem Trainingsset nicht die Ergebnisse produziert, die für eine reibungsfreien Nutzung erforderlich wäre.
+Eingangsbildern die von den Trainingsdaten in Bezug auf Beschaffenheit abweichen aber noch als Nodes, beziehungsweise Constraints erkannt werden sollten, aber nicht werden, machen es schwierig komplexere Modelle in einer Zeichnung zu erkennen.
+
+Des weiteren benötigt der aktuelle Ansatz einige Sekunden um eine Prognose zu erstellen.
+Methoden welche Ergebnisse in Echtzeit liefern sind jedoch existent\cite{Redmon2015}\cite{Redmon2016}\cite{Redmon2018}, jedoch sind für die korrekte Anwendung dieser Methoden weitere Anpassungen notwendig.
+
+Anzumerken ist des weiteren, dass sich die Anzahl der Klassen welche erkannt werden können (in diesem Fall jeweils drei Klassen pro neuralem Netzwerk) beliebig erweitern lassen.
+Beispielsweise durch das hinzufügen eines entsprechenden Trainingssets für das Erkennen von Federn, welche zwischen zwei Gelenken eingesetzt ist, lässt sich diese erkennen und entsprechend in das \name{mec-2} Modell einbringen.
+Das gleich gilt selbstverständlich auch für weitere Darstellungsarten von Gelenken.
+
+Aktuell ist das Programm lediglich in der Lage Bilder in einer dafür vorgesehenen Umgebung innerhalb des von \name{mec-2} genutzten Canvas zu zeichnen, beziehungsweise Bilder hochzuladen.
+In Aussicht steht die Aufnahme von analog gezeichneten Mechanismen auf Papier, oder anderen analogen Methoden, was den nutzen des Projektes im Kern darstellt.
+
+Schließlich lässt sich das Programm in eine so genannte progressive Webapplikation umwandeln, um sie so auf dem Smartphone direkt mit Zugang auf die Kamera verwendbar zu machen, welches in Bezug auf die Anwendbarkeit den größten Nutzen bringt.
+
+Das gesamte Projekt ist offen zugänglich und lässt sich auf \url{https:github.com/klawr/deepmech} verfolgen.
