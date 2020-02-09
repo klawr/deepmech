@@ -1,0 +1,17 @@
+\section{Einführung}
+Die Simulation, Analyse und Synthese von Mechanismen mittels Basiswebtechnologien stehen im Fokus der Arbeitsgruppe \name{Mechanismentechnik} und \name{Webtechnologien} im Fachbereich Maschinenbau der Fachhochschule Dortmund.
+Im Rahmen dieser Tätigkeiten sind die JavaScript-Bibliotheken \name{mec2.js}\cite{Goessner2019}\cite{Goessner2019a}\cite{Goessner2018}, einer Bibliothek zur Modellierung ebener Mechanismen auf der Grundlage einer partikelzentrierten Physik-Engine, und \name{g2.js}\cite{Goessner2019b} als minimalistische Grafikbibliothek entstanden. 
+
+Anwendung finden diese bereits in einem speziellen \name{<mec-2>} HTML-Element und dem webbasierten Mechanismeneditor \name{mecEdit}\cite{Uhlig2019}\cite{Uhlig2019a}, der bereits aktiv in der Lehre genutzt wird.
+
+Webanwendungen stehen stets unter dem Vorsatz eine möglichst reibungsfreie Nutzerinteraktion zu gewährleisten.
+\name{mecEdit} bietet hierfür dem Nutzer die Möglichkeit per möglichst einfacher Eingabe von den entsprechenden Elementen des Mechanismus diesen interaktiv und animiert auf den Bildschirm zu bringen.
+
+Für eine schnelle Skizzierung ist jedoch bislang der schnellste Weg die Handzeichnung auf dem Papier, welche jedoch intrinsisch weder interaktiv noch animiert ist.
+
+Hier für ist nun ist nun eine weitere Schnittstelle in der Entwicklung.
+Sie soll handskizzierte Mechanismen durch Mustererkennung kinematischen Modellen zuzuordnen, indem entsprechend in das Programm eingeladene Bilder analysiert werden und das \name{mec-2} Modell ermittelt.
+
+Hierfür sind mehrere statistische Modelle trainiert worden, welche in der Lage sind sowohl die durch \name{mec2} beschriebenen \name{Nodes} und \name{Constraints} zu erkennen und daraus einen entsprechenden Mechanismus abzuleiten.
+
+Für das Training des Modells wurden die Bibliotheken \name{Tensorflow}\cite{Google2019} und \name{Keras}\cite{Chollet2019}\cite{Chollet2017} genutzt.
