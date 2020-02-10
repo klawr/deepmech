@@ -1,17 +1,17 @@
 \section{Training}
-Während die Anwendung des Programms vollständig in JavaScript erfolgt und so leicht in eine Webapplikation einzubetten ist, geschieht das Training der neuralen Netzwerke auf Gründen der Performanz in Python, welches durch Nvidia's CUDA\cite{nvidia2019} direkten Zugang auf die Grafikprozessoren des PC's haben\footnote{Diese Zugriffe wird für den Entwickler durch Tensorflow und Keras abstrahiert.}.
+Während die Anwendung des Programms vollständig in JavaScript erfolgt und so leicht in eine Webapplikation einzubetten ist, geschieht das Training der neuralen Netzwerke aus Gründen der Performanz in Python, welches durch Nvidia's CUDA\cite{nvidia2019} direkten Zugang auf die Grafikprozessoren des PC's hat\footnote{Diese Zugriffe wird für den Entwickler durch die genutzten Bibliotheken \name{Tensorflow} und \name{Keras} abstrahiert.}.
 
-Das erlernen von Merkmalen geschieht durch das Minimieren einer Verlustfunktion, welche die Differenz zwischen den vom Modell bestimmten Ergebnis und dem tatsächlichen Ergebnis misst.
-Die Ableitung dieser Verlustfunktion wird dann auf das neurale Netzwerk angewandt um so hoffentlich bei der nächsten Vorhersage einen niedrigeren Wert als Verlust zu bekommen.
+Das Erlernen von Merkmalen geschieht durch das Minimieren einer Verlustfunktion, welche die Differenz zwischen den vom Modell bestimmten Ergebnis und dem tatsächlichen Ergebnis misst.
+Die Ableitung dieser Verlustfunktion wird dann auf das neurale Netzwerk angewandt, um so, mutmaßlich bei der nächsten Vorhersage einen niedrigeren Wert als Verlust zu bekommen.
 
 Dieser Prozess wiederholt sich beliebig oft, bis die Vorhersagen eine ausreichende Genauigkeit erreichen.
 
 Ein neurales Netzwerk enthält initial zufällig zugewiesene Werte für die einzelnen Zellen, sodass bei drei Kategorien von einer Genauigkeit von etwa 33\% zu rechnen ist.
-Durch entsprechend gewählte Trainingsparameter kann jedoch die Genauigkeit des Modells erhöht werden, sodass das neuronale Netzwerk zuständig für die Node-Erkennung eine Genauigkeit von 99,75\% auf nie gesehene Daten erreicht, während das Modell für die Erkennung von Constraints eine Genauigkeit von 97,68\% erreicht werden konnte.
+Durch entsprechend gewählte Trainingsparameter kann jedoch die Genauigkeit des Modells erhöht werden, sodass das neuronale Netzwerk zuständig für die Node-Erkennung eine Genauigkeit von 99,75\% auf nie gesehene Daten erreicht, während mithilfe des Modells für die Erkennung von Constraints eine Genauigkeit von 97,68\% erreicht werden konnte.
 
-Es ist für die trainierten Algorithmen anzumerken, dass obwohl die Genauigkeit durch Daten ermittelt wird, welche vom Modell nie gesehen wurden, entsprechend also kein Auswendiglernen der Zuordnungen\cite[p.705]{StuartRussell2018} für die Genauigkeit verantwortlich sein kann, so sind sie nur in der Lage Daten korrekt zuzuordnen, welche dem Format der Trainingsdaten entsprechen.
+Es ist für die trainierten Algorithmen anzumerken, dass obwohl die Genauigkeit durch Daten ermittelt wird, welche vom Modell nie gesehen wurden, entsprechend also kein Auswendiglernen der Zuordnungen\cite[p.705]{StuartRussell2018} für die Genauigkeit verantwortlich sein kann, sie nur in der Lage sind, Daten korrekt zuzuordnen, welche dem Format der Trainingsdaten entsprechen.
 
-Die Trainingsdaten sind bewusst generiert worden um einen Kompromiss zwischen ausreichendem Material für das erlernen der notwendigen Merkmale in den Bildern zu haben, allerdings ohne tausende von Mechanismen zeichnen und entsprechend beschriften zu müssen um ein Training möglich zu machen.
+Die Trainingsdaten sind bewusst generiert worden, um einen Kompromiss zwischen ausreichendem Material für das Erlernen der notwendigen Merkmale in den Bildern zu finden, allerdings ohne tausende von Mechanismen zeichnen und entsprechend beschriften zu müssen, um ein Training möglich zu machen.
 
-Die aktuell genutzten Modelle verwenden aktuell zum Training ausschließlich weiße Symbole auf schwarzem Hintergrund (die Bilder in dieser Ausarbeitung sind invertiert um die Sichtbarkeit zu verbessern), sodass Merkmale welche erkannt werden ausschließlich so erkannt werden können. Beispielsweise ein schwarzer Kreis auf weißem Hintergrund würde nicht als Node erkannt werden, da der Algorithmus diese Merkmale dieser nicht zuordnet.
-Eine entsprechende Vorbearbeitung von Bildern ist entsprechend notwendig um die gewünschten Ergebnisse zu erhalten.
+Die aktuell genutzten Modelle verwenden zum Training ausschließlich weiße Symbole auf schwarzem Hintergrund (die Abbildungen in dieser Ausarbeitung sind invertiert, um die Sichtbarkeit zu verbessern), sodass Merkmale, welche erkannt werden, ausschließlich in dieser Darstellung erkannt werden können. Beispielsweise würde ein schwarzer Kreis auf weißem Hintergrund nicht als Node erkannt werden, da der Algorithmus ihr die zur korrekten Zuordnung erforderlichen Merkmale nicht zuordnet.
+Eine entsprechende Vorbearbeitung von Bildern ist entsprechend notwendig, um die gewünschten Ergebnisse zu erhalten.
