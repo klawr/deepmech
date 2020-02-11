@@ -2,7 +2,7 @@
 \name{mec-2} modelliert Mechanismen durch
 sogenannte \name{Nodes} und \name{Constraints}.
 Die Gelenke sind entsprechend als Nodes und Glieder als Constraints zu betrachten.
-Beispielhaft für ein Viergelenk sähe das generierte JSON gemäß Abbildung \ref{fig:4bar} aus.
+Beispielhaft für ein Viergelenk sähe das generierte JSON gemä{\ss} Abbildung \ref{fig:4bar} aus.
 
 \begin{figure}
   \includegraphics[width=\textwidth]{images/4bar_json}
@@ -15,7 +15,7 @@ Um diesen Mechanismus durch eine Handzeichnung zu erstellen, ist es erforderlich
 Hierfür mussten zunächst Trainingsdaten geschaffen werden, anhand derer ein solcher Algorithmus Merkmale erlernen kann, die eine Zuordnung der Eingangsbilder zu den entsprechenden Lösungen bilden kann.
 Es wurden etwa 1200 Nodes, 1200 Base-Nodes und 1200 nicht zutreffende Bilder erstellt, welche vor dem Training durch Rotation und Spiegelung augmentiert wurden, um die Varianz der Trainingsdaten zu erhöhen.
 
-Des weiteren, wurden von \name{mec-2} genutzte Symbole dem Trainingsset hinzugefügt, sodass der Algorithmus diese nicht als Nodes erkennt, damit Mechanismen erweitert werden können, ohne die bereits erkannten Elemente nochmal zu erkennen.
+Des Weiteren wurden von \name{mec-2} genutzte Symbole dem Trainingsset hinzugefügt, sodass der Algorithmus diese nicht als Nodes erkennt, damit Mechanismen erweitert werden können, ohne die bereits erkannten Elemente nochmal zu erkennen.
 
 \begin{figure}
   \centering

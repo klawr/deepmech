@@ -23,12 +23,12 @@ Hierfür wurden die vorher genutzten Nodes zufällig auf einem Bild verteilt und
     \label{fig:constraint_data}
 \end{figure}
 
-Die daraus entstandenen Schnitte werden verformt, um einheitliche Maße zu erhalten.
+Die daraus entstandenen Schnitte werden verformt, um einheitliche Ma{\ss}e zu erhalten.
 Des Weiteren werden die Bilder so gespiegelt, dass die erste Node stets oben links im Bild ist.
 So sind Bilder nur als korrekt anzusehen, wenn die Verbindung von oben links nach unten rechts dargestellt wird.
 Das ist notwendig, um neben der Kategorisierung auch die Richtung der Verbindung zu bestimmen.
 
-Aufbauend auf diesen Algorithmen kann nun eine Datenpipeline programmiert werden, welche anhand eines Bildes zunächst die Nodes erkennt und daraufhin die Bildausschnitte generiert, welche dahingehend untersucht werden können, ob zwischen zwei Nodes eine Constraints existiert.
+Aufbauend auf diesen Algorithmen kann nun eine Datenpipeline programmiert werden, welche anhand eines Bildes zunächst die Nodes erkennt und daraufhin die Bildausschnitte generiert, welche dahingehend untersucht werden können, ob zwischen zwei Nodes eine Constraint existiert.
 
-Die daraus gewonnene Information kann dann in das von \name{mec-2} genutzte JSON Format überführt und der Mechanismus kann dargestellt werden.
+Die daraus gewonnene Information kann dann in das von \name{mec-2} genutzte JSON Format überführt und der Mechanismus dargestellt werden.
 Ein vollständig definierter Mechanismus (alle Gelenke und Glieder, die Anzahl der Freiheitsgrade etc. seien dadurch bekannt) lässt sich so direkt der entsprechenden kinematischen Kette zuordnen.
