@@ -2,7 +2,7 @@
 Während die Anwendung des Programms vollständig in JavaScript erfolgt und so leicht in eine Webapplikation einzubetten ist, geschieht das Training der neuralen Netzwerke aus Gründen der Performanz in Python, welches durch Nvidia's CUDA\cite{nvidia2019} direkten Zugang auf die Grafikprozessoren des PC's hat\footnote{Diese Zugriffe wird für den Entwickler durch die genutzten Bibliotheken \name{Tensorflow} und \name{Keras} abstrahiert.}.
 
 Das Erlernen von Merkmalen geschieht durch das Minimieren einer Verlustfunktion, welche die Differenz zwischen den vom Modell bestimmten Ergebnis und dem tatsächlichen Ergebnis misst.
-Die Ableitung dieser Verlustfunktion wird dann auf das neurale Netzwerk angewandt, um so, mutmaßlich bei der nächsten Vorhersage einen niedrigeren Wert als Verlust zu bekommen.
+Die Ableitung dieser Verlustfunktion wird dann auf das neurale Netzwerk angewandt, um so mutma{\ss}lich bei der nächsten Vorhersage einen niedrigeren Wert als Verlust zu bekommen.
 
 Dieser Prozess wiederholt sich beliebig oft, bis die Vorhersagen eine ausreichende Genauigkeit erreichen.
 
@@ -13,5 +13,5 @@ Es ist für die trainierten Algorithmen anzumerken, dass obwohl die Genauigkeit 
 
 Die Trainingsdaten sind bewusst generiert worden, um einen Kompromiss zwischen ausreichendem Material für das Erlernen der notwendigen Merkmale in den Bildern zu finden, allerdings ohne tausende von Mechanismen zeichnen und entsprechend beschriften zu müssen, um ein Training möglich zu machen.
 
-Die aktuell genutzten Modelle verwenden zum Training ausschließlich weiße Symbole auf schwarzem Hintergrund (die Abbildungen in dieser Ausarbeitung sind invertiert, um die Sichtbarkeit zu verbessern), sodass Merkmale, welche erkannt werden, ausschließlich in dieser Darstellung erkannt werden können. Beispielsweise würde ein schwarzer Kreis auf weißem Hintergrund nicht als Node erkannt werden, da der Algorithmus ihr die zur korrekten Zuordnung erforderlichen Merkmale nicht zuordnet.
+Die aktuell genutzten Modelle verwenden zum Training ausschlie{\ss}lich wei{\ss}e Symbole auf schwarzem Hintergrund (die Abbildungen in dieser Ausarbeitung sind invertiert, um die Sichtbarkeit zu verbessern), sodass Merkmale, welche erkannt werden, ausschlie{\ss}lich in dieser Darstellung erkannt werden können. Beispielsweise würde ein schwarzer Kreis auf wei{\ss}em Hintergrund nicht als Node erkannt werden, da der Algorithmus ihr die zur korrekten Zuordnung erforderlichen Merkmale nicht zuordnet.
 Eine entsprechende Vorbearbeitung von Bildern ist entsprechend notwendig, um die gewünschten Ergebnisse zu erhalten.
