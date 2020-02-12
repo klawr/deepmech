@@ -265,6 +265,12 @@ function mec2Deepmech() {
 
         // Copy corview to have coordinates in draw mode (appendChild actually moves the Node...)
         const view = element._interactor.view;
+        // A placeholder to insert uploaded images
+        const img_placeholder = g2();
+        // A placeholder for the current mec
+        const mec_placeholder = g2();
+        // A placeholder for upcomming drawn lines
+        const ply_placeholder = g2();
         const _g_draw = g2()
             // Background for drawing (and applies a "clr"...)
             .rec({
@@ -275,10 +281,12 @@ function mec2Deepmech() {
                 fs: '#000',
                 isSolid: false // should not be detected by selector
             })
-            .view(view); // Same view as the original model
+            .view(view) // Same view as the original model
+            .use({grp: () => img_placeholder})
+            .use({grp: () => mec_placeholder})
+            .use({grp: () => ply_placeholder});
 
         let ply = undefined; // A reference to the "polyline" which is drawn at the moment
-
         let mode; // Mode to keep track of current action
         const tick = () => {
             let { type, x, y } = element._interactor.evt;
@@ -297,7 +305,7 @@ function mec2Deepmech() {
                 }
             }
             else if (mode === "delete" || mode === "drag") {
-                _g_draw.exe(element._selector);
+                ply_placeholder.exe(element._selector);
             }
             _g_draw.exe(element._ctx);
         }
@@ -312,19 +320,21 @@ function mec2Deepmech() {
                     // White shadow to see this on black background
                     get sh() { return this.state & g2.OVER ? [0, 0, 5, plyShadow] : false; },
                 };
-                _g_draw.ply(ply);
+                ply_placeholder.ply(ply);
             }
             if (mode === "delete") {
                 // Filter selected node from commands array
-                _g_draw.commands = _g_draw.commands.filter(cmd =>
-                    cmd.a !== element._selector.selection);
+                ply_placeholder.commands = ply_placeholder.commands.filter(
+                    cmd => cmd.a !== element._selector.selection);
                 element._selector.evt.hit = false; // selector gets confused
                 element._selector.selection = false; // overwrite selection
             }
         }
         const pointerup = () => {
             // If pts is a point => remove ply
-            if (ply.pts.length < 2) _g_draw.del(_g_draw.commands.length - 1);
+            if (ply.pts.length < 2) {
+                ply_placeholder.del(ply_placeholder.commands.length - 1);
+            }
             // Reset ply
             ply = undefined;
         }
@@ -351,8 +361,8 @@ function mec2Deepmech() {
                     element._model.nodes.includes(c.a) ||
                     element._model.constraints.includes(c.a))
             };
-
-            _g_draw.use({ grp }).exe(element._ctx);
+            mec_placeholder.use(grp);
+            _g_draw.exe(element._ctx);
         }
 
         function reset() {
@@ -382,7 +392,10 @@ function mec2Deepmech() {
             element._interactor.on('tick', fetch_tick);
             element._interactor.pointermove = fetch_pointermove;
 
-            _g_draw.del(2); // Delete command queue (except "view" and "rec" (background))
+            // Reset placeholders
+            img_placeholder.commands = [];
+            mec_placeholder.commands = [];
+            ply_placeholder.commands = [];
             element._g.exe(element._ctx);
         }
 
@@ -401,8 +414,7 @@ function mec2Deepmech() {
                 const x = -view.x / view.scl;
                 const y = -view.y / view.scl;
                 const scl = 1 / view.scl;
-                const a = {uri: reader.result, x, y, scl};
-                _g_draw.commands.splice(2, 0, {c: 'img', a});
+                img_placeholder.img({uri: reader.result, x, y, scl});
             });
         }
 
