@@ -23,6 +23,61 @@ function mec2Deepmech() {
         btn.addEventListener('click', fn, false);
         return btn;
     }
+    // Helper to transform node detector to fully connected network
+    function toFullyConv(model) {
+        const newModel = tf.sequential();
+        newModel.add(tf.layers.inputLayer({
+            inputShape: [null, null, 1]
+        }));
+        let flattenedInput = false;
+        let fDim;
+    
+        for (const layer of model.layers) {
+            if (layer.name.includes('flatten')) {
+                flattenedInput = true;
+                fDim = layer.input.shape;
+            }
+    
+            else if (layer.name.includes('dense')) {
+                inputShape = layer.input.shape;
+                outputDim = layer.getWeights()[1].shape[0];
+                const [W, b] = layer.getWeights();
+    
+                if (flattenedInput) {
+                    const shape = [fDim[1], fDim[2], fDim[3], outputDim];
+                    const newW = W.reshape(shape);
+                    newModel.add(tf.layers.conv2d({
+                        filters: outputDim,
+                        kernelSize: [fDim[1], fDim[2]],
+                        name: layer.name,
+                        strides: [1,1],
+                        activation: layer.activation,
+                        padding: 'valid',
+                        weights: [newW, b]
+                    }));
+                    flattenedInput = false;
+                }
+                else {
+                    const shape = [1, 1, inputShape[1], outputDim];
+                    const newW = W.reshape(shape);
+                    newModel.add(tf.layers.conv2d({
+                        filters: outputDim,
+                        kernelSize: [1, 1],
+                        strides: [1, 1],
+                        activation: layer.activation,
+                        padding: 'valid',
+                        weights: [newW, b]
+                    }))
+                }
+            }
+    
+            else {
+                newModel.add(layer);
+            }
+        }
+        newModel.layers[1].strides = [1, 1]
+        return newModel;
+    }
     for (element of mec2Elements) {
         // Each element gets a deepmech object, which handles the predictions
         const deepmech = {
@@ -383,6 +438,9 @@ function mec2Deepmech() {
         const nav = element._root.children[1].children[0];
         const navLeft = nav.children[0];
         const activateBtn = buttonFactory('d', activate);
+        activateBtn.innerHTML = `<svg id="Ebene_1" data-name="Ebene 1" width="10pt" height="10pt" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 6.97 6.96"><title>Stift_Icon_7x7</title><rect x="2.01" y="2.25" width="0.9" height="4.57" transform="translate(3.9 -0.41) rotate(45)"/><polygon points="0.4 5.99 0.99 6.54 0.89 6.63 0.37 6.81 0.12 6.58 0.31 6.08 0.4 5.99"/><polygon points="0 6.96 0.06 6.72 0.24 6.9 0 6.96"/><polygon points="4.53 3.23 3.77 2.46 4.81 1.49 5.94 0.56 6.72 0 6.97 0.22 6.49 0.95 5.54 2.13 4.53 3.23"/><rect x="4.9" y="2.61" width="0.46" height="0.29" transform="translate(-0.39 4.7) rotate(-47.72)"/><rect x="4.59" y="1.93" width="0.29" height="3.09" rx="0.14" ry="0.14" transform="translate(3.82 -2.33) rotate(45)"/></svg>`
+        activateBtn.style.paddingLeft = '5px';
+        activateBtn.onmouseover
         const navRight = nav.children[1];
         const logo = navLeft.children[0];
 
