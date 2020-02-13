@@ -1,11 +1,13 @@
 \section{Datenpipeline}
-Als Konzeptnachweis ist ein neurales Netzwerk erstellt worden, welches die Nodes und Base-Nodes in den Abbildungen \ref{fig:os} und \ref{fig:xs} von Bildern unterscheiden kann, in denen eben keine Node enthalten ist. 
+Für die durchgeführte Machbarkeitsstudie wurde ein neuronales Netzwerk erstellt.
+Dieses kann Nodes und Base-Nodes entsprechend den Abbildungen \ref{fig:os} und \ref{fig:xs} erkennen oder als unzutreffend klassifizieren.
 
-Dieses wird dann in ein \name{Fully Convolutional Neural Network}\cite{Long2014} umgewandelt, um diese Überprüfung auf einem Bild zusätzlich lokalisieren zu können.
+Das erstelle neuronale Netzwerk wurde dann in ein \name{Fully Convolutional Neural Network} \cite{Long2014} umgewandelt, um nicht nur die Klassen, sondern auch die Positionen der Nodes im Bild zu erhalten.
 
-Ein weiteres neurales Netzwerk wird nun erstellt, um die \name{Constraints} zu erkennen.
-Hierfür wurden die Symbole, wie sie in den Abbildungen \ref{fig:rs} und \ref{fig:ts} zu sehen sind, benutzt, um Trainingsdaten zu generieren, die wiederum genutzt werden können, um das neurale Netzwerk zu trainieren.
-Hierfür wurden die vorher genutzten Nodes zufällig auf einem Bild verteilt und daraufhin zufällig durch Constraints verbunden.
+Ein weiteres neuronales Netzwerk wurde im weiteren Verlauf erstellt, um die \name{Constraints} zu erkennen.
+Hierfür wurden die Symbole, wie sie in den Abbildungen \ref{fig:rs} und \ref{fig:ts} zu sehen sind, benutzt, um Trainingsdaten zu generieren.
+Diese können wiederum genutzt werden, um das neurale Netzwerk zu trainieren.
+Hierfür wurden die vorher genutzten Nodes zufällig auf einem Bild verteilt und daraufhin zufällig durch Constraints verbunden (Abbildung \ref{fig:pre_crop}).
 
 \begin{figure}
   \centering
@@ -23,12 +25,13 @@ Hierfür wurden die vorher genutzten Nodes zufällig auf einem Bild verteilt und
     \label{fig:constraint_data}
 \end{figure}
 
-Die daraus entstandenen Schnitte werden verformt, um einheitliche Ma{\ss}e zu erhalten.
-Des Weiteren werden die Bilder so gespiegelt, dass die erste Node stets oben links im Bild ist.
-So sind Bilder nur als korrekt anzusehen, wenn die Verbindung von oben links nach unten rechts dargestellt wird.
-Das ist notwendig, um neben der Kategorisierung auch die Richtung der Verbindung zu bestimmen.
+Die daraus entstandenen Schnitte (Abbildung \ref{fig:crop}) werden verformt, um einheitliche Ma{\ss}e zu erhalten.
+Des Weiteren werden die Bilder so gespiegelt, dass das Anfangsnode stets oben links im Bild ist.
+Bilder werden demnach nur als korrekt erkannt, wenn ein enthaltenes Constraint von oben links nach unten rechts dargestellt wird.
+Das ist notwendig, um neben der Kategorisierung auch die Richtung der Constraints zu bestimmen.
 
-Aufbauend auf diesen Algorithmen kann nun eine Datenpipeline programmiert werden, welche anhand eines Bildes zunächst die Nodes erkennt und daraufhin die Bildausschnitte generiert, welche dahingehend untersucht werden können, ob zwischen zwei Nodes eine Constraint existiert.
+Aufbauend auf diesen Algorithmen wird eine Datenpipeline programmiert, welche anhand eines Bildes zunächst die Nodes erkennt.
+Im nächsten Schritt werden Bildausschnitte generiert, die daraufhin untersucht werden können, ob zwischen zwei Nodes eine Constraint existiert.
 
-Die daraus gewonnene Information kann dann in das von \name{mec-2} genutzte JSON Format überführt und der Mechanismus dargestellt werden.
-Ein vollständig definierter Mechanismus (alle Gelenke und Glieder, die Anzahl der Freiheitsgrade etc. seien dadurch bekannt) lässt sich so direkt der entsprechenden kinematischen Kette zuordnen.
+Die daraus gewonnene Information kann dann in das von \name{mec2} genutzte JSON-Format überführt und der Mechanismus dargestellt werden.
+Damit kann die mechanische Struktur im Sinne einer Bewegungssimulation und Kräfteanalyse weiter verwendet werden.

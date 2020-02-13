@@ -1,20 +1,21 @@
 \section{Was erkannt werden soll}
-\name{mec-2} modelliert Mechanismen durch
-sogenannte \name{Nodes} und \name{Constraints}.
-Beispielhaft für ein Viergelenk sähe das generierte JSON gemä{\ss} Abbildung \ref{fig:4bar} aus.
+Im Gegensatz zu herkömmlichen Beschreibungen von Mechanismen durch Glieder und Gelenke modelliert \name{mec2} Mechanismen durch \name{Nodes} und \name{Constraints} \cite{Goessner2019a}.
+Beispielhaft zeigt Abbildung \ref{fig:4bar} ein Viergelenk mit der zugehörigen Beschreibung des Mechanismus im JSON-Format.
 
 \begin{figure}
   \includegraphics[width=\textwidth]{images/4bar_json}
-  \caption{Die JSON-Darstellung eines durch mec-2 erstellten Viergelenks mit dem entsprechend generierten Mechanismus.}
+  \caption{Die JSON-Darstellung eines durch mec2 erstellten Viergelenks mit dem entsprechend generierten Mechanismus.}
   \label{fig:4bar}
 \end{figure}
 
-Um diesen Mechanismus durch eine Handzeichnung zu erstellen, ist es erforderlich, einen Algorithmus zu trainieren, der in der Lage ist, mit einer entsprechenden Skizze als Input solchen JSON-Code als Output zu produzieren.
+Um solche Mechanismen durch Handzeichnungen zu erstellen, ist es erforderlich, einen Algorithmus zu trainieren, der mit einer entsprechenden Skizze als Input solchen JSON-Code als Output produziert.
 
-Hierfür mussten zunächst Trainingsdaten geschaffen werden, anhand derer ein solcher Algorithmus Merkmale erlernen kann, die eine Zuordnung der Eingangsbilder zu den entsprechenden Lösungen bilden kann.
-Es wurden etwa 1200 Nodes, 1200 Base-Nodes und 1200 nicht zutreffende Bilder erstellt, welche vor dem Training durch Rotation und Spiegelung augmentiert wurden, um die Varianz der Trainingsdaten zu erhöhen.
+Hierfür werden zunächst Trainingsdaten geschaffen, anhand derer ein trainierbarer Algorithmus Merkmale erlernen und so Eingangsbilder den entsprechenden Lösungen zuordnen kann.
+Für dieses Projekt wurden etwa 1200 Nodes, 1200 Base-Nodes und 1200 nicht zutreffende Bilder erstellt.
+Diese wurden vor dem Training durch Rotation und Spiegelung augmentiert, um die Varianz der Trainingsdaten zu erhöhen.
 
-Des Weiteren wurden von \name{mec-2} genutzte Symbole dem Trainingsset hinzugefügt, sodass der Algorithmus diese nicht als Nodes erkennt, damit Mechanismen erweitert werden können, ohne die bereits erkannten Elemente nochmal zu erkennen.
+Dem zu trainierendem Algorithmus wurde zusätzlich beigebracht, die von \name{mec2} genutzten Symbole den nicht zutreffenden Bildern zuzuordnen.
+Damit wird erreicht, dass Mechanismen erweitert werden können, ohne die bereits erkannten Elemente wiederholt zu erkennen.
 
 \begin{figure}
   \centering
@@ -42,12 +43,13 @@ Des Weiteren wurden von \name{mec-2} genutzte Symbole dem Trainingsset hinzugef�
     \label{fig:example_symbols}
 \end{figure}
 
-Neben den Nodes wurden für die Constraints wieder 1200 rotatorische und 1200 translatorische Verbindungen gezeichnet, welche sich in ihrer Gestaltung an die Darstellung von Constraints an Abbildung \ref{fig:constraints_gtk} orientieren.
-Für gebundene und freie Constraints gibt es noch keine Trainingsdaten, da diese für die momentan bestimmte Funktion zunächst irrelevant sind.
+Neben den Nodes wurden für die Constraints wieder 1200 rotatorische und 1200 translatorische Verbindungen gezeichnet.
+Sie orientieren sich in ihrer Gestaltung an der Darstellung von Constraints in Abbildung \ref{fig:constraints_gtk}.
+Zum aktuellen Stand des Projekts sind gebundene und freie Constraints nicht implementiert.
 
 \begin{figure}
   \centering
   \includegraphics[width=0.8\textwidth]{images/gtk2019_tab1.png}
-  \caption{Darstellung der Constraints in ihren unterschiedlichen Auslagemöglichkeiten. Auszug von Tabelle 1 des Beitrags von Prof. Gössner zum Sammelband des Getriebetechnischen Kolloquiums 2019 in Dortmund\cite{Goessner2019a}}.
+  \caption{Darstellung der Constraints in ihren vier Ausprägungen.}.
   \label{fig:constraints_gtk}
 \end{figure}
