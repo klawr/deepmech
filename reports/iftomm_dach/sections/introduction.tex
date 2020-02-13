@@ -1,17 +1,17 @@
 \section{Einführung}
 Die Simulation, Analyse und Synthese von Mechanismen mittels Basiswebtechnologien stehen im Fokus der Arbeitsgruppe \name{Mechanismentechnik} und \name{Webtechnologien} im Fachbereich Maschinenbau der Fachhochschule Dortmund.
-Im Rahmen dieser Tätigkeiten sind die in JavaScript implementierten Bibliotheken \name{mec2.js}\cite{Goessner2019}\cite{Goessner2019a}\cite{Goessner2018}, einer Bibliothek zur Modellierung ebener Mechanismen auf der Grundlage einer partikelzentrierten Physik-Engine, und \name{g2.js}\cite{Goessner2019b} als minimalistische Grafikbibliothek entstanden. 
+Im Rahmen dieser Tätigkeiten sind die in JavaScript implementierten Bibliotheken \name{mec2.js} \cite{Goessner2019, Goessner2019a, Goessner2018}, einer Bibliothek zur Modellierung ebener Mechanismen auf der Grundlage einer partikelzentrierten Physik-Engine, und \name{g2.js} \cite{Goessner2019b} als minimalistische Grafikbibliothek entstanden. 
 
-Anwendung finden diese bereits in einem speziellen \name{<mec-2>} HTML-Element und dem webbasierten Mechanismeneditor \name{mecEdit}\cite{Uhlig2019}\cite{Uhlig2019a}, der bereits aktiv in der Lehre genutzt wird.
+Anwendung finden diese bereits in einem speziellen \name{<mec-2>} HTML-Element und dem webbasierten Mechanismeneditor \name{mecEdit} \cite{Uhlig2019, Uhlig2019a}, der bereits aktiv in der Lehre genutzt wird.
 
 Webanwendungen stehen stets unter dem Vorsatz, eine möglichst reibungsfreie Nutzerinteraktion zu gewährleisten.
-\name{mecEdit} bietet hierfür dem Nutzer die Möglichkeit, per möglichst einfacher Eingabe der entsprechenden Elemente des Mechanismus diesen interaktiv und animiert auf den Bildschirm zu bringen.
+\name{mecEdit} bietet hierfür dem Nutzer die Möglichkeit, per möglichst einfacher Eingabe der entsprechenden Elemente des Mechanismus diesen interaktiv und animierbar auf den Bildschirm zu bringen.
 
-Für eine schnelle Skizzierung ist jedoch bislang der schnellste Weg die Handzeichnung auf dem Papier, welche jedoch intrinsisch weder interaktiv noch animiert ist.
+Für eine schnelle Skizze ist bislang der schnellste Weg die Handzeichnung auf dem Papier, welche jedoch intrinsisch weder interaktiv noch animierbar ist.
 
-Die Vorzüge der analogen und digitalen Herangehensweise zusammenzuführen stellt nun eine eine weitere Schnittstelle in der Entwicklung dar.
-Sie soll handskizzierte Mechanismen durch Mustererkennung kinematischen Modellen zuordnen, indem entsprechend in das Programm eingeladene Bilder analysiert und das \name{mec-2} Modell ermittelt werden kann.
+Im Folgendem wird das Ziel der Zusammenführung der Vorzüge der analogen und digitalen Herangehensweise beschrieben.
+Der Prozess soll handskizzierte Mechanismen durch Mustererkennung kinematischen Modellen zuordnen. Bilder werden dafür in ein Programm eingeladen, durch Mustererkennung analysiert und das \name{mec2} Modell ermittelt.
 
-Hierfür sind mehrere statistische Modelle trainiert worden, welche in der Lage sind, sowohl die durch \name{mec2} beschriebenen \name{Nodes} und \name{Constraints} zu erkennen und daraus einen entsprechenden Mechanismus abzuleiten.
+Hierfür wurden im Sinne des maschinellen Lernens mehrere statistische Modelle trainiert, welche in der Lage sind, die durch \name{mec2} beschriebenen \name{Nodes} und \name{Constraints} zu erkennen und daraus einen entsprechenden Mechanismus abzuleiten.
 
-Für das Training des Modells wurden die Bibliotheken \name{Tensorflow}\cite{Google2019} und \name{Keras}\cite{Chollet2019}\cite{Chollet2017} genutzt.
+Für das Training des Modells wurden die Bibliotheken \name{Tensorflow} \cite{Google2019} und \name{Keras} \cite{Chollet2019, Chollet2017} genutzt.
