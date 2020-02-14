@@ -3,7 +3,7 @@ Während die Anwendung des Programms vollständig in JavaScript erfolgt und so l
 Mithilfe von CUDA \cite{nvidia2019} kann so direkt mit den Grafikprozessoren des PCs gearbeitet werden\footnote{Diese Zugriffe werden für den Entwickler durch die genutzten Bibliotheken \name{Tensorflow} und \name{Keras} abstrahiert.}.
 
 Das Erlernen von Merkmalen geschieht durch das Minimieren einer Verlustfunktion, welche die Differenz zwischen den vom Modell bestimmten Ergebnis und dem tatsächlichen Ergebnis misst \cite[S.710]{StuartRussell2018}.
-Die Ableitung dieser Verlustfunktion nach dem Output wird dann auf das neuronale Netzwerk angewandt, um so mutma{\ss}lich bei der nächsten Vorhersage einen niedrigeren Wert als Verlust zu bekommen.
+Die Ableitung dieser Verlustfunktion nach dem Output des Modells wird dann auf das neuronale Netzwerk angewandt, um so mutma{\ss}lich bei der nächsten Vorhersage einen niedrigeren Wert als Verlust zu bekommen \cite[S.719]{StuartRussell2018}.
 
 Dieser Prozess wiederholt sich hinreichend oft, bis die Vorhersagen eine angestrebte Genauigkeit erreichen.
 
