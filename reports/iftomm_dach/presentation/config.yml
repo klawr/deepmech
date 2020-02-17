@@ -1,0 +1,23 @@
+baseURL: ""
+languageCode: "en-us"
+title: "Automatische Klassifizierung handgezeichneter Mechanismen durch maschinelles Lernen"
+author: "Kai Lawrence"
+
+relativeURLs: true
+
+theme: "reveal-hugo"
+
+# To enable HTML https://github.com/dzello/reveal-hugo/issues/65
+markup:
+    goldmark:
+        renderer:
+            unsafe: true
+
+outputFormats:
+    Reveal:
+        baseName: "index"
+        mediaType: "text/html"
+        isHTML: true
+
+staticDir:
+    - "../code/bin"
