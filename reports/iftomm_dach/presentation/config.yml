@@ -7,6 +7,10 @@ relativeURLs: true
 
 theme: "reveal-hugo"
 
+params:
+    reveal_hugo:
+        theme: "white"
+
 # To enable HTML https://github.com/dzello/reveal-hugo/issues/65
 markup:
     goldmark:
@@ -20,4 +24,5 @@ outputFormats:
         isHTML: true
 
 staticDir:
+    - "static"
     - "../code/bin"
