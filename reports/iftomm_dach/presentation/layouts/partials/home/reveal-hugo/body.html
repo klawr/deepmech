@@ -23,3 +23,18 @@
     Reveal.configure({ width: "100%" })
     Reveal.configure({ height: "100%" })
 </script>
+
+<script type="text/javascript">
+
+    function hideLogo(event) {
+        if (event.currentSlide.dataset.backgroundIframe) { // Hide logo
+            document.getElementById('logo').style.display = 'none'
+        }
+        else {
+            document.getElementById('logo').style.display = 'block'
+        }
+    }
+
+    Reveal.addEventListener('ready', hideLogo);
+    Reveal.addEventListener('slidechanged', hideLogo);
+</script>

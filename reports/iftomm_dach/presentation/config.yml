@@ -10,6 +10,7 @@ theme: "reveal-hugo"
 params:
     reveal_hugo:
         theme: "white"
+        slide_number: true
 
 # To enable HTML https://github.com/dzello/reveal-hugo/issues/65
 markup:
