@@ -356,12 +356,12 @@ function mec2Deepmech() {
             element._interactor.on('tick', tick);
 
             // Filter all "nodes" and "constraint" commands from _g command queue
-            const grp = {
+            const filtered_mec = {
                 commands: element._g.commands.filter(c =>
                     element._model.nodes.includes(c.a) ||
                     element._model.constraints.includes(c.a))
             };
-            mec_placeholder.use(grp);
+            mec_placeholder.use({grp: () => filtered_mec});
             _g_draw.exe(element._ctx);
         }
 
