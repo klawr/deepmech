@@ -443,7 +443,7 @@ function mec2Deepmech() {
         const nav = element._root.children[1].children[0];
         const navLeft = nav.children[0];
         const activateBtn = buttonFactory('d', activate);
-        activateBtn.innerHTML = `<svg id="Ebene_1" data-name="Ebene 1" width="10pt" height="10pt" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 6.97 6.96"><title>Stift_Icon_7x7</title><rect x="2.01" y="2.25" width="0.9" height="4.57" transform="translate(3.9 -0.41) rotate(45)"/><polygon points="0.4 5.99 0.99 6.54 0.89 6.63 0.37 6.81 0.12 6.58 0.31 6.08 0.4 5.99"/><polygon points="0 6.96 0.06 6.72 0.24 6.9 0 6.96"/><polygon points="4.53 3.23 3.77 2.46 4.81 1.49 5.94 0.56 6.72 0 6.97 0.22 6.49 0.95 5.54 2.13 4.53 3.23"/><rect x="4.9" y="2.61" width="0.46" height="0.29" transform="translate(-0.39 4.7) rotate(-47.72)"/><rect x="4.59" y="1.93" width="0.29" height="3.09" rx="0.14" ry="0.14" transform="translate(3.82 -2.33) rotate(45)"/></svg>`
+        activateBtn.innerHTML = '🖊️';
         activateBtn.style.paddingLeft = '5px';
         activateBtn.onmouseover
         const navRight = nav.children[1];
