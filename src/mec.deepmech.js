@@ -31,18 +31,18 @@ function mec2Deepmech() {
         }));
         let flattenedInput = false;
         let fDim;
-    
+
         for (const layer of model.layers) {
             if (layer.name.includes('flatten')) {
                 flattenedInput = true;
                 fDim = layer.input.shape;
             }
-    
+
             else if (layer.name.includes('dense')) {
                 inputShape = layer.input.shape;
                 outputDim = layer.getWeights()[1].shape[0];
                 const [W, b] = layer.getWeights();
-    
+
                 if (flattenedInput) {
                     const shape = [fDim[1], fDim[2], fDim[3], outputDim];
                     const newW = W.reshape(shape);
@@ -50,7 +50,7 @@ function mec2Deepmech() {
                         filters: outputDim,
                         kernelSize: [fDim[1], fDim[2]],
                         name: layer.name,
-                        strides: [1,1],
+                        strides: [1, 1],
                         activation: layer.activation,
                         padding: 'valid',
                         weights: [newW, b]
@@ -70,7 +70,7 @@ function mec2Deepmech() {
                     }))
                 }
             }
-    
+
             else {
                 newModel.add(layer);
             }
@@ -82,21 +82,21 @@ function mec2Deepmech() {
         // Each element gets a deepmech object, which handles the predictions
         const deepmech = {
             mecElement: element,
-            logging: true,
-            loader: new Loader(),
             crop: new Crop(),
-            get symbolClassifier() { return tf.loadLayersModel(this.loader) },
-            get cropIdentifier() { return tf.loadLayersModel(this.crop) },
+            symbolClassifier: (async () => {
+                return toFullyConv(await tf.loadLayersModel(new Loader()));
+            })(),
+            cropIdentifier: (async () => {
+                return await tf.loadLayersModel(new Crop());
+            })(),
 
             /**
              * Add handwritten nodes to mec
              * @param {object} image (tensor) which contains the image on the canvas. 
              * @param {object} nodeDetector model which detects nodes.
              */
-            detectNodes(image, nodeDetector, model, logging) {
-                logging && console.log('Beginning first scan: ', performance.now() - this.t0);
+            detectNodes(image, nodeDetector) {
                 const prediction = nodeDetector.predict(image, { batch_size: 1 }).arraySync()[0];
-                logging && console.log('First prediction finished: ', performance.now() - this.t0);
 
                 function extractInterestingInfo(pred, idx) {
                     const y = idx * 4;
@@ -121,20 +121,8 @@ function mec2Deepmech() {
                 const nodes = removeOverlaps(prediction
                     .flatMap(extractInterestingInfo)
                     .filter(e => e.maxIndex).sort((a, b) => a.max - b.max));
-                
-                const view = this.mecElement._interactor.view;
-                nodes.forEach(e => {
-                    const node = {
-                        id: 'node' + model.nodes.length,
-                        x: Math.round((e.x - view.x + 16) / view.scl),
-                        y: Math.round((this.mecElement.height - e.y - view.y - 16) / view.scl),
-                        base: e.maxIndex > 1 ? true : false // 0 == n, 1 == o, 2 == x (0 is filtered...)
-                    };
-                    mec.node.extend(node);
-                    model.addNode(node);
-                    node.init(model);
-                });
-                logging && console.log('Detected ', nodes.length, 'nodes: ', performance.now() - this.t0);
+
+                return nodes;
             },
 
             /**
@@ -144,14 +132,14 @@ function mec2Deepmech() {
              *  the mirroring of the respective image (to keep y1, x1, y2, x2 aligned)
              *  and which nodes 
              */
-            getCrops(image, model, logging) {
+            getCrops(image, nodes, constraints = []) {
                 const view = this.mecElement._interactor.view;
 
                 const info = [];
-                const boxes = model.nodes.flatMap(node1 => {
-                    return model.nodes.map(node2 => {
+                const boxes = nodes.flatMap(node1 => {
+                    return nodes.map(node2 => {
                         // Return if these nodes already have a mutual constraint
-                        if (model.constraints.find(c =>
+                        if (constraints.find(c =>
                             c.p1 == node1.id && c.p2 == node2.id ||
                             c.p1 == node2.id && c.p2 == node1.id
                         )) { return; }
@@ -165,7 +153,10 @@ function mec2Deepmech() {
                         // Return if the resulting crop would be 1 dimensional.
                         if (x1 === x2 || y1 === y2) return;
 
-                        let o = { mirror: 0, p1: node1.id, p2: node2.id };
+                        let o = {
+                            mirror: 0, p1: node1.id, p2: node2.id,
+                            x1: node1.x, y1: node1.y, x2: node2.x, y2: node2.y
+                        };
                         // Flip vertically if x2 is the second node
                         // NOTE which seems to be the wrong way around...
                         if (x2 == node1.x) o.mirror++;
@@ -214,52 +205,100 @@ function mec2Deepmech() {
              * @param {array} mirror - contains information about the mirroring of the tensor
              * @param {object} constraintDetector - model to detect constraints 
              */
-            detectConstraints(crops, info, constraintDetector, model, logging) {
-                logging && console.log('Beginning second scan: ', performance.now() - this.t0);
+            detectConstraints(crops, constraintDetector) {
                 let constraints = constraintDetector.predict(crops, { batch_size: crops.shape[0] }).arraySync();
-                logging && console.log('Second prediction finished: ', performance.now() - this.t0);
 
                 constraints = constraints.map(c => c.indexOf(Math.max(...c)));
-                let num = 0;
-                constraints.forEach((c, idx) => {
-                    if (!c) return;
-                    num++;
-                    const p1 = info[idx].p1;
-                    const p2 = info[idx].p2;
-                    if (!p1 || !p2) {
-                        console.warn('Found no matching nodes for constraint:', p1, p2, model.nodes);
-                    } else {
-                        const constraint = {
-                            id: 'constraint' + model.constraints.length,
-                            p1, p2,
-                            len: { type: c == 1 ? 'const' : 'free' },
-                            ori: { type: c == 2 ? 'const' : 'free' }
-                        };
-                        mec.constraint.extend(constraint);
-                        model.addConstraint(constraint);
-                        constraint.init(model);
-                    }
-                });
-                logging && console.log('Found ', num, 'new constraints: ', performance.now() - this.t0);
+                return constraints;
             },
 
-            async load() {
-                const model = this.mecElement._model;
+            async updateMec2(model) {
                 this.t0 = performance.now();
-                console.log('Starting...');
                 let tensor = tf.browser.fromPixels(this.mecElement._ctx.canvas, 1);
                 tensor = tensor.div(255);
                 tensor = tensor.expandDims();
-                const nodeDetector = toFullyConv(await this.symbolClassifier);
-                this.detectNodes(tensor, nodeDetector, model, this.logging);
+                const nodeDetector = await this.symbolClassifier;
+                const nodes = this.detectNodes(tensor, nodeDetector);
 
-                const [crops, info] = this.getCrops(tensor, model, this.logging);
+                const view = this.mecElement._interactor.view;
+                nodes.forEach(e => {
+                    const node = {
+                        id: 'node' + model.nodes.length,
+                        x: Math.round((e.x - view.x + 16) / view.scl),
+                        y: Math.round((this.mecElement.height - e.y - view.y - 16) / view.scl),
+                        base: e.maxIndex > 1 ? true : false // 0 == n, 1 == o, 2 == x (0 is filtered...)
+                    };
+                    mec.node.extend(node);
+                    model.addNode(node);
+                    node.init(model);
+                });
+
+                const [crops, info] = this.getCrops(tensor, model.nodes, model.constraints);
                 if (crops) {
                     const constraintDetector = await this.cropIdentifier;
-                    this.detectConstraints(crops, info, constraintDetector, model, this.logging);
+                    const constraints = this.detectConstraints(crops, constraintDetector);
+
+                    constraints.forEach((c, idx) => {
+                        if (!c) return;
+                        const p1 = info[idx].p1;
+                        const p2 = info[idx].p2;
+                        if (!p1 || !p2) {
+                            console.warn('Found no matching nodes for constraint:', p1, p2, model.nodes);
+                        } else {
+                            const constraint = {
+                                id: 'constraint' + model.constraints.length,
+                                p1, p2,
+                                len: { type: c == 1 ? 'const' : 'free' },
+                                ori: { type: c == 2 ? 'const' : 'free' }
+                            };
+                            mec.constraint.extend(constraint);
+                            model.addConstraint(constraint);
+                            constraint.init(model);
+                        }
+                    });
                 }
                 this.mecElement._model.draw(this.mecElement._g);
-                console.log('finished after: ', performance.now() - this.t0)
+            },
+
+            async streamPredict(tensor) {
+                const nodeDetector = await this.symbolClassifier;
+                const nodes = this.detectNodes(tensor, nodeDetector)
+                    .filter(n => n.max > 0.99);
+
+                const view = this.mecElement._interactor.view;
+                nodes.forEach(e => {
+                    g2().view({ cartesian: true })
+                        .ins(g => {
+                            const node = {
+                                x: Math.round((e.x - view.x + 16) / view.scl),
+                                y: Math.round((this.mecElement.height - e.y - view.y - 16) / view.scl)
+                            };
+                            if (e.maxIndex == 2) {
+                                g.gnd(node);
+                            }
+                            else if (e.maxIndex == 1) {
+                                g.nod(node);
+                            }
+                        }).exe(this.mecElement._ctx);
+                });
+                const [crops, info] = this.getCrops(tensor, nodes);
+                if (crops && info.length <= 6) {
+                    const constraintDetector = await this.cropIdentifier;
+                    const constraints = this.detectConstraints(crops, constraintDetector);
+                    constraints.forEach((c, idx) => {
+                        if (!c) return;
+                        const i = info[idx]
+                        const vec = {
+                            x1: Math.round((i.x1 - view.x + 16) / view.scl),
+                            y1: Math.round((this.mecElement.height - i.y1 - view.y - 16) / view.scl),
+                            x2: Math.round((i.x2 - view.x + 16) / view.scl),
+                            y2: Math.round((this.mecElement.height - i.y2 - view.y - 16) / view.scl),
+                        };
+                        g2().view({ cartesian: true })
+                            .vec({ ...vec, ls: c == 1 ? 'yellow' : 'green' })
+                            .exe(this.mecElement._ctx);
+                    });
+                }
             }
         }
 
@@ -282,9 +321,9 @@ function mec2Deepmech() {
                 isSolid: false // should not be detected by selector
             })
             .view(view) // Same view as the original model
-            .use({grp: () => img_placeholder})
-            .use({grp: () => mec_placeholder})
-            .use({grp: () => ply_placeholder});
+            .use({ grp: () => img_placeholder })
+            .use({ grp: () => mec_placeholder })
+            .use({ grp: () => ply_placeholder });
 
         let ply = undefined; // A reference to the "polyline" which is drawn at the moment
         let mode; // Mode to keep track of current action
@@ -361,7 +400,7 @@ function mec2Deepmech() {
                     element._model.nodes.includes(c.a) ||
                     element._model.constraints.includes(c.a))
             };
-            mec_placeholder.use({grp: () => filtered_mec});
+            mec_placeholder.use({ grp: () => filtered_mec });
             _g_draw.exe(element._ctx);
         }
 
@@ -414,8 +453,37 @@ function mec2Deepmech() {
                 const x = -view.x / view.scl;
                 const y = -view.y / view.scl;
                 const scl = 1 / view.scl;
-                img_placeholder.img({uri: reader.result, x, y, scl});
+                img_placeholder.img({ uri: reader.result, x, y, scl });
             });
+        }
+
+        function camFn() {
+            reset();
+            const _canvas = element._ctx.canvas;
+            const _video = document.createElement('video');
+            _video.width = _canvas.width;
+            _video.height = _canvas.height;
+            _video.autoplay = true;
+
+            _video.addEventListener('play', function step() {
+                let image = tf.browser.fromPixels(_video, 1);
+                image = tf.cast(tf.greater(image, 128), 'float32');
+                const sum = tf.sum(image);
+                const threshold = tf.div(tf.prod(image.shape), 2);
+                if (tf.greater(sum, threshold).arraySync()) {
+                    image = tf.abs(tf.sub(image, 1));
+                }
+                tf.browser.toPixels(image, _canvas);
+                image = tf.expandDims(image);
+                deepmech.streamPredict(image);
+                requestAnimationFrame(step);
+            }, { once: true });
+
+            if (navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(s => _video.srcObject = s)
+                    .catch(console.error)
+            };
         }
 
         function drawFn() {
@@ -450,7 +518,7 @@ function mec2Deepmech() {
         const nav = element._root.children[1].children[0];
         const navLeft = nav.children[0];
         const activateBtn = buttonFactory('d', activate);
-        activateBtn.innerHTML = `<svg id="Ebene_1" data-name="Ebene 1" width="10pt" height="10pt" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 6.97 6.96"><title>Stift_Icon_7x7</title><rect x="2.01" y="2.25" width="0.9" height="4.57" transform="translate(3.9 -0.41) rotate(45)"/><polygon points="0.4 5.99 0.99 6.54 0.89 6.63 0.37 6.81 0.12 6.58 0.31 6.08 0.4 5.99"/><polygon points="0 6.96 0.06 6.72 0.24 6.9 0 6.96"/><polygon points="4.53 3.23 3.77 2.46 4.81 1.49 5.94 0.56 6.72 0 6.97 0.22 6.49 0.95 5.54 2.13 4.53 3.23"/><rect x="4.9" y="2.61" width="0.46" height="0.29" transform="translate(-0.39 4.7) rotate(-47.72)"/><rect x="4.59" y="1.93" width="0.29" height="3.09" rx="0.14" ry="0.14" transform="translate(3.82 -2.33) rotate(45)"/></svg>`
+        activateBtn.innerHTML = '🖊️';
         activateBtn.style.paddingLeft = '5px';
         activateBtn.onmouseover
         const navRight = nav.children[1];
@@ -464,12 +532,15 @@ function mec2Deepmech() {
         const navRightDraw = document.createElement('span');
         const corviewPlaceholder = document.createElement('div');
 
+        const camBtn = buttonFactory('cam', camFn);
+        camBtn.innerHTML = '📷';
         const drawBtn = buttonFactory('draw', drawFn);
         const dragBtn = buttonFactory('drag', dragFn);
         const deleteBtn = buttonFactory('del', deleteFn);
-        const predictBtn = buttonFactory('predict', () => deepmech.load() && deactivate());
+        const predictBtn = buttonFactory('predict', () => deepmech.updateMec2(element._model) && deactivate());
 
         navLeft.appendChild(activateBtn);
+        navLeft.appendChild(camBtn);
 
         navLeftDraw.appendChild(logoPlaceholder);
         navLeftDraw.appendChild(uploadBtn);
