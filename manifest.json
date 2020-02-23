@@ -1,0 +1,10 @@
+{
+    "name": "deepmech",
+    "shortname": "deepmech",
+    "description": "Detect mechanical linkages using CV",
+    "start_url": "./index.html",
+    "scope" : "./",
+    "display": "standalone",
+    "background_color": "#999",
+    "theme_color": "#ccc"
+}
