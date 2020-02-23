@@ -82,10 +82,13 @@ function mec2Deepmech() {
         // Each element gets a deepmech object, which handles the predictions
         const deepmech = {
             mecElement: element,
-            loader: new Loader(),
             crop: new Crop(),
-            get symbolClassifier() { return tf.loadLayersModel(this.loader) },
-            get cropIdentifier() { return tf.loadLayersModel(this.crop) },
+            symbolClassifier: (async() => {
+                return toFullyConv(await tf.loadLayersModel(new Loader()));
+            })(),
+            cropIdentifier: (async() => {
+                return await tf.loadLayersModel(new Crop());
+            })(),
 
             /**
              * Add handwritten nodes to mec
@@ -211,7 +214,7 @@ function mec2Deepmech() {
                 let tensor = tf.browser.fromPixels(this.mecElement._ctx.canvas, 1);
                 tensor = tensor.div(255);
                 tensor = tensor.expandDims();
-                const nodeDetector = toFullyConv(await this.symbolClassifier);
+                const nodeDetector = await this.symbolClassifier;
                 const nodes = this.detectNodes(tensor, nodeDetector);
 
                 const view = this.mecElement._interactor.view;
