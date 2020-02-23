@@ -50,7 +50,7 @@ function mec2Deepmech() {
                         filters: outputDim,
                         kernelSize: [fDim[1], fDim[2]],
                         name: layer.name,
-                        strides: [1,1],
+                        strides: [1, 1],
                         activation: layer.activation,
                         padding: 'valid',
                         weights: [newW, b]
@@ -93,7 +93,7 @@ function mec2Deepmech() {
              * @param {object} image (tensor) which contains the image on the canvas. 
              * @param {object} nodeDetector model which detects nodes.
              */
-            detectNodes(image, nodeDetector, model, logging) {
+            detectNodes(image, nodeDetector, logging) {
                 logging && console.log('Beginning first scan: ', performance.now() - this.t0);
                 const prediction = nodeDetector.predict(image, { batch_size: 1 }).arraySync()[0];
                 logging && console.log('First prediction finished: ', performance.now() - this.t0);
@@ -122,19 +122,8 @@ function mec2Deepmech() {
                     .flatMap(extractInterestingInfo)
                     .filter(e => e.maxIndex).sort((a, b) => a.max - b.max));
                 
-                const view = this.mecElement._interactor.view;
-                nodes.forEach(e => {
-                    const node = {
-                        id: 'node' + model.nodes.length,
-                        x: Math.round((e.x - view.x + 16) / view.scl),
-                        y: Math.round((this.mecElement.height - e.y - view.y - 16) / view.scl),
-                        base: e.maxIndex > 1 ? true : false // 0 == n, 1 == o, 2 == x (0 is filtered...)
-                    };
-                    mec.node.extend(node);
-                    model.addNode(node);
-                    node.init(model);
-                });
                 logging && console.log('Detected ', nodes.length, 'nodes: ', performance.now() - this.t0);
+                return nodes;
             },
 
             /**
@@ -144,14 +133,14 @@ function mec2Deepmech() {
              *  the mirroring of the respective image (to keep y1, x1, y2, x2 aligned)
              *  and which nodes 
              */
-            getCrops(image, model, logging) {
+            getCrops(image, nodes, constraints = []) {
                 const view = this.mecElement._interactor.view;
 
                 const info = [];
-                const boxes = model.nodes.flatMap(node1 => {
-                    return model.nodes.map(node2 => {
+                const boxes = nodes.flatMap(node1 => {
+                    return nodes.map(node2 => {
                         // Return if these nodes already have a mutual constraint
-                        if (model.constraints.find(c =>
+                        if (constraints.find(c =>
                             c.p1 == node1.id && c.p2 == node2.id ||
                             c.p1 == node2.id && c.p2 == node1.id
                         )) { return; }
@@ -214,16 +203,45 @@ function mec2Deepmech() {
              * @param {array} mirror - contains information about the mirroring of the tensor
              * @param {object} constraintDetector - model to detect constraints 
              */
-            detectConstraints(crops, info, constraintDetector, model, logging) {
+            detectConstraints(crops, constraintDetector, logging) {
                 logging && console.log('Beginning second scan: ', performance.now() - this.t0);
                 let constraints = constraintDetector.predict(crops, { batch_size: crops.shape[0] }).arraySync();
                 logging && console.log('Second prediction finished: ', performance.now() - this.t0);
 
                 constraints = constraints.map(c => c.indexOf(Math.max(...c)));
-                let num = 0;
+                logging && console.log('Found new constraints in: ', performance.now() - this.t0);
+                return constraints;
+            },
+
+            async updateMec2(model) {
+                this.t0 = performance.now();
+                console.log('Starting...');
+                let tensor = tf.browser.fromPixels(this.mecElement._ctx.canvas, 1);
+                tensor = tensor.div(255);
+                tensor = tensor.expandDims();
+                const nodeDetector = toFullyConv(await this.symbolClassifier);
+                const nodes = this.detectNodes(tensor, nodeDetector, this.logging);
+
+                const view = this.mecElement._interactor.view;
+                nodes.forEach(e => {
+                    const node = {
+                        id: 'node' + model.nodes.length,
+                        x: Math.round((e.x - view.x + 16) / view.scl),
+                        y: Math.round((this.mecElement.height - e.y - view.y - 16) / view.scl),
+                        base: e.maxIndex > 1 ? true : false // 0 == n, 1 == o, 2 == x (0 is filtered...)
+                    };
+                    mec.node.extend(node);
+                    model.addNode(node);
+                    node.init(model);
+                });
+
+                const [crops, info] = this.getCrops(tensor, model.nodes, model.constraints, this.logging);
+                if (crops) {
+                    const constraintDetector = await this.cropIdentifier;
+                    const constraints = this.detectConstraints(crops, constraintDetector, this.logging);
+
                 constraints.forEach((c, idx) => {
                     if (!c) return;
-                    num++;
                     const p1 = info[idx].p1;
                     const p2 = info[idx].p2;
                     if (!p1 || !p2) {
@@ -240,28 +258,12 @@ function mec2Deepmech() {
                         constraint.init(model);
                     }
                 });
-                logging && console.log('Found ', num, 'new constraints: ', performance.now() - this.t0);
-            },
-
-            async load() {
-                const model = this.mecElement._model;
-                this.t0 = performance.now();
-                console.log('Starting...');
-                let tensor = tf.browser.fromPixels(this.mecElement._ctx.canvas, 1);
-                tensor = tensor.div(255);
-                tensor = tensor.expandDims();
-                const nodeDetector = toFullyConv(await this.symbolClassifier);
-                this.detectNodes(tensor, nodeDetector, model, this.logging);
-
-                const [crops, info] = this.getCrops(tensor, model, this.logging);
-                if (crops) {
-                    const constraintDetector = await this.cropIdentifier;
-                    this.detectConstraints(crops, info, constraintDetector, model, this.logging);
                 }
                 this.mecElement._model.draw(this.mecElement._g);
                 console.log('finished after: ', performance.now() - this.t0)
-            }
-        }
+            },
+
+                }
 
         // Copy corview to have coordinates in draw mode (appendChild actually moves the Node...)
         const view = element._interactor.view;
@@ -282,9 +284,9 @@ function mec2Deepmech() {
                 isSolid: false // should not be detected by selector
             })
             .view(view) // Same view as the original model
-            .use({grp: () => img_placeholder})
-            .use({grp: () => mec_placeholder})
-            .use({grp: () => ply_placeholder});
+            .use({ grp: () => img_placeholder })
+            .use({ grp: () => mec_placeholder })
+            .use({ grp: () => ply_placeholder });
 
         let ply = undefined; // A reference to the "polyline" which is drawn at the moment
         let mode; // Mode to keep track of current action
@@ -361,7 +363,7 @@ function mec2Deepmech() {
                     element._model.nodes.includes(c.a) ||
                     element._model.constraints.includes(c.a))
             };
-            mec_placeholder.use({grp: () => filtered_mec});
+            mec_placeholder.use({ grp: () => filtered_mec });
             _g_draw.exe(element._ctx);
         }
 
@@ -414,7 +416,7 @@ function mec2Deepmech() {
                 const x = -view.x / view.scl;
                 const y = -view.y / view.scl;
                 const scl = 1 / view.scl;
-                img_placeholder.img({uri: reader.result, x, y, scl});
+                img_placeholder.img({ uri: reader.result, x, y, scl });
             });
         }
 
@@ -467,7 +469,7 @@ function mec2Deepmech() {
         const drawBtn = buttonFactory('draw', drawFn);
         const dragBtn = buttonFactory('drag', dragFn);
         const deleteBtn = buttonFactory('del', deleteFn);
-        const predictBtn = buttonFactory('predict', () => deepmech.load() && deactivate());
+        const predictBtn = buttonFactory('predict', () => deepmech.updateMec2(element._model) && deactivate());
 
         navLeft.appendChild(activateBtn);
 
