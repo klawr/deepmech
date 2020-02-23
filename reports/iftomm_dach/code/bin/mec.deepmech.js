@@ -82,7 +82,6 @@ function mec2Deepmech() {
         // Each element gets a deepmech object, which handles the predictions
         const deepmech = {
             mecElement: element,
-            logging: true,
             loader: new Loader(),
             crop: new Crop(),
             get symbolClassifier() { return tf.loadLayersModel(this.loader) },
@@ -93,10 +92,8 @@ function mec2Deepmech() {
              * @param {object} image (tensor) which contains the image on the canvas. 
              * @param {object} nodeDetector model which detects nodes.
              */
-            detectNodes(image, nodeDetector, logging) {
-                logging && console.log('Beginning first scan: ', performance.now() - this.t0);
+            detectNodes(image, nodeDetector) {
                 const prediction = nodeDetector.predict(image, { batch_size: 1 }).arraySync()[0];
-                logging && console.log('First prediction finished: ', performance.now() - this.t0);
 
                 function extractInterestingInfo(pred, idx) {
                     const y = idx * 4;
@@ -122,7 +119,6 @@ function mec2Deepmech() {
                     .flatMap(extractInterestingInfo)
                     .filter(e => e.maxIndex).sort((a, b) => a.max - b.max));
                 
-                logging && console.log('Detected ', nodes.length, 'nodes: ', performance.now() - this.t0);
                 return nodes;
             },
 
@@ -203,24 +199,20 @@ function mec2Deepmech() {
              * @param {array} mirror - contains information about the mirroring of the tensor
              * @param {object} constraintDetector - model to detect constraints 
              */
-            detectConstraints(crops, constraintDetector, logging) {
-                logging && console.log('Beginning second scan: ', performance.now() - this.t0);
+            detectConstraints(crops, constraintDetector) {
                 let constraints = constraintDetector.predict(crops, { batch_size: crops.shape[0] }).arraySync();
-                logging && console.log('Second prediction finished: ', performance.now() - this.t0);
 
                 constraints = constraints.map(c => c.indexOf(Math.max(...c)));
-                logging && console.log('Found new constraints in: ', performance.now() - this.t0);
                 return constraints;
             },
 
             async updateMec2(model) {
                 this.t0 = performance.now();
-                console.log('Starting...');
                 let tensor = tf.browser.fromPixels(this.mecElement._ctx.canvas, 1);
                 tensor = tensor.div(255);
                 tensor = tensor.expandDims();
                 const nodeDetector = toFullyConv(await this.symbolClassifier);
-                const nodes = this.detectNodes(tensor, nodeDetector, this.logging);
+                const nodes = this.detectNodes(tensor, nodeDetector);
 
                 const view = this.mecElement._interactor.view;
                 nodes.forEach(e => {
@@ -235,10 +227,10 @@ function mec2Deepmech() {
                     node.init(model);
                 });
 
-                const [crops, info] = this.getCrops(tensor, model.nodes, model.constraints, this.logging);
+                const [crops, info] = this.getCrops(tensor, model.nodes, model.constraints);
                 if (crops) {
                     const constraintDetector = await this.cropIdentifier;
-                    const constraints = this.detectConstraints(crops, constraintDetector, this.logging);
+                    const constraints = this.detectConstraints(crops, constraintDetector);
 
                 constraints.forEach((c, idx) => {
                     if (!c) return;
@@ -260,7 +252,6 @@ function mec2Deepmech() {
                 });
                 }
                 this.mecElement._model.draw(this.mecElement._g);
-                console.log('finished after: ', performance.now() - this.t0)
             },
 
                 }
