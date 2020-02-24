@@ -382,7 +382,7 @@ function mec2Deepmech() {
         // NOTE This assumes that the respective signal is added first!
         const fetch_tick = element._interactor.signals['tick'][0];
         const fetch_pointermove = element._interactor.pointermove;
-        function activate(e) {
+        function activateDrawMode(e) {
             nav.replaceChild(navLeftDraw, navLeft);
             nav.replaceChild(navRightDraw, navRight);
 
@@ -404,7 +404,7 @@ function mec2Deepmech() {
             _g_draw.exe(element._ctx);
         }
 
-        function reset() {
+        function resetDrawMode() {
             mode = undefined;
             plyShadow = "white";
             element._g.exe(element._selector);
@@ -419,8 +419,8 @@ function mec2Deepmech() {
         }
 
         // Revert previous changes
-        function deactivate(e) {
-            reset();
+        function deactivateDrawMode(e) {
+            resetDrawMode();
             nav.replaceChild(navLeft, navLeftDraw);
             nav.replaceChild(navRight, navRightDraw);
 
@@ -438,7 +438,7 @@ function mec2Deepmech() {
             element._g.exe(element._ctx);
         }
 
-        function upload() {
+        function uploadImage() {
             const _input = document.createElement('input');
             _input.accept = "image";
             _input.type = "file";
@@ -458,7 +458,7 @@ function mec2Deepmech() {
         }
 
         function camFn() {
-            reset();
+            resetDrawMode();
             const _canvas = element._ctx.canvas;
             const _video = document.createElement('video');
             _video.width = _canvas.width;
@@ -487,7 +487,7 @@ function mec2Deepmech() {
         }
 
         function drawFn() {
-            reset();
+            resetDrawMode();
             mode = 'draw';
             drawBtn.style.color = '#fff';
             // Remove "ontick" in drawing mode and "panning" of view while drawing
@@ -500,14 +500,14 @@ function mec2Deepmech() {
         }
 
         function dragFn() {
-            reset();
+            resetDrawMode();
             mode = 'drag';
             dragBtn.style.color = '#fff';
             element._interactor.pointermove = fetch_pointermove;
         }
 
         function deleteFn() {
-            reset();
+            resetDrawMode();
             mode = 'delete';
             plyShadow = "red";
             deleteBtn.style.color = '#fff';
@@ -517,7 +517,7 @@ function mec2Deepmech() {
 
         const nav = element._root.children[1].children[0];
         const navLeft = nav.children[0];
-        const activateBtn = buttonFactory('d', activate);
+        const activateBtn = buttonFactory('d', activateDrawMode);
         activateBtn.innerHTML = '🖊️';
         activateBtn.style.paddingLeft = '5px';
         activateBtn.onmouseover
@@ -526,8 +526,8 @@ function mec2Deepmech() {
 
         const navLeftDraw = document.createElement('span');
         const logoPlaceholder = document.createElement('div');
-        const deactivateBtn = buttonFactory('reset', deactivate);
-        const uploadBtn = buttonFactory('upload', upload);
+        const deactivateBtn = buttonFactory('reset', deactivateDrawMode);
+        const uploadBtn = buttonFactory('upload', uploadImage);
 
         const navRightDraw = document.createElement('span');
         const corviewPlaceholder = document.createElement('div');
@@ -537,7 +537,7 @@ function mec2Deepmech() {
         const drawBtn = buttonFactory('draw', drawFn);
         const dragBtn = buttonFactory('drag', dragFn);
         const deleteBtn = buttonFactory('del', deleteFn);
-        const predictBtn = buttonFactory('predict', () => deepmech.updateMec2(element._model) && deactivate());
+        const predictBtn = buttonFactory('predict', () => deepmech.updateMec2(element._model) && deactivateDrawMode());
 
         navLeft.appendChild(activateBtn);
         navLeft.appendChild(camBtn);
