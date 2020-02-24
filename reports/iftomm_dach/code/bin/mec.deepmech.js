@@ -260,45 +260,46 @@ function mec2Deepmech() {
                 this.mecElement._model.draw(this.mecElement._g);
             },
 
-            async streamPredict(tensor) {
-                const nodeDetector = await this.symbolClassifier;
-                const nodes = this.detectNodes(tensor, nodeDetector)
-                    .filter(n => n.max > 0.99);
+            async camPredict(tensor, _tmpModel, radioValue) {
+                if (radioValue === 'node') {
+                    const nodeDetector = await this.symbolClassifier;
+                    nodes = this.detectNodes(tensor, nodeDetector)
+                        .filter(n => n.max > 0.99);
 
-                const view = this.mecElement._interactor.view;
-                nodes.forEach(e => {
-                    g2().view({ cartesian: true })
-                        .ins(g => {
-                            const node = {
-                                x: Math.round((e.x - view.x + 16) / view.scl),
-                                y: Math.round((this.mecElement.height - e.y - view.y - 16) / view.scl)
-                            };
-                            if (e.maxIndex == 2) {
-                                g.gnd(node);
-                            }
-                            else if (e.maxIndex == 1) {
-                                g.nod(node);
-                            }
-                        }).exe(this.mecElement._ctx);
-                });
-                const [crops, info] = this.getCrops(tensor, nodes);
-                if (crops && info.length <= 6) {
+                    const view = this.mecElement._interactor.view;
+                    _tmpModel.nodes = nodes.map(e => ({
+                        x: Math.round((e.x - view.x + 16) / view.scl),
+                        y: Math.round((this.mecElement.height - e.y - view.y - 16) / view.scl),
+                        maxIndex: e.maxIndex
+                    }));
+                }
+                let crops, info;
+                if (radioValue === 'constraint') {
+                    [crops, info] = this.getCrops(tensor, _tmpModel.nodes);
+                }
+                if (crops) {
                     const constraintDetector = await this.cropIdentifier;
-                    const constraints = this.detectConstraints(crops, constraintDetector);
-                    constraints.forEach((c, idx) => {
+                    prediction = this.detectConstraints(crops, constraintDetector);
+                    _tmpModel.constraints = prediction.map((c, idx) => {
                         if (!c) return;
                         const i = info[idx]
-                        const vec = {
-                            x1: Math.round((i.x1 - view.x + 16) / view.scl),
-                            y1: Math.round((this.mecElement.height - i.y1 - view.y - 16) / view.scl),
-                            x2: Math.round((i.x2 - view.x + 16) / view.scl),
-                            y2: Math.round((this.mecElement.height - i.y2 - view.y - 16) / view.scl),
+                        return {
+                            x1: Math.round((i.x1 - view.x) / view.scl),
+                            y1: Math.round((i.y1 - view.y) / view.scl),
+                            x2: Math.round((i.x2 - view.x) / view.scl),
+                            y2: Math.round((i.y2 - view.y) / view.scl),
+                            ls: c == 1 ? 'yellow' : 'green',
+                            lw: 5
                         };
-                        g2().view({ cartesian: true })
-                            .vec({ ...vec, ls: c == 1 ? 'yellow' : 'green' })
-                            .exe(this.mecElement._ctx);
-                    });
+                    }).filter(e => e);
                 }
+                g2().view({ cartesian: true })
+                    .ins(g => _tmpModel.nodes.forEach(e =>
+                        e.maxIndex === 2 ? g.gnd(e) : g.nod(e)))
+                    .ins(g => _tmpModel.constraints.forEach(c => g.vec(c)))
+                    .exe(this.mecElement._ctx);
+
+                return _tmpModel;
             }
         }
 
@@ -457,7 +458,8 @@ function mec2Deepmech() {
             });
         }
 
-        const camTick = () => {
+        let _tmpModel = { nodes: [], constraints: [] };
+        const camTick = async () => {
             let image = tf.browser.fromPixels(_video, 1);
             image = tf.cast(tf.greater(image, 128), 'float32');
             const sum = tf.sum(image);
@@ -467,8 +469,11 @@ function mec2Deepmech() {
             }
             tf.browser.toPixels(image, element._ctx.canvas);
             image = tf.expandDims(image);
-            
-            // if (camNodeCheck) deepmech.streamPredict(image);
+
+            const radioValue = [...camCheckRadio.childNodes]
+                .filter(n => n.type === 'radio' && n.checked)[0].value;
+
+            _tmpModel = await deepmech.camPredict(image, _tmpModel, radioValue)
         }
 
         let _video;
@@ -493,10 +498,10 @@ function mec2Deepmech() {
             startCam();
         }
 
-        function startCam()  {
+        function startCam() {
             navigator.mediaDevices.getUserMedia({
                 video: { deviceId: selectCam.value ? { exact: selectCam.value } : undefined }
-            }).then(s => { 
+            }).then(s => {
                 _video.srcObject = s;
                 return navigator.mediaDevices.enumerateDevices();
             }).then(gotCams);
@@ -590,6 +595,29 @@ function mec2Deepmech() {
 
         const navRightCam = document.createElement('span');
         const fpsviewPlaceholder = document.createElement('div');
+        const camCheckRadio = document.createElement('div');
+
+        const camNoCheck = document.createElement('input');
+        const camNoLabel = document.createElement('label');
+        camNoCheck.type = 'radio';
+        camNoCheck.value = 'no';
+        camNoCheck.name = 'cam';
+        camNoLabel.innerHTML = '';
+        camNoCheck.checked = true;
+
+        const camNodeCheck = document.createElement('input');
+        const camNodeLabel = document.createElement('label');
+        camNodeCheck.type = 'radio';
+        camNodeCheck.value = 'node';
+        camNodeCheck.name = 'cam';
+        camNodeLabel.innerHTML = '';
+
+        const camConstraintCheck = document.createElement('input');
+        const camConstraintLabel = document.createElement('label');
+        camConstraintCheck.type = 'radio';
+        camConstraintCheck.value = 'constraint';
+        camConstraintCheck.name = 'cam';
+        camConstraintLabel.innerHTML = '';
 
         const activateCamBtn = buttonFactory('cam', activateCamMode);
         activateCamBtn.innerHTML = '📷';
@@ -617,6 +645,13 @@ function mec2Deepmech() {
         navRightDraw.appendChild(predictBtn);
 
         navRightCam.appendChild(fpsviewPlaceholder);
+        camCheckRadio.appendChild(camNoCheck);
+        camCheckRadio.appendChild(camNoLabel);
+        camCheckRadio.appendChild(camNodeCheck);
+        camCheckRadio.appendChild(camNodeLabel);
+        camCheckRadio.appendChild(camConstraintCheck);
+        camCheckRadio.appendChild(camConstraintLabel);
+        navRightCam.appendChild(camCheckRadio);
     }
 }
 mec2Deepmech();
