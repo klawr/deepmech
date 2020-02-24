@@ -327,7 +327,7 @@ function mec2Deepmech() {
 
         let ply = undefined; // A reference to the "polyline" which is drawn at the moment
         let mode; // Mode to keep track of current action
-        const tick = () => {
+        const drawTick = () => {
             let { type, x, y } = element._interactor.evt;
             // Keep the pointer coordinates updated
             element._corview.innerHTML = x.toFixed(0) + ', ' + y.toFixed(0);
@@ -386,13 +386,13 @@ function mec2Deepmech() {
             nav.replaceChild(navLeftDraw, navLeft);
             nav.replaceChild(navRightDraw, navRight);
 
-            swapNodes(logo, logoPlaceholder);
+            swapNodes(logo, logoDrawPlaceholder);
             swapNodes(element._corview, corviewPlaceholder);
             // draw mode is default
             drawBtn.style.color = '#fff';
             drawFn();
 
-            element._interactor.on('tick', tick);
+            element._interactor.on('tick', drawTick);
 
             // Filter all "nodes" and "constraint" commands from _g command queue
             const filtered_mec = {
@@ -424,10 +424,10 @@ function mec2Deepmech() {
             nav.replaceChild(navLeft, navLeftDraw);
             nav.replaceChild(navRight, navRightDraw);
 
-            swapNodes(logo, logoPlaceholder);
+            swapNodes(logo, logoDrawPlaceholder);
             swapNodes(element._corview, corviewPlaceholder);
 
-            element._interactor.remove('tick', tick);
+            element._interactor.remove('tick', drawTick);
             element._interactor.on('tick', fetch_tick);
             element._interactor.pointermove = fetch_pointermove;
 
@@ -457,33 +457,77 @@ function mec2Deepmech() {
             });
         }
 
-        function camFn() {
-            resetDrawMode();
-            const _canvas = element._ctx.canvas;
-            const _video = document.createElement('video');
-            _video.width = _canvas.width;
-            _video.height = _canvas.height;
+        const camTick = () => {
+            let image = tf.browser.fromPixels(_video, 1);
+            image = tf.cast(tf.greater(image, 128), 'float32');
+            const sum = tf.sum(image);
+            const threshold = tf.div(tf.prod(image.shape), 2);
+            if (tf.greater(sum, threshold).arraySync()) {
+                image = tf.abs(tf.sub(image, 1));
+            }
+            tf.browser.toPixels(image, element._ctx.canvas);
+            image = tf.expandDims(image);
+            
+            // if (camNodeCheck) deepmech.streamPredict(image);
+        }
+
+        let _video;
+        function activateCamMode() {
+            nav.replaceChild(navLeftCam, navLeft);
+            nav.replaceChild(navRightCam, navRight);
+
+            swapNodes(logo, logoCamPlaceholder);
+            swapNodes(element._fpsview, fpsviewPlaceholder);
+
+            element._interactor.pointermove = () => undefined;
+
+            // resetDrawMode();
+            _video = document.createElement('video');
+            _video.width = element._ctx.canvas.width;
+            _video.height = element._ctx.canvas.height;
             _video.autoplay = true;
 
-            _video.addEventListener('play', function step() {
-                let image = tf.browser.fromPixels(_video, 1);
-                image = tf.cast(tf.greater(image, 128), 'float32');
-                const sum = tf.sum(image);
-                const threshold = tf.div(tf.prod(image.shape), 2);
-                if (tf.greater(sum, threshold).arraySync()) {
-                    image = tf.abs(tf.sub(image, 1));
-                }
-                tf.browser.toPixels(image, _canvas);
-                image = tf.expandDims(image);
-                deepmech.streamPredict(image);
-                requestAnimationFrame(step);
-            }, { once: true });
+            element._interactor.on('tick', camTick);
 
-            if (navigator.mediaDevices.getUserMedia) {
-                navigator.mediaDevices.getUserMedia({ video: true })
-                    .then(s => _video.srcObject = s)
-                    .catch(console.error)
-            };
+            navigator.mediaDevices.enumerateDevices().then(gotCams);
+            startCam();
+        }
+
+        function startCam()  {
+            navigator.mediaDevices.getUserMedia({
+                video: { deviceId: selectCam.value ? { exact: selectCam.value } : undefined }
+            }).then(s => { 
+                _video.srcObject = s;
+                return navigator.mediaDevices.enumerateDevices();
+            }).then(gotCams);
+        };
+
+        function gotCams(info) {
+            const value = selectCam.value;
+            while (selectCam.firstChild) selectCam.removeChild(selectCam.firstChild);
+            info.filter(d => d.kind === 'videoinput').forEach((d, i) => {
+                const option = document.createElement('option');
+                option.value = d.deviceId;
+                option.text = d.label || `cam${i}`;
+                selectCam.appendChild(option);
+            });
+            if (value) selectCam.value = value;
+        }
+
+        function deactivateCamMode() {
+            nav.replaceChild(navLeft, navLeftCam);
+            nav.replaceChild(navRight, navRightCam);
+
+            swapNodes(logo, logoCamPlaceholder);
+            swapNodes(element._fpsview, fpsviewPlaceholder);
+
+            element._interactor.remove('tick', camTick);
+            element._interactor.on('tick', fetch_tick);
+            element._interactor.pointermove = fetch_pointermove;
+
+            _video.pause();
+            _video.src = '';
+            _video.srcObject = null;
         }
 
         function drawFn() {
@@ -517,34 +561,54 @@ function mec2Deepmech() {
 
         const nav = element._root.children[1].children[0];
         const navLeft = nav.children[0];
-        const activateBtn = buttonFactory('d', activateDrawMode);
-        activateBtn.innerHTML = '🖊️';
-        activateBtn.style.paddingLeft = '5px';
-        activateBtn.onmouseover
+        const activateDrawBtn = buttonFactory('d', activateDrawMode);
+        activateDrawBtn.innerHTML = '🖊️';
+        activateDrawBtn.style.paddingLeft = '5px';
+        activateDrawBtn.onmouseover
         const navRight = nav.children[1];
         const logo = navLeft.children[0];
 
         const navLeftDraw = document.createElement('span');
-        const logoPlaceholder = document.createElement('div');
-        const deactivateBtn = buttonFactory('reset', deactivateDrawMode);
-        const uploadBtn = buttonFactory('upload', uploadImage);
+        const logoDrawPlaceholder = document.createElement('div');
+        const deactivateDrawBtn = buttonFactory('reset', deactivateDrawMode);
+        const uploadImageBtn = buttonFactory('upload', uploadImage);
+
+        const navLeftCam = document.createElement('span');
+        const logoCamPlaceholder = document.createElement('div');
+        const deactivateCamBtn = buttonFactory('reset', deactivateCamMode);
+        const selectCam = document.createElement('select');
+        selectCam.style.background = 'transparent';
+        selectCam.style.border = 'none';
+        selectCam.simpleControl = 'disabled';
+        selectCam.style.maxWidth = '5em';
+        selectCam.style.color = 'white';
+        selectCam.style.paddingLeft = '5px'
+        selectCam.onchange = startCam;
 
         const navRightDraw = document.createElement('span');
         const corviewPlaceholder = document.createElement('div');
 
-        const camBtn = buttonFactory('cam', camFn);
-        camBtn.innerHTML = '📷';
+        const navRightCam = document.createElement('span');
+        const fpsviewPlaceholder = document.createElement('div');
+
+        const activateCamBtn = buttonFactory('cam', activateCamMode);
+        activateCamBtn.innerHTML = '📷';
+
         const drawBtn = buttonFactory('draw', drawFn);
         const dragBtn = buttonFactory('drag', dragFn);
         const deleteBtn = buttonFactory('del', deleteFn);
         const predictBtn = buttonFactory('predict', () => deepmech.updateMec2(element._model) && deactivateDrawMode());
 
-        navLeft.appendChild(activateBtn);
-        navLeft.appendChild(camBtn);
+        navLeft.appendChild(activateDrawBtn);
+        navLeft.appendChild(activateCamBtn);
 
-        navLeftDraw.appendChild(logoPlaceholder);
-        navLeftDraw.appendChild(uploadBtn);
-        navLeftDraw.appendChild(deactivateBtn);
+        navLeftDraw.appendChild(logoDrawPlaceholder);
+        navLeftDraw.appendChild(uploadImageBtn);
+        navLeftDraw.appendChild(deactivateDrawBtn);
+
+        navLeftCam.appendChild(logoCamPlaceholder);
+        navLeftCam.appendChild(deactivateCamBtn);
+        navLeftCam.appendChild(selectCam);
 
         navRightDraw.appendChild(corviewPlaceholder);
         navRightDraw.appendChild(drawBtn);
@@ -552,6 +616,7 @@ function mec2Deepmech() {
         navRightDraw.appendChild(deleteBtn);
         navRightDraw.appendChild(predictBtn);
 
+        navRightCam.appendChild(fpsviewPlaceholder);
     }
 }
 mec2Deepmech();
