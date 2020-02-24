@@ -1,5 +1,5 @@
 const APP_PREFIX = 'mecEdit';
-const VERSION = '24.02.2020-10:42';
+const VERSION = '24.02.2020-20:51';
 const CACHE_NAME = 'deepmech_' + VERSION;
 const urlsToCache = [
     '/', '/index.html', '/site.manifest',
