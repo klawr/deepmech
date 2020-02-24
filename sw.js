@@ -1,5 +1,5 @@
 const APP_PREFIX = 'mecEdit';
-const VERSION = '23.02.2020-23:26';
+const VERSION = '24.02.2020-10:42';
 const CACHE_NAME = 'deepmech_' + VERSION;
 const urlsToCache = [
     '/', '/index.html', '/site.manifest',
@@ -10,6 +10,7 @@ const urlsToCache = [
     '/src/mec-chart.htmlelement.js', '/src/mec.deepmech.js', '/src/mec.htmlelement.js',
     '/src/mec.slider.js', '/src/mec2.min.js', '/src/models.js', '/src/tf.min.js'
 ];
+
 self.addEventListener('install', function (event) {
     // Perform install steps
     event.waitUntil(
