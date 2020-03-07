@@ -1,34 +1,33 @@
-\section{Neural Networks}
-\label{ch:neural_networks}
+\section{Neural Networks} \label{ch:neural_networks}
 
-As mentioned the name neural network has prevailed despite being neither neural nor networks.
-Initially having the brain as inspiration they are used to create more complex mappings than previous models.
-In the following it is discussed what the motivation is behind this concept is and how networks are being trained to solve a variety of problems.
+As already mentioned, the name Neural Network has become widely accepted, although it is neither neural nor a network.
+They are used to create more complex mappings than the previous models were able to do.
+In the following we will discuss what the motivation behind this concept is and how networks are trained.
 
-\subsection{Deep learning}
-\label{ch:deep_learning}
+\subsection{Deep learning} \label{ch:deep_learning}
 
-Even though the universal approximation theorem shows that all continuous functions can be described using only one layer, in practice it is much more feasible to add multiple layers to our model to keep the necessary resources low.
-Rolnick and Tegmark\cite{Rolnick2017} show that for single layered models the number of neurons grow exponentially with the number of variables of the input, whereas deep neural networks grow only linearly.
+Although the universal approximation theorem shows that all continuous functions can be described with only one layer, in practice it is much more reasonable to add several layers to our model to keep the required resources low.
+Rolnick and Tegmark \cite{Rolnick2017} show that in single-layer models the number of neurons grows exponentially with the number of variables of the input, whereas multi-layer neural networks grow only linearly.
 
 % TODO add some clues for notation
 \begin{figure}
     \centering
-    \caption{ A neural network with three nodes as input, two hidden layers with five nodes each and an output layer with three nodes. The bias is added to each layer by prepending a one. Every node is, like the previous example calculated by the sum of the product of the previous layer and their respective weight. }
+    \caption{ A neural network with three input nodes, two hidden layers with five nodes each and an output layer with three nodes. The bias is added to each layer by prepending a node with value one. Every node is, like the previous example calculated by the sum of the product of the previous layer and their respective weight.  }
     \includegraphics[width=0.6\textwidth]{images/2_nn_with_bias.png}
     \label{fig:nn}
 \end{figure}
 
-Every node in figure~\ref{fig:nn} can be addressed using the notation $z^l_i$. $l$ being the number of the layer in which the node resides and $i$ being the index of the node.
-Every weight $\theta^l_{i, j}$ can be addressed too; $l$ being the layer the weight points to, $i$ being the index of the node which is multiplied with the weight to influence the value of the node in layer $l$ with index $j$.
-Thus we can describe every node as a result of:
+Each node in figure~\ref{fig:nn} can be addressed using the notation $z^l_i$.
+$l$ is the number of the layer in which the node is located and $i$ is the index of the node.
+Each weight $\theta^l_{i, j}$ can also be addressed; $l$ is the layer to which the weight refers, $i$ is the index of the node, which is multiplied by the weight to influence the value of the node in the layer $l$ with the index $j$.
+So we can describe each node as the result of the following equation:
 
 \begin{equation}
     z^l_j = \sum^n_{i=0}z^{l-1}_i\theta^l_{i, j}
     \label{eq:node_value}
 \end{equation}
 
-$n$ being the number of nodes in the respective layer. Equation~\eqref{eq:node_value} can be vectorized with:
+$n$ is the number of nodes in the respective layer. Equation~\eqref{eq:node_value} can be vectorized by:
 
 \begin{equation}
     z^l = \theta^l z^{l-1}
@@ -37,7 +36,7 @@ $n$ being the number of nodes in the respective layer. Equation~\eqref{eq:node_v
 
 \subsection{Activation functions}
 
-A problem with activations like the ones mentioned above are that they can come out as numbers of any size. Numerically this is very hard to control, so the nodes themselves are wrapped inside another function; this function is fittingly called the activation function.
+One problem with the values of the individual cells is that they can be of any size. Numerically, this is very difficult to control, so the nodes themselves are given to another function first; this function is aptly called an activation function.
 
 \begin{figure}
     \centering
@@ -73,29 +72,31 @@ Mathematical representations are shown in equation~\eqref{eq:sigmoid_relu}
     \label{eq:sigmoid_relu}
 \end{equation}
 
-The usage of those functions can vary as well; e.g. it is common for the logistic sigmoid to have a threshold to not fire at all if a certain value (say 0.5) is not reached.
+The use of the activation functions can also vary; for example, it is common for the logistic sigmoid to have a threshold to not fire at all if a certain value (e.g. 0.5) is not reached.
 
-By the introduction of activation functions equations~\eqref{eq:node_value} and \eqref{eq:node_value_vectorized} extend to:
+With the introduction of activation functions, the equations ~\eqref{eq:node_value} and \eqref{eq:node_value_vectorized} become equal:
 
 \begin{equation}
     a^l_j = \sigma(z^l_j) = \sigma(\sum^n_{i=0}z^{l-1}_i\theta^l_{i, j})
     \label{eq:activation}
 \end{equation}
 
-With the respective vectorized equation being:
+With the corresponding vectorized equation:
 
 \begin{equation}
     a^l = \sigma(z^l) = \sigma(\theta^l z^{l-1})
     \label{eq:activation_vectorized}
 \end{equation}
 
-There are a variety of different activation functions, with these two being the most prominent, but there are other for different purposes too. The selection of the activation function and possibly a corresponding threshold are another hyper parameter which has to be chosen prior to training.
+There are a variety of different activation functions, these two being the most prominent.
+However, there are also other activation functions.
+The selection of the activation function and possibly a corresponding threshold value is another hyperparameter that must be selected before the training.
 
 \subsection{Backpropagation}
 
-Using gradient descent~\eqref{eq:gradient_descent} we can not update all parameters in all layers, since it only considers updating the parameters of the last layer.
-Since the last layer is a function of the respective previous layer, we can propagate the calculated error of the last layer to it and update the weights and bias respectively. This conjuncture is true for any layer, except the input layer (which does not need to be updated after all).
-Equations used to perform this are\footnote{The following equations are derived using \cite[p.733]{StuartRussell2018}, \cite[p.197]{Goodfellow2017} and \cite[ch.2]{Nielsen2015}}:
+With gradient descent~\eqref{eq:gradient_descent} we cannot update all parameters in all levels, because it only considers updating the parameters of the last level.
+Since the last layer is a function of the previous layer, we can apply the chain rule and thus apply the calculated error of the last layer to it and update the weights or distortion. This applies to every layer, except the input layer (which does not need to be updated in the end).
+The following equations are derived using \cite[p.733]{StuartRussell2018}, \cite[p.197]{Goodfellow2017} and \cite[ch.2]{Nielsen2015}:
 
 \begin{equation}
     \varDelta^L = \nabla_a L \odot \sigma'(z^L)
@@ -110,32 +111,34 @@ Equations used to perform this are\footnote{The following equations are derived 
     \label{eq:backprop_update}
 \end{equation}
 
-Equation~\eqref{eq:output_error} describes the error calculated in the output layer. We define our network with $L$ layers, thus the output layer is always described by index $L$.
-$\odot$ is the Hadamard operator. It is used to multiply tensors elementwise, which is useful in this case, because it prevents us from having to transform one of the vectors into a diagonal matrix, making the calculation a bit less complicated.
-Equation~\eqref{eq:output_error} is a direct result of applying the chain rule of multivariate calculus to the derivation of the loss function performed in the last layer.
-We already mentioned that gradient descent is performed by taking the derivative on the loss function in equation~\eqref{eq:sgd_mse_here}.
-Because between the input used in the loss function and the output of the preceding layer an activation function is implemented, the chain rule has to be applied to the gradient of the loss.
+Equation~\eqref{eq:output_error} describes the error calculated in the output layer. We define our network with $L$ layers, so the output layer is always described by the $L$ index.
+$\odot$ is the Hadamard operator. It is used to multiply tensors element by element, which is useful in this case as it prevents the vectors from having to be transformed into a diagonal matrix.
+Equation~\eqref{eq:output_error} is a direct result of applying the multivariate chain rule to the derivative of the loss function performed in the last layer.
+As mentioned above, the gradient descent is performed by the derivative of the loss function in equation~\eqref{eq:sgd_mse_here}.
+Since an activation function is implemented between the input used in the loss function and the output of the previous layer, the chain rule must also be applied to the latter.
 
 \begin{equation}
     \frac{\partial L}{\partial z^L_j} = \frac{\partial L}{\partial a^L_j}\frac{\partial a^L_j}{\partial z^L_j}
     \label{eq:proof_loss_chain_rule}
 \end{equation}
 
-By pointing out that $\frac{\partial L}{\partial a^L_i}$ is just a non vectorized form of $\nabla_a L$ and $\frac{\partial a^L_i}{\partial z^L_i}$ of $\sigma'(z^L)$ the equivalence becomes apparent.
+By pointing out that $\frac{\partial L}{\partial a^L_i}$ is only a non-vectorized form of $\nabla_a L$ and $\frac{\partial a^L_i}{\partial z^L_i}$ of $\sigma'(z^L)$ the equivalence becomes clear.
 
-Equation~\eqref{eq:hidden_error} can be rewritten to:
+Equation~\eqref{eq:hidden_error} can be rewritten as follows:
+
 \begin{equation}
     \varDelta^l_i = \frac{\partial L}{\partial z^l_i} = \sum_{j=0}^n (\frac{\partial L}{\partial z^{l+1}_j}\frac{\partial z^{l+1}_j}{\partial z^l_i})
 \end{equation}
 
-$n$ being the number of nodes in the subsequent layer. Since $\frac{\partial L}{\partial z^{l+1}_i} = \varDelta^{l+1}_i$ it follows:
+$n$ is the number of nodes in the next layer. From $\frac{\partial L}{\partial z^{l+1}_i} = \varDelta^{l+1}_i$ follows:
 
 \begin{equation}
     \frac{\partial L}{\partial z^l_i} = \sum_{j=0}^n (\varDelta^{l+1}_j \frac{\partial z^{l+1}_j}{\partial z^{l}_i})
     \label{eq:hidden_error_intermediate}
 \end{equation}
 
-We also know that:
+The following equation is also known:
+
 \begin{equation}
     \begin{split}
     z^{l+1}_j & = \sum_{i=0}^n \theta^{l+1}_{i,j} a^l_i = \sum_{i=0}^n \theta^{l+1}_{i, j} \sigma(z^l_i) \\
@@ -143,34 +146,35 @@ We also know that:
     \end{split}
 \end{equation}
 
-So we can substitute the terms in equation~\eqref{eq:hidden_error_intermediate} to:
+So we can substitute the terms in equation~\eqref{eq:hidden_error_intermediate}:
+
 \begin{equation}
     \frac{\partial L}{\partial z^l_i} = \sum_{j=0}^n (\varDelta^{l+1}_j \theta^{l+1}_{i,j} \sigma'(z_j^l))
 \end{equation}
 
-Which is again just a non vectorized form of equation~\eqref{eq:hidden_error}.
+Which again is just a non-vectorized form of the equation ~\eqref{eq:hidden_error}.
 
-Equation~\eqref{eq:hidden_error} is subsequently performed on each layer until $l=0$ is reached and a $\varDelta$ is calculated for each parameter in $\theta$ which are applied using equation~\eqref{eq:backprop_update}.
-This manner of propagating backwards gave this algorithm the prominent name of back propagation (short for "backward propagation of error" \cite{Rumelhart1986}).
+Equation~\eqref{eq:hidden_error} is then executed on each layer until $l=0$ is reached and a $\varDelta$ is calculated for each parameter in $\theta$, which are applied by equation~\eqref{eq:backprop_update}.
+This type of backward propagation gave this algorithm the prominent name of "backpropagation" (short for "backward propagation of error" \cite{Rumelhart1986}).
 
 \subsection{Generalization}
 
-The task of every machine learning algorithm is to generalize.
-After feeding the model with data it has seen, it should also perform well on data it has never seen before.
-This distinguishes machine learning from optimization problems (which could be solved by e.g. the Newton-Raphson method).
+The task of any algorithm for machine learning is to generalize.
+After the model has been trained with data, it should also achieve good results with data it has never seen before.
+This distinguishes machine learning from optimization problems (which could be solved with the Newton-Raphson method, for example).
 
-Generalization is not granted, because of problems called overfitting and underfitting.
-For example a model trained for a classification task might overfit by correctly predicting classes for training examples, but may to fail to do so on new data.
-This indicates that the model memorized the training examples.
+However, a generalization is not guaranteed. In particular the phenomena of over- and underfitting  pose problems.
+For example, a model that has been trained for a classification task might make correct predictions for training examples, but not work reliably with new data (over fitting).
+This indicates that the model has, so to speak, memorized the training examples.
 There are some things which can be done to solve this issue.
-Giving the model more data to train on is one solution, which is shown by Banko and Brill \cite{Banko2001} and famously commented on by Halevy, Norvig and Pereira in their article "The Unreasonable Effectiveness of Data" \cite{Halevy2009}.
-Adding a multitude of data is not always possible, since data generation may be costly, so some compromises may have to be made to solve this issue.
+Giving the model more data for training is a solution shown by Banko and Brill \cite {Banko2001} and commented by Halevy, Norvig and Pereira in their article "The Unreasonable Effectiveness of Data" \cite{Halevy2009}.
+Adding a lot of data is not always possible because generating data can be costly, so some compromises may have to be made to solve this problem.
 
-Another option is to reduce features of the training data; seemingly unintuitive at first, it becomes apparent that abundant features do not add much information to an image. For example to recognize a handwritten digit, a lot of more parameters have to be adjusted if a high resolution image with hundreds of thousands of pixels are fed into the model, where under a thousand would suffice \cite{Nielsen2015}.
+Another possibility is to reduce the number of features in the training data; apparently unintuitive at first glance, it becomes clear that a wealth of features does not add much information to an image. For example, to recognize a handwritten digit, many more parameters have to be adjusted if a high-resolution image with hundreds of thousands of pixels is fed into the model, where a pixel count of less than a thousand would already be sufficient \cite{Nielsen2015}.
 
-On the other hand the problem of underfitting is as problematic as is overfitting.
-When the model does not even get sufficient results on the training data, the problem is called underfitting.
-If this is the case the model may have to be adjusted to adjust more parameters or the data may not be fitting to the problem after all.
-For equations~\eqref{eq:universal_approx} and \eqref{eq:hypothesis} to be true for a reasonable model a mapping of the input to the expected output has at least to be somewhat comprehensible.
+On the other hand, the problem of underfitting is as problematic as overfitting.
+If the model is already not getting sufficient results from the training data, the problem is called underfitting.
+If this is the case, it is likely that the model or parameter will need to be adjusted, or that the training data is unsuitable for the problem.
+Furthermore, for the equations~\eqref{eq:universal_approx} and \eqref{eq:hypothesis} to be true for a reasonable model, a rule of thumb is that mapping the input to the expected output must be at least relatable.
 
-Before using these techniques to train a model to recognize mechanical symbols, the respective data has to be generated first.
+In order to train a model for the recognition of mechanical symbols using these techniques, the corresponding data must first be generated.
