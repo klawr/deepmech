@@ -1,14 +1,7 @@
 
 from os import mkdir
 import asyncio
-import discord
 import json as json
-
-def mkdir_ex(path):
-    try:
-        mkdir(path)
-    except:
-        pass
 
 class Spot(discord.Client):
     '''
@@ -18,6 +11,8 @@ class Spot(discord.Client):
     '''
     def __init__(self, file=None, id=None, token=None,
         loop=asyncio.new_event_loop(), *args, **kwargs):
+
+        import discord
         
         if file is not None:
             with open(file) as config:

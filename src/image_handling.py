@@ -1,11 +1,10 @@
 import json
 from numpy.random import shuffle, uniform
-from os import listdir, mkdir, rename
+from os import listdir, makedirs, rename
 from os.path import basename, isdir, join
 from PIL import Image
 import tensorflow as tf
 
-from src.utils import mkdir_ex
 from src.training_env import reset
 
 def encode_record(final_data_list, labels, target_dir, name):
@@ -27,7 +26,7 @@ def encode_record(final_data_list, labels, target_dir, name):
         blob = tf.train.Int64List(value=[int(angle)])
         return tf.train.Feature(int64_list=blob)
 
-    mkdir_ex(target_dir)
+    makedirs(target_dir, exist_ok=True)
     record = join(target_dir, name + '.tfrecord')
     with tf.io.TFRecordWriter(record) as out:
         for entry in final_data_list:
@@ -84,7 +83,7 @@ def augment_images_by_label(src_dir, target_dir, label, target_size=(None, None)
                 image = image.resize(target_size)
             angle = uniform(0.0, rotation_range)
             image = image.rotate(angle)
-            mkdir_ex(target_dir)
+            makedirs(target_dir, exist_ok=True)
             name = str(len(listdir(target_dir)))
             data_list.append({
                 'image_path': join(target_dir, name + '.jpeg'),
@@ -96,7 +95,7 @@ def augment_images_by_label(src_dir, target_dir, label, target_size=(None, None)
     return data_list
 
 def augment_images(src_dir, target_dir, repetitions=1, *args, **kwargs):
-    mkdir_ex(target_dir)
+    makedirs(target_dir, exist_ok=True)
     data_list = []
     for label in listdir(src_dir):
         actual_src_dir = join(src_dir, label)

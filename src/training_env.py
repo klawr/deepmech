@@ -1,22 +1,20 @@
 
-from os import listdir, unlink
+from os import listdir, makedirs, unlink
 from os.path import isdir, isfile, join
 from shutil import copyfile, rmtree
-
-from src.utils import mkdir_ex
 
 # Create a training environment in the target directory.
 # Create one directory in target_dir/{train, validate, test} for each directory in raw.
 # Returns the paths for the raw "classes" (3 each).
 def create(raw_classes, target_dir):
-    mkdir_ex(target_dir)
+    makedirs(target_dir, exist_ok=True)
 
     train_dir = join(target_dir, 'train')
-    mkdir_ex(train_dir)
+    makedirs(train_dir, exist_ok=True)
     validation_dir = join(target_dir, 'validation')
-    mkdir_ex(validation_dir)
+    makedirs(validation_dir, exist_ok=True)
     test_dir = join(target_dir, 'test')
-    mkdir_ex(test_dir)
+    makedirs(test_dir, exist_ok=True)
 
     return_values = []
 
@@ -29,9 +27,9 @@ def create(raw_classes, target_dir):
         return_values.append(validation)
         return_values.append(test)
 
-        mkdir_ex(train)
-        mkdir_ex(validation)
-        mkdir_ex(test)
+        makedirs(train, exist_ok=True)
+        makedirs(validation, exist_ok=True)
+        makedirs(test, exist_ok=True)
 
     return return_values
 
@@ -79,8 +77,8 @@ def reset(target_dir):
         pass
 
 def reset_and_populate(raw_dir, target_dir, segmentation, raw_classes=None):
-    mkdir_ex(raw_dir)
-    mkdir_ex(target_dir)
+    makedirs(raw_dir, exist_ok=True)
+    makedirs(target_dir, exist_ok=True)
 
     if raw_classes is None:
         raw_classes = listdir(raw_dir)
