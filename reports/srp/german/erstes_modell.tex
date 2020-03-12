@@ -4,7 +4,7 @@ Das Jupyter-Notebook zu diesem Kapitel kann über \url{https://aka.klawr.de/srp\
 
 \subsection{Projektstruktur}
 
-Die Projektstruktur ist ein wichtiger Teil, um Modelle effizient zu testen und sie gegen andere Modelle zu evaluieren, um das leistungsfähigste Modell zu bestimmen.
+Die Projektstruktur ist ein wichtiger Teil, um Modelle effizient zu testen und sie gegen andere Modelle zu evaluieren, um das beste Modell zu bestimmen.
 \name{deepmech} ist unter Verwendung einer modifizierten Version der Cookiecutter Data Science \cite{drivendata2019} Struktur aufgebaut. Sie kann unter \url{klawr.github.io/deepmech} eingesehen werden.
 
 Der Stammordner enthält Dateien wie die Lizenz des gesamten Projekts.
@@ -12,16 +12,20 @@ Das Projekt ist unter der MIT-Lizenz lizenziert, die jedem Menschen die Möglich
 Im Stammordner befindet sich eine weitere Datei requirements.txt, die Teil des Installationsprozesses ist und es erlaubt, den gesamten in diesem Projekt behandelten Code zu replizieren.
 
 Die "Cookiecutter Data Science"-Struktur ermöglicht eine klare Verteilung der Daten in Rohdaten (die nie angefasst werden dürfen), Zwischendaten (das sind die Rohdaten, die aber in irgendeiner Weise modifiziert, ergänzt oder verändert werden) und verarbeiteten Daten (die über einen Trainingsalgorithmus in das Modell eingespeist werden sollen).
+Diese Daten werden im Verzeichnis \name{data} gespeichert.
 
-Logs werden während des Trainings mit \name{TensorBoard}\footnote{TensorBoard ist das Visualisierungs-Toolkit von \name{TensorFlow}. Die mit \name{TensorBoard} erzeugten Visualisierungen werden später gezeigt.} Die Logs werden anhand eines Zeitstempels des jeweiligen Trainingslaufs unterschieden.
+Logs werden während des Trainings mit \name{TensorBoard}\footnote{TensorBoard ist das Visualisierungs-Toolkit von \name{TensorFlow}. Die mit \name{TensorBoard} erzeugten Visualisierungen werden später gezeigt.} erstellt.
+Diese Protokolle werden durch einen Zeitstempel des jeweiligen Trainingslaufs unterschieden und befinden sich im Verzeichnis \name{logs}.
 
-% models Ordner...
+Die derzeit verwendeten Modelle befinden sich im Verzeichnis \name{models}.
+Die Modelle in diesem Verzeichnis können sich in verschiedenen Phasen des Projektes ändern, so dass die jeweiligen Berichte ihre eigenen Modellverzeichnisse haben, um die Zwischenmodelle zu speichern.
 
-Ein Ordner mit allen im Projekt verwendeten Berichten befindet sich im jeweiligen Verzeichnis, einschließlich dieses Artikels.
-Im notebook-Ordner in reports für dieses Projekt (abgekürzt als \name{srp}) findet man den Code, der zur Bestimmung des besten Modells verwendet wurde.
-Modelle werden mit \name{Jupyter-Notebooks} trainiert. \cite{Jupyter2019}. 
-Jupyter Notebooks ist ein interaktiver Editor zur Entwicklung von Python-Code, der eine einfache Möglichkeit bietet, Code effizient zu schreiben und zu testen.
-Alle Notizbücher mit entsprechendem Code befinden sich im Verzeichnis \name{notebooks} im Stammverzeichnis dieses Projekts\footnote{\url{https://aka.klawr.de/srp\#6}}.
+Im \name{reports} Verzeichnis befindet sich jeweils einem Ordner für jedes in diesem Projekt erstellten Berichten, einschließlich dieses Artikels\footnote{Versehen mit dem Namen \name{srp}, für Student Research Project}.
+Der \name{notebook}-Ordner in diesem Bericht enthält die Jupyter-Notebooks \cite{Jupyter2019}, die in den unterschiedlichen Kapiteln genutzt wurden.
+Die Modelle werden ebenfalls innerhalb von \name{Jupyter} Notebooks trainiert. 
+Jupyter notebooks sind interaktive Python-Code-Editoren, die eine einfache Möglichkeit bieten, effizient Code zu schreiben, zu testen und (mittels Markdown) zu kommentieren.
+Alle Notebooks mit entsprechendem Code befinden sich im Verzeichnis \name{notebooks} im Stammverzeichnis dieses Projekts\footnote{\url{https://aka.klawr.de/srp\#6}}.
+Das jeweilige Verzeichnis der Ausarbeitungen enthält auch den verwendeten Code, die trainierten Modelle, Bilder und die für die Erstellung dieses Berichts erstellten Dokumente.
 
 \name{src} enthält den gesamten Code (mit Ausnahme der in den Berichten verwendeten Demos), der bei der Entwicklung und dem Training der Modelle verwendet wurde. Sie reichen von Skripten, die geeignete Umgebungen zum Trainieren der Modelle schaffen, bis hin zur Datengenerierung und -augmentierung.
 
@@ -40,9 +44,9 @@ Demnach beginnt das Training eines Modells in diesem Projekt stets mit folgendem
     interim = join('data', 'interim')
     processed = join('data', 'processed')
         
-    from src.training_env import reset_and_populate
+    from src.utils import reset_and_distribute_data
         
-    reset_and_populate(raw, processed, [400, 0, 100])
+    reset_and_distribute_data(raw, processed, [400, 0, 100])
 \end{lstlisting}
 
 Für das erste Modell reichen die Rohdaten selbst aus; daher werden sie einfach mit einer vordefinierten Funktion aus \code{training\_env.py} in das Verzeichnis der verarbeiteten Daten kopiert.

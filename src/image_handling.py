@@ -5,9 +5,20 @@ from os.path import basename, isdir, join
 from PIL import Image
 import tensorflow as tf
 
-from src.training_env import reset
+# TODO replace PIL with cv2
 
 def encode_record(final_data_list, labels, target_dir, name):
+    """Encode record using a data list, labels, a target directory and a name.
+
+    The final_data_list is a list of dicts, which contain information about
+    the image location, the label and an angle which may be provied.
+
+    The labels are used to determine the index for the label property in the
+    respective dict.
+
+    Target directory and name are used to determine the location of the record.
+    """
+
     def image_feature(path):
         blob = tf.io.read_file(path)
         blob = tf.image.decode_jpeg(blob, channels=1)
@@ -40,6 +51,9 @@ def encode_record(final_data_list, labels, target_dir, name):
             out.write(example.SerializeToString())
 
 def create_example_decoder(feature_description, shape):
+    """
+    Create a decoder to be handed over for decoding 
+    """
     def decode_example(example):
             features = tf.io.parse_single_example(example, feature_description)
             image = tf.io.parse_tensor(features['image'], tf.float32)
@@ -112,11 +126,21 @@ def inline_augment_images(directory, *args, **kwargs):
     tmp = directory + '_tmp'
     rename(directory, tmp)
     data_list = augment_images(tmp, directory, *args, **kwargs)
-    reset(tmp)
+
+    try:
+        shutil.rmtree(tmp, ignore_errors=True)
+    except OSError as e:
+        print ("Error: %s - %s." % (e.filename, e.strerror))
+
     return data_list
 
 def reset_and_augment_images(src_dir, target_dir, *args, **kwargs):
-    reset(target_dir)
+    
+    try:
+        shutil.rmtree(target_dir, ignore_errors=True)
+    except OSError as e:
+        print ("Error: %s - %s." % (e.filename, e.strerror))
+
     data_list = augment_images(src_dir, target_dir, *args, **kwargs)
     return data_list
 
