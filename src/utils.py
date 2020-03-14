@@ -1,10 +1,11 @@
 
 import asyncio
 import discord
-import json as json
+import json
 import os
 from os import path
 import shutil
+import tensorflow as tf
 
 def distribute_data(raw_dir, target_dir, distribution, raw_classes=None):
     """Distribute data into train, validate and test.
@@ -134,3 +135,80 @@ class Spot(discord.Client):
     
     def message(self, text):
         self.loop.run_until_complete(self.channel.send(text))
+
+
+def encode_image_data_as_record(config, record_path):
+    """Encode record using a config, labels, a target directory and a name.
+
+    Arguments:
+        config: the data_list is a list of dicts, which contain information
+            about the provided images, or a path to a json containing the list.
+        labels: Used to encode the labels. Expects an list of integers.
+            Mappings of labels to integers have to be done manually.
+        record_path: path of new record (e.g. 'data/processed/train.tfrecord').
+    """
+
+    # If given as a list => okay.
+    if isinstance(config, list):
+        pass
+    # If given as a path => decode file into list.
+    elif path.isfile(config):
+        with open(config) as file:
+            config = json.load(file)
+    else:
+        print("Error: config is no list nor path to a config file") 
+
+    def image_feature(path):
+        # Decode image into string.
+        blob = tf.io.read_file(path)
+        blob = tf.image.decode_jpeg(blob, channels=1)
+        blob = tf.image.convert_image_dtype(blob, tf.float32)
+        blob = tf.image.resize(blob, blob.shape[:-1])
+        blob = tf.io.serialize_tensor(blob).numpy()
+        blob = tf.train.BytesList(value=[blob])
+        return tf.train.Feature(bytes_list=blob)
+
+    def int64_feature(label):
+        int64_list = tf.train.Int64List(value = label)
+        return tf.train.Feature(int64_list=int64_list)
+
+    os.makedirs(path.dirname(record_path), exist_ok=True)
+    with tf.io.TFRecordWriter(record_path) as out:
+        for entry in config:
+            feature = {
+                'image': image_feature(entry['image_path']),
+                'label': int64_feature(entry['label'])
+            }
+            features = tf.train.Features(feature=feature)
+            example = tf.train.Example(features=features)
+            out.write(example.SerializeToString())
+
+def decode_image_record(record_path, decoder, batch_size=32, shuffle_buffer=1000):
+    """A wrapper for the decoder to point the decoder to the correct batch size
+        and 
+    Arguments:
+        record_path: Path to record...
+        decoder: Function to decode one example, e.g.: 
+            def decoder(example):
+                # feature_description https://www.tensorflow.org/tutorials/load_data/tfrecord
+                # and shape have to be given in the respecitve scope.
+                features = tf.io.parse_single_example(example, feature_description)
+                image = tf.io.parse_tensor(features['image'], tf.float32)
+                image.set_shape(shape)
+                label = features['label']
+                return [image, label]
+        batch_size: Size of the training batches.
+        shuffle_buffer: Size of shuffle buffer.
+    """
+
+    autotune = tf.data.experimental.AUTOTUNE
+
+    data = (tf.data.TFRecordDataset(record_path)
+        .map(decoder, num_parallel_calls=autotune)
+        .cache()
+        .shuffle(shuffle_buffer)
+        .repeat()
+        .batch(batch_size)
+        .prefetch(buffer_size=autotune))
+    
+    return data
