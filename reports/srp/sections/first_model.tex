@@ -198,7 +198,7 @@ On the other hand, a learning rate set to a high value cannot converge at all.
 \subsubsection{Momentum}
 
 Introduced in 1964 by Polyak \cite{Polyak1964}, momentum is used to keep the gradient constant over several steps.
-Momentum takes its name as an analogy to the physical effect according to Newton's second law of motion.
+Momentum takes its name as an analogy to the physical effect according to Newton's second law of motion \cite[p.12]{Newton1687}.
 The direction of the gradient should be consistent over several steps, and it would be strange if the direction made sudden shifts during training.
 This is useful if the data is "noisy" or some of the training examples are wrong, since their negative effect is counteracted by the momentum.
 Therefore another parameter $\nu$ is introduced into the equation~\eqref{eq:backprop_update}:
