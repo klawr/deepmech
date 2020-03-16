@@ -5,12 +5,12 @@ The Jupyter notebook for this chapter can be viewed at \url{https://aka.klawr.de
 \subsection{Project structure}
 
 The project structure is an important part to test models efficiently and evaluate them against other models to determine the best performing model.
-\name{deepmech} is built using a modified version of the Cookiecutter Data Science \cite{drivendata2019} structure. It can be viewed at \url{klawr.github.io/deepmech}.
+\name{deepmech} is built using a modified version of the Cookiecutter Data Science \cite{drivendata2019} structure. It can be viewed at \url{https://klawr.github.io/deepmech}.
 
 % root
 The root folder contains files such as the license for the entire project.
 The project is licensed under the MIT license, which allows anyone to modify, distribute or use it for private and commercial use, but with no liability or warranty on my part.
-In the root folder there is another file requirements.txt, which is part of the installation process and allows to replicate all the code handled in this project.
+In the root folder there is another file \name{requirements.txt}, which is part of the installation process and allows to replicate all the code handled in this project.
 
 % data
 The "Cookiecutter Data Science" structure allows a clear division of the data into raw data (which must never be touched), intermediate data (raw data which is modified, supplemented or altered in some way) and processed data (which is to be fed into the model).
@@ -26,7 +26,7 @@ The models in this directory can change at different stages of the project, so t
 
 % reports
 The \name{reports} directory contains a folder for each report created in this project, including this article\footnote{Provided with the name \name{srp}, for Student Research Project.}.
-The notebook folder in this report contains the \name{Jupyter} notebooks \cite{Jupyter2019} used in the different chapters.
+The notebook folder in this report contains \name{Jupyter} notebooks \cite{Jupyter2019} used in different chapters.
 The models are also trained in jupyter notebooks. 
 Jupyter notebooks are interactive Python code development editors that provide an easy way to efficiently write, test and comment code (with markdown).
 All notebooks with corresponding code are located in the \name{notebooks} directory at the root of this project\footnote{\url{https://aka.klawr.de/srp\#6}}.
@@ -55,8 +55,8 @@ from src.utils import reset_and_distribute_data
 reset_and_distribute_data(raw, processed, [400, 0, 100])
 \end{lstlisting}
 
-For the first model, the raw data itself is sufficient; therefore, it is simply copied from \code{training\_env.py} to the directory of the processed data using a predefined function.
-The third parameter of \code{reset\_and\_populate} is an array of three numbers describing the distribution of training, validation, and test data.
+For the first model, the raw data itself is sufficient; therefore, it is simply copied by \code{reset\_and\_distribute\_data} from \name{src/utils.py} to the directory of the processed data.
+The third parameter of \code{reset\_and\_distribute\_data} is an array of three numbers describing the distribution of training, validation, and test data.
 In this example, the validation data is omitted because no adjustments are made to the hyperparameters.
 
 \begin{lstlisting}
@@ -76,7 +76,7 @@ test_generator = create_generator('test', 10)
 \end{lstlisting}
 
 After the corresponding directories are filled with data, the \code{ImageDataGenerator}\footnote{\url{https://keras.io/preprocessing/image}} is used to allow the model to load the data later during the training process.
-The generators also define the size of the loaded image, which can be set to 32 pixels wide and 32 pixels high (as opposed to the original image size of 512x512) and a batch size\footnote{batch size is the number of images used between each backpropagation cycle.
+The generators also define the size of the loaded image, which can be set to 32 pixels wide and 32 pixels high\footnote{The size of the images is determined manually, assuming that as long as a human is able to recognize the characteristic features of the image, the algorithm can learn them.} (as opposed to the original image size of 512x512) and a batch size\footnote{batch size is the number of images used between each backpropagation cycle.
 If the batch size matches the record size, it is called batch gradient descent, if the batch size is one, it is called stochastic gradient descent.
 Everything in between is called a mini-batch gradient descent.} of 20.
 The \code{class\_mode} is set to \code{binary} because the input consists of 1D Numpy arrays.
@@ -105,8 +105,6 @@ The input shape of the first model must match the actual size of the input data.
 All other layers are able to derive the shape of the previous layer, so no further definitions are required.
 
 Layers can be added by using a provided \code{add} function which accepts layers as parameters which are subsequently added to the model.
-
-Layers can be added using a provided \code{add} function that accepts layers as parameters, which are then added to the model.
 
 Two layers are added, both of which are dense layers with 32 nodes each.
 The dense layers are defined by connecting all nodes of the previous layer to the nodes of their own layer using weights and biases and behave like the "traditional" layers used in this project.
@@ -138,19 +136,19 @@ Non-trainable params: 0
 _________________________________________________________________
 \end{lstlisting}
 
-Here we see that the model 99491 has parameters in $\theta$ that can be adjusted.
+Here we see that the $\theta$ in the model has 99491 parameters that can be adjusted.
 This number is the sum of the parameters given by the 3 layers of the model.
 The first layer has the flattened 3072 ($32 \times 32 \times 3$) nodes.
 The second layer multiplies this number (+1 for the bias) by $32$ and therefore has an additional 98336 nodes.
 The third layer is the product of $32 + 1$ nodes in the second layer and $32$ nodes in the third layer, which gives us 1056 parameters to adjust.
 The last layer again has $(32 + 1) \times 3$ nodes.
 
-\subsection{Optimizer}
+\subsection{Optimizer} \label{ch:optimizer}
 
 In order to train our model, an optimizer must be defined.
 We will start with a \code{SGD} optimizer, which is the abbreviation for \name{Stochastic Gradient Descent}.
-Stochastic gradient descent is already mentioned in chapter~\ref{ch:simple_linear_example}, where it was implemented very rudimentarily. In the actual training of the model, the Keras implementation is used.
-The Keras implementation of SGD differs somewhat from the general definition, since it does not inherently assume a batch size of one, but rather the batch sizes defined in the respective generator, so that the user can decide whether to use full batch, mini batch, or stochastic gradient descent (which in this case is 20).
+Stochastic gradient descent is already mentioned in chapter~\ref{ch:simple_linear_example}, where it was implemented very rudimentarily. In the training of this model, the Keras implementation of \name{SGD} is used.
+The Keras implementation of SGD differs somewhat from the general definition, since it does not inherently assume a batch size of one, but rather the batch sizes defined in the respective generator, so that the user can decide whether to use full batch, mini batch, or stochastic gradient descent\footnote{The batch size used here is 20.}.
 
 \begin{lstlisting}
     optimizer = SGD(lr=0.01, momentum=0.9, nesterov=True)
@@ -201,8 +199,8 @@ On the other hand, a learning rate set to a high value cannot converge at all.
 
 Introduced in 1964 by Polyak \cite{Polyak1964}, momentum is used to keep the gradient constant over several steps.
 Momentum takes its name as an analogy to the physical effect according to Newton's second law of motion.
-The direction of correction by the gradient should be consistent over several steps, and it would be strange if the direction made sudden shifts during training.
-This is useful if the data is "noisy" or some of the training examples are wrong.
+The direction of the gradient should be consistent over several steps, and it would be strange if the direction made sudden shifts during training.
+This is useful if the data is "noisy" or some of the training examples are wrong, since their negative effect is counteracted by the momentum.
 Therefore another parameter $\nu$ is introduced into the equation~\eqref{eq:backprop_update}:
 
 \begin{equation}
@@ -242,7 +240,7 @@ model.compile(
 \end{lstlisting}
 
 \code{sparse\_categorical\_crossentropy} is used as a loss function, as recommended for multiclass categorization problems that are characterized by integers \cite[p.84]{Chollet2017}.
-It measures the distance between two probability distributions given by the last layer of the model given by a \code{softmax} activation and the labelled data.
+It measures the distance between two probability distributions given by the last layer of the model by a \code{softmax} activation and the labelled data.
 The SoftMax activation is used to normalize the output by dividing each value by the sum of all values in each layer.
 This is useful because the labeled data assigns the value one to the correct node and zero to all others, making them numerically comparable and minimizing loss for a meaningful result.
 
@@ -260,7 +258,7 @@ history = model.fit_generator(
 \end{lstlisting}
 
 Here it is defined that 20 images are fed into the model as a batch at each iteration, which is repeated for 20 epochs.
-Since an epoch is a run, the optimizer updates the parameters (the $\theta$ of the model) 20 times.
+After each epoch the optimizer updates the parameters (the $\theta$ of the model), which is happening 20 times in this run.
 
 \subsubsection{Results}
 \begin{figure}

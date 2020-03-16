@@ -19,9 +19,7 @@ The relations between the pixels have to be found out, which leads to a rather c
 This cannot be programmed in the traditional way even for the simplest tasks.
 
 The universal approximation theorem \cite{Cybenko1989, Hornik1989} states that for any input $x$ there is a function $h$ which approximates the mapping $y$, while the mapping is only the input to the correct output (often labeled by a human).
-This relationship is described in equation~\eqref{eq:universal_approx} \footnote{In literature there is often a bias within the sum.
-According to the convention of prefixing the input vector $x$ with a 1, it is always included.
-Please note that, mathematically speaking, this is the same, but only a matter of taste.}.
+This relationship is described in equation~\eqref{eq:universal_approx}.
 
 % TODO define sets X and Y of \theta and x
 \begin{equation}
@@ -54,7 +52,6 @@ It takes the sum of the deviation of $n$ examples squared and divides it by $2*n
 
 The task of machine learning is to determine a $\theta$ for a model that confirms the equations~\ref{eq:universal_approx} and \ref{eq:hypothesis}, which is done by iterative updating of $\theta$. 
 Before training, $\theta$ is randomly initiated and then iteratively adjusted to make $\epsilon$ converge toward zero. This minimizes the value of $L$.
-% TODO find paper for random initialization... I have one.
 
 In order for the value of the loss function to gradually decrease, $\theta$ is adjusted using an optimization function.
 This is usually done with a gradient descent algorithm or a variant of it.
@@ -73,7 +70,6 @@ If the equation \eqref{eq:hypothesis} applies to the model in question, it is th
 These concepts are presented below using a simple example.
 
 \subsection{Simple linear example} \label{ch:simple_linear_example}
-% TODO more descriptive title?
 
 As an illustrative example, a model is created that translates Fahrenheit into Celsius.
 The original equation is given by the linear function $y = mx + b$ as $F = C * 1.8 + 32$, with $F$ as degrees Fahrenheit and $C$ as degrees Celsius.
@@ -126,7 +122,7 @@ weights:  [ 31.99999973758735, 1.8000003977458756 ]
 
 The expected behavior for the loss function is to decrease with each iteration.
 This is the case in this example, showing that the deviation of the hypothesis from the actual result decreases.
-After 200 iterations, the parameters \code{m} and \code{b} of the \code{model} are output and show that they are actually close to the expected result.
+After 200 iterations, the parameters \code{m} and \code{b} of the \code{model} are displayed and show that they are actually close to the expected result.
 By increasing the number of iterations, the result can be increased up to the point where they are rounded by the JavaScript compiler to represent exact results (using Node.js\footnote{As far as can be assumed when calculating exact results using floating point numbers.}).
 
 \begin{SCfigure}

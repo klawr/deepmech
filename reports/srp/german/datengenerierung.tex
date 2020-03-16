@@ -18,13 +18,13 @@ Um die Daten schnell zu generieren, mussten einige Anforderungen berücksichtigt
 
 Ein Python-Skript ist in der Lage, diese Anforderungen zu erfüllen.
 Die Bibliothek \name{OpenCV} \cite{OpenCV2019} ermöglicht die Erstellung eines Fensters mit entsprechenden Anforderungen. Die Bibliothek \name{opencv-python} \cite{Heinisuo2019} wird hier Implementierung von \name{OpenCV} verwendet.
-Es erfüllt all diese Anforderungen, da es die Erstellung eines Fensters mit programmierbarem Kontext und Funktionen zur Behandlung von Mausinteraktionen bereitstellt\footnote{ Der Datengenerierungsprozess sollte zunächst mit JavaScript im Webkontext durchgeführt werden, aber die letzte Anforderung zur Sicherung von Daten ist scheinbar nicht so einfach zu erfüllen. Node.js ermöglicht die einfache Sicherung von Dateien, ist aber von Natur aus "headless" und lässt daher keinen Kontext zu, auf den man zum Zeichnen zurückgreifen kann. }.
+Es erfüllt all diese Anforderungen, da es die Erstellung eines Fensters mit programmierbarem Kontext und Funktionen zur Behandlung von Mausinteraktionen bereitstellt\footnote{ Der Datengenerierungsprozess sollte zunächst mit JavaScript im Webkontext durchgeführt werden, aber die letzte Anforderung zur Sicherung von Daten ist scheinbar nicht so einfach zu erfüllen. Node.js verfügt über einen Zugang zum Dateisystem, ist aber von Natur aus "headless" und lässt daher keinen Kontext zu, auf den man zum Zeichnen zurückgreifen kann. }.
 
 Da das Modell in der Lage sein soll, Symbole beliebiger Farbe auf beliebigem Hintergrund zu erkennen, ist der Kontext-Hintergrund ein zufälliger Wert in Graustufen, ebenso wie die Farbe der Linie mit der auf dem Hintergrund gezeichnet wird.
-Die Dicke der Linie, die zum Zeichnen verwendet wird, ist ebenfalls zufällig und imitiert damit das Erscheinungsbild eines Symbole unterschiedlicher Größen (wodurch die Auflösung des Bildes in einem späteren Prozess möglicherweise reduziert wird).
+Die Dicke der Linie, die zum Zeichnen verwendet wird, ist ebenfalls zufällig und imitiert damit das Erscheinungsbild eines Symbole unterschiedlicher Größen\footnote{Dies soll dazu dienen in einem späteren Prozess es auch zu ermöglichen Bilder unterschiedlicher Auflösungen zu klassifizieren}.
 
 Nachdem die für das Zeichnen des Kontexts verwendeten Parameter festgelegt wurden, wird mit der Funktion \name{cv2} \code{namedWindow} die Funktion \name{cv2} erstellt.
-Für die jeweilige Interaktion wird die Funktion \code{setMouseCallback} auf den erzeugten \code{namedWindow} angewendet, wobei eine \code{draw}-Funktion aufgerufen wird, die es ermöglicht, Mausereignisse zu erkennen und darauf zu reagieren.
+Für die jeweilige Interaktion mit der Zeichenfläche wird die Funktion \code{setMouseCallback} auf den erzeugten \code{namedWindow} angewendet, wobei eine \code{draw}-Funktion aufgerufen wird, die es ermöglicht, Mausereignisse zu erkennen und darauf zu reagieren.
 
 Das Zeichnen erfolgt dann durch Ereignisse mit den Namen \code{cv2.EVENT\_LBUTTONDOWN} und \code{cv2.EVENT\_LBUTTONUP}, die ein boolesches \code{drawing}-Flag entweder auf \code{True} oder \code{False} setzen.
 Das Speichern des gezeichneten Bildes erfolgt mit \code{cv2.Event\_RBUTTONUP}, der das Bild nach der Anzahl der zuvor automatisch gezeichneten Bilder benennt.

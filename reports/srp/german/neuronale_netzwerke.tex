@@ -19,14 +19,16 @@ Rolnick und Tegmark \cite{Rolnick2017} zeigen, dass bei einschichtigen Modellen 
 Jeder Knoten in Abbildung~\ref{fig:nn} kann durch die Notation $z^l_i$ angesprochen werden.
 $l$ ist die Nummer der Schicht, in welcher der Knoten liegt, und $i$ ist der Index des Knotens.
 Jedes Gewicht $\theta^l_{i, j}$ kann ebenfalls adressiert werden; $l$ ist die Schicht, auf welche die Gewichtung verweist, $i$ ist der Index des Knotens, der mit der Gewichtung multipliziert wird, um den Wert des Knotens in der Schicht $l$ mit dem Index $j$ zu beeinflussen.
-So können wir jeden Knoten als Resultat folgender Gleichung beschreiben:
+So können wir jeden Knoten als Resultat folgender Gleichung beschreiben\footnote{In der Literatur wird der Bias oft separat hinzugefügt.
+Gemäß der Konvention, dem Eingangsvektor $x$ eine 1 voranzustellen, wird er immer als Index 0 jeder Ebene aufgenommen.
+Bitte beachten Sie, dass dies mathematisch gesehen dasselbe ist.}:
 
 \begin{equation}
     z^l_j = \sum^n_{i=0}z^{l-1}_i\theta^l_{i, j}
     \label{eq:node_value}
 \end{equation}
 
-$n$ ist die Anzahl der Knoten in der jeweiligen Schicht. Gleichung~\eqref{eq:node_value} kann vektorisiert werden durch:
+$n$ ist die Anzahl der Knoten in der jeweiligen Schicht. Gleichung~\eqref{eq:node_value} kann vektorisiert werden zu:
 
 \begin{equation}
     z^l = \theta^l z^{l-1}
@@ -89,13 +91,12 @@ Mit der entsprechenden vektorisierten Gleichung:
 \end{equation}
 
 Es gibt eine Vielzahl verschiedener Aktivierungsfunktionen, wobei diese beiden am prominentesten sind.
-Es gibt aber auch andere Aktivierungsfunktionen.
 Die Auswahl der Aktivierungsfunktion und eventuell ein entsprechender Schwellenwert sind ein weiterer Hyperparameter, der vor dem Training gewählt werden muss.
 
 \subsection{Backpropagation}
 
-Mit Gradientenabstieg~\eqref{eq:gradient_descent} können wir nicht alle Parameter in allen Ebenen aktualisieren, da es nur die Aktualisierung der Parameter der letzten Ebene berücksichtigt.
-Da die letzte Schicht eine Funktion der jeweils vorhergehenden Schicht ist, können wir die Kettenregel anwenden und so den berechneten Fehler der letzten Schicht auf sie übertragen und die Gewichte bzw. die Verzerrung aktualisieren. Dieser Umstand gilt für jede Schicht, mit Ausnahme der Eingangsschicht (die schließlich nicht aktualisiert werden muss).
+Beim Gradientenabstieg~\eqref{eq:gradient_descent} können nicht alle Parameter in allen Ebenen aktualisiert werden, da er nur die Aktualisierung der Parameter der letzten Ebene berücksichtigt, wenn sie als unabhängig vorangegangener Ebenen betrachtet wird.
+Da die letzte Schicht eine Funktion der jeweils vorhergehenden Schicht ist, kann die Kettenregel angewendet werden und so der berechneten Fehler der letzten Schicht auf die Vorangegangene übertragen und die Gewichte bzw. den Bias aktualisieren. Dieser Umstand gilt für jede Schicht, mit Ausnahme der Eingangsschicht (die schließlich nicht aktualisiert werden muss).
 Die folgenden Gleichungen wurden mit \cite[S.733]{StuartRussell2018}, \cite[S.197]{Goodfellow2017} und \cite[ch.2]{Nielsen2015} zusammengestellt:
 
 \begin{equation}
@@ -112,7 +113,7 @@ Die folgenden Gleichungen wurden mit \cite[S.733]{StuartRussell2018}, \cite[S.19
 \end{equation}
 
 Gleichung~\eqref{eq:output_error} beschreibt den in der Ausgabeschicht berechneten Fehler. Wir definieren unser Netzwerk mit $L$-Schichten, daher wird die Ausgabeschicht immer durch den Index $L$ beschrieben.
-$\odot$ ist der Hadamard-Operator. Er wird verwendet, um Tensoren elementweise zu multiplizieren, was in diesem Fall nützlich ist, da er verhindert, dass die Vektoren in eine Diagonalmatrix transformiert werden müssen.
+$\odot$ ist der Hadamard-Operator. Er wird verwendet, um Tensoren elementweise zu multiplizieren, was in diesem Fall nützlich ist, da er verhindert, dass die Vektoren in Diagonalmatrizen transformiert werden müssen.
 Gleichung~\eqref{eq:output_error} ist ein direktes Ergebnis der Anwendung der multivariaten Kettenregel auf die Ableitung der in der letzten Schicht durchgeführten Verlustfunktion.
 Wie bereits erwähnt wird der Gradientenabstieg durch die Ableitung der Verlustfunktion in Gleichung~\eqref{eq:sgd_mse_here} durchgeführt.
 Da zwischen dem in der Verlustfunktion verwendeten Eingang und dem Ausgang der vorhergehenden Schicht eine Aktivierungsfunktion implementiert ist, muss die Kettenregel auch auf diese angewendet werden.
@@ -176,6 +177,6 @@ Eine andere Möglichkeit ist die Reduzierung von Merkmalen der Trainingsdaten; s
 Auf der anderen Seite ist das Problem der Unteranpassung ebenso problematisch wie die Überanpassung.
 Wenn das Modell bereits keine ausreichende Ergebnisse bei den Trainingsdaten erhält, wird das Problem als Unteranpassung bezeichnet.
 Wenn dies der Fall ist, muss vermutlich das Modell oder Parameter angepasst werden, oder die Daten sind für das Problem unpassend.
-Des weiteren gilt, dass damit die Gleichungen~\eqref{eq:universal_approx} und \eqref{eq:hypothesis} für ein vernünftiges Modell zutreffen, gilt als Faustregel, dass eine Abbildung des Inputs auf den erwarteten Output zumindest nachvollziehbar sein muss.
+Des weiteren gilt, dass damit die Gleichungen~\eqref{eq:universal_approx} und \eqref{eq:hypothesis} für ein vernünftiges Modell zutreffen, gilt als Faustregel, dass eine Abbildung des Inputs auf den erwarteten Output zumindest nachvollziehbar von einem Menschen sein sollte.
 
 Damit anschließend mit diesen Techniken ein Modell auf die Erkennung mechanischer Symbole trainiert werden kann, müssen nun zunächst die entsprechenden Daten generiert werden.

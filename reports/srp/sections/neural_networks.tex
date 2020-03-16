@@ -1,6 +1,6 @@
 \section{Neural Networks} \label{ch:neural_networks}
 
-As already mentioned, the name Neural Network has become widely accepted, although it is neither neural nor a network.
+As already mentioned, the name Neural Network has become widely accepted, although it is neither neural nor a network. % TODO citation needed (chollet)
 They are used to create more complex mappings than the previous models were able to do.
 In the following we will discuss what the motivation behind this concept is and how networks are trained.
 
@@ -20,14 +20,16 @@ Rolnick and Tegmark \cite{Rolnick2017} show that in single-layer models the numb
 Each node in figure~\ref{fig:nn} can be addressed using the notation $z^l_i$.
 $l$ is the number of the layer in which the node is located and $i$ is the index of the node.
 Each weight $\theta^l_{i, j}$ can also be addressed; $l$ is the layer to which the weight refers, $i$ is the index of the node, which is multiplied by the weight to influence the value of the node in the layer $l$ with the index $j$.
-So we can describe each node as the result of the following equation:
+So we can describe each node as the result of the following equation\footnote{In literature the bias is often added separately.
+According to the convention of prefixing the input vector $x$ with a 1, it is always included as index 0 of each layer.
+Please note that, mathematically this is the same.}:
 
 \begin{equation}
     z^l_j = \sum^n_{i=0}z^{l-1}_i\theta^l_{i, j}
     \label{eq:node_value}
 \end{equation}
 
-$n$ is the number of nodes in the respective layer. Equation~\eqref{eq:node_value} can be vectorized by:
+$n$ is the number of nodes in the respective layer. Equation~\eqref{eq:node_value} can be vectorized to:
 
 \begin{equation}
     z^l = \theta^l z^{l-1}
@@ -89,13 +91,12 @@ With the corresponding vectorized equation:
 \end{equation}
 
 There are a variety of different activation functions, these two being the most prominent.
-However, there are also other activation functions.
 The selection of the activation function and possibly a corresponding threshold value is another hyperparameter that must be selected before the training.
 
 \subsection{Backpropagation}
 
-With gradient descent~\eqref{eq:gradient_descent} we cannot update all parameters in all levels, because it only considers updating the parameters of the last level.
-Since the last layer is a function of the previous layer, we can apply the chain rule and thus apply the calculated error of the last layer to it and update the weights or distortion. This applies to every layer, except the input layer (which does not need to be updated in the end).
+With gradient descent~\eqref{eq:gradient_descent} not all parameters in all layers can be updated, because it only considers updating the parameters of the last level if it is considered independent of previous layers.
+Since the last layer is a function of the previous layer, the chain rule can be applied and thus apply the calculated error of the last layer to the preceding one and update the weights and biases. This applies to every layer, except the input layer (which does not need to be updated in the end).
 The following equations are derived using \cite[p.733]{StuartRussell2018}, \cite[p.197]{Goodfellow2017} and \cite[ch.2]{Nielsen2015}:
 
 \begin{equation}
@@ -112,7 +113,7 @@ The following equations are derived using \cite[p.733]{StuartRussell2018}, \cite
 \end{equation}
 
 Equation~\eqref{eq:output_error} describes the error calculated in the output layer. We define our network with $L$ layers, so the output layer is always described by the $L$ index.
-$\odot$ is the Hadamard operator. It is used to multiply tensors element by element, which is useful in this case as it prevents the vectors from having to be transformed into a diagonal matrix.
+$\odot$ is the Hadamard operator. It is used to multiply tensors element by element, which is useful in this case as it prevents the vectors from having to be transformed into diagonal matrices.
 Equation~\eqref{eq:output_error} is a direct result of applying the multivariate chain rule to the derivative of the loss function performed in the last layer.
 As mentioned above, the gradient descent is performed by the derivative of the loss function in equation~\eqref{eq:sgd_mse_here}.
 Since an activation function is implemented between the input used in the loss function and the output of the previous layer, the chain rule must also be applied to the latter.
@@ -164,17 +165,17 @@ After the model has been trained with data, it should also achieve good results 
 This distinguishes machine learning from optimization problems (which could be solved with the Newton-Raphson method, for example).
 
 However, a generalization is not guaranteed. In particular the phenomena of over- and underfitting  pose problems.
-For example, a model that has been trained for a classification task might make correct predictions for training examples, but not work reliably with new data (over fitting).
+For example, a model that has been trained for a classification task might make correct predictions for training examples, but not work reliably with new data (overfitting).
 This indicates that the model has, so to speak, memorized the training examples.
 There are some things which can be done to solve this issue.
 Giving the model more data for training is a solution shown by Banko and Brill \cite {Banko2001} and commented by Halevy, Norvig and Pereira in their article "The Unreasonable Effectiveness of Data" \cite{Halevy2009}.
 Adding a lot of data is not always possible because generating data can be costly, so some compromises may have to be made to solve this problem.
 
-Another possibility is to reduce the number of features in the training data; apparently unintuitive at first glance, it becomes clear that a wealth of features does not add much information to an image. For example, to recognize a handwritten digit, many more parameters have to be adjusted if a high-resolution image with hundreds of thousands of pixels is fed into the model, where a pixel count of less than a thousand would already be sufficient \cite{Nielsen2015}.
+Another possibility is to reduce the number of features in the training data; apparently unintuitive at first glance, it becomes clear that an abundance of features does not add much information to an image. For example, to recognize a handwritten digit, many more parameters have to be adjusted if a high-resolution image with hundreds of thousands of pixels is fed into the model, where a pixel count of less than a thousand would already be sufficient \cite{Nielsen2015}.
 
 On the other hand, the problem of underfitting is as problematic as overfitting.
 If the model is already not getting sufficient results from the training data, the problem is called underfitting.
 If this is the case, it is likely that the model or parameter will need to be adjusted, or that the training data is unsuitable for the problem.
-Furthermore, for the equations~\eqref{eq:universal_approx} and \eqref{eq:hypothesis} to be true for a reasonable model, a rule of thumb is that mapping the input to the expected output must be at least relatable.
+Furthermore, for the equations~\eqref{eq:universal_approx} and \eqref{eq:hypothesis} to be true for a reasonable model, a rule of thumb is that mapping the input to the expected output should be at least relatable to a human.
 
 In order to train a model for the recognition of mechanical symbols using these techniques, the corresponding data must first be generated.
