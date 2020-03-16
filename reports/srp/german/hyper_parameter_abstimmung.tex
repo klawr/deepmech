@@ -1,15 +1,14 @@
 \section{Hyperparameter-Abstimmung} \label{ch:hyper_parameter_tuning}
 
 Leider gibt es nicht für jedes Problem ein offensichtlich optimales Modell.
-Ein Modell bildet den Input auf den Output ab.
-Um zuverlässig zu bestimmen, welche Informationen in den Daten verworfen werden sollten (und somit nicht zur Generalisierung beitragen) und welche hervorgehoben werden sollten, müssen entsprechende Annahmen getroffen werden.
+Ein Modell bildet den Input auf den Output ab, um jedoch zuverlässig zu bestimmen, welche Informationen in den Daten verworfen werden sollten (und somit nicht zur Generalisierung beitragen) und welche hervorgehoben werden sollten, müssen entsprechende Annahmen getroffen werden.
 
 1996 wies David Wolpert darauf hin, dass es keinen Grund gibt, ein Modell einem anderen vorzuziehen, wenn keine Annahmen über den Datensatz getroffen werden.
-Diese Argumentationslinie ist heute als \textit{No Free Lunch Theorem} bekannt. \cite{Wolpert1996}.
+Diese Argumentationslinie ist heute als \textit{No Free Lunch Theorem} bekannt \cite{Wolpert1996}.
 Einige dieser Annahmen werden bereits im Vorfeld getroffen (z.B. die Verwendung von Feed-Forward-Neuronalen Netzen), andere sind jedoch Gegenstand von Optimierungen.
 
-Die Hyperparameter-Optimierung ist ein Optimierungsproblem, bei dem der Verlust (oder eine andere metrische Genauigkeit) des Modells bei den gegebenen Trainingsdaten minimiert wird.
-Die im ersten Modell verwendeten Hyperparameter, die Gegenstand der Optimierung sein können, sind:
+Die Hyperparameter-Optimierung ist ein Optimierungsproblem, bei dem der Verlust (oder andere Metriken wie z.B. die Genauigkeit) des Modells für die gegebenen Trainingsdaten minimiert werden soll.
+Die im ersten Modell verwendeten Hyperparameter, die Gegenstand der Optimierung sein könnten, sind unter anderem:
 
 \begin{enumerate}
     \item Training data:
@@ -105,14 +104,14 @@ Die Modellgenauigkeit des Trainingssatzes scheint auch mit einer geringeren Rate
 
 Bitte beachten Sie, dass das Trainingsset praktisch um den Faktor 1440 (360 Grad + Drehungen in zwei Achsen) gewachsen ist, wodurch die Möglichkeit besteht, während des Trainings wesentlich mehr Daten in das Modell einzuspeisen, ohne mit einer zu großen Überanpassung rechnen zu müssen.
 
-Das Ziel, die Überanpassung zu verringern, scheint gelöst zu sein; der Unterschied zwischen Trainings- und Testgenauigkeit ist vernachlässigbar klein{\footnote{Link zum jeweiligen Notebook}: \url{https://aka.klawr.de/srp\#7}}.
+Das Ziel, die Überanpassung zu verringern, scheint in dieser Hinsicht gelöst zu sein; der Unterschied zwischen Trainings- und Testgenauigkeit ist vernachlässigbar klein{\footnote{Link zum jeweiligen Notebook}: \url{https://aka.klawr.de/srp\#7}}.
 
 \subsection{Reduzierung der Merkmale}
 
 Eine weitere Sache, die die Leistung des Modells verbessern kann, ist die Reduzierung der Größe des Inputs.
 Das Phänomen, das als \textit{Fluch der Dimensionalität} bekannt ist, beschreibt die Möglichkeiten unterschiedlicher Konfigurationen, die mit zunehmender Anzahl von Variablen möglich sind, und kommt von Richard Bellman, der sich zunächst auf Probleme in der dynamischen Programmierung \cite[p.ix]{Bellman1957} bezieht.
 
-Die Daten werden bereits stark reduziert, indem die Daten als Bilder mit einer Breite und Höhe von 32 Pixeln eingeladen werden, obwohl die Daten roh als 512 mal 512 Bilder vorliegen. Diese Reduzierung wurde im Vorfeld manuell durchgeführt, um die Daten relativ klein zu halten, die Symbole aber noch gut erkennbar sind.
+Die Daten werden bereits stark reduziert, indem die Daten als Bilder mit einer Breite und Höhe von 32 Pixeln eingeladen werden, obwohl die Daten roh als 512 mal 512 Bilder vorliegen. Diese Reduzierung wurde im Vorfeld manuell durchgeführt, um die Daten relativ klein zu halten, die Symbole aber noch gut zu unterscheiden sind.
 
 Obwohl die Rohdaten nur Farben in Graustufen enthalten, werden sie mit drei Farbkanälen geladen (daher die Eingabegröße \code{[32, 32, 3]}).
 Eine Möglichkeit, die Eingabegröße zu reduzieren, besteht also darin, die Daten auf eine Farb-Dimension zu projizieren, wie von Géron \cite[S.215]{Geron2019} vorgeschlagen.
@@ -141,18 +140,18 @@ _________________________________________________________________
 \end{lstlisting}
 
 Die Anzahl der trainierbaren Parameter wird fast durch den Faktor drei geteilt und damit die Größe des Modells von 807kb (von den Vorgängermodellen mit 99491 Parametern) auf 295kb reduziert.
-Hierbei geht dennoch keinerlei Leistung verloren geht. \footnote{Link zum jeweiligen Notebook: \url{https://aka.klawr.de/srp\#8}}.
+Hierbei geht dennoch keinerlei Genauigkeit verloren. \footnote{Link zum jeweiligen Notebook: \url{https://aka.klawr.de/srp\#8}}.
 
 \subsection{Optimierer}
 
 Bisher wurde nur der Optimierer des stochastischen Gradientenabstiegs betrachtet.
-Der stochastische Gradientenabstieg hat mehrere Parameter, die sich optimieren lassen, z.B. die Lernrate, den Impuls und ob Nesterov verwendet wird oder nicht.
+Der stochastische Gradientenabstieg hat mehrere Parameter, die sich optimieren lassen, z.B. die Lernrate, den Impuls und ob Nesterov verwendet wird oder nicht, wie bereits in Kapitel \ref{ch:optimizer} behandelt.
 
 Es wurden bereits mehrere Versuche unternommen, die Suche nach diesen Hyperparametern zu automatisieren.
 In diesem Projekt werden einige alternative Optimierer untersucht, aber nicht allzu ausführlich erläutert.
-Für weitere Erläuterungen wird auf die Quellen verwiesen.
+Bitte beachten Sie die angegebenen Quellen für weitere Einblicke.
 
-Beim stochastischen Gradientenabstieg ist die Lernrate für alle Parameter gleich.
+Beim stochastischen Gradientenabstieg ist die Lernrate für alle Parameter jeder Ebene des Modells gleich.
 Eine Anpassung für jeden Parameter oder sogar für einzelne Dimensionen der Schichten kann hilfreich sein, aber dies manuell zu tun würde einen unverhältnismäßig hohen Aufwand erfordern.
 
 \name{AdaGrad} \cite{Duchi2010} ändert die Lernrate für jeden Parameter.
@@ -167,15 +166,15 @@ Dies führt zu einem wesentlich stabileren Optimierer, der in der Praxis gut zu 
 Es wird als "im Allgemeinen eine ausreichend gute Wahl, was auch immer Ihr Problem ist" \cite[S.77]{Chollet2017} betrachtet.
 
 Adam \cite{Kingma2014}\cite{Reddi2018} ist der letzte in diesem Projekt enthaltene Optimierer, der eine weitere Methode zur Anwendung einer adaptiven Lernrate für jeden Parameter darstellt.
-Adam integriert die zuvor erwähnte Idee des Impulses in einen Algorithmus, der dem von RMSProp ähnlich ist.
+Adam integriert die zuvor erwähnte Idee des Impulses in einen Algorithmus, der dem von \name{RMSProp} ähnlich ist.
 
 Es gibt weitere erwähnenswerte Optimierer (nämlich AdaMax oder Nadam), die möglicherweise Gegenstand weiterer Untersuchungen sind.
 
-Bemerkenswert ist, dass die hier erläuterten adaptiven Methoden möglicherweise nicht bei jedem Modell funktionieren, so dass es sich immer lohnt, den Gradientenabstieg mit nesterov\cite[S.358]{Geron2019} zu versuchen.
+Bemerkenswert ist, dass die hier erläuterten adaptiven Methoden möglicherweise nicht bei jedem Modell funktionieren, so dass es sich immer lohnt, den zugrundeliegenden Gradientenabstieg mit Nesterov\cite[S.358]{Geron2019} zu versuchen.
 
 \subsection{Convolutional Layers}
 
-"Convolutional Layers" sind für die Bilderkennung weit verbreitet und es ist daher sinnvoll, sie in das Modell zu implementieren.
+"Convolutional Layers" sind für die Bilderkennung weit verbreitet und es ist daher sinnvoll, sie in dieses Modell zu integrieren.
 Sie wurden von Yann LeCun 1998 in einer Arbeit \cite{Lecun1998} eingeführt, um handgeschriebene Ziffern zu erkennen.
 
 In diesem Projekt werden nur zweidimensionale "Convolutional Layers" verwendet, da die Eingabe zweidimensional ist (nachdem die Bilder in Graustufen übertragen wurden).
@@ -205,15 +204,14 @@ Zusätzlich hat jeder Filter seinen eigenen Bias $b_k$, der zur Aktivierungsfunk
 Damit die Ausgabe die gleiche Größe wie die Eingabe hat, müssen Zahlen zur Eingabe addiert werden, da ein Kernel, der in jeder Richtung größer als eins ist, eine Kante für die Eingabe nicht überqueren kann (und der Schritt 1 mal 1 sein muss).
 Daher wird das Padding zur Lösung dieses Problems verwendet, indem man (typischerweise) Nullen um die Eingabe herum anfügt, was zu einer Technik führt, die man Zero-Padding nennt.
 
-Durch die Verwendung von "Convolutional Layers" anstelle von "Dense Layers" wird die Modellgröße weiter reduziert (295kb bis 232kb) und die Genauigkeit um einige Prozente erhöht. Durch das Hinzufügen von Pooling wird die Größe wieder auf 149kb reduziert und die Metrik weiter verbessert\footnote{Verknüpfung mit den jeweiligen Notebooks: \url{https://aka.klawr.de/srp\#9} und \url{https://aka.klawr.de/srp\#10}.
+Durch die Verwendung von "Convolutional Layers" anstelle von "Dense Layers" wird die Modellgröße weiter reduziert (295kb bis 232kb) und die Genauigkeit um einige Prozente erhöht. Durch das Hinzufügen von Pooling wird die Größe weiter auf 149kb reduziert und die Genauigkeit wird weiter verbessert\footnote{Verknüpfung mit den jeweiligen Notebooks: \url{https://aka.klawr.de/srp\#9} und \url{https://aka.klawr.de/srp\#10}.
 Pooling ist eine Technik, bei der ein Kernel (ähnlich wie der Kern von "Convolutional Layers") über die Eingabeschicht scannt}.
-Im verknüpften Notizbuch wurde ein Kernel paarweise verwendet, der den maximalen Wert des Kernels nimmt und nur den maximalen Wert weiterleitet, wodurch die Ausgabegröße in Breite und Höhe halbiert wird.
-Dies wird passenderweise \name{MaxPooling} genannt.
+Im verknüpften Notizbuch wurde ein Kernel paarweise verwendet, der den maximalen Wert des Kernels nimmt und nur den maximalen Wert weiterleitet, wodurch die Ausgabegröße in Breite und Höhe halbiert wird\footnote{Dies wird passenderweise \name{MaxPooling} genannt.}.
 
 \subsection{Tuning Algorithmen}
 
 Unter Berücksichtigung aller Möglichkeiten, das Modell vor dem Training zu optimieren, wurden einige Ansätze entwickelt, um die Hyperparameter automatisch zu optimieren.
-Eine Möglichkeit, die Hyperparameter einzustellen, besteht darin, jeden einzelnen mit verschiedenen Werten zu testen, wobei alle anderen Hyperparameter festgesetzt werden.
+Eine Möglichkeit, die Hyperparameter einzustellen, besteht darin, jeden einzelnen mit verschiedenen Werten zu testen, wobei die Werte aller anderen Hyperparameter festgesetzt werden.
 Dies wird dann für alle Hyperparameter wiederholt.
 Dieses Verfahren stellt sicher, dass der optimale Satz von Hyperparametern verwendet wird, kann aber eine inakzeptable Zeit in Anspruch nehmen, da die Anzahl der erstellten Modelle exponentiell mit der Anzahl der anzupassenden Hyperparameter wächst.
 Bei zwei Hyperparametern wäre dies gleichbedeutend mit der Überprüfung jedes Wertes auf einem zweidimensionalen Gitter, daher heißt die Methode "grid search"\footnote{Wenn nur ein Hyperparameter angepasst wird, nennt man das Verfahren "linear search".}.
@@ -224,7 +222,7 @@ Natürlich führt dies (höchstwahrscheinlich) nicht zu einem optimalen Ergebnis
 Ein Notizbuch wurde erstellt, um die Implementierung von \name{keras tuner} in diesem Projekt unter \url{https://aka.klawr.de/srp\#12} zu zeigen.
 
 Einige ausgefeiltere Methoden basieren auf dem Ansatz der Zufallssuche, bei dem die Ergebnisse der Zufallssuche wiederholt untersucht werden und dann die Hyperparameter zugunsten derjenigen abgestimmt werden, die bessere Modelle zu ergeben versprechen.
-Dieser Ansatz wird als Zoomen bezeichnet, da man nach jeder Iteration in den vielversprechendsten Bereich der Hyperparameter zoomen kann.
+Dieser Ansatz wird als Zoomen bezeichnet, da man nach jeder Iteration in den vielversprechendsten Bereich der Hyperparameter "hineinzoomen" kann.
 
 Andere Ansätze versuchen, diesen Prozess vollständig zu automatisieren.
 Beliebte Algorithmen basieren auf der Bayes'schen Optimierung, aber diese werden in diesem Projekt nicht behandelt und daher ausgelassen.
@@ -232,7 +230,7 @@ Beliebte Algorithmen basieren auf der Bayes'schen Optimierung, aber diese werden
 Der in diesem Projekt verwendete Tuner heißt \name{Hyperband} \cite{Li2018}, der in der Bibliothek \name{keras-tuner} implementiert wird \cite{Google2019a}.
 Im Wesentlichen trainiert \name{Hyperband} Modelle mittels Zufallssuche, schränkt aber das Training für ein breites Spektrum von Hyperparametern in einigen wenigen Epochen ein.
 Dies geschieht indem die Modelle für einige Epochen trainiert werden und nur die vielversprechendsten Modelle für weitere Iterationen behalten werden.
-Diese Methode verspricht eine wesentlich bessere Nutzung der Ressourcen und wird mit hoher Wahrscheinlichkeit die besten Hyperparameter präsentieren können.
+Diese Methode verspricht eine wesentlich bessere Nutzung der Ressourcen und wird mit hoher Wahrscheinlichkeit gute Hyperparameter präsentieren können.
 
 Der endgültige Modell-Tuner ist so konzipiert, dass er ein \code{Hyperparameter}-Objekt akzeptiert, das einer Funktion zugeführt wird, die das jeweilige Modell zurückgibt:
 

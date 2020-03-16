@@ -1,15 +1,14 @@
 \section{Hyper parameter tuning} \label{ch:hyper_parameter_tuning}
 
 Unfortunately there is no obvious optimal model for every problem.
-A model maps the input to the output.
-To reliably determine which information in the data should be discarded (and thus not contribute to generalization) and which should be emphasized, appropriate assumptions must be made.
+A model maps the input to the output, but to reliably determine which information in the data should be discarded (and thus not contribute to generalization) and which should be emphasized, appropriate assumptions must be made.
 
 In 1996 David Wolpert pointed out that there is no reason to prefer one model over another if no assumptions are made about the data set.
-This line of argument is now known as the \textit{No Free Lunch Theorem}. \cite{Wolpert1996}.
+This line of argument is now known as the \textit{No Free Lunch Theorem} \cite{Wolpert1996}.
 Some of these assumptions are made in advance (for example, the use of feed-forward neural networks), but others are subject to optimization.
 
-Hyperparameter optimization is an optimization problem that minimizes the loss (or other metric accuracy) of the model for the given training data.
-The hyperparameters used in the first model, which can be the subject of optimization, are:
+Hyperparameter optimization is an optimization problem in which the loss (or other metrics such as the accuracy) of the model for the given training data is to be minimized.
+The hyperparameters used in the first model, which could be the subject of optimization, are among others:
 
 \begin{enumerate}
     \item Training data:
@@ -46,7 +45,7 @@ Some hyperparameters need to be tested and are not obvious, but others can be im
 
 % TODO Add citation to Chollet p.138
 % TODO Add dropout layer Chollet p.140
-The first thing that can be improved is the size of the data set we use to train the model.
+The first thing that can be improved is the size of the dataset we use to train the model.
 In previous tests, the models saw each image about 20 times during training (batches of size 20, 20 steps per epoch, and 20 epochs divided by 400 training samples), which is most likely the cause of the overfitting that occurs.
 So increasing the size of the training batch seems to be a reasonable approach.
 
@@ -107,15 +106,14 @@ The model accuracy of the training set also seems to increase at a lower rate, s
 
 Please note that the training set has practically grown by a factor of 1440 (360 degrees + rotations in two axes), which makes it possible to feed considerably more data into the model during training without having to expect too much overfitting.
 
-The goal of reducing overfitting seems to be solved; the difference between training and test accuracy is negligible{\footnote{link to the respective notebook}: \url{https://aka.klawr.de/srp\#7}}.
+The goal of reducing overfitting seems to be solved in this regard; the difference between training and test accuracy is negligible\footnote{link to the respective notebook: \url{https://aka.klawr.de/srp\#7}}.
 
 \subsection{Feature reduction}
 
-% TODO curse of dimensionality should reduce accuracy... this is not fixed here
 Another thing that can improve the performance of the model is to reduce the size of the input.
 The phenomenon known as \textit{curses of dimensionality} describes the possibilities of different configurations that are possible with an increasing number of variables, and comes from Richard Bellman, who first refers to problems in dynamic programming \cite[p.ix]{Bellman1957}.
 
-The data is already greatly reduced by loading the data as images with a width and height of 32 pixels, although the data is raw as 512 by 512 images. This reduction has been done manually beforehand to keep the data relatively small, but the symbols are still clearly visible.
+The data is already greatly reduced by loading the data as images with a width and height of 32 pixels, although the data is raw as 512 by 512 images. This reduction has been done manually beforehand to keep the data relatively small, but the symbols are still clearly distinguishable.
 
 Although the raw data contains only grayscale colors, the images are loaded with three color channels (hence the input size \code{[32, 32, 3]}).
 So one way to reduce the input size is to project the data onto a color dimension, as suggested by Géron \cite[p.215]{Geron2019}.
@@ -144,18 +142,18 @@ _________________________________________________________________
 \end{lstlisting}
 
 The number of trainable parameters is almost divided by a factor of three, reducing the size of the model from 807kb (from the previous models with 99491 parameters) to 295kb.
-Nevertheless, no power is lost at all. \footnote{Link to the respective notebook: \url{https://aka.klawr.de/srp\#8}}.
+Nevertheless, no accuracy is lost. \footnote{Link to the respective notebook: \url{https://aka.klawr.de/srp\#8}}.
 
 \subsection{Optimizers}
 
-So far only the optimizer of the stochastic gradient descent has been considered.
-The stochastic gradient descent has several parameters that can be optimized, e.g. the learning rate, the momentum and whether Nesterov is used or not.
+So far only the optimizer of stochastic gradient descent has been considered.
+The stochastic gradient descent has several parameters that can be optimized, e.g. the learning rate, the momentum and whether Nesterov is used or not, as discussed in chapter~\ref{ch:optimizer}.
 
 Several attempts have already been made to automate the search for these hyperparameters.
 In this project some alternative optimizers are investigated, but not explained in too much detail.
-For further explanations we refer to the sources.
+Please refer to the given citations for further insights.
 
-With stochastic gradient descent, the learning rate is the same for all parameters.
+With stochastic gradient descent, the learning rate is the same for all parameters of every layer in the model.
 An adjustment for each parameter or even for individual dimensions of the layers can be helpful, but to do this manually would require a disproportionate effort.
 
 \name{AdaGrad} \cite{Duchi2010} changes the learning rate for each parameter.
@@ -170,15 +168,15 @@ This leads to a much more stable optimizer that promises to work well in practic
 It is considered to be "generally a good enough choice, whatever your problem". \cite [p.77]{Chollet2017}.
 
 Adam \cite{Kingma2014}\cite{Reddi2018} is the last optimizer included in this project, which is another method to apply an adaptive learning rate for each parameter.
-Adam integrates the aforementioned idea of momentum into an algorithm similar to that of RMSProp.
+Adam integrates the aforementioned idea of momentum into an algorithm similar to that of \name{RMSProp}.
 
 There are other optimizers worth mentioning (namely AdaMax or Nadam), which may be the subject of further investigation.
 
-It is remarkable that the adaptive methods explained here may not work with every model, so that it is always worth trying the gradient descent with nesterov\cite [p.358]{Geron2019}.
+It is remarkable that the adaptive methods explained here may not work with every model, so that it is always worth trying the basic gradient descent with nesterov\cite [p.358]{Geron2019}.
 
 \subsection{Convolutional layers}
 
-Convolutional layers are widely used for image recognition and it is therefore useful to implement them into the model.
+Convolutional layers are widely used for image recognition and it is therefore useful to integrate them into this model.
 They were introduced by Yann LeCun in 1998 in a work \cite{Lecun1998} to recognize handwritten numbers.
 
 In this project only two-dimensional convolutional layers are used, because the input is two-dimensional (after the images have been transferred in grayscale).
@@ -195,7 +193,8 @@ z_{i,j,k} = b_k + \sum_{u=1}^{h} \sum_{v=1}^{w} \sum_{k'=1}^{n'} x_{i', j', k'} 
 
 Where $z$ is the activation value, the indices $i$ and $j$ represent the position of the node in the output layer and $k$ the index of the filter.
 The sum of all input nodes is the sum of the nodes in the respective directions given by iteration over three axes using the height ($h$), width ($w$) and filter size ($n'$) of the previous layer.
-For each of these combinations, the respective connection weight $w_{u, v, k', k}$ is multiplied by the input $x_{i', j', k'}$ at the respective position in the previous layer, where $i' = i \times s_h + u$ and $j' = j \times s_w$ respectively, and $s_h$ and $s_w$ are the steps taken at each step in each direction. The steps reduce the size of the following layer.
+For each of these combinations, the respective connection weight $w_{u, v, k', k}$ is multiplied by the input $x_{i', j', k'}$ at the respective position in the previous layer, where $i' = i \times s_h + u$ and $j' = j \times s_w$ respectively, and $s_h$ and $s_w$ are the steps taken at each step in each direction.
+The steps reduce the size of the following layer.
 Additionally, each filter has its own bias $b_k$, which is added to the activation function.
 
 \begin{figure}
@@ -208,15 +207,14 @@ Additionally, each filter has its own bias $b_k$, which is added to the activati
 In order for the output to be the same size as the input, numbers must be added to the input, since a kernel that is greater than one in any direction cannot cross an edge for the input (and the step must be 1 by 1).
 So padding is used to solve this problem by (typically) adding zeros around the input, resulting in a technique called zero padding.
 
-By using convolutional layers instead of dense layers, the model size is further reduced (295kb to 232kb) and accuracy is increased by a few percent. Adding pooling reduces the size back to 149kb and further improves the metrics\footnote{Link to the respective notebooks: \url{https://aka.klawr.de/srp\#9} and \url{https://aka.klawr.de/srp\#10}.
+By using convolutional layers instead of dense layers, the model size is further reduced (295kb to 232kb) and accuracy is increased by a few percent. Adding pooling reduces the size further to 149kb and further improves the accuracy\footnote{Link to the respective notebooks: \url{https://aka.klawr.de/srp\#9} and \url{https://aka.klawr.de/srp\#10}.
 Pooling is a technique where a kernel (similar to the core of Convolutional Layers) scans over the input layer}.
-In the linked notebook, a kernel was used in pairs, taking the maximum value of the kernel and passing only the maximum value, thus halving the output size in width and height.
-This is appropriately called \name{MaxPooling}.
+In the linked notebook, a kernel was used in pairs, taking the maximum value of the kernel and passing only the maximum value, thus halving the output size in width and height\footnote{This is appropriately called \name{MaxPooling}.}.
 
 \subsection{Tuning algorithms}
 
 Taking into account all possibilities to optimize the model before training, some approaches have been developed to automatically optimize the hyperparameters.
-One way of setting the hyperparameters is to test each one with different values, setting all other hyperparameters.
+One way of setting the hyperparameters is to test each one with different values, but freezing the values of all other hyperparameters.
 This is then repeated for all hyperparameters.
 This procedure ensures that the optimal set of hyperparameters is used, but can take an unacceptable amount of time, since the number of models created grows exponentially with the number of hyperparameters to be adjusted.
 With two hyperparameters, this would mean checking each value on a two-dimensional grid, so the method is called "grid search"\footnote{If only one hyperparameter is adjusted, the method is called "linear search".}.
@@ -227,7 +225,7 @@ Of course, this (most likely) does not lead to an optimal result, but in practic
 A notebook was created to show the implementation of \name{keras tuner} in this project at \url{https://aka.klawr.de/srp\#12}.
 
 Some more sophisticated methods are based on the random search approach, in which the results of the random search are repeatedly examined and then the hyperparameters are adjusted in favor of those that promise to yield better models.
-This approach is called zooming, because after each iteration you can zoom into the most promising range of hyperparameters.
+This approach is called zooming, because after each iteration you zoom into the most promising range of hyperparameters.
 
 Other approaches try to completely automate this process.
 Popular algorithms are based on Bayesian optimization, but these are not covered in this project and are therefore omitted.
@@ -235,7 +233,7 @@ Popular algorithms are based on Bayesian optimization, but these are not covered
 The tuner used in this project is called \name{Hyperband} \cite{Li2018}, which is implemented in the library \name{keras-tuner}. \cite{Google2019a}.
 Essentially, \name{Hyperband} trains models using random searches, but restricts training to a wide range of hyperparameters in a few epochs.
 This is done by training the models for a few epochs and keeping only the most promising models for further iterations.
-This method promises a much better use of resources and will most likely be able to present the best hyperparameters.
+This method promises a much better use of resources and will most likely be able to present good hyperparameters.
 
 The final model tuner is designed to accept a \code{Hyperparameter} object that is supplied to a function that returns the respective model:
 

@@ -9,7 +9,7 @@ Die Projektstruktur ist ein wichtiger Teil, um Modelle effizient zu testen und s
 
 Der Stammordner enthält Dateien wie die Lizenz des gesamten Projekts.
 Das Projekt ist unter der MIT-Lizenz lizenziert, die jedem Menschen die Möglichkeit gibt, es für den privaten und kommerziellen Gebrauch zu verändern, zu verteilen oder zu nutzen, aber unter Ausschluss jeglicher Haftung oder Gewährleistung meinerseits.
-Im Stammordner befindet sich eine weitere Datei requirements.txt, die Teil des Installationsprozesses ist und es erlaubt, den gesamten in diesem Projekt behandelten Code zu replizieren.
+Im Stammordner befindet sich eine weitere Datei \name{requirements.txt}, die Teil des Installationsprozesses ist und es erlaubt, den gesamten in diesem Projekt behandelten Code zu replizieren.
 
 Die "Cookiecutter Data Science"-Struktur ermöglicht eine klare Verteilung der Daten in Rohdaten (die nie angefasst werden dürfen), Zwischendaten (das sind die Rohdaten, die aber in irgendeiner Weise modifiziert, ergänzt oder verändert werden) und verarbeiteten Daten (die über einen Trainingsalgorithmus in das Modell eingespeist werden sollen).
 Diese Daten werden im Verzeichnis \name{data} gespeichert.
@@ -49,8 +49,8 @@ Demnach beginnt das Training eines Modells in diesem Projekt stets mit folgendem
     reset_and_distribute_data(raw, processed, [400, 0, 100])
 \end{lstlisting}
 
-Für das erste Modell reichen die Rohdaten selbst aus; daher werden sie einfach mit einer vordefinierten Funktion aus \code{training\_env.py} in das Verzeichnis der verarbeiteten Daten kopiert.
-Der dritte Parameter von \code{reset\_and\_populate} ist ein Array mit drei Zahlen, die die Verteilung der Trainings-, Validierungs- und Testdaten beschreiben.
+Für das erste Modell reichen die Rohdaten selbst aus; daher werden sie einfach mit einer vordefinierten Funktion \code{reset\_and\_distribute\_data} aus \code{src/utils.py} in das Verzeichnis der verarbeiteten Daten kopiert.
+Der dritte Parameter von \code{reset\_and\_distribute\_data} ist ein Array mit drei Zahlen, die die Verteilung der Trainings-, Validierungs- und Testdaten beschreiben.
 In diesem Beispiel werden die Validierungsdaten weggelassen, da keine Anpassungen an den Hyperparametern vorgenommen werden.
 
 \begin{lstlisting}
@@ -70,7 +70,7 @@ In diesem Beispiel werden die Validierungsdaten weggelassen, da keine Anpassunge
 \end{lstlisting}
 
 Nachdem die entsprechenden Daten auf die verschiedenen Verzeichnisse verteilt sind, wird der \code{ImageDataGenerator}\footnote{\url{https://keras.io/preprocessing/image/}} verwendet, um dem Modell zu ermöglichen, die Daten später während des Trainingsprozesses zu laden.
-Die Generatoren definieren auch die Größe des geladenen Bildes, die auf 32 Pixel Breite und 32 Pixel Höhe (im Gegensatz zur ursprünglichen Bildgröße von 512x512) und eine Batchgröße\footnote{Die Batchgröße ist die Anzahl der Bilder, die zwischen jedem Backpropagationszyklus verwendet werden.
+Die Generatoren definieren auch die Größe des geladenen Bildes, die auf 32 Pixel Breite und 32 Pixel Höhe\footnote{Die Größe der Bilder wird manuell bestimmt, indem man davon ausgeht, dass der Algorithmus, solange ein Mensch in der Lage ist, die charakteristischen Merkmale des Bildes zu erkennen, diese erlernen kann.} (im Gegensatz zur ursprünglichen Bildgröße von 512x512) und eine Batch-Größe\footnote{Die Batch-Größe ist die Anzahl der Bilder, die zwischen jedem Backpropagationszyklus verwendet werden.
 Wenn die Batch-Größe mit der Datensatzgröße übereinstimmt, spricht man von einem Batch-Gradientenabstieg, wenn die Batch-Größe eine ist, von einem stochastischen Gradientenabstieg gesprochen.
 Alles dazwischen wird als Mini-Batch-Gradientenabstieg bezeichnet.} von 20 eingestellt.
 Der \code{class\_mode} wird auf \code{'binary'} gesetzt, da die Eingabe aus 1D Numpy-Arrays besteht.
@@ -130,19 +130,19 @@ Eine Zusammenfassung des Modells wird gegeben als:
     _________________________________________________________________
 \end{lstlisting}
 
-Hier sehen wir, dass das Modell 99491 Parameter in $\theta$ hat, die angepasst werden können.
+Hier sehen wir, dass das $\theta$ des Modells 99491 Parameter hat, die angepasst werden können.
 Diese Anzahl ist die Summe der Parameter, die durch die 3 Schichten des Modells gegeben sind.
 Die erste Schicht hat die abgeflachten 3072 ($32 \times 32 \times 3$) Knoten.
 Die zweite Schicht multipliziert diese Anzahl (+1 für den Bias) mit $32$ und hat daher zusätzliche 98336 Knoten.
 Die dritte Schicht ist das Produkt aus $32 + 1$ Knoten in der zweiten Schicht und $32$ Knoten in der dritten Schicht, was uns 1056 Parameter zur Anpassung liefert.
 Die letzte Schicht hat wiederum $(32 + 1) \times 3$ Knoten.
 
-\subsection{Optimierer}
+\subsection{Optimierer} \label{ch:optimizer}
 
 Um unser Modell zu trainieren, muss ein Optimierer definiert werden.
 Wir werden mit einem \code{SGD}-Optimierer beginnen, was die Abkürzung für \name{Stochastic Gradient Descent} ist.
-Stochastischer Gradientenabstieg wird bereits in Kapitel~\ref{ch:simple_linear_example} erwähnt, wo er sehr rudimentär implementiert wurde. In dem eigentlichen Training des Modells wird die Keras-Implementierung verwendet.
-Die Keras-Implementierung von SGD unterscheidet sich etwas von der allgemeinen Definition, da sie nicht von Natur aus eine Batch-Größe von eins annimmt, sondern die im jeweiligen Generator definierten Batch-Größen, so dass der Anwender entscheiden kann, ob er Full Batch, Mini Batch oder stochastischen Gradientenabstieg verwendet (was in diesem Fall 20 ist).
+Stochastischer Gradientenabstieg wird bereits in Kapitel~\ref{ch:simple_linear_example} erwähnt, wo er sehr rudimentär implementiert wurde. In dem eigentlichen Training des Modells wird die Keras-Implementierung von \name{SGD} verwendet.
+Die Keras-Implementierung von SGD unterscheidet sich etwas von der allgemeinen Definition, da sie nicht von Natur aus eine Batch-Größe von eins annimmt, sondern die im jeweiligen Generator definierten Batch-Größen, so dass der Anwender entscheiden kann, ob er Full Batch, Mini Batch oder stochastischen Gradientenabstieg verwendet\footnote{Die hier verwendete Batch-Größe beträgt 20.}.
 
 \begin{lstlisting}
     optimizer = SGD(lr=0.01, momentum=0.9, nesterov=True)
@@ -157,7 +157,7 @@ Die Lernrate ist einer der einflussreichsten Hyperparameter und wohl auch der be
 Sie ist ein skalarer Wert, der die Schrittweite der durchgeführten Schritte bestimmt. Die Aktualisierungsfunktion des Parameters $\theta$ ist wie bereits erwähnt:
 
 \begin{equation}
-    \theta_{i+1} := \theta_i - \eta \varDelta \tag{\ref{eq:backprop_update} revisited}
+    \theta_{i+1} := \theta_i - \eta \varDelta \tag{\ref{eq:backprop_update}     wiederholt}
 \end{equation}.
 
 Wobei $\eta$ der Wert der Lernrate ist.
@@ -193,8 +193,8 @@ Andererseits kann eine auf einen hohen Wert gesetzte Lernrate überhaupt nicht k
 
 Eingeführt 1964 von Polyak \cite{Polyak1964} wird Momentum genutzt, um den Gradienten über mehrere Stufen hinweg konstant zu halten.
 Das Momentum nimmt seinen Namen als Analogie zum physikalischen Effekt nach dem zweiten Newtonschen Bewegungsgesetz an.
-Die Richtung der Korrektur durch den Gradienten sollte über mehrere Schritte konsistent sein, und es wäre merkwürdig, wenn die Richtung während des Trainings plötzliche Verschiebungen macht.
-Dies ist nützlich, wenn die Daten "noisy" sind oder einige der Trainingsbeispiele falsch sind.
+Die Richtung des Gradienten sollte über mehrere Schritte konsistent sein, und es wäre merkwürdig, wenn die Richtung während des Trainings plötzliche Sprünge macht.
+Dies ist nützlich, wenn die Daten "noisy" sind oder einige der Trainingsbeispiele falsch sind, da ihr negativer Effekt durch das Momentum entgegengewirkt wird.
 Daher wird ein weiterer Parameter $\nu$ in die Gleichung~\eqref{eq:backprop_update} eingeführt:
 
 \begin{equation}
@@ -251,7 +251,7 @@ Daher wird das Training durch den Aufruf der folgenden Funktion durchgeführt:
 \end{lstlisting}
 
 Hier wird definiert, dass bei jeder Iteration 20 Bilder als Batch in das Modell eingespeist werden, was für 20 Epochen wiederholt wird.
-Da eine Epoche ein Durchlauf ist, aktualisiert der Optimierer die Parameter (das  $\theta$ des Modells) 20 mal.
+Nach jeder Epoche aktualisiert der Optimierer die Parameter (die $\theta$ des Modells), was in diesem Durchlauf entsprechend 20 Mal geschieht.
 
 \subsubsection{Results}
 \begin{figure}

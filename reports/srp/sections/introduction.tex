@@ -1,8 +1,9 @@
 \section{Introduction}
 
 The first work, which is today assigned to the field of artificial intelligence (AI), was done in 1943 by McCulloch and Pitts \cite{McCulloch1943}.
-They were inspired by neurons in the brain and applied logic to their state, which could be active or inactive.
-Their state was changed by a switch that could be switched by the state of other neurons.
+In their work they were inspired by neurons in the brain and created first mathematical formulations which later had a great influence on the development of neural networks.
+The neurons are seen as switches whose activation is influenced by other neurons.
+In this way complex systems can be created, which are able to solve different tasks.
 The term artificial intelligence itself was coined by McCarthy in 1956, when he organized a two-month workshop in Dartmouth \cite{McCarthy1955}.
 
 After the initial high expectations of artificial intelligence, without delivering the promised results, the field received less attention.
@@ -11,12 +12,12 @@ A famous quote from Herbert Simon in 1957 states:
     It is not my aim to surprise or shock you – but the simplest way I can summarize is to say that there are now in the world machines that think, that learn and that create. Moreover, their ability to do these things is going to increase rapidly until – in a visible future – the range of problems they can handle will be coextensive with the range to which the human mind has been applied.
 \end{quotation}
 
-Several advances have been made over the decades.
+However, contrary to these exaggerations, progress has been made over the decades.
 After another period of high investment in the 1980s, without achieving the ambitious goals, the so-called "AI winter" set in, which was characterized by a lack of academic and economic interest and lack of funding.
 
 Recently, however, research and application of these techniques have been attracting more attention.
 This is due to a number of factors that are prevalent today.
-One is the sheer amount of computing power that is standard in computers today.
+One is the sheer amount of computing power that modern computers can have.
 Even home computers today are capable of training models of remarkable complexity.
 
 Furthermore, the amount of data available through the Internet facilitates the training of AIs for various tasks.
@@ -28,7 +29,7 @@ That is why more and more attention is being paid to artificial intelligence in 
 Whether the recent enthusiasm is just exaggerated expectations, or whether the "last invention of mankind" \cite{Good1965} remains to be seen.
 
 The term artificial intelligence is used to describe machine processes that perform tasks that are otherwise characteristic of human intelligence.
-This thesis is mainly intended to deal with a subfield of artificial intelligence, the so-called "deep learning".
+This paper is mainly intended to deal with a subfield of artificial intelligence, the so-called "deep learning".
 This connection is shown in figure \ref{fig:ai_ml_dl}.
 
 \begin{figure}
@@ -47,7 +48,8 @@ Thanks to the convertibility of model descriptions for use in different programm
 
 Before showing how deepmech was developed, the basics of machine learning will be covered, with some simple examples as an introduction, introducing the general terminology used in this paper.
 In chapter 3 the concepts are expanded by introducing neural networks, which are the key to translating the workings of machine learning into practical models.
-Another topic to be covered is data generation. Data is an important part of the training of statistical models, so data generation and augmentation is covered in chapter 4.
+Another topic to be covered is data generation.
+Data is an important part of the training of statistical models, so data generation and augmentation is covered in chapter 4.
 Then the first working model is shown.
 All main components of the process are examined in detail to get a better understanding of each function.
 Chapter 6 deals with optimizing the model to improve accuracy and minimize the size of the model that will be loaded in future applications.

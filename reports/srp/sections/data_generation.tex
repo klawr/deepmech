@@ -10,26 +10,25 @@ To generate the data quickly, some requirements had to be taken into account:
 \begin{enumerate}
     \item A drawing context is created.
     \item The context is variable in size and color.
-    \item The context should is able to recognize mouse events.
+    \item The context should be able to recognize mouse events.
     \item The script should have access to the file system to safe data on the hard drive with no extra work required.
 \end{enumerate}
 
-
 A Python script is able to meet these requirements.
-The library \name{OpenCV} \cite{OpenCV2019} allows you to create a window with corresponding requirements. The library \name{opencv-python} \cite{Heinisuo2019} is used here implementation of \name{OpenCV}.
-It meets all these requirements because it provides the creation of a window with programmable context and functions to handle mouse events\footnote{The data generation should be done using JavaScript in a web context, but the final requirement to secure data does not seem to be easy to meet. Node.js allows easy backup of files, but is inherently "headless" and therefore does not allow any context to be used for drawing. }.
+The library \name{OpenCV} \cite{OpenCV2019} allows to create a window with corresponding requirements. The library \name{opencv-python} \cite{Heinisuo2019} is used here implementation of \name{OpenCV}.
+It meets all these requirements because it provides the creation of a window with programmable context and functions to handle mouse events\footnote{The data generation should be done using JavaScript in a web context, but the final requirement to secure data does not seem to be easy to meet. Node.js has access to the filesystem, but is inherently "headless" and therefore does not allow any context to be used for drawing. }.
 
 Since the model should be able to recognize symbols of any color on any background, the context background is a random value in grayscale, as is the color of the line drawn on the background.
-The thickness of the line used for drawing is also random, thus mimicking the appearance of a symbol of different sizes (which may reduce the resolution of the image in a later process).
+The thickness of the line used for drawing is also random, thus mimicking the appearance of a symbol of different sizes\footnote{This should serve to predict images of different resolutions in a later process}.
 
 After the parameters used to draw the context have been set, the function \name{cv2} is used to \code{namedWindow} created the function \name{cv2}. 
-For each interaction, the \code{setMouseCallback} function is applied to the generated \code{namedWindow}, calling a \code{draw} function that allows to detect and react to mouse events.
+For each interaction with the canvas, the \code{setMouseCallback} function is applied to the generated \code{namedWindow}, calling a \code{draw} function that allows to detect and react to mouse events.
 
 Drawing is done by functions triggered by events called \code{cv2.EVENT\_LBUTTONDOWN} and \code{cv2.EVENT\_LBUTTONUP}, which set a boolean \code{drawing} flag to either \code{True} or \code{False}.
 The drawn image is saved with \code{cv2.Event\_RBUTTONUP}, which names the image after the number of previously automatically drawn images.
 
 The names of the different classes are set at the beginning of the script, with an interactive prompt asking the user which class to fill next, with the options \textit{"x" for base, "o" for link, "n" for no match}.
-Consideration of \textit{not found} is especially important because later, when searching for any image, most responses are likely to contain no icon at all.
+Consideration of \textit{not found} is especially important because later, when searching for any image, most responses are likely to contain no symbol at all.
 
 With this script 500 symbols are created for each class.
 It is expected that these images will be augmented later to counteract overfitting, but for the task of distinguishing three different classes, this set should be sufficient\footnote{The code can be viewed at \url{https://aka.klawr.de/srp\#4}}.
