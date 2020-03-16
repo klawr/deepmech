@@ -151,7 +151,7 @@ Die Keras-Implementierung von SGD unterscheidet sich etwas von der allgemeinen D
 Die Funktion \code{SGD} benötigt drei Parameter: Die Lernrate \code{lr}, \code{momentum} und \code{nesterov}.
 Diese Werte sind wiederum Hyperparameter, die vor dem Training bestimmt werden müssen.
 
-\subsection{Lernrate}
+\subsubsection{Lernrate}
 
 Die Lernrate ist einer der einflussreichsten Hyperparameter und wohl auch der bedeutendste, da er in fast jedem Optimierer verwendet wird.
 Sie ist ein skalarer Wert, der die Schrittweite der durchgeführten Schritte bestimmt. Die Aktualisierungsfunktion des Parameters $\theta$ ist wie bereits erwähnt:
@@ -192,7 +192,7 @@ Andererseits kann eine auf einen hohen Wert gesetzte Lernrate überhaupt nicht k
 \subsubsection{Momentum}
 
 Eingeführt 1964 von Polyak \cite{Polyak1964} wird Momentum genutzt, um den Gradienten über mehrere Stufen hinweg konstant zu halten.
-Das Momentum nimmt seinen Namen als Analogie zum physikalischen Effekt nach dem zweiten Newtonschen Bewegungsgesetz an.
+Das Momentum bekommt seinen Namen durch eine Analogie zum physikalischen Effekt, nach dem zweiten Newtonschen Bewegungsgesetz \cite[S.12]{Newton1687}.
 Die Richtung des Gradienten sollte über mehrere Schritte konsistent sein, und es wäre merkwürdig, wenn die Richtung während des Trainings plötzliche Sprünge macht.
 Dies ist nützlich, wenn die Daten "noisy" sind oder einige der Trainingsbeispiele falsch sind, da ihr negativer Effekt durch das Momentum entgegengewirkt wird.
 Daher wird ein weiterer Parameter $\nu$ in die Gleichung~\eqref{eq:backprop_update} eingeführt:
