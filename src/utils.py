@@ -20,6 +20,10 @@ def distribute_data(raw_dir, target_dir, distribution, raw_classes=None):
             If raw_classes is None, sub_dirs of raw_dir are used as raw_classes.
             Can be used to prevent some classes from being distributed.
     """
+    if raw_dir == target_dir:
+        print("Error: raw_dir is target_dir")
+        raise
+
     _, sub_dirs, files = os.walk(raw_dir).__next__()
 
     # Use sub_dirs as default for raw_classes
@@ -84,6 +88,10 @@ def distribute_data(raw_dir, target_dir, distribution, raw_classes=None):
 
 def reset_and_distribute_data(raw_dir, target_dir, *args):
     # Clear target_dir and then call distribute_data
+
+    if raw_dir == target_dir:
+        print("Error: raw_dir is target_dir")
+        raise
 
     try:
         shutil.rmtree(target_dir, ignore_errors=True)
