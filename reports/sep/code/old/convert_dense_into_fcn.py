@@ -37,7 +37,6 @@ def to_fully_conv(model):
                                           padding='valid',
                                           weights=[new_W,b]))
                 flattened_ipt = False
-
             else:
                 shape = (1,1,input_shape[1],output_dim)
                 new_W = W.reshape(shape)
@@ -48,10 +47,8 @@ def to_fully_conv(model):
                                           padding='valid',
                                           weights=[new_W,b]))
 
-
         else:
             new_model.add(layer)
-
     return new_model
 
 model_path = join('models', 'symbol_classifier', 'model.h5')
