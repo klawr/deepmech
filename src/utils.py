@@ -1,11 +1,13 @@
-
-import asyncio
-import discord
 import json
 import os
 from os import path
 import shutil
+
+import asyncio
+import discord
+import pandas as pd
 import tensorflow as tf
+from tqdm import tqdm
 
 def distribute_data(raw_dir, target_dir, distribution, raw_classes=None):
     """Distribute data into train, validate and test.
@@ -145,26 +147,32 @@ class Spot(discord.Client):
         self.loop.run_until_complete(self.channel.send(text))
 
 
-def encode_image_data_as_record(config, record_path):
+def encode_image_data_as_record(config, record_path, no_tqdm=False):
     """Encode record using a config, labels, a target directory and a name.
 
     Arguments:
-        config: the data_list is a list of dicts, which contain information
-            about the provided images, or a path to a json containing the list.
+        config: the data_list is a
+            - pandas DataFrame,
+            - list of dicts,which contain information about the provided images,
+            - path to a json containing the DataFrame.
         labels: Used to encode the labels. Expects an list of integers.
             Mappings of labels to integers have to be done manually.
         record_path: path of new record (e.g. 'data/processed/train.tfrecord').
     """
 
-    # If given as a list => okay.
-    if isinstance(config, list):
-        pass
+    # If given as a DataFrame => okay.
+    if isinstance(config, pd.DataFrame):
+        df = config
+    # If given as a list => Try to read as DataFrame
+    elif isinstance(config, list):
+        df = pd.DataFrame(config)
     # If given as a path => decode file into list.
     elif path.isfile(config):
-        with open(config) as file:
-            config = json.load(file)
+        _, ext = os.path.splitext(config)
+        if ext == '.json':
+            df = pd.read_json(config)
     else:
-        print("Error: config is no list nor path to a config file") 
+        print("Error: config is no supported type") 
 
     def image_feature(path):
         # Decode image into string.
@@ -182,10 +190,10 @@ def encode_image_data_as_record(config, record_path):
 
     os.makedirs(path.dirname(record_path), exist_ok=True)
     with tf.io.TFRecordWriter(record_path) as out:
-        for entry in config:
+        for index, series in tqdm(df.iterrows(), total=len(df), disable=no_tqdm):
             feature = {
-                'image': image_feature(entry['image_path']),
-                'label': int64_feature(entry['label'])
+                'image': image_feature(series.image_path),
+                'label': int64_feature(series.label)
             }
             features = tf.train.Features(feature=feature)
             example = tf.train.Example(features=features)
