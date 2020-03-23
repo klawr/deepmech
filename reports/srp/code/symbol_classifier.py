@@ -1,27 +1,42 @@
+"""
+Create the final symbol classifier
+"""
+
+# TODO This would also be a nice notebook.
+
 import sys
 sys.path.append('.')
 
 from datetime import datetime
-from os.path import join
+from os import path
+
 import tensorflow as tf
 from tensorflow.keras import layers, models
 from tensorflow.keras.callbacks import ModelCheckpoint, TensorBoard
 from tensorflow.keras.optimizers import Adam
 
-from src.image_handling import decode_record
-from src.utils import Spot
+from src.utils import decode_image_record, Spot
 
-processed = join('data', 'processed')
+processed = path.join('data', 'processed')
 
 features = {
     'image': tf.io.FixedLenFeature([], tf.string),
-    'label': tf.io.FixedLenFeature([], tf.int64),
+    'label': tf.io.FixedLenFeature([2], tf.int64),
 }
 shape = (32, 32, 1)
 
-train_dataset = decode_record(join(processed, 'train.tfrecord'), features, shape)
-validation_dataset = decode_record(join(processed, 'validation.tfrecord'), features, shape)
-test_dataset = decode_record(join(processed, 'test.tfrecord'), features, shape)
+def decoder(example):
+    feature = tf.io.parse_single_example(example, features)
+    image = tf.io.parse_tensor(feature['image'], tf.float32)
+    image.set_shape(shape)
+    # We only want the 'label_idx'. Not the 'angle'.
+    label = feature['label'][0]
+
+    return [image, label]
+
+train_dataset = decode_record(path.join(processed, 'train.tfrecord'), decoder)
+validation_dataset = decode_record(path.join(processed, 'validate.tfrecord'), decoder)
+test_dataset = decode_record(path.join(processed, 'test.tfrecord'), decoder)
 
 model = models.Sequential()
 model.add(layers.Conv2D(16, (4,4), activation='relu', padding='same', input_shape=(32, 32, 1)))
@@ -36,8 +51,8 @@ model.compile(loss='sparse_categorical_crossentropy', optimizer=optimizer, metri
 
 print(model.summary())
 
-log_dir=join('logs', 'srp_symbol_detector', datetime.now().strftime("%Y-%m-%dT%H-%M-%S"))
-model_path = join('models', 'symbol_classifier', 'model.h5')
+log_dir=path.join('logs', 'srp_symbol_detector', datetime.now().strftime("%Y-%m-%dT%H-%M-%S"))
+model_path = path.join('models', 'symbol_classifier', 'model.h5')
 
 callbacks = [
     # TensorBoard(log_dir=log_dir, histogram_freq=1, embeddings_freq=1),

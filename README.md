@@ -37,10 +37,10 @@ Project Organization
         │
         └── visualization  <- Scripts to create exploratory and results oriented visualizations
         │   └── visualize.py
-        └── training_env.py   <- Create the environment to train the model. This methods ensure
-                                 that the raw data is never touched, the intermediate data is
-                                 accessible and the processed data can be fed into the model
-                                 in an orderly way.
+        └── utils.py       <- Helper functions to distribute data and log results. 
+                              These methods ensure that the raw data is never touched,
+                              the intermediate data is accessible and the processed data
+                              can be fed into the model in an orderly way.
 
 
 --------

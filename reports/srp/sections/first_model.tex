@@ -1,39 +1,47 @@
 \section{First model}
 
-The Jupyter Notebook concerning this chapter can be viewed via \url{https://aka.klawr.de/srp\#5}.
+The Jupyter notebook for this chapter can be viewed at \url{https://aka.klawr.de/srp\#5}.
 
-\subsection{Structure}
-The project structure is an important part of efficiently testing models and evaluation them against another to determine the best performing one.
-\name{deepmech} is structured using a modified version of the Cookiecutter Data Science \cite{drivendata2019} structure. It can be inspected at \url{klawr.github.io/deepmech}.
+\subsection{Project structure}
+
+The project structure is an important part to test models efficiently and evaluate them against other models to determine the best performing model.
+\name{deepmech} is built using a modified version of the Cookiecutter Data Science \cite{drivendata2019} structure. It can be viewed at \url{https://klawr.github.io/deepmech}.
 
 % root
-The root folder contains files like the License of the whole project.
-The project is licensed under the MIT license providing any human to modify, distribute or use it for private and commercial use, but omitting any liability or warranty from myself.
-In the root folder another file requirements.txt is found, which is part of the installation process allowing to replicate all code discussed in this project.
+The root folder contains files such as the license for the entire project.
+The project is licensed under the MIT license, which allows anyone to modify, distribute or use it for private and commercial use, but with no liability or warranty on my part.
+In the root folder there is another file \name{requirements.txt}, which is part of the installation process and allows to replicate all the code handled in this project.
 
 % data
-The Cookiecutter Data Science structure allows for a clear distribution of data in raw (which is never to be touched), intermediate (which is the raw data but modified, augmented or altered in some way) and processed data (which is to be fed into the model via a training algorithm).
+The "Cookiecutter Data Science" structure allows a clear division of the data into raw data (which must never be touched), intermediate data (raw data which is modified, supplemented or altered in some way) and processed data (which is to be fed into the model).
+This data is stored in the \name{data} directory.
 
 % logs
-Logs are filled during training using \name{Tensorboard}\footnote{Tensorboard is \name{Tensorflow}'s visualization toolkit. Visualizations generated using \name{Tensorboard} are shown later.}. Logs are differentiated using a timestamp of the respective training run.
+Logs are created during training with \name{TensorBoard}\footnote{TensorBoard is the visualization toolkit of \name{TensorFlow}. The visualizations created with \name{TensorBoard} are shown later.}.
+These logs are distinguished by a timestamp of the respective training run and are located in the directory \name{logs}.
 
-% TODO models folder...
+% models
+The currently used models are located in the \name{models} directory.
+The models in this directory can change at different stages of the project, so the respective reports have their own model directories to store the intermediate models.
 
 % reports
-A folder containing all reports used in the project are found in the respective directory, including this very article.
-In the notebook folder in reports for this project (abbreviated as \name{srp}) one can find the code used to determine the best model.
-Models are trained using \name{Jupyter Notebooks} \cite{Jupyter2019}.
-Jupyter Notebooks an interactive editor to develop Python code, which provide an easy way to write and test code efficiently.
-All notebooks with respective code are to be found in the \name{notebooks} directory in the root of this project\footnote{\url{https://aka.klawr.de/srp\#6}}.
+The \name{reports} directory contains a folder for each report created in this project, including this article\footnote{Provided with the name \name{srp}, for Student Research Project.}.
+The notebook folder in this report contains \name{Jupyter} notebooks \cite{Jupyter2019} used in different chapters.
+The models are also trained in jupyter notebooks. 
+Jupyter notebooks are interactive Python code development editors that provide an easy way to efficiently write, test and comment code (with markdown).
+All notebooks with corresponding code are located in the \name{notebooks} directory at the root of this project\footnote{\url{https://aka.klawr.de/srp\#6}}.
+The respective directory also contains the code used, the trained models, images and the documents created for the creation of this report.
+
 % src
-\name{src} contains all code (except demos used in the reports) used in developing and training the models. They range from scripts which create adequate environments to train models, to data augmentation.
+\name{src} contains code (except demos used in the reports) that are used in the development. They range from scripts that create appropriate environments for training the models to data generation and augmentation.
 
 \subsection{Loading data}
-Before the training of the model can start data has to be loaded.
-As mentioned the data is saved in the \name{raw} directory of the \name{data} directory in this project.
-It is good practice to never work with the raw data directly, therefore the beginning of each training session contains a preparation phase, where the raw data is to be copied to the \name{processed} data directory (maybe with augmentations or alterations in intermediate steps).
 
-That being said, every training of a model in this project starts using the following code:
+Before the training of the model can begin, the data must be loaded.
+As mentioned, the data in this project is stored in the \name{raw} directory of the \name{data} directory.
+It is good practice to never work directly with the raw data, so the beginning of each training session includes a preparation phase in which the raw data is copied to the \name{processed} data directory (with possible extensions or changes in intermediate steps).
+
+Accordingly, the training of a model in this project always starts with the following code:
 
 \begin{lstlisting}
 from os.path import join
@@ -42,14 +50,14 @@ raw = join('data', 'raw')
 interim = join('data', 'interim')
 processed = join('data', 'processed')
     
-from src.training_env import reset_and_populate
+from src.utils import reset_and_distribute_data
     
-reset_and_populate(raw, processed, [400, 0, 100])
+reset_and_distribute_data(raw, processed, [400, 0, 100])
 \end{lstlisting}
 
-For the first model the raw data itself suffices; therefore it is just copied into the processed data directory using a predefined function from \code{training\_env.py}.
-\code{reset\_and\_populate}'s third parameter is an array containing three numbers describing the distribution of training, validation and test data.
-For this very example, the validation data is omitted, because no adjustments on the hyper parameters are made.
+For the first model, the raw data itself is sufficient; therefore, it is simply copied by \code{reset\_and\_distribute\_data} from \name{src/utils.py} to the directory of the processed data.
+The third parameter of \code{reset\_and\_distribute\_data} is an array of three numbers describing the distribution of training, validation, and test data.
+In this example, the validation data is omitted because no adjustments are made to the hyperparameters.
 
 \begin{lstlisting}
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
@@ -67,12 +75,12 @@ train_generator = create_generator('train', 20)
 test_generator = create_generator('test', 10)
 \end{lstlisting}
 
-After the respective directories are populated, \code{ImageDataGenerator}\footnote{\url{https://keras.io/preprocessing/image/}} is used to allow the model to load the data later in the training process.
-The generators also defines the size of the image loaded, which is set to be 32 pixels wide and 32 pixels high (in contrast to the original image size of 512x512) and a batch size\footnote{The batch size is the number of images used between each backpropagation cycle.
-If the batch size matches the dataset size it is called batch gradient descent, if the batch size is one it is called stochastic gradient descent.
-Everything in between is called mini-batch gradient descent.} of 20 is set.
-The \code{class\_mode} is set to \code{'binary'}, since the input consists of 1D numpy arrays.
-These generators also detect the structure of the raw data (distributed in repective directories using their label as directory name) and thereby assigns labels to them.
+After the corresponding directories are filled with data, the \code{ImageDataGenerator}\footnote{\url{https://keras.io/preprocessing/image}} is used to allow the model to load the data later during the training process.
+The generators also define the size of the loaded image, which can be set to 32 pixels wide and 32 pixels high\footnote{The size of the images is determined manually, assuming that as long as a human is able to recognize the characteristic features of the image, the algorithm can learn them.} (as opposed to the original image size of 512x512) and a batch size\footnote{batch size is the number of images used between each backpropagation cycle.
+If the batch size matches the record size, it is called batch gradient descent, if the batch size is one, it is called stochastic gradient descent.
+Everything in between is called a mini-batch gradient descent.} of 20.
+The \code{class\_mode} is set to \code{binary} because the input consists of 1D Numpy arrays.
+These generators also recognize the structure of the raw data (distributed in respective directories using their label as directory name) and thus assign the appropriate labels to them.
 
 \subsection{Creation of the model}
 
@@ -90,27 +98,25 @@ model.summary()
 \end{lstlisting}
 
 All models used in this project are sequential models.
-Sequential models propagate the result of each layer on to the next in a one-way fashion.
+Sequential models propagate the result of each layer in one direction to the next layer.
 
-\name{Keras} requires the first layer to have an \code{input\_shape}.
-The input shape of the first model has to match the actual size of the input data.
-All other layers are able to deduce the shape of the previous layer, so no further definitions are needed.
+\name{Keras} requires that the first layer has a \code{input\_shape}.
+The input shape of the first model must match the actual size of the input data.
+All other layers are able to derive the shape of the previous layer, so no further definitions are required.
 
 Layers can be added by using a provided \code{add} function which accepts layers as parameters which are subsequently added to the model.
 
-The first layer is just a representation of the input image as pixel values.
-They are flattened, so the two dimensional image gets projected into a one dimensional array.
+Two layers are added, both of which are dense layers with 32 nodes each.
+The dense layers are defined by connecting all nodes of the previous layer to the nodes of their own layer using weights and biases and behave like the "traditional" layers used in this project.
+The two hidden layers are activated with the \name{ReLU} activation, as suggested in \cite[p.168]{Goodfellow2017}.
 
-Two layers are added, both being dense layers with 32 nodes each.
-Dense layers are defined by connecting all nodes of the previous layer via weights and biases to the nodes on their own layer and behaving like "traditional" layers used in this project.
-The two hidden layers are activated using the \name{'relu'} activation, as suggested in \cite[p.168]{Goodfellow2017}.
-
-The last layer has three nodes in respect to three classes the data can be assigned to.
-The \name{'softmax'} activation is used, which adjusts the values of the layer to add up to the value one.
-Therefore the value of the node can be seen as a measure of the confidence of the evaluation of the model for a specific input.
-Naturally the node with the highest value is representing the assumed correct result.
+The last layer has three nodes in relation to three classes to which the data can be assigned.
+The activation \name{softmax} is used, which adjusts the values of the layer so that they add up to the value one.
+Therefore, the value of the node in the initial layer can be considered a measure of the confidence of the model's evaluation for a given input.
+The node with the highest value is accordingly assumed to be the assumed correct result.
 
 A summary of the model is given as:
+
 \begin{lstlisting}
 Model: "sequential"
 _________________________________________________________________
@@ -130,37 +136,40 @@ Non-trainable params: 0
 _________________________________________________________________
 \end{lstlisting}
 
-Herein we can see, that the model has 99491 parameters in $\theta$ which are to be adjusted. This number is the sum of parameters given by the 3 individual layers of the model.
+Here we see that the $\theta$ in the model has 99491 parameters that can be adjusted.
+This number is the sum of the parameters given by the 3 layers of the model.
 The first layer has the flattened 3072 ($32 \times 32 \times 3$) nodes.
-The second layer multiplies this number (+1 for bias) by $32$ and therefore has additional 98336 nodes.
-The third layer is the product of $32 + 1$ nodes in the second layer and $32$ nodes in the third, providing us with 1056 parameters to adjust.
-The last layer has again $(32 + 1) \times 3$ layers.
+The second layer multiplies this number (+1 for the bias) by $32$ and therefore has an additional 98336 nodes.
+The third layer is the product of $32 + 1$ nodes in the second layer and $32$ nodes in the third layer, which gives us 1056 parameters to adjust.
+The last layer again has $(32 + 1) \times 3$ nodes.
 
-\subsection{Optimizer}
+\subsection{Optimizer} \label{ch:optimizer}
 
-To train our model an optimizer has to be defined.
-We will start with a \code{SGD} optimizer, which is short for \name{Stochastic Gradient Descent}. Stochastic Gradient Descent is already mentioned in chapter~\ref{ch:simple_linear_example}, where it was implemented in a very rudimentary way. In the actual training of the model the Keras implementation is used.
-Keras implementation of SGD is somewhat different than the general definition, because it does not inherently take a batch size of one, but the batch sizes defined in the respective generator, thus letting the user decide if full batch, mini batch or stochastic gradient descent is used (which is 20 in this case).
+In order to train our model, an optimizer must be defined.
+We will start with a \code{SGD} optimizer, which is the abbreviation for \name{Stochastic Gradient Descent}.
+Stochastic gradient descent is already mentioned in chapter~\ref{ch:simple_linear_example}, where it was implemented very rudimentarily. In the training of this model, the Keras implementation of \name{SGD} is used.
+The Keras implementation of SGD differs somewhat from the general definition, since it does not inherently assume a batch size of one, but rather the batch sizes defined in the respective generator, so that the user can decide whether to use full batch, mini batch, or stochastic gradient descent\footnote{The batch size used here is 20.}.
 
 \begin{lstlisting}
-optimizer = SGD(lr=0.01, momentum=0.9, nesterov=True)
+    optimizer = SGD(lr=0.01, momentum=0.9, nesterov=True)
 \end{lstlisting}
 
-The \code{SGD} function takes three parameters: The learning rate \code{lr}, \code{momentum} and \code{nesterov}.
-These values are again hyper-parameters which have to be determined before training.
+The function \code{SGD} requires three parameters: The learning rate \code{lr}, \code{momentum} and \code{nesterov}.
+These values in turn are hyperparameters that must be determined before training.
 
 \subsubsection{Learning rate}
-% TODO put some citations in here...
 
-The learning rate is one of the most influential hyper parameters and arguably the most profound, as it is being used in almost every optimizer.
-It is a scalar value which determines the step size of the steps taken. Recall that the update function of the parameter $\theta$ is:
+The learning rate is one of the most influential hyperparameters and probably the most significant, since it is used in almost every optimizer.
+It is a scalar value that determines the step size of the steps performed. The update function of the parameter $\theta$ is as already mentioned:
+
 \begin{equation}
     \theta_{i+1} := \theta_i - \eta \varDelta \tag{\ref{eq:backprop_update} revisited}
 \end{equation}.
+
 Where $\eta$ is the value of the learning rate.
 
-If the learning rate is set to a value too small, the loss function takes a lot of iterations to converge to a sufficiently small value.
-On the other hand a learning rate set to a high value may fail to converge at all.
+If the learning rate is set too low, the loss function needs many iterations to converge to a sufficiently low value.
+On the other hand, a learning rate set to a high value cannot converge at all.
 
 \begin{figure}
     \centering
@@ -179,20 +188,20 @@ On the other hand a learning rate set to a high value may fail to converge at al
         \caption{Learning rate too small}
         \label{fig:lr_too-low}
     \end{subfigure}
-    \caption{If the learning rate is just right, the value of the loss function converges to a local optimum in an acceptable number of steps.
-    If it is too high it diverges.
-    If the learning rate is too low, the values converge but they take too many steps to do so.
-    Please note that these images represent the parameter space in a very simplified way, as the presented function it is fully convex and only two dimensional.}
+    \caption{If the learning rate is just right, the value of the loss function approaches a local optimum in an acceptable number of steps.
+    If it is too high, it diverges.
+    If the learning rate is too low, the values converge, but too many steps are needed to achieve this.
+    Please note that these pictures show the parameter space in a very simplified way, since the function shown is completely convex and only two-dimensional.}
     \label{fig:learning_rate}
 \end{figure}
 
 \subsubsection{Momentum}
 
-Introduced 1964 by Polyak \cite{Polyak1964} momentum is used to keep the gradient consistent over several steps.
-Momentum takes its name as an analogy to the physical effect according to Newton's second law of motion.
-The direction of the correction through the gradient should be consistent over several steps and it would be peculiar if the direction makes sudden shifts throughout training.
-This is useful if the data is noisy or some of the training examples are falsy.
-Hence another parameter $\nu$ is introduced to equation~\eqref{eq:backprop_update}:
+Introduced in 1964 by Polyak \cite{Polyak1964}, momentum is used to keep the gradient constant over several steps.
+Momentum takes its name as an analogy to the physical effect according to Newton's second law of motion \cite[p.12]{Newton1687}.
+The direction of the gradient should be consistent over several steps, and it would be strange if the direction made sudden shifts during training.
+This is useful if the data is "noisy" or some of the training examples are wrong, since their negative effect is counteracted by the momentum.
+Therefore another parameter $\nu$ is introduced into the equation~\eqref{eq:backprop_update}:
 
 \begin{equation}
     \begin{split}
@@ -202,12 +211,12 @@ Hence another parameter $\nu$ is introduced to equation~\eqref{eq:backprop_updat
     \label{eq:momentum}
 \end{equation}
 
-Whereas $\alpha$ is another parameter which can be set to regulate the influence of $\eta$ on the parameters of the next iteration.
-So if one training example would change the "direction" of the next step with a high deviation from the median of the last few steps the impact would be reduced and may improve the rate of convergence.
+In contrast, $\alpha$ is another parameter that can be set to regulate the influence of $\eta$ on the parameters of the next iteration.
+Thus, if a training example would change the "direction" of the next step with a high deviation from the median of the last steps, the effect would be reduced and the convergence rate might be improved. 
 
-In 2013 Sutskever, Martens, Dahl and Hinton \cite{Sutskever2013} introduced another variant of momentum which was inspired by Nesterov's Accelerated Gradient \cite{Nesterov1983}.
-This variant updates the previous discussed equation to change the parameter used to calculate $\varDelta$ using $\nu$.
-Please note that $\varDelta$ in equation~\eqref{eq:momentum} and ~\eqref{eq:backprop_update} is itself a function of the parameter $\theta$ (see equation~\eqref{eq:hidden_error}).
+In 2013 Sutskever, Martens, Dahl and Hinton \cite{Sutskever2013} introduced another variant of the momentum inspired by Nesterov's Accelerated Gradient \cite{Nesterov1983}.
+This variant updates the previously discussed equation to change the parameter for calculating $\varDelta$ using $\nu$.
+Please note that $\varDelta$ in equation~\eqref{eq:momentum} and ~\eqref{eq:backprop_update} is itself a function of the $\theta$ parameter (see equation~\eqref{eq:hidden_error}).
 
 \begin{equation}
     \begin{split}
@@ -217,11 +226,11 @@ Please note that $\varDelta$ in equation~\eqref{eq:momentum} and ~\eqref{eq:back
     \label{eq:nesterov}
 \end{equation}
 
-The idea of momentum being that the directional vector points in the right direction, using Nesterov Accelerated Gradient is likely to be more accurate by starting to measure the next error slightly shifted into the respective direction \cite[p.353]{Geron2019} \cite[p.291]{Goodfellow2017}.
+The idea of momentum is that the direction vector points in the right direction, whereas the use of the Nesterov Accelerated Gradient is probably more accurate when one starts measuring the next error, which is slightly shifted in the respective direction \cite[p.353]{Geron2019} \cite[p.291]{Goodfellow2017}.
 
 \subsubsection{Actual training}
 
-After the optimizer is defined, the model is compiled by issuing the models compile function.
+After the optimizer is defined, the model is compiled by calling the model compile function.
 
 \begin{lstlisting}
 model.compile(
@@ -230,14 +239,15 @@ model.compile(
     metrics=['acc'])
 \end{lstlisting}
 
-\code{sparse\_categorical\_crossentropy} is used as loss function as advised for multi class categorization problems labeled by integers \cite[p.84]{Chollet2017}.
-It measures the distance of two probability distributions, which are given by the last layer of the model, given by a \code{softmax} activation and the labeled data.
-SoftMax activation is used to normalize the output by dividing each value by the sum of all values in the respective layer.
-This is useful because the labeled data assigns the value one to the correct node and zero to all others, making them numerically comparable and thereby possible to minimize the loss for a sensible result.
+\code{sparse\_categorical\_crossentropy} is used as a loss function, as recommended for multiclass categorization problems that are characterized by integers \cite[p.84]{Chollet2017}.
+It measures the distance between two probability distributions given by the last layer of the model by a \code{softmax} activation and the labelled data.
+The SoftMax activation is used to normalize the output by dividing each value by the sum of all values in each layer.
+This is useful because the labeled data assigns the value one to the correct node and zero to all others, making them numerically comparable and minimizing loss for a meaningful result.
 
-The actual training is done by a \code{fit} function in the model.
-The training data is provided as generators; the function in this case is \code{fit\_generator}.
-Therefore by issuing the following function the training is performed:
+The actual training then takes place using a \code{fit} function in the model.
+The training data is provided by generators; the function in this case is \code{fit\_generator}.
+Therefore, the training is performed by calling the following function:
+
 % TODO python and remove generator
 \begin{lstlisting}
 history = model.fit_generator(
@@ -247,8 +257,8 @@ history = model.fit_generator(
     callbacks=callbacks)
 \end{lstlisting}
 
-Herein it is defined that 20 images are fed into the model each iteration, which is repeated for 20 epochs.
-An epoch being one run-through, so the optimizer updates the parameters 20 times.
+Here it is defined that 20 images are fed into the model as a batch at each iteration, which is repeated for 20 epochs.
+After each epoch the optimizer updates the parameters (the $\theta$ of the model), which is happening 20 times in this run.
 
 \subsubsection{Results}
 \begin{figure}
@@ -263,12 +273,12 @@ An epoch being one run-through, so the optimizer updates the parameters 20 times
         \caption{Loss}
         \label{fig:first_model_loss}
     \end{subfigure}
-    \caption{The callbacks of the training algorithm provide logs which can be used by TensorBoard to provide useful graphs to evaluate the model. The vertical axis represents the value on the respective epoch (shown on the horizontal axis).}
+    \caption{The callbacks of the training algorithm provide logs that can be used by TensorBoard to provide useful graphics for evaluating the model. The vertical axis represents the value of each epoch (shown on the horizontal axis).}
     \label{fig:first_model_graphs}
 \end{figure}
 
-As it is expected the model begins with an accuracy of approximately 33\% by trying to classify training data into three classes.
-As the data suggests, the model is quickly learning some relations between input data and the respective label, as it already has an accuracy of almost 70\% after only four epochs.
+As expected, the model starts with an accuracy of about 33\% by trying to classify the training data into three classes.
+As the data suggests, the model quickly learns some relationships between the input data and the label, as it already has an accuracy of almost 70\% after only four epochs.
 
 \begin{lstlisting}
 Epoch 1/20
@@ -290,12 +300,12 @@ Epoch 20/20
 20/20 [=====...=====] - 1s 47ms/step - loss: 0.3388 - acc: 0.9000
 \end{lstlisting}
 
-After 20 epochs the model has an accuracy of roughly 90\%, which is already a very good start for a first model with non optimized hyper-parameters.
-The important thing for a working model is how well the model classifies data which it has never seen before.
-To check this a second generator is created: the \code{test\_generator} which is used to evaluate the model.
-By issuing \code{model.evaluate\_generator(test\_generator)} we get \code{[0.6071663084129493, 0.7866667]}, which indicates that the loss is at \code{0.60} in contrast to \code{0.33} on the training data and has and accuracy of 78\% on data is has never seen before.
+After 20 epochs the model has an accuracy of about 90\%, which is already a very good start for a first model with non-optimized hyperparameters.
+Important for a working model is how well the model classifies data it has never seen before.
+To verify this, a second generator is created: the \code{test\_generator}, which is used to evaluate the model.
+By outputting \code{model.evaluate\_generator(test\_generator)} we get \code{[0.6071663084129493, 0.7866667]}, which indicates that the loss is \code{0.60}, as opposed to \code{0.33} for the training data, and has an accuracy of 78\% on the data it has never seen before.
 
-This result is quite remarkable, but obviously the model performs worse on new data, therefore indicating it is overfitting on the training data.
-Notwithstanding the above the result shows that by adjusting the hyper-parameters the result may be increased to a satisfying result.
+This result is quite remarkable, but obviously the model performs worse on new data, indicating that it overfitted on training data.
+Regardless, the result shows that by adjusting the hyper parameters, the result should be able to be increased to a satisfactory level.
 
-After the model is trained it is saved into \name{models/symbol\_classifier/first\_model.h5} and may be loaded into Keras for further inspection.
+The model is then saved at \name{models/symbol\_classifier/first\_model.h5} and can be loaded into Keras for further review.
