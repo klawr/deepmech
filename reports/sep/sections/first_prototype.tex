@@ -112,8 +112,8 @@ To create a model for detecting constraints the same procedure has to be followe
 
 \subsubsection{Data generation}
 
-It is planned to support two different constraints, which indicate whether two nodes are either able to rotate around one another or to be able to move in a translational fashion.
-Besides different types of constraints one of three different ranges can be selected for the length of the respective constraint.
+It is planned to support two different types of constraints, which indicate whether two nodes are either able to rotate around one another or to be able to move in a translational fashion.
+Beside different types of constraints data for three different ranges are generated for a better selection of constraint data when two nodes are to be connected.
 
 Data generation for constraints is similar to data generation in \cite{Lawrence2020}.
 The drawing canvas has a width of fifty and the range can vary between 150-249, 250-349 or 350-449; depending on the selected range.
@@ -135,7 +135,99 @@ The drawing canvas has a width of fifty and the range can vary between 150-249, 
 \end{figure}
 
 Since constraints can occur at all possible angles, the data must be generated in such a way that it resembles the reality the most.
+Because of this, multiple steps have to be taken to generate comprehensible data.
 
-The first step is to randomly place nodes in images, which can then be connected using the generated constraints.
-For this two different interim datasets have been created resembling these two steps.
-% TODO get code which does this and put it into /reports/sep/code
+Metadata generated during the generation process is saved into a format which is readable by \name{pandas}. % TODO citation needed
+\name{pandas} is a open source data analysis and manipulation tool which helps to work and to visualize data.
+
+In the first step 100.000 images are generated.
+Each image begins with a black background of size 360x360.
+Between 3 and 10 nodes are randomly placed on the image.
+Each node has to have a minimum distance of 60 to every other node in the image.
+Examples for the resulting images are shown in figure \ref{fig:constraint_data_step1}\footnote{The respective notebook for the data generation can be viewed at \url{https://aka.klawr.de/sep\#3}}.
+
+\begin{figure}
+    \centering
+    \label{fig:constraint_data_step1}
+    \begin{subfigure}[b]{0.19\textwidth}
+        \fbox{\includegraphics[width=\textwidth]{images/1_0.png}}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.19\textwidth}
+        \fbox{\includegraphics[width=\textwidth]{images/1_1.png}}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.19\textwidth}
+        \fbox{\includegraphics[width=\textwidth]{images/1_2.png}}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.19\textwidth}
+        \fbox{\includegraphics[width=\textwidth]{images/1_3.png}}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.19\textwidth}
+        \fbox{\includegraphics[width=\textwidth]{images/1_4.png}}
+    \end{subfigure}
+    \caption{Some examples of the data created with the described method. Please note that the colors of these samples are inverted. }
+\end{figure}
+
+
+The next step is to randomly connect nodes in the image.
+For this the prepared constraints are used, whereas the number of constraints should be random, too.
+On an image with $n$ nodes the number of possible connections is $\frac{n \times (n-1)}{2}$.
+
+As a reasonable heuristic to keep the number of constraints in check $s = 1 - \frac{2}{n-1}$ is used; where $s$ is the chance of the connection being skipped and $n$ is the number of nodes.
+
+Table \ref{tab:relation_nodes_constraints} describes the expected number of constraints per image.
+This approach tries to generate as much constraints as there are nodes in the image.
+The difference of the expected number of constraints and the mean of constraints per number of nodes in table \ref{tab:relation_nodes_constraints} occurs most likely due to constraints shorter than 50 or longer than 350 being skipped, too.
+
+The mean of the number of constraints in relation to the number of nodes is calculated by issuing \code{[df[df.nodes.str.len() == i].constraints.str.len().mean() for i in range(3,10)]}, where \code{df} is the respective DataFrame of the dataset.
+
+\begin{table}
+\caption{Relation of number of nodes to the resulting number of constraints.}
+\label{tab:relation_nodes_constraints}
+\begin{tabular}{lrrrrrrr}
+    \toprule
+    Number of nodes: & $3$ & $4$ & $5$ & $6$ & $7$ & $8$ & $9$ \\
+    \midrule
+    Possible connections: & $3$ & $6$ & $10$ & $15$ & $21$ & $28$ & $36$ \\
+    \midrule
+    Chance to skip node pair: & $0$ & $\frac{1}{3}$ & $\frac{1}{2}$ & $\frac{3}{5}$ & $\frac{2}{3}$ & $\frac{5}{7}$ & $\frac{3}{4}$ \\
+    \midrule
+    Expected number of constraints: & $3$ & $4$ & $5$ & $6$ & $7$ & $8$ & $9$ \\
+    \midrule
+    Mean of constraints in the dataset: & $2.62$ & $3.48$ & $4.35$ & $5.21$ & $6.10$ & $6.91$ & $7.78$ \\
+    \bottomrule
+\end{tabular}
+\end{table}
+
+The respective images which are generated are shown in figure \ref{fig:constraint_data_step2}\footnote{In the initial dataset for constraints 3 different types were made for different length-intervals. After initial testing the shorter constraints did not meet the expectations and thus these images are all generated with images from a range of 350-449 only.}.
+
+\begin{figure}
+    \centering
+    \label{fig:constraint_data_step2}
+    \begin{subfigure}[b]{0.19\textwidth}
+        \fbox{\includegraphics[width=\textwidth]{images/2_0.png}}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.19\textwidth}
+        \fbox{\includegraphics[width=\textwidth]{images/2_1.png}}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.19\textwidth}
+        \fbox{\includegraphics[width=\textwidth]{images/2_2.png}}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.19\textwidth}
+        \fbox{\includegraphics[width=\textwidth]{images/2_3.png}}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.19\textwidth}
+        \fbox{\includegraphics[width=\textwidth]{images/2_4.png}}
+    \end{subfigure}
+    \caption{Samples of images generated by connecting randomly selected pairs of nodes using the prepared constraint data. Please note that the colors of these samples are inverted.}
+\end{figure}
+
+In a last step these images are then cropped to be able to be fed into a Keras model.
+The notebook doing this operation can be viewed at \url{https://aka.klawr.de/sep\#5}.
+As the number of possible connections is $34 = \frac{\sum_{i=3}^{9}i(i-1)}{(10-3)}$, the expected number of crops to generate is 3.400.000.
+This number is even higher, because when detecting constraints it is also important to check for reversed constraints between node pairs to classify them as a non connection.
+As 100.000 images are already a good size to work with, another measure was taken to keep the number of expected crops in check.
+For this crops are only kept $\frac{1}{m(m-1)}$ of the time, which is about each 30th time in this case.
+
+The resulting dataset contains 119.189 images, which are subsequently transformed into a \name{tensorflow record}.
+
+With the data prepared the next step is to train the constraint detecting model.
