@@ -1,0 +1,33 @@
+\documentclass[11pt,oneside]{scrartcl}
+\usepackage{document}
+
+\usepackage[ngerman]{babel}
+\usepackage[autostyle,german=quotes]{csquotes}
+
+% TODO: Better title
+\title{Studienarbeit} 
+\subtitle{Einführung maschinellen Lernens in die Kinematik}
+\subject{Fachhochschule Dortmund}
+\author{Kai Lawrence}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+\clearpage
+
+\tableofcontents
+\thispagestyle{empty}
+\clearpage
+
+\setcounter{page}{1}
+\input{german/einleitung}
+\input{german/was_ist_ml}
+\input{german/neuronale_netzwerke}
+\input{german/datengenerierung}
+\input{german/erstes_modell}
+\input{german/hyper_parameter_abstimmung}
+\input{german/zusammenfassung}
+
+\printbibliography
+\end{document}

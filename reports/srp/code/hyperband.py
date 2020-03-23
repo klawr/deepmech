@@ -2,7 +2,7 @@ import sys
 sys.path.append('.')
 
 from datetime import datetime
-from os.path import join
+from os import path
 
 from kerastuner import Hyperband, HyperParameters
 from kerastuner import HyperParameters
@@ -13,19 +13,28 @@ from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.optimizers import Adam, RMSprop, SGD
 from tensorboard.plugins.hparams import api
 
-from src.image_handling import decode_record
+from src.utils import decode_image_record
 
-processed = join('data', 'processed')
+processed = path.join('data', 'processed')
 
 features = {
     'image': tf.io.FixedLenFeature([], tf.string),
-    'label': tf.io.FixedLenFeature([], tf.int64),
+    'label': tf.io.FixedLenFeature([2], tf.int64),
 }
 shape = (32, 32, 1)
 
-train_dataset = decode_record(join(processed, 'train.tfrecord'), features, shape)
-validation_dataset = decode_record(join(processed, 'validation.tfrecord'), features, shape)
-test_dataset = decode_record(join(processed, 'test.tfrecord'), features, shape)
+def decoder(example):
+    feature = tf.io.parse_single_example(example, features)
+    image = tf.io.parse_tensor(feature['image'], tf.float32)
+    image.set_shape(shape)
+    # We only want the 'label_idx'. Not the 'angle'.
+    label = feature['label'][0]
+
+    return [image, label]
+
+train_dataset = decode_record(path.join(processed, 'train.tfrecord'), decoder)
+validation_dataset = decode_record(path.join(processed, 'validate.tfrecord'), decoder)
+test_dataset = decode_record(path.join(processed, 'test.tfrecord'), decoder)
 
 def create_model(hp):
     model = models.Sequential()
@@ -66,7 +75,7 @@ class customTuner(Hyperband):
 
     def on_trial_end(self, trial):
         trial_dir = self.get_trial_dir(trial.trial_id)
-        hparam_dir = join(trial_dir, trial.trial_id)
+        hparam_dir = path.join(trial_dir, trial.trial_id)
         hparams = trial.hyperparameters.values
         with tf.summary.create_file_writer(hparam_dir).as_default():
             api.hparams(hparams, trial_id=trial.trial_id)
@@ -78,7 +87,7 @@ class customTuner(Hyperband):
     def on_epoch_end(self, trial, model, epoch, logs):
         id = trial.trial_id
         trial_dir = self.get_trial_dir(trial.trial_id)
-        log_dir = join(trial_dir, trial.trial_id)
+        log_dir = path.join(trial_dir, trial.trial_id)
         with tf.summary.create_file_writer(log_dir).as_default():
             for metric in logs:
                 tf.summary.scalar(metric, data=logs[metric], step=epoch)
@@ -87,7 +96,7 @@ class customTuner(Hyperband):
         super().on_epoch_end(trial, model, epoch, logs)
 
 hp=HyperParameters()
-log_dir = join('logs', 'srp_dropout')
+log_dir = path.join('logs', 'srp_dropout')
 timestamp = datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
 
 tuner = customTuner(

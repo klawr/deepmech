@@ -1,19 +1,20 @@
 \section{Conclusion}
 
-After examining the possibilities of machine learning and their impact on the different branches of technology, the idea to extend this into the realm of kinematic seems to be a reasonable one.
-This project was used to learn the basics needed to apply machine learning from scratch, beginning with a simple statistical model which is able to classify handwritten mechanical symbols.
+After investigating the possibilities of machine learning and its impact on the different branches of technology, the idea of extending this to the field of kinematics seems reasonable.
+In this project the basics for the application of machine learning were learned from scratch, starting with a simple statistical model capable of classifying handwritten mechanical symbols.
 
-The data suggests that a sufficient algorithm has been found, which has an accuracy of over 99\% on the test data.
-After removing the training configuration it has a size of 76kb as \name{Keras} model.
-Converting the model to a format which is readable by \name{tensorflow.js}\footnote{\url{https://www.tensorflow.org/js/}} and assembling it into a readable \code{IOHandler}\footnote{The loader.js can be found at \url{https://aka.klawr.de/srp\#15}} does not increase size significantly (81kb).
+The data suggest that a sufficient algorithm has been found that has an accuracy of over 99\% over the test data.
+After removing the training configuration, it has a size of 76kb as \name{Keras} model.
+Converting the model into a format readable by \name{tensorflow.js}\footnote{\url{https://www.tensorflow.org/js/}} and assembling it into a readable \code{IOHandler}\footnote{The loader.js can be found at \url{https://aka.klawr.de/srp\#15}} does not significantly increase the size (81kb).
 
-Applications to test the models have been provided in the repository:
+Applications for testing the models were made available in the repository:
 
-A Python-script to draw images into the environment used to create data, but used to predict the drawn symbol can be found in the \name{code} directory as \name{symbol_classifier_test.py}\footnote{\url{https://aka.klawr.de/srp\#16}}.
+A Python script for testing purposes to draw images and the model predicting the drawn symbol, is located in the \name{code} directory as \name{symbol\_classifier\_test.py}\footnote{\url{https://aka.klawr.de/srp\#16}}.
 
-A web page which can be loaded directly inside a web-browser\footnote{The test works on Firefox and Google Chrome. Microsoft Edge does not work yet, but this is probably subject to change when Microsoft switches to a Chromium build. }.
-The file can be found in the same directory as the Python-script as \name{symbol_classifier_test.html}\footnote{\url{https://aka.klawr.de/srp\#17}}.
-This test is close to the intended purpose by uploading images to the application and then providing the user with automatic predictions.
+A web page that can be loaded directly into a web browser\footnote{The test works on Firefox and Google Chrome. Microsoft Edge does not yet work, but this will probably change when Microsoft moves to a Chromium-based build. }.
+The file is located in the same directory as the Python script as \name{symbol\_classifier\_test.html}\footnote{\url{https://aka.klawr.de/srp\#17}}.
+This test comes close to its intended purpose by uploading images into the application and then providing automatic predictions to the user.
 
-Subsequent projects will follow to extend the functionality to detect the position of detected symbols in arbitrary images and possible connections in the form of constraints between them.
-After full mechanism representations can be deduced they can be imported into existing web applications like \name{mec2} \cite{Goessner2019} \cite{Goessner2019a} \cite{Goessner2019b} or \name{mecEdit} \cite{Uhlig2019} \cite{Uhlig2019a}.
+Later projects will follow to provide functionality for detecting the position of recognized symbols in a given image.
+Furthermore, possible connections of the symbols to each other in the form of "constraints" will be recognized.
+After complete mechanism representations can be derived, they can be imported into existing web applications like \name{mec2} \cite{Goessner2019, Goessner2019a, Goessner2019b} or \name{mecEdit}. \cite{Uhlig2019, Uhlig2019a}.

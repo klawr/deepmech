@@ -1,27 +1,26 @@
-\section{What is machine learning} \label{ch:what_is_ml}
+\section{What is machine learning?} \label{ch:what_is_ml}
 
 \subsection{Machine learning in general}
 
-Usually programming consists of applying rules to certain problems to get solutions.
-By using machine learning we want to build a model which uses solutions to certain problem to figure out the respective rules, shown in figure~\ref{fig:cp_vs_ml}.
+Usually the task of programming is to apply rules to certain problems in order to obtain solutions.
+With the help of machine learning we want to create a model that uses solutions for certain problems to find out the corresponding rules.
+The relationship is shown in figure~\ref{fig:cp_vs_ml}.
 
 \begin{figure}
     \centering
     \includegraphics[width=0.5\textwidth]{images/classical_prog_vs_ml.png}
-    \caption{Machine learning, a new programming paradigm, from
-        \cite[p.5]{Chollet2017}}
+    \caption{Machine learning, a new programming paradigm \cite[p.5]{Chollet2017}}
     \label{fig:cp_vs_ml}
 \end{figure}
 
-The promise made by machine learning is that the rules learned can be significantly more complex than it is feasible to program them by hand.
-A good example for this is image recognition (which will be the focus of this project), in which the content of images is to be classified.
-Relations between pixels have to be figured out resulting in a fairly complex model.
-This is not feasible to program in traditional manner even for the simplest tasks.
+The promise of machine learning is that the rules learned can be much more complex than it is possible to program by hand.
+A good example is image recognition (which will be the focus of this project), where the content of images is to be classified.
+The relations between the pixels have to be found out, which leads to a rather complex model.
+This cannot be programmed in the traditional way even for the simplest tasks.
 
-The universal approximation theorem \cite{Cybenko1989} \cite{Hornik1989} states that for an arbitrary input $x$ there is a function $h$ approximating the mapping $y$, whereas the mapping is only the input to the respective correct output (often labeled by a human).
-This relationship is shown in equation~\eqref{eq:universal_approx} \footnote{In literature there is often a bias inside the sum.
-Following the convention to prepend a 1 to the input vector $x$, this is always included.
-Please note that this is mathematically the same but just a matter of taste.}
+The universal approximation theorem \cite{Cybenko1989, Hornik1989} states that for any input $x$ there is a function $h$ which approximates the mapping $y$, while the mapping is only the input to the correct output (often labeled by a human).
+This relationship is described in equation~\eqref{eq:universal_approx}.
+
 % TODO define sets X and Y of \theta and x
 \begin{equation}
     \forall \epsilon > 0 :
@@ -29,11 +28,12 @@ Please note that this is mathematically the same but just a matter of taste.}
     \label{eq:universal_approx}
 \end{equation}
 % TODO the text here can be changed with a class of functions (see UAT paper)
-The mathematical description of $h$ is called the model (e.g.  $h(x) = \sum_{i=1}^n{\lambda (\theta^T * x)}$).
-$\lambda \in \mathbb{R}$ is a constant and $\theta$ is a tensor defining the parameters of $h$, composed of so called weights and biases, which will be introduced later.
 
-The universal approximation theorem makes no assertions over the shape of $\theta$; therefore $h$ is called the hypothesis, because it states that for a specific composition of $\theta$ this equation holds to be true.
-This notion is summarized in equation~\eqref{eq:hypothesis}.
+The mathematical description of $h$ is called a model (e.g. $h(x) = \sum_{i=1}^n{\lambda (\theta^T * x)}$).
+$\lambda \in \mathbb{R}$ is a constant and $\theta$ is a tensor that defines the parameters of $h$, which are made up of so-called weights and biases, which will be explained later.
+
+The universal approximation theorem makes no statements about the form of $\theta$; therefore $h$ is called a hypothesis because it states that for a certain composition of $\theta$ this equation is true.
+This term is summarized in the equation~\eqref{eq:hypothesis}.
 
 \begin{equation}
     \forall \epsilon > 0 : \exists \theta \in X : \forall x \in I : |
@@ -41,64 +41,59 @@ This notion is summarized in equation~\eqref{eq:hypothesis}.
     \label{eq:hypothesis}
 \end{equation}
 
-For model evaluation a loss function is used; it compares the result of the hypothesis with provided data.
-The arguably most prominent loss function is \name{mean squared error}.
-It takes the sum of the deviation of $n$ examples squared and divides them by $2*n$.
+A loss function is used for model valuation; it compares the result of the hypothesis with the data provided.
+Probably the most prominent loss function is the \name{mean square error}.
+It takes the sum of the deviation of $n$ examples squared and divides it by $2*n$.
 
 \begin{equation}
     L_{mse}(\theta, x) = \frac{1}{2 n} \sum_{i=1}^n (h_\theta(x) - y(x))^2
     \label{eq:mse}
 \end{equation} 
 
-The task of machine learning is to determine a $\theta$ for a model confirming equations~\ref{eq:universal_approx} and \ref{eq:hypothesis}, which is done by iteratively updating $\theta$. 
-Before training $\theta$ is initiated randomly and then adjusted iteratively to let the $\epsilon$ converge to zero, thus minimizing the value of $L$.
-% TODO find paper for random initialization... I have one.
+The task of machine learning is to determine a $\theta$ for a model that confirms the equations~\ref{eq:universal_approx} and \ref{eq:hypothesis}, which is done by iterative updating of $\theta$. 
+Before training, $\theta$ is randomly initiated and then iteratively adjusted to make $\epsilon$ converge toward zero. This minimizes the value of $L$.
 
-For the loss function to gradually decrease $\theta$ is adjusted using an optimizer function which is famously done using gradient descent or some variant of it.
-Gradient descent is performed by calculating the gradient of the loss function and subtracting it from the respective parameters, shown in equation~\eqref{eq:gradient_descent}.
+In order for the value of the loss function to gradually decrease, $\theta$ is adjusted using an optimization function.
+This is usually done with a gradient descent algorithm or a variant of it.
+The gradient descent is performed by calculating the gradient of the loss function and subtracting it from the corresponding parameters shown in equation~\eqref{eq:gradient_descent}.
 
 \begin{equation}
     \theta_{i+1} := \theta_i - \eta \nabla_\theta L(\theta, x)
     \label{eq:gradient_descent}
 \end{equation}
 
-Herein $\eta$ is a constant, called the learning rate which helps the loss function to converge to 0 using gradient descent.
-It is one of many hyper-parameters which are not adjusted automatically during training, but determined beforehand.
-An optimal setting of hyper-parameters is an important task which is hard to automate and therefore focus of a lot of research\footnote{There are algorithms to adjust the learning rate, namely \name{AdaGrad} \cite{Duchi2010} and derived algorithms.} and is the main topic of chapter \ref{ch:hyper_parameter_tuning}.
-If equation~\eqref{eq:hypothesis} holds to be true for the respective model, it subsequently is a sufficient fit for the given input.
+Where $\eta$ is a constant called the learning rate, which helps the loss function converge to 0 using the gradient descent algorithm.
+It is one of many hyperparameters that are not automatically adjusted during training, but are determined beforehand.
+Optimal adjustment of hyperparameters is an important task that is difficult to automate and is therefore the focus of much research\footnote{There are algorithms for adjusting the learning rate, namely \name{AdaGrad} \cite{Duchi2010} and derived algorithms and is the main topic of the chapter \ref{ch:hyper_parameter_tuning}}.
+If the equation \eqref{eq:hypothesis} applies to the model in question, it is then sufficiently suitable for the given input.
 
-Subsequently these concepts are introduced presenting a simple example.
+These concepts are presented below using a simple example.
 
 \subsection{Simple linear example} \label{ch:simple_linear_example}
-% TODO more descriptive title?
 
-As an illustrative example a model translating Fahrenheit into Celsius will be created.
-The original equation is given by the linear function $y = mx + b$ as $F = C * 1.8 + 32$, with $F$ as degree Fahrenheit and $C$ as degree Celsius respectively.
+As an illustrative example, a model is created that translates Fahrenheit into Celsius.
+The original equation is given by the linear function $y = mx + b$ as $F = C * 1.8 + 32$, with $F$ as degrees Fahrenheit and $C$ as degrees Celsius.
 
-A model designed to learn this relationship is defined in listing~\ref{lst:c_to_f} \footnote{Also available at \url{https://aka.klawr.de/srp\#2}} .
+A model to learn this relationship is defined in the listing~\ref{lst:c_to_f} \footnote{Also available at \url{https://aka.klawr.de/srp\#2}} .
 
 % TODO add JavaScript as language
 \lstinputlisting[label={lst:c_to_f}, caption={Celsius to Fahrenheit}]{code/c_to_f.js}
 
-The model described has $\theta$ implemented through \code{w} and the hypothesis function by \code{h}.
-Since we know that the relationship is linear, the model represents a one dimensional polynomial, using the first index as dimensionless (emulating the bias as previously mentioned) and the first as input x.
-We will add one dimension later to demonstrate the behavior on polynomials which do not immediately represent the target function.
+The described model is implemented by \code{w} and the hypothesis function by \code{h}.
+Since it is known that the relationship is linear, the model represents a one-dimensional polynomial, with the first index being dimensionless (and, as mentioned above, emulating the bias) and the second being used as input x.
+We will add a dimension later to demonstrate the behavior with polynomials that do not directly represent the target function.
 
-\code{y} provides the correct answer.
-Please note that \code{y} is only used in training and can be omitted once the model parameters are properly adjusted.
+\code{y} provides the correct, predefined solution.
+Please note that \code{y} is only used during training and is omitted if the model parameters are correctly set after training.
 
-In this example the loss function is described by the \textit{mean squared error } \footnote{ Abbreviated as \textit{mse} } which is shown in equation~\eqref{eq:mse}.
+In this example the loss function is described by the \textit{mean square error } \footnote{ Abbreviated as \textit{mse}, which is shown in equation \eqref{eq:mse}}.
 
 To minimize the loss function gradient descent described in equation~\eqref{eq:gradient_descent} is used.
 
-In listing~\ref{lst:c_to_f} equation~\eqref{eq:gradient_descent} is implemented as \code{sgd} using $\theta_0 = \code{b}$ and $\theta_1= \code{m}$ as shown in equation~\eqref{eq:sgd_mse_here}.
+In listing~\ref{lst:c_to_f} equation~\eqref{eq:gradient_descent} is implemented as \code{sgd} with $\theta_0 = \code{b}$ and $\theta_1= \code{m}$ as shown in equation~\eqref{eq:sgd_mse_here}.
 
-\code{sgd} is short for \textit{stochastic gradient descent}.
-\footnote{A distinction is made between batch, mini-batch and stochastic
-    gradient descent;
-    using the full data set, a defined subset or single inputs respectively on
-    each iteration.}
-It represents the optimizer function, updating the parameters of the model by taking the gradient of the loss for each individual parameter and updating them simultaneously.
+\code{sgd} is short for \textit{stochastic gradient descent}\footnote{A distinction is made between batch, mini-batch and stochastic gradient descent; using a complete data set, a defined subset or individual data on the individual iterations of the training process}.
+It represents the optimization function that updates the parameters of the model by calculating the gradient of loss for each parameter and then updating it.
 
 \begin{equation}
     \begin{split}
@@ -110,7 +105,7 @@ It represents the optimizer function, updating the parameters of the model by ta
     \label{eq:sgd_mse_here}
 \end{equation}
 
-The respective output may look like:
+The respective output may look like this:
 \begin{lstlisting}
 loss:  343041.666256673
 loss:  16242.7707476548
@@ -125,18 +120,17 @@ loss:  1.6948019668728757e-10
 weights:  [ 31.99999973758735, 1.8000003977458756 ]
 \end{lstlisting} 
 
-Expected behavior for the loss function is to decrease at every iteration, which it evidently does and thereby showing that the deviation of the hypothesis to the actual result is diminishing.
-After iterating 200 times the parameters \code{m} and \code{b} of the \code{model} are logged and show that they are actually close to the anticipated result.
-By increasing the iteration count, the result can be increased to the point where they are rounded to represent exact results (using Node.js\footnote{ As far as we can assume exact results using floating point numbers in computing.}).
+The expected behavior for the loss function is to decrease with each iteration.
+This is the case in this example, showing that the deviation of the hypothesis from the actual result decreases.
+After 200 iterations, the parameters \code{m} and \code{b} of the \code{model} are displayed and show that they are actually close to the expected result.
+By increasing the number of iterations, the result can be increased up to the point where they are rounded by the JavaScript compiler to represent exact results (using Node.js\footnote{As far as can be assumed when calculating exact results using floating point numbers.}).
 
 \begin{SCfigure}
     \centering
-    \caption{ The provided example may be visualized like this (possibly the        simplest model imaginable).
-        The bias can be interpreted as an extra input which is always 1.
-        The input is multiplied by the parameters labelling their respective arrows, which are in turn summed up (resulting in $y = mx + b$) }
-    \includegraphics[width=0.4\textwidth]{images/1_simplest_nn.png}
+    \caption{This example can be visualized as shown here. The bias can be interpreted as additional input, which always has the value 1. The input is multiplied by the parameters marked with the corresponding arrows, which in turn are summed up (resulting in $y = mx + b$).}
+    \includegraphics[width=0.45\textwidth]{images/1_simplest_nn.png}
 \end{SCfigure} 
 
-Provided this hypothesis is initially well suited for the task, it is important to note that by modify the hypothesis to represent a polynomial of a higher degree (e.g. $y = nx^2 + mx + b$) the extra parameters are converging to zero, effectively providing the same result as before
-\footnote{But to achieve similar results the iteration count has to be increased by at least a factor of 20.
-You can review the experiment at \url{https://aka.klawr.de/srp\#3}}.
+Provided that this hypothesis is initially well suited to the task, it is important to note that by modifying the hypothesis to represent a polynomial of higher degree (e.g. $y = nx^2 + mx + b$) the additional parameters converge towards 0, which effectively gives the same result as before \footnote{But to achieve similar results, the iteration number must be increased by at least a factor of 20}.
+
+The experiment can be followed at \url{https://aka.klawr.de/srp\#3}.

@@ -1,0 +1,20 @@
+\section{Zusammenfassung}
+
+Nachdem die Möglichkeiten des maschinellen Lernens und ihre Auswirkungen auf die verschiedenen Technologiezweige untersucht wurden, scheint die Idee, dies auf den Bereich der Kinematik auszudehnen, vernünftig zu sein.
+In diesem Projekt wurden die Grundlagen für die Anwendung des maschinellen Lernens von Grund auf neu erlernt, wobei mit einem einfachen statistischen Modell begonnen wurde, das in der Lage ist, handgeschriebene mechanische Symbole zu klassifizieren.
+
+Die Daten legen nahe, dass ein ausreichender Algorithmus gefunden wurde, der eine Genauigkeit von über 99\% über die Testdaten aufweist.
+Nach dem Entfernen der Trainingskonfiguration hat diese eine Größe von 76kb als \name{Keras} Modell.
+Die Konvertierung des Modells in ein Format, das durch \name{tensorflow.js}\footnote{\url{https://www.tensorflow.org/js/}} lesbar ist, und das Zusammensetzen in einen lesbaren \code{IOHandler}\footnote{Die loader.js kann unter \url{https://aka.klawr.de/srp\#15} gefunden werden} erhöht die Größe nicht signifikant (81kb).
+
+Anwendungen zum Testen der Modelle wurden im Repository zur Verfügung gestellt:
+
+Ein Python-Skript zum Zeichnen von Bildern in die zum Erstellen von Daten verwendete Umgebung, das aber zur Vorhersage des gezeichneten Symbols verwendet wird, findet sich im Verzeichnis \name{code} als \name{symbol\_classifier\_test.py}\footnote{\url{https://aka.klawr.de/srp\#16}}.
+
+Eine Webseite, die direkt in einen Web-Browser geladen werden kann\footnote{Der Test funktioniert auf Firefox und Google Chrome. Microsoft Edge funktioniert noch nicht, aber dies wird sich wahrscheinlich ändern, wenn Microsoft auf einen Chromium basierten Build umsteigt. }.
+Die Datei befindet sich als \name{symbol\_classifier\_test.html}\footnote{\url{https://aka.klawr.de/srp\#17}} ebenfalls im Verzeichnis \name{code}.
+Dieser Test kommt dem beabsichtigten Zweck nahe, indem Bilder in die Anwendung hochgeladen werden und dem Benutzer dann automatische Vorhersagen zur Verfügung gestellt werden.
+
+Spätere Projekte werden folgen um die Funktionalität zur Erkennung der Position von erkannten Symbolen in beliebigen Bildern zu gewährleisten.
+Des weiteren sollen möglichen Verbindungen der Symbole zueinander in Form von "Constraints" erkannt werden.
+Nachdem vollständige Mechanismus-Darstellungen abgeleitet werden können, können sie in bestehende Web-Anwendungen wie \name{mec2} importiert werden \cite{Goessner2019, Goessner2019a, Goessner2019b} oder \name{mecEdit} \cite{Uhlig2019, Uhlig2019a}.
