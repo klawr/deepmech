@@ -1,9 +1,12 @@
 \section{First prototype} \label{ch:first_prototype}
 
-To create a first prototype capable of detecting hand-drawn mechanism, various capabilities have to be considered.
-The application has to be able to detect \name{nodes}, \name{constraints}, which are connecting \name{nodes} and to transform this information into a usable format.
+To create a first prototype capable of detecting hand-drawn mechanism, the capabilities necessary are have to be considered first.
+The application has to be able to detect and to localize \name{nodes} and to detect \name{constraints}, which are connecting pairs of \name{nodes}.
+Subsequently the gathered information has to be transformed into a usable format for further processing.
 
-\subsection{The Fully Connected Convolutional Neural Network}.
+At first the detection and localization of \name{nodes} is examined.
+
+\subsection{The Fully Convolutional Network}\label{ch:fcn}
 
 The topic of a previous work was the recognition of hand-drawn mechanical symbols \cite{Lawrence2020}.
 Building on this, the trained model is improved to provide not only the class, but the location of the classification in an image of arbitrary size.
@@ -42,7 +45,7 @@ This would reduce the accuracy of the localization, but would increase the speed
 
 Another approach is to use the properties of convolutional layer to restructure the model and thereby making the whole procedure much more efficient.
 
-By transforming a model into a Fully Connected Convolutional Neural Network (FCN) all dense layers are replaced by convolutional layers, and the input layer is also a two dimensional layer but allows for an input image of arbitrary size.
+By transforming a model into a Fully Convolutional Network (FCN) all dense layers are replaced by convolutional layers, and the input layer is also a two dimensional layer but allows for an input image of arbitrary size.
 Because the input of the original model is only defined by the kernel size, it is agnostic to the size of a previous layer.
 Listing \ref{lst:to_fcn} transforms the \code{old\_model} by appending an \code{tf.keras.Input} layer without any specified size and replacing the output layer by a \code{tf.keras.Conv2D} layer\footnote{And thus removing the \code{tf.keras.flatten} layer.}
 
@@ -110,8 +113,6 @@ Granted this model is satisfactory for the moment, the problem of detecting cons
 There was already a model providing the capability of detecting symbols, to prior work.
 To create a model for detecting constraints the same procedure has to be followed, which means that training data has to be generated first.
 
-\subsubsection{Data generation}
-
 It is planned to support two different types of constraints, which indicate whether two nodes are either able to rotate around one another or to be able to move in a translational fashion.
 Beside different types of constraints data for three different ranges are generated for a better selection of constraint data when two nodes are to be connected.
 
@@ -134,6 +135,8 @@ The drawing canvas has a width of fifty and the range can vary between 150-249, 
     \label{fig:generated_data_samples}
 \end{figure}
 
+\subsubsection{Preparing nodes on images}
+
 Since constraints can occur at all possible angles, the data must be generated in such a way that it resembles the reality the most.
 Because of this, multiple steps have to be taken to generate comprehensible data.
 
@@ -142,9 +145,10 @@ Metadata generated during the generation process is saved into a format which is
 
 In the first step 100.000 images are generated.
 Each image begins with a black background of size 360x360.
-Between 3 and 10 nodes are randomly placed on the image.
+Between 3 and 10 nodes are randomly placed on the image\footnote{In an intermediate step the node data from previous work is modified to consist of white symbols on black background, instead of random grayscale images.}.
 Each node has to have a minimum distance of 60 to every other node in the image.
-Examples for the resulting images are shown in figure \ref{fig:constraint_data_step1}\footnote{The respective notebook for the data generation can be viewed at \url{https://aka.klawr.de/sep\#3}}.
+Examples for the resulting images are shown in figure \ref{fig:constraint_data_step1}.
+The respective notebook containing the code for this process can be viewed at \url{https://aka.klawr.de/sep\#3}.
 
 \begin{figure}
     \centering
@@ -167,18 +171,20 @@ Examples for the resulting images are shown in figure \ref{fig:constraint_data_s
     \caption{Some examples of the data created with the described method. Please note that the colors of these samples are inverted. }
 \end{figure}
 
+% TODO add more text... to many images for little text
 
-The next step is to randomly connect nodes in the image.
+\subsubsection{Connecting nodes using constraints}
+
+The next step is to randomly connect pairs of nodes inside of the image.
 For this the prepared constraints are used, whereas the number of constraints should be random, too.
-On an image with $n$ nodes the number of possible connections is $\frac{n \times (n-1)}{2}$.
 
+On an image with $n$ nodes the number of possible connections is $\frac{n \times (n-1)}{2}$.
 As a reasonable heuristic to keep the number of constraints in check $s = 1 - \frac{2}{n-1}$ is used; where $s$ is the chance of the connection being skipped and $n$ is the number of nodes.
 
 Table \ref{tab:relation_nodes_constraints} describes the expected number of constraints per image.
 This approach tries to generate as much constraints as there are nodes in the image.
 The difference of the expected number of constraints and the mean of constraints per number of nodes in table \ref{tab:relation_nodes_constraints} occurs most likely due to constraints shorter than 50 or longer than 350 being skipped, too.
-
-The mean of the number of constraints in relation to the number of nodes is calculated by issuing \code{[df[df.nodes.str.len() == i].constraints.str.len().mean() for i in range(3,10)]}, where \code{df} is the respective DataFrame of the dataset.
+The mean of the number of constraints in relation to the number of nodes is calculated by issuing \code{[df[df.nodes.str.len() == i].constraints.str.len().mean() for i in range(3,10)]}, where \code{df} is the respective \code{pandas.DataFrame}.
 
 \begin{table}
 \caption{Relation of number of nodes to the resulting number of constraints.}
@@ -198,7 +204,7 @@ The mean of the number of constraints in relation to the number of nodes is calc
 \end{tabular}
 \end{table}
 
-The respective images which are generated are shown in figure \ref{fig:constraint_data_step2}\footnote{In the initial dataset for constraints 3 different types were made for different length-intervals. After initial testing the shorter constraints did not meet the expectations and thus these images are all generated with images from a range of 350-449 only.}.
+The images which are generated in this step are shown in figure \ref{fig:constraint_data_step2}\footnote{In the initial dataset for constraints 3 different types were made for different length-intervals. After initial testing the shorter constraints did not meet the visual expectations. Thus these images are generated with images from a range of 350-449 only.}.
 
 \begin{figure}
     \centering
@@ -221,13 +227,103 @@ The respective images which are generated are shown in figure \ref{fig:constrain
     \caption{Samples of images generated by connecting randomly selected pairs of nodes using the prepared constraint data. Please note that the colors of these samples are inverted.}
 \end{figure}
 
-In a last step these images are then cropped to be able to be fed into a Keras model.
-The notebook doing this operation can be viewed at \url{https://aka.klawr.de/sep\#5}.
-As the number of possible connections is $34 = \frac{\sum_{i=3}^{9}i(i-1)}{(10-3)}$, the expected number of crops to generate is 3.400.000.
-This number is even higher, because when detecting constraints it is also important to check for reversed constraints between node pairs to classify them as a non connection.
+\subsubsection{Cropping images to get the training data}
+
+At last these images are cropped.
+By cropping and reshaping the models the images can be fed into the training process of a Keras model.
+The notebook doing this operation can be viewed at \url{https://aka.klawr.de/sep\#4}.
+As the number of possible connections is $34 = \frac{\sum_{i=3}^{9}i(i-1)}{(10-3)}$, the expected number of generated crop-images is 3.400.000.
+It is also important to check for reversed constraints between node pairs to classify them as a non connection, to be able to correctly predict the direction of the constraint, too.
 As 100.000 images are already a good size to work with, another measure was taken to keep the number of expected crops in check.
 For this crops are only kept $\frac{1}{m(m-1)}$ of the time, which is about each 30th time in this case.
 
 The resulting dataset contains 119.189 images, which are subsequently transformed into a \name{tensorflow record}.
 
+% TODO image of the crops here...
+
 With the data prepared the next step is to train the constraint detecting model.
+
+\subsubsection{Training of the constraint detection model}
+
+In this first prototype the design of the constraint detection model is a copy of the results of the previous trained symbol detector.
+The input size is adapted to fit for the crops, which have a size of 96 by 96 instead of the 32 by 32 images used for the symbol detector.
+The model is created using the functional API of Keras, which has no functional implications, but is just another way of defining models.
+
+The output of \code{model.summary()} is:
+\begin{lstlisting}
+Model: "model"
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_1 (InputLayer)         [(None, 96, 96, 1)]       0         
+_________________________________________________________________
+conv2d (Conv2D)              (None, 96, 96, 16)        272       
+_________________________________________________________________
+max_pooling2d (MaxPooling2D) (None, 48, 48, 16)        0         
+_________________________________________________________________
+conv2d_1 (Conv2D)            (None, 48, 48, 32)        8224      
+_________________________________________________________________
+max_pooling2d_1 (MaxPooling2 (None, 24, 24, 32)        0         
+_________________________________________________________________
+flatten (Flatten)            (None, 18432)             0         
+_________________________________________________________________
+dense (Dense)                (None, 3)                 55299     
+=================================================================
+Total params: 63,795
+Trainable params: 63,795
+Non-trainable params: 0
+_________________________________________________________________    
+\end{lstlisting}
+
+The training is done by decoding the record which was created in earlier steps
+and then splitting the data into 80.000 images for training, 20.000 images for validation and the remaining 19.189 images are used for testing the model.
+
+The training is then initiated by using the \code{model.fit} method, passing the data as argument.
+\name{TensorBoard} % TODO citation needed
+is used to log the accuracy and the loss of the model during training. The respective graphs can be seen in figure \cite{fig:crop_detector_tensorboard}.
+
+\begin{figure}[]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{images/crop_detector_epoch_acc.png}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{images/crop_detector_epoch_loss.png}
+    \end{subfigure}
+    \caption{The training accuracy and loss of the crop detector. These graphs were created using TensorBoard, which is used as callback during training.}
+    \label{fig:crop_detector_tensorboard}
+\end{figure}
+
+\subsubsection{Combining node and constraint detection}
+
+To be able to predict constraints in production the generation of crops has to be implemented as a intermediate step between node and constraint detection.
+The images must be cropped according to the generation of the training data, which means the coordinates of the nodes have to be detected first, and the area between them is resized to 96 by 96 images.
+Previously the nodes are placed on the image using (randomly) given coordinates.
+This process is now revered, getting the coordinates using the Fully Connected Network on the training data and processing the data.
+
+The constraint detection relies heavily on the performance of the node detection, because nodes which are not detected are not taken into account when creating the data for the constraint detector.
+
+Falsely predicted nodes are most likely not going to result in a pair of nodes connected by constraints, since the resulting crop would most likely not look like a constraint, but they are slowing the process down significantly, since the number of crops grows exponentially to the number of nodes.
+
+A pipeline of this process can be reviewed at \url{https://aka.klawr.de\#5}.
+
+\begin{figure}
+    \centering
+    \label{fig:constraint_data_step1}
+    \begin{subfigure}[b]{0.19\textwidth}
+        \fbox{\includegraphics[width=\textwidth]{images/225_0rc.png}}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.19\textwidth}
+        \fbox{\includegraphics[width=\textwidth]{images/225_1rc.png}}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.19\textwidth}
+        \fbox{\includegraphics[width=\textwidth]{images/225_2rc.png}}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.19\textwidth}
+        \fbox{\includegraphics[width=\textwidth]{images/225_3rc.png}}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.19\textwidth}
+        \fbox{\includegraphics[width=\textwidth]{images/225_4rc.png}}
+    \end{subfigure}
+    \caption{The second step of the data generation processed created images with nodes and constraints that resemble nodes and constraints placed randomly into a canvas. These predictions are made on the images from figure \ref{fig:constraint_data_step2}. There is only one falsely predicted node in the second image from the left. The constraints are way less accurate, which is not surprising considering the composition of these images.}
+\end{figure}
