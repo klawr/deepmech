@@ -327,6 +327,7 @@ A pipeline of this process can be reviewed at \url{https://aka.klawr.de\#5}.
         \fbox{\includegraphics[width=\textwidth]{images/225_4rc.png}}
     \end{subfigure}
     \caption[Predictions of the first prototype on the generated data]{The second step of the data generation processed created images with nodes and constraints that resemble nodes and constraints placed randomly into a canvas. These predictions are made on the images from figure \ref{fig:constraint_data_step2}. There is only one falsely predicted node in the second image from the left. The constraints are way less accurate, which is not surprising considering the composition of these images.}
+    \label{fig:constraint_data_step1}
 \end{figure}
 
 \subsection{Conversion to the web context}
@@ -343,7 +344,7 @@ To include the weights and binaries into a importable JavaScript file it is conv
 For this the \name{base64} \cite{Josefsson2018} module contained in \name{GNU Coreutils} is used.
 The resulting string is copied into a JavaScript file, containing one class, as can be seen in listing \ref{lst:js_model_class}
 
-\begin{lstlisting}[label={lst:js_model_class}, caption={[JavaScript classes for Tensorflow.js] Class definition of one of the models providing necessary functions to be used by \code{tf.loadLayersModel} to return a usable model in JavaScript. }]
+\begin{lstlisting}[label={lst:js_model_class}, caption={[JavaScript classes for Tensorflow.js.] Class definition of one of the models providing necessary functions to be used by \code{tf.loadLayersModel} to return a usable model in JavaScript. }]
 class ConstraintModel {
     model=`{/* JSON with information about the model */ }`;
     bin=`/* base64 string with information about weights and biases */`;
@@ -396,3 +397,139 @@ By converting all the necessary steps into a JavaScript pipeline, the \code{deep
 For demonstration purposes it is implemented into Node.js % TODO
 and by using \name{ijavascript} and the \name{conda} package of Node.js % TODO
 integrated into a Jupyter Notebook, which can be viewed at \url{https://aka.klawr.de/sep\#9}.
+
+\subsection{Implementation into mec2}
+
+\subsubsection{mec2}
+
+% TODO this is a 1 on 1 copy from the wiki:
+mec2 is a 2D physics simulation engine written in JavaScript.
+It is designed to easily create 2D mechanisms for rapid sketching and rendering the resulting models in a 2D canvas using g2.
+
+Mechanisms are defined by using JSON formatting, as shown in listing \ref{lst:mec2_example}.
+
+\begin{lstlisting}[label={lst:mec2_example}, caption={ Example for a mechanism defined in the syntax proposed by \name{mec2}. }]
+{
+    "nodes": [
+        { "id": "A0", "x": 75, "y": 50, "base": true },
+        { "id": "A", "x": 75, "y": 100 },
+        { "id": "B", "x": 275, "y": 170 },
+        { "id": "B0", "x": 275, "y": 50, "base": true },
+        { "id": "C", "x": 125, "y": 175 } ],
+    "constraints": [
+        {   "id": "a", "p1": "A0", "p2": "A", "len": { "type":"const" },
+            "ori": { "type": "drive", "Dt": 2, "Dw": 6.28 } },
+        {   "id": "b", "p1": "A", "p2": "B", "len": { "type":"const" } },
+        {   "id": "c", "p1": "B0", "p2": "B", "len": { "type":"const" } },
+        {   "id": "d", "p1": "B", "p2": "C", "len": { "type":"const" },
+            "ori": { "ref": "b", "type": "const" } } ],
+    "views": [
+        {   "show": "pos", "of": "C", "as": "trace", "Dt":2.1,
+            "mode":"preview", "fill":"orange" },
+        {   "show": "vel", "of": "C", "as": "vector" },
+        {   "as": "chart", "x": 340, "y": 75, "Dt": 1.9,
+            "show": "wt", "of": "b" } ]
+}
+\end{lstlisting}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/mec2_chart.png}
+    \caption[Example of the mec2 HTML element]{ The mechanism defined in listing \ref{lst:mec2_example}. It is rendered using the mec2 custom HTML element. Defined are five nodes and 4 constraints. The chart and trace views are generated after one revolution of the leftmost constraint. }
+    \label{fig:generated_data_samples}
+\end{figure}
+
+mec2 is divided into many sub modules; some of which are optional, but some are necessary to simulate functioning mechanisms.
+
+For the first prototype only necessary modules have to be used; namely:
+% TODO fill this a bit more:
+\begin{enumerate}
+    \item \name{mec2.core}, which defines the central JavaScript object other modules are built upon.
+    The core \code{mec} object defines central properties, which make it easy to change certain parameters for the whole simulation.
+    Tolerances are defined for exit conditions inside the iterative calculations of the simulation.
+    Central settings for rendering, such as colors for individual parts, color modes for readability in light and dark environments are defined here.
+    To show and hide certain parts of the mechanism can be controlled here.
+    For each of these properties default values are set.
+
+    \item \name{mec2.model} adds certain functionality to the \code{core} object. 
+    This and other \name{mec2} modules add properties to the prototype of the \name{mec2} core object.
+    \code{models} \code{extend} function sets the prototype of a JavaScript object to be the prototype of \name{mec2}'s \code{core} Object.
+    This approach allows for an easy extensibility of objects by adding modules to the core object.
+
+    \name{mec2.model} also serves as a hub for all other modules to be implemented in.
+    By delegating certain functionality it suffices to issue e.g. the models \code{init} function to call \code{init} on all other objects handled by other modules as well.
+    
+    \item \name{mec2.node} implements one of the two essential elements of mechanisms (the other being constraints). Nodes are to be seen as particles, which can have a degree of freedom of 2. They are implemented with a default mass of 1kg.
+    
+    Nodes do not interact with anything but the environment, so no collision is implemented.
+    They are only restricted in certain movements by constraints.
+
+    \item \name{mec2.constraint}s are the only thing able to restrict nodes in certain directions.
+    Usually a constraint is used to reduce the degree of freedom of a node by one, but it is also possible to take all two degrees of freedom of a node, or none.
+\end{enumerate}
+
+At the time of writing five other modules\footnote{The other modules being \name{mec2.load}, \name{mec2.drive}, \name{mec2.view}, \name{mec2.msg.en} and \name{mec2.shape}} % TODO is this footnote relevant?
+exist to extend the functionality of \name{mec2}, but they do not concern the implementation of \name{deepmech} and are not further discussed here.
+
+Additionally \name{mec2} provides a custom HTML element, which allows for an easy implementation into web pages.
+The object defining the model is given as JSON inside the \code{innerHTML} of the respective custom HTML to define the input, which is respectively parsed using the standard built-in function \code{JSON.parse()}. % TODO
+The custom HTML element adds other functionality besides the appropriate implementation of \name{mec2} with all modules.
+
+\subsubsection{g2}
+
+For rendering models \name{g2} is used. % TODO cite
+\name{g2} is a JavaScript library which constructs an array of commands which can then be handed over into a drawing context via a dedicated \code{exe} method.
+The default handler of \name{g2} issues commands to a canvas handler, which in turn uses the standard built-in canvas API to draw images on an HTML canvas element.
+
+\begin{wrapfigure}{r}{0.35\textwidth}
+    \centering
+    \includegraphics[width=0.35\textwidth]{images/truss.png}
+    \caption{Drawing generated by listing \ref{lst:truss}.}
+    \label{fig:truss}
+\end{wrapfigure}
+
+\begin{lstlisting}[label={lst:truss}, caption={Example code of a truss defined with g2.}]
+const A = { x: 40, y: 30 },
+    B = { x: 150, y: 30 }, C = { x: 40, y: 80 },
+    D = { x: 100, y: 80 }, E = { x: 40, y:130 };
+
+g2().view({ cartesian: true })
+    .link2({ pts: [ A, B, E, A, D, C ]})
+    .nodfix({ ...A, scl: 1.5 })
+    .nodflt({ ...E, scl: 1.5, w: -Math.PI / 2 })
+    .nod({ ...B, scl: 1.5 })
+    .nod({ ...C, scl: 1.5 })
+    .nod({ ...D, scl: 1.5 })
+    .vec({
+        x1: D.x, y1: D.y, x2: D.x + 50,
+        y2: D.y, ls:'darkred', lw :2 })
+    .vec({
+        x1: B.x, y1: B.y, y2: B.y - 20,
+        x2: B.x, ls:'darkred', lw :0.5 })
+    .ground({ pts: [
+        { y: E.y + 20, x: E.x - 23 },
+        { y: A.y - 18, x: A.x - 23 },
+        { y: A.y - 18, x: D.x }]})
+    .exe(ctx)
+\end{lstlisting}
+
+Likewise \name{mec2}, \name{g2} is structured in a modular manner, but the \name{g2.core} module suffices for basic drawings.
+At the time of writing six other modules exist for \name{g2}\footnote{Namely \name{g2.ext}, \name{g2.lib}, \name{g2.io}, \name{g2.mec}, \name{g2.chart}, \name{g2.selector} and \name{g2.editor}.}, but at this point only the modules relevant to the case will be examined more closely.
+
+\name{g2.ext} provides necessary functionality for other modules to use, such as positioning capability for labels.
+Modules like \name{g2.chart} provide only one new (but extensive) command, which can be subsequently used by other libraries, like \name{mec2}.
+\name{g2.mec} provides definitions to draw shapes and symbols that are often used in engineering, as can be seen in figure \ref{fig:truss}.
+\name{g2.selector} is an extension used in interactive environments to be able to select certain geometries and interact with them.
+For this purpose \name{g2.selector} enables the introduction of a new context which can be used to find elements whose coordinates match those of a corresponding mouse pointer.
+
+\subsubsection{canvasInteractor}
+
+The \name{canvasInteractor.js} % TODO
+is an interaction manager for the HTML canvas element.
+It is used to centralize all interactions and animation requests.
+\code{canvasInteractor} manages one \code{requestAnimationFrame}, which minimizes overhead as if each component would issue a new request.
+Additionally this approach parallelizes all requests, because they are all handled in one function call.
+
+New \code{instances} can be added to the \code{canvasInteractor} object by calling its \code{add} function, but to create a new interactor the \code{create} function has to be issued, which applies the prototype of the \code{canvasInteractor} object onto the variable.
+The created objects get all event listeners necessary to provide full capability for interactions.
+
