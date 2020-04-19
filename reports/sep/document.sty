@@ -1,8 +1,6 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Language %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % NOTE: Project is written in english
 % \usepackage[ngerman]{babel}
 % \usepackage[autostyle,german=quotes]{csquotes}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Packages %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \usepackage{booktabs}
 
@@ -10,8 +8,7 @@
 \usepackage{enumitem}
 \usepackage{tasks}
 
-\usepackage{scrhack}
-
+\usepackage{tocloft}
 \usepackage[toc,page]{appendix}
 
 \usepackage{amsmath}
@@ -32,8 +29,6 @@
 % TODO font
 \usepackage[onehalfspacing]{setspace}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Custom %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \usepackage{color}
 \definecolor{codeColor}{rgb}{0.25,0.25,1}
 
@@ -49,3 +44,12 @@
 \newcommand\code[1]{\textcolor{codeColor}{\texttt{#1}}}
 
 \newcommand\name[1]{\texttt{#1}}
+
+\newcommand{\listlinkname}{List of Links}
+\newlistof{links}{aka}{\listlinkname}
+\cftpagenumbersoff{links}
+\newcommand{\theaka}{\url{https://aka.klawr.de/sep\#\thelinks}}
+\newcommand{\aka}[1]{\refstepcounter{links}\theaka%
+\addcontentsline{aka}{links}{%
+\theaka\dotfill\hbox{}\newline%
+\makebox[\textwidth][s]{\dotfill\url{#1}}}}
