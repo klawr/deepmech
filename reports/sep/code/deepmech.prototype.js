@@ -268,7 +268,7 @@ function mec2Deepmech() {
         const mec_placeholder = g2();
         // A placeholder for upcomming drawn lines
         const ply_placeholder = g2();
-        const _g_draw = g2()
+        const command_queue = g2()
             // Background for drawing (and applies a "clr"...)
             .rec({
                 x: () => -view.x / view.scl,
@@ -307,7 +307,7 @@ function mec2Deepmech() {
             else if (mode === "delete" || mode === "drag") {
                 ply_placeholder.exe(element._selector);
             }
-            _g_draw.exe(element._ctx);
+            command_queue.exe(element._ctx);
         }
         // placeholder for theming later on?
         let plyShadow = "white";
@@ -366,7 +366,7 @@ function mec2Deepmech() {
                     element._model.constraints.includes(c.a))
             };
             mec_placeholder.use({ grp: () => filtered_mec });
-            _g_draw.exe(element._ctx);
+            command_queue.exe(element._ctx);
         }
 
         function resetDrawMode() {
