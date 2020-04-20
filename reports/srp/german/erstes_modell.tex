@@ -1,6 +1,6 @@
 \section{Erstes Modell}
 
-Das Jupyter-Notebook zu diesem Kapitel kann über \url{https://aka.klawr.de/srp\#5} eingesehen werden.
+Das Jupyter-Notebook zu diesem Kapitel kann über \aka{https://github.com/klawr/deepmech/blob/master/reports/srp/notebooks/5-first_model.ipynb} eingesehen werden.
 
 \subsection{Projektstruktur}
 
@@ -24,7 +24,7 @@ Im \name{reports} Verzeichnis befindet sich jeweils einem Ordner für jedes in d
 Der \name{notebook}-Ordner in diesem Bericht enthält die Jupyter-Notebooks \cite{Jupyter2019}, die in den unterschiedlichen Kapiteln genutzt wurden.
 Die Modelle werden ebenfalls innerhalb von \name{Jupyter} Notebooks trainiert. 
 Jupyter notebooks sind interaktive Python-Code-Editoren, die eine einfache Möglichkeit bieten, effizient Code zu schreiben, zu testen und (mittels Markdown) zu kommentieren.
-Alle Notebooks mit entsprechendem Code befinden sich im Verzeichnis \name{notebooks} im Stammverzeichnis dieses Projekts\footnote{\url{https://aka.klawr.de/srp\#6}}.
+Alle Notebooks mit entsprechendem Code befinden sich im Verzeichnis \name{notebooks} im Stammverzeichnis dieses Projekts\footnote{\aka{https://github.com/klawr/deepmech/tree/master/reports/srp/notebooks/}}.
 Das jeweilige Verzeichnis der Ausarbeitungen enthält auch den verwendeten Code, die trainierten Modelle, Bilder und die für die Erstellung dieses Berichts erstellten Dokumente.
 
 \name{src} enthält den gesamten Code (mit Ausnahme der in den Berichten verwendeten Demos), der bei der Entwicklung und dem Training der Modelle verwendet wurde. Sie reichen von Skripten, die geeignete Umgebungen zum Trainieren der Modelle schaffen, bis hin zur Datengenerierung und -augmentierung.
@@ -69,7 +69,7 @@ In diesem Beispiel werden die Validierungsdaten weggelassen, da keine Anpassunge
     test_generator = create_generator('test', 10)
 \end{lstlisting}
 
-Nachdem die entsprechenden Daten auf die verschiedenen Verzeichnisse verteilt sind, wird der \code{ImageDataGenerator}\footnote{\url{https://keras.io/preprocessing/image/}} verwendet, um dem Modell zu ermöglichen, die Daten später während des Trainingsprozesses zu laden.
+Nachdem die entsprechenden Daten auf die verschiedenen Verzeichnisse verteilt sind, wird der \code{ImageDataGenerator}\footnote{\aka{https://keras.io/preprocessing/image/}} verwendet, um dem Modell zu ermöglichen, die Daten später während des Trainingsprozesses zu laden.
 Die Generatoren definieren auch die Größe des geladenen Bildes, die auf 32 Pixel Breite und 32 Pixel Höhe\footnote{Die Größe der Bilder wird manuell bestimmt, indem man davon ausgeht, dass der Algorithmus, solange ein Mensch in der Lage ist, die charakteristischen Merkmale des Bildes zu erkennen, diese erlernen kann.} (im Gegensatz zur ursprünglichen Bildgröße von 512x512) und eine Batch-Größe\footnote{Die Batch-Größe ist die Anzahl der Bilder, die zwischen jedem Backpropagationszyklus verwendet werden.
 Wenn die Batch-Größe mit der Datensatzgröße übereinstimmt, spricht man von einem Batch-Gradientenabstieg, wenn die Batch-Größe eine ist, von einem stochastischen Gradientenabstieg gesprochen.
 Alles dazwischen wird als Mini-Batch-Gradientenabstieg bezeichnet.} von 20 eingestellt.
