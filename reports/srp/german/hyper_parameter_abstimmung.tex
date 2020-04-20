@@ -104,7 +104,7 @@ Die Modellgenauigkeit des Trainingssatzes scheint auch mit einer geringeren Rate
 
 Bitte beachten Sie, dass das Trainingsset praktisch um den Faktor 1440 (360 Grad + Drehungen in zwei Achsen) gewachsen ist, wodurch die Möglichkeit besteht, während des Trainings wesentlich mehr Daten in das Modell einzuspeisen, ohne mit einer zu großen Überanpassung rechnen zu müssen.
 
-Das Ziel, die Überanpassung zu verringern, scheint in dieser Hinsicht gelöst zu sein; der Unterschied zwischen Trainings- und Testgenauigkeit ist vernachlässigbar klein{\footnote{Link zum jeweiligen Notebook}: \url{https://aka.klawr.de/srp\#7}}.
+Das Ziel, die Überanpassung zu verringern, scheint in dieser Hinsicht gelöst zu sein; der Unterschied zwischen Trainings- und Testgenauigkeit ist vernachlässigbar klein{\footnote{Link zum jeweiligen Notebook}: \aka{https://github.com/klawr/deepmech/blob/master/reports/srp/notebooks/6.2-feature_reduction.ipynb}}.
 
 \subsection{Reduzierung der Merkmale}
 
@@ -140,7 +140,7 @@ _________________________________________________________________
 \end{lstlisting}
 
 Die Anzahl der trainierbaren Parameter wird fast durch den Faktor drei geteilt und damit die Größe des Modells von 807kb (von den Vorgängermodellen mit 99491 Parametern) auf 295kb reduziert.
-Hierbei geht dennoch keinerlei Genauigkeit verloren. \footnote{Link zum jeweiligen Notebook: \url{https://aka.klawr.de/srp\#8}}.
+Hierbei geht dennoch keinerlei Genauigkeit verloren. \footnote{Link zum jeweiligen Notebook: \aka{https://github.com/klawr/deepmech/blob/master/reports/srp/notebooks/6.4-convolutional_layer.ipynb}}.
 
 \subsection{Optimierer}
 
@@ -204,8 +204,8 @@ Zusätzlich hat jeder Filter seinen eigenen Bias $b_k$, der zur Aktivierungsfunk
 Damit die Ausgabe die gleiche Größe wie die Eingabe hat, müssen Zahlen zur Eingabe addiert werden, da ein Kernel, der in jeder Richtung größer als eins ist, eine Kante für die Eingabe nicht überqueren kann (und der Schritt 1 mal 1 sein muss).
 Daher wird das Padding zur Lösung dieses Problems verwendet, indem man (typischerweise) Nullen um die Eingabe herum anfügt, was zu einer Technik führt, die man Zero-Padding nennt.
 
-Durch die Verwendung von "Convolutional Layers" anstelle von "Dense Layers" wird die Modellgröße weiter reduziert (295kb bis 232kb) und die Genauigkeit um einige Prozente erhöht. Durch das Hinzufügen von Pooling wird die Größe weiter auf 149kb reduziert und die Genauigkeit wird weiter verbessert\footnote{Verknüpfung mit den jeweiligen Notebooks: \url{https://aka.klawr.de/srp\#9} und \url{https://aka.klawr.de/srp\#10}.
-Pooling ist eine Technik, bei der ein Kernel (ähnlich wie der Kern von "Convolutional Layers") über die Eingabeschicht scannt}.
+Durch die Verwendung von "Convolutional Layers" anstelle von "Dense Layers" wird die Modellgröße weiter reduziert (295kb bis 232kb) und die Genauigkeit um einige Prozente erhöht. Durch das Hinzufügen von Pooling wird die Größe weiter auf 149kb reduziert und die Genauigkeit wird weiter verbessert\footnote{Verknüpfung mit den jeweiligen Notebooks: \aka{https://github.com/klawr/deepmech/blob/master/reports/srp/notebooks/6.4-convolutional_layer.ipynb} und \aka{https://github.com/klawr/deepmech/blob/master/reports/srp/notebooks/6.4.1-convolutional_layer_pooling.ipynb}}.
+Pooling ist eine Technik, bei der ein Kernel (ähnlich wie der Kern von "Convolutional Layers") über die Eingabeschicht scannt.
 Im verknüpften Notizbuch wurde ein Kernel paarweise verwendet, der den maximalen Wert des Kernels nimmt und nur den maximalen Wert weiterleitet, wodurch die Ausgabegröße in Breite und Höhe halbiert wird\footnote{Dies wird passenderweise \name{MaxPooling} genannt.}.
 
 \subsection{Tuning Algorithmen}
@@ -219,7 +219,7 @@ Bei zwei Hyperparametern wäre dies gleichbedeutend mit der Überprüfung jedes 
 Ein weiterer, in der Praxis häufig verwendeter Ansatz ist die Zufallssuche.
 Die Zufallssuche geht nach dem Prinzip, Hyperparameter nach dem Zufallsprinzip zuzuordnen und so verschiedene Modelle zu testen, ohne dass eine Kombination einen Vorteil bringt.
 Natürlich führt dies (höchstwahrscheinlich) nicht zu einem optimalen Ergebnis, aber in der Praxis wird dieser Ansatz häufig verwendet, da er in der Regel ein akzeptables Ergebnis liefert, indem er ein breites Spektrum möglicher Konfigurationen prüft.
-Ein Notizbuch wurde erstellt, um die Implementierung von \name{keras tuner} in diesem Projekt unter \url{https://aka.klawr.de/srp\#12} zu zeigen.
+Ein Notizbuch wurde erstellt, um die Implementierung von \name{keras tuner} in diesem Projekt unter \aka{https://github.com/klawr/deepmech/blob/master/reports/srp/notebooks/6.5.2-random_tuner.ipynb} zu zeigen.
 
 Einige ausgefeiltere Methoden basieren auf dem Ansatz der Zufallssuche, bei dem die Ergebnisse der Zufallssuche wiederholt untersucht werden und dann die Hyperparameter zugunsten derjenigen abgestimmt werden, die bessere Modelle zu ergeben versprechen.
 Dieser Ansatz wird als Zoomen bezeichnet, da man nach jeder Iteration in den vielversprechendsten Bereich der Hyperparameter "hineinzoomen" kann.
@@ -301,9 +301,9 @@ tuner.search(
     callbacks=callbacks)
 \end{lstlisting}
 
-Ein weiterer Hinweis, der hier zu beachten ist, ist, dass die in \ref{ch:data_augmentation} verwendeten Generatoren durch eine manuelle Augmentierung der Daten und spätere Vorverarbeitung unter Verwendung von Protokollbuffern(\name{protobufs}) ersetzt wurden\footnote{Das endgültige Notizbuch, das diese verwendet, kann unter \url{https://aka.klawr.de/srp\#11} eingesehen werden}.
+Ein weiterer Hinweis, der hier zu beachten ist, ist, dass die in \ref{ch:data_augmentation} verwendeten Generatoren durch eine manuelle Augmentierung der Daten und spätere Vorverarbeitung unter Verwendung von Protokollbuffern(\name{protobufs}) ersetzt wurden\footnote{Das endgültige Notizbuch, das diese verwendet, kann unter \aka{https://github.com/klawr/deepmech/blob/master/reports/srp/notebooks/6.5.1-manual_data_augmentation.ipynb} eingesehen werden}.
 Durch die Vorverarbeitung der Bilddaten im Vorfeld wird die Ladezeit der Daten deutlich reduziert.
-Der dafür verwendete Code kann hier eingesehen werden: \url{https://aka.klawr.de/srp\#13}.
+Der dafür verwendete Code kann hier eingesehen werden: \aka{https://github.com/klawr/deepmech/blob/master/reports/srp/notebooks/6.5.3-hyperband.ipynb}.
 
 Nach der Überprüfung der Daten konnte eine Genauigkeit von 96,7\% auf die Testdaten bei einer Modellgröße von 4,3mb erreicht werden.
 
@@ -334,4 +334,4 @@ model.compile(loss='sparse_categorical_crossentropy',
     optimizer=optimizer,metrics=['acc'])
 \end{lstlisting}
 
-Der endgültige Code für die Modellerstellung kann unter \url{https://aka.klawr.de/srp\#14} eingesehen werden.
+Der endgültige Code für die Modellerstellung kann unter \aka{https://github.com/klawr/deepmech/blob/master/src/models/symbol_classifier.py} eingesehen werden.

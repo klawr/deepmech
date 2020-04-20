@@ -1,6 +1,6 @@
 \section{First model}
 
-The Jupyter notebook for this chapter can be viewed at \url{https://aka.klawr.de/srp\#5}.
+The Jupyter notebook for this chapter can be viewed at \aka{https://github.com/klawr/deepmech/blob/master/reports/srp/notebooks/5-first_model.ipynb}.
 
 \subsection{Project structure}
 
@@ -29,7 +29,7 @@ The \name{reports} directory contains a folder for each report created in this p
 The notebook folder in this report contains \name{Jupyter} notebooks \cite{Jupyter2019} used in different chapters.
 The models are also trained in jupyter notebooks. 
 Jupyter notebooks are interactive Python code development editors that provide an easy way to efficiently write, test and comment code (with markdown).
-All notebooks with corresponding code are located in the \name{notebooks} directory at the root of this project\footnote{\url{https://aka.klawr.de/srp\#6}}.
+All notebooks with corresponding code are located in the \name{notebooks} directory at the root of this project\footnote{\aka{https://github.com/klawr/deepmech/tree/master/reports/srp/notebooks/}}.
 The respective directory also contains the code used, the trained models, images and the documents created for the creation of this report.
 
 % src
@@ -75,7 +75,7 @@ train_generator = create_generator('train', 20)
 test_generator = create_generator('test', 10)
 \end{lstlisting}
 
-After the corresponding directories are filled with data, the \code{ImageDataGenerator}\footnote{\url{https://keras.io/preprocessing/image}} is used to allow the model to load the data later during the training process.
+After the corresponding directories are filled with data, the \code{ImageDataGenerator}\footnote{\aka{https://keras.io/preprocessing/image}} is used to allow the model to load the data later during the training process.
 The generators also define the size of the loaded image, which can be set to 32 pixels wide and 32 pixels high\footnote{The size of the images is determined manually, assuming that as long as a human is able to recognize the characteristic features of the image, the algorithm can learn them.} (as opposed to the original image size of 512x512) and a batch size\footnote{batch size is the number of images used between each backpropagation cycle.
 If the batch size matches the record size, it is called batch gradient descent, if the batch size is one, it is called stochastic gradient descent.
 Everything in between is called a mini-batch gradient descent.} of 20.
