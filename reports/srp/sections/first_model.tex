@@ -188,7 +188,7 @@ On the other hand, a learning rate set to a high value cannot converge at all.
         \caption{Learning rate too small}
         \label{fig:lr_too-low}
     \end{subfigure}
-    \caption{If the learning rate is just right, the value of the loss function approaches a local optimum in an acceptable number of steps.
+    \caption[Learning rate]{If the learning rate is just right, the value of the loss function approaches a local optimum in an acceptable number of steps.
     If it is too high, it diverges.
     If the learning rate is too low, the values converge, but too many steps are needed to achieve this.
     Please note that these pictures show the parameter space in a very simplified way, since the function shown is completely convex and only two-dimensional.}
@@ -273,7 +273,7 @@ After each epoch the optimizer updates the parameters (the $\theta$ of the model
         \caption{Loss}
         \label{fig:first_model_loss}
     \end{subfigure}
-    \caption{The callbacks of the training algorithm provide logs that can be used by TensorBoard to provide useful graphics for evaluating the model. The vertical axis represents the value of each epoch (shown on the horizontal axis).}
+    \caption[First model training]{The callbacks of the training algorithm provide logs that can be used by TensorBoard to provide useful graphics for evaluating the model. The vertical axis represents the value of each epoch (shown on the horizontal axis).}
     \label{fig:first_model_graphs}
 \end{figure}
 

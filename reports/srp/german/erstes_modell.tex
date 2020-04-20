@@ -182,7 +182,7 @@ Andererseits kann eine auf einen hohen Wert gesetzte Lernrate überhaupt nicht k
         \caption{Lernrate zu niedrig}
         \label{fig:lr_too-low}
     \end{subfigure}
-    \caption{Wenn die Lernrate richtig ist, nähert sich der Wert der Verlustfunktion in einer akzeptablen Anzahl von Schritten einem lokalen Optimum an.
+    \caption[Lernrate]{Wenn die Lernrate richtig ist, nähert sich der Wert der Verlustfunktion in einer akzeptablen Anzahl von Schritten einem lokalen Optimum an.
     Ist er zu hoch, divergiert er.
     Ist die Lernrate zu niedrig, konvergieren die Werte, aber es sind zu viele Schritte nötig, um dies zu erreichen.
     Bitte beachten Sie, dass diese Bilder den Parameterraum sehr vereinfacht darstellen, da die dargestellte Funktion vollständig konvex und nur zweidimensional ist.}
@@ -266,7 +266,7 @@ Nach jeder Epoche aktualisiert der Optimierer die Parameter (die $\theta$ des Mo
         \caption{Loss}
         \label{fig:first_model_loss}
     \end{subfigure}
-    \caption{Die "callbacks" des Trainingsalgorithmus liefern Logs, die von TensorBoard verwendet werden können, um nützliche Grafiken zur Bewertung des Modells bereitzustellen. Die vertikale Achse stellt den Wert der jeweiligen Epoche dar (auf der horizontalen Achse dargestellt).}
+    \caption[Training des ersten Modells]{Die "callbacks" des Trainingsalgorithmus liefern Logs, die von TensorBoard verwendet werden können, um nützliche Grafiken zur Bewertung des Modells bereitzustellen. Die vertikale Achse stellt den Wert der jeweiligen Epoche dar (auf der horizontalen Achse dargestellt).}
     \label{fig:first_model_graphs}
 \end{figure}
 

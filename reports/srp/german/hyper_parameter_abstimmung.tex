@@ -94,7 +94,7 @@ Der Verlust und die Genauigkeit des Testsatzes betragen 0,63 bzw. 78\%.
         \caption{Loss}
         \label{fig:first_model_data_augmentation_loss}
     \end{subfigure}
-    \caption{Im Vergleich zu Abbildung~\ref{fig:first_model_graphs} nehmen die Genauigkeit und der Verlust langsamer zu. Weitere Epochen können die Ergebnisse verbessern, da das Modell nach 20 Epochen noch nicht vollständig konvergiert zu sein scheint.}
+    \caption[Training nach Augmentierung der Daten]{Im Vergleich zu Abbildung~\ref{fig:first_model_graphs} nehmen die Genauigkeit und der Verlust langsamer zu. Weitere Epochen können die Ergebnisse verbessern, da das Modell nach 20 Epochen noch nicht vollständig konvergiert zu sein scheint.}
     \label{fig:first_model_data_augmentation_graphs}
 \end{figure}
 
@@ -196,7 +196,7 @@ Zusätzlich hat jeder Filter seinen eigenen Bias $b_k$, der zur Aktivierungsfunk
 
 \begin{figure}
     \centering
-    \caption{  Die unterste Ebene ist die Eingabe, die durch eine zweidimensionale Ebene in der Größe von fünf mal fünf (Filtergröße ist eins) repräsentiert wird, die mit einem Padding von eins (grau gezeichnet) versehen ist, um sicherzustellen, dass die Größe bei Verwendung eines Kernels der Größe drei mal drei (hervorgehoben durch die roten, grünen und blauen Rechtecke) gleich bleibt. Der verwendete Stride ist eins, d.h. das rezeptive Feld propagiert bei jedem Schritt einen Eingangsknoten. Hier beginnt der Prozess am roten Rechteck, blau ist der zweite Schritt und grün der letzte (insgesamt 25 Schritte). }
+    \caption[Konvolutionelle Ebene]{  Die unterste Ebene ist die Eingabe, die durch eine zweidimensionale Ebene in der Größe von fünf mal fünf (Filtergröße ist eins) repräsentiert wird, die mit einem Padding von eins (grau gezeichnet) versehen ist, um sicherzustellen, dass die Größe bei Verwendung eines Kernels der Größe drei mal drei (hervorgehoben durch die roten, grünen und blauen Rechtecke) gleich bleibt. Der verwendete Stride ist eins, d.h. das rezeptive Feld propagiert bei jedem Schritt einen Eingangsknoten. Hier beginnt der Prozess am roten Rechteck, blau ist der zweite Schritt und grün der letzte (insgesamt 25 Schritte). }
     \includegraphics[width=0.6\textwidth]{images/conv_layer.png}
     \label{fig:conv_layer}
 \end{figure}
