@@ -96,7 +96,7 @@ The loss and accuracy of the test set is 0.63 and 78\% respectively.
         \caption{Loss}
         \label{fig:first_model_data_augmentation_loss}
     \end{subfigure}
-    \caption{Compared to figure~\ref{fig:first_model_graphs}, accuracy and loss increases more slowly. Further epochs may improve the results, as the model does not seem to have fully converged after 20 epochs.}
+    \caption[Training after first augmentation]{Compared to figure~\ref{fig:first_model_graphs}, accuracy and loss increases more slowly. Further epochs may improve the results, as the model does not seem to have fully converged after 20 epochs.}
     \label{fig:first_model_data_augmentation_graphs}
 \end{figure}
 
@@ -199,7 +199,7 @@ Additionally, each filter has its own bias $b_k$, which is added to the activati
 
 \begin{figure}
     \centering
-    \caption{  The bottom layer is the input, which is represented by a two-dimensional layer of size five by five (filter size is one), padded with a padding of one (drawn in gray) to ensure that the size remains the same when using a kernel of size three by three (highlighted by the red, green and blue rectangles). The stride used is one, i.e. the receptive field propagates one input node at each step. Here the process starts at the red rectangle, blue is the second step and green the last (25 steps in total). }
+    \caption[Convolutional layer]{ The bottom layer is the input, which is represented by a two-dimensional layer of size five by five (filter size is one), padded with a padding of one (drawn in gray) to ensure that the size remains the same when using a kernel of size three by three (highlighted by the red, green and blue rectangles). The stride used is one, i.e. the receptive field propagates one input node at each step. Here the process starts at the red rectangle, blue is the second step and green the last (25 steps in total). }
     \includegraphics[width=0.6\textwidth]{images/conv_layer.png}
     \label{fig:conv_layer}
 \end{figure}
