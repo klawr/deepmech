@@ -52,7 +52,7 @@ Im Falle der Symbolerkennung kann das Symbol gedreht oder gespiegelt werden, so 
 
 Die Datenerweiterung wird durch Anpassung der \code{create\_generator}-Funktion durchgeführt:
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Augmentierung der Trainingsdaten.}]
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 def create_generator(data_dir, batch_size, datagen):
@@ -120,7 +120,7 @@ Praktisch sollte sich also nichts ändern, bis auf die Eingabegröße, welche au
 
 Das resultierende Modell sieht entsprechend folgendermaßen aus:
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Summary des verbesserten Modells.}]
 Model: "sequential"
 _________________________________________________________________
 Layer (type)                 Output Shape              Param #   
@@ -236,7 +236,7 @@ Der endgültige Modell-Tuner ist so konzipiert, dass er ein \code{Hyperparameter
 
 
 % TODO python
-\begin{lstlisting}
+\begin{lstlisting}[caption={Funktion zum Suchen des besten Modells.}]
 def create_model(hp):
     model = models.Sequential()
     model.add(layers.Conv2D(2**hp.Int('2**num_filter_0', 4, 6),
@@ -277,7 +277,7 @@ def create_model(hp):
 Diese Funktion erweitert \ref{lst:first_model} durch die Implementierung von Hyperparametern unter Verwendung des \code{Hyperparameter} von \name{keras tuner}.
 Dies wird später mit Hilfe einer benutzerdefinierten Klasse implementiert \footnote{Die Ergebnisse wurden mit \name{TensorBoard} protokolliert, dessen API von \name{keras tuner} selbst noch nicht unterstützt wird, daher wird der Tuner von einer benutzerdefinierten Klasse vererbt}:
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Definition des Modell-Tuners.}]
 tuner = customTuner(
     create_model,
     hyperparameters=hp,
@@ -290,7 +290,7 @@ tuner = customTuner(
 
 Das Training, das vorher durch die \code{fit}-Funktion durchgeführt wurde, wird nun durch die \code{search}-Funktion des Tuners durchgeführt:
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Suchen des besten Modells.}]
 tuner.search(
     train_dataset,
     validation_data=validation_dataset,
@@ -319,7 +319,7 @@ Das endgültige Modell hat eine Größe von 207kb mit einer Genauigkeit von 99,3
 
 Das Modell wird zusammengefasst als:
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Definition des finalen Modells.}]
 model = models.Sequential()
 model.add(layers.Conv2D(16, (4,4), activation='relu', padding='same',
     input_shape=(32, 32, 1)))
