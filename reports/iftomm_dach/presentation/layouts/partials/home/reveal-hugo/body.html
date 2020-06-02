@@ -1,0 +1,58 @@
+<style>
+    #logo {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 250px;
+    }
+    /* Format code blocks: */
+    #pre40 {
+        position: absolute;
+        vertical-align: center;
+        height: 0;
+    }
+    #code40 {
+        position: absolute;
+        font-size: 1em;
+        height: none;
+        max-height: none;
+        max-width: none;
+    }
+
+    mec-2 {
+        padding-top: 5%;
+        float: right;
+}
+</style>
+
+<img id="logo" src="images/logo.png" alt="Logo FH-Dortmund">
+
+<script src="models.js"></script>
+<script src="tf.min.js"></script>
+<script src="g2.js"></script>
+<script src="g2.selector.js"></script>
+<script src="mec2.min.js"></script>
+<script src="canvasInteractor.js"></script>
+<script src="mec.slider.js"></script>
+<script src="mec.htmlelement.js"></script>
+<script src="mec.deepmech.js"></script>
+<!-- Prohibit sclaing (messes with mec-2 drawing) -->
+<script>
+    Reveal.configure({ width: "100%" })
+    Reveal.configure({ height: "100%" })
+</script>
+
+<script type="text/javascript">
+
+    function hideLogo(event) {
+        if (event.currentSlide.dataset.backgroundIframe) { // Hide logo
+            document.getElementById('logo').style.display = 'none'
+        }
+        else {
+            document.getElementById('logo').style.display = 'block'
+        }
+    }
+
+    Reveal.addEventListener('ready', hideLogo);
+    Reveal.addEventListener('slidechanged', hideLogo);
+</script>

@@ -1,0 +1,23 @@
+\section{Zusammenfassung und Ausblick}
+Die Machbarkeitsstudie kam zu dem Ergebnis, dass durch das Anwenden von entsprechend trainierten Algorithmen durchaus Programme geschrieben werden können, welche in der Lage sind, von Hand gezeichnete Mechanismen digital verfügbar zu machen, um weitere Analysen an ihnen durchzuführen.
+
+Der aktuelle Algorithmus ist als Konzeptnachweis anzusehen.
+Trotz guter Genauigkeit auf dem Trainingsset werden nicht die Ergebnisse produziert, die für eine reibungslose Nutzung erforderlich sind.
+Bilder, die sich hinsichtlich der Summe der Merkmale vom Trainingsset unterscheiden, werden entgegen der Absicht des Zeichners teils nicht als Nodes beziehungsweise Constraints erkannt.
+Das macht es schwierig, komplexere Modelle in einer Zeichnung zu erstellen.
+
+Des Weiteren benötigt der aktuelle Ansatz, unserer Meinung nach, noch zu lange, um ein Ergebnis liefern zu können.
+Hier eröffnet sich die Möglichkeit der Betrachtung alternativer Ansätze zur Erstellung neuronaler Netzwerke, deren Anwendung jedoch erst im zukünftigen Verlauf dieses Projektes betrachtet werden sollen \cite{Redmon2015, Redmon2016, Redmon2018}.
+
+Anzumerken ist weiterhin, dass sich die Anzahl der erkennbaren Kategorien, welche erkannt werden können\footnote{Bisher sind jeweils drei Klassen pro neuronalem Netzwerk implementiert.}, beliebig erweitern lässt.
+Möchte man beispielsweise Linearfedern erkennen lassen, die zwischen zwei Nodes wirken, genügt das Hinzufügen eines entsprechenden Trainingssets.
+
+Aktuell ist das Programm in der Lage, Bilder in einer dafür vorgesehenen Umgebung innerhalb des Canvas des \name{<mec-2>} HTML-Elements manuell zu zeichnen.
+Au{\ss}erdem ist es möglich, Bilder in dieses Canvas hochzuladen.
+Die Implementierung der Erkennung analog gezeichneter Mechanismen in Fotografien stellt das Ziel dieses Projektes dar.
+
+Schlie{\ss}lich lässt sich das Programm in eine sogenannte progressive Webapplikation umwandeln, um sie so auf dem Smartphone direkt mit Zugang auf eine Kamera verwendbar zu machen.
+Das bietet in Bezug auf die Anwendbarkeit den grö{\ss}ten Nutzen.
+
+Das vollständige Projekt ist frei verfügbar und lässt sich verfolgen auf: \\
+\url{https://github.com/klawr/deepmech}
