@@ -1,46 +1,52 @@
 deepmech
 ==============================
 
-A short description of the project.
+This is a monorepository for different projects and reports which revolve around deepmech.
+deepmech is a project which aims to bring automatic detection kinematic structures available on different platforms.
+
+The first steps were done by detecting symbols used in mechanical drawings.
+This simple start allowed to learn about the basics of detection algorithms.
+The project can be reviewed in the respective [directory](reports/srp).
+
+After the initial experiments using symbols, the results were quickly advanced to detect contraints, too.
+The detection of symbols (nodes) and constraints allowed for the first detection of mechanical linkages.
+The results of these advances were subsequentially presented on the IFTOMM-D-A-CH 2020 in Lienz, Austria.
+The respective report is located [here](reports/iftomm_dach).
+
+The third project revolves around bringing the applications on to different platforms.
+The respective student engineering project (sep) is a work in progress and will be updated.
 
 Project Organization
 ------------
 
     ├── LICENSE
-    ├── README.md          <- The top-level README for developers using this project.
+    ├── README.md             <- The top-level README
     ├── data
-    │   ├── interim        <- Intermediate data that has been transformed.
-    │   ├── processed      <- The final, canonical data sets for modeling.
-    │   └── raw            <- The original, immutable data dump.
+    │    ├── interim          <- Intermediate data that has been transformed.
+    │    ├── processed        <- The final, canonical data sets for modeling.
+    │    └── raw              <- The original, immutable data dump.
     │
-    ├── logs               <- TensorBoard logs. Runs are distributed in ISO8601 format.
+    ├── logs                  <- TensorBoard logs. Runs are distributed in ISO8601 format.
     │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries.
+    ├── models                <- Trained and serialized models, model predictions, or model    summaries.
     │
-    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │   └── srp            <- Student Research Project.
-    │                         Please refer to the srp folder for more details.    
+    ├── reports               <- Generated analysis as HTML, PDF, LaTeX, etc.
+    │    │                       Please refer to the respective folder for more details.
+    │    ├── srp              <- Student Research Project.
+    │    ├── sep              <- Student Engineering Project. (wip)
+    │    └── iftomm_dach      <- Submission for the IFTOMM-D-A-CH   2020                                 
     │
-    ├── requirements.txt   <- The requirements file for reproducing the analysis environment.
+    ├── requirements.txt      <- The requirements file for reproducing the analysis   environment.
     │
-    └── src                <- Source code for use in this project.
-        ├── data           <- Scripts to download or generate data
-        │   └── make_dataset.py
-        │
-        ├── features       <- Scripts to turn raw data into features for modeling
-        │   └── build_features.py
-        │
-        ├── models         <- Scripts to train models and then use trained models to make
-        │   │                 predictions
-        │   ├── predict_model.py
-        │   └── train_model.py
-        │
-        └── visualization  <- Scripts to create exploratory and results oriented visualizations
-        │   └── visualize.py
-        └── utils.py       <- Helper functions to distribute data and log results. 
-                              These methods ensure that the raw data is never touched,
-                              the intermediate data is accessible and the processed data
-                              can be fed into the model in an orderly way.
+    └── src                   <- Source code for use in this project.
+         ├── data             <- Scripts to download or generate data
+         │     └── cluster_colors.py  - Script to transform grayscale images to bw
+         │     └── invert_colors.py   - Small script if cluster_colors got it wrong.
+         │
+         └── utils.py         <- Helper functions to distribute data and log results. 
+                                 These methods ensure that the raw data is never touched,
+                                 the intermediate data is accessible and the processed data
+                                 can be fed into the model in an orderly way.
 
 
 --------
