@@ -54,7 +54,7 @@ In the case of symbol recognition, the symbol can be rotated or mirrored so addi
 
 The data extension is done by adapting the \code{create\_generator} function previously used:
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Data augmentation.}]
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 def create_generator(data_dir, batch_size, datagen):
@@ -111,7 +111,7 @@ The goal of reducing overfitting seems to be solved in this regard; the differen
 \subsection{Feature reduction}
 
 Another thing that can improve the performance of the model is to reduce the size of the input.
-The phenomenon known as \textit{curses of dimensionality} describes the possibilities of different configurations that are possible with an increasing number of variables, and comes from Richard Bellman, who first refers to problems in dynamic programming \cite[p.ix]{Bellman1957}.
+The phenomenon known as \textit{curses of dimensionality} describes the possibilities of different configurations that are possible with an increasing number of variables, and is first discussed by Richard Bellman, who first refers to problems in dynamic programming \cite[p.ix]{Bellman1957}.
 
 The data is already greatly reduced by loading the data as images with a width and height of 32 pixels, although the data is raw as 512 by 512 images. This reduction has been done manually beforehand to keep the data relatively small, but the symbols are still clearly distinguishable.
 
@@ -122,7 +122,7 @@ Practically nothing should change, except the input size, which is adjusted to \
 
 The resulting model accordingly looks as follows:
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Summary of improved model.}]
 Model: "sequential"
 _________________________________________________________________
 Layer (type)                 Output Shape              Param #   
@@ -238,7 +238,7 @@ This method promises a much better use of resources and will most likely be able
 The final model tuner is designed to accept a \code{Hyperparameter} object that is supplied to a function that returns the respective model:
 
 % TODO python
-\begin{lstlisting}
+\begin{lstlisting}[caption={Function to find optimized model.}]
 def create_model(hp):
     model = models.Sequential()
     model.add(layers.Conv2D(2**hp.Int('2**num_filter_0', 4, 6),
@@ -279,7 +279,7 @@ def create_model(hp):
 This function extends \ref{lst:first_model} by implementing hyperparameters using \code{hyperparameter} of \name{keras tuner}.
 This will be implemented later using a custom class\footnote{The results are logged with \name{TensorBoard}, whose API is not yet supported by \name{keras tuner} itself. So the tuner is inherited from a custom class}:
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Definition of model tuner.}]
 tuner = customTuner(
     create_model,
     hyperparameters=hp,
@@ -292,7 +292,7 @@ tuner = customTuner(
 
 The training that was previously performed by the \code{fit} function is now performed by the \code{search} function of the tuner:
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Searching the best model.}]
 tuner.search(
     train_dataset,
     validation_data=validation_dataset,
@@ -321,7 +321,7 @@ The final model has a size of 207kb with an accuracy of 99.3\% and a loss of 0.0
 
 The model is summarized as:
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Definition of final model.}]
 model = models.Sequential()
 model.add(layers.Conv2D(16, (4,4), activation='relu', padding='same',
     input_shape=(32, 32, 1)))

@@ -43,7 +43,7 @@ It is good practice to never work directly with the raw data, so the beginning o
 
 Accordingly, the training of a model in this project always starts with the following code:
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Loading Data.}]
 from os.path import join
 
 raw = join('data', 'raw')
@@ -59,7 +59,7 @@ For the first model, the raw data itself is sufficient; therefore, it is simply 
 The third parameter of \code{reset\_and\_distribute\_data} is an array of three numbers describing the distribution of training, validation, and test data.
 In this example, the validation data is omitted because no adjustments are made to the hyperparameters.
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Loading data with generator.}]
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 def create_generator(data_dir, batch_size):
@@ -84,7 +84,7 @@ These generators also recognize the structure of the raw data (distributed in re
 
 \subsection{Creation of the model}
 
-\begin{lstlisting}[label={lst:first_model}]
+\begin{lstlisting}[caption={Definition of first model.},label={lst:first_model}]
 from tensorflow.keras import layers
 from tensorflow.keras import models
 
@@ -117,7 +117,7 @@ The node with the highest value is accordingly assumed to be the assumed correct
 
 A summary of the model is given as:
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Summary of first model.}]
 Model: "sequential"
 _________________________________________________________________
 Layer (type)                 Output Shape              Param #   
@@ -150,8 +150,8 @@ We will start with a \code{SGD} optimizer, which is the abbreviation for \name{S
 Stochastic gradient descent is already mentioned in chapter~\ref{ch:simple_linear_example}, where it was implemented very rudimentarily. In the training of this model, the Keras implementation of \name{SGD} is used.
 The Keras implementation of SGD differs somewhat from the general definition, since it does not inherently assume a batch size of one, but rather the batch sizes defined in the respective generator, so that the user can decide whether to use full batch, mini batch, or stochastic gradient descent\footnote{The batch size used here is 20.}.
 
-\begin{lstlisting}
-    optimizer = SGD(lr=0.01, momentum=0.9, nesterov=True)
+\begin{lstlisting}[caption={Definition of an optimizer using Keras' SGD function.}]
+optimizer = SGD(lr=0.01, momentum=0.9, nesterov=True)
 \end{lstlisting}
 
 The function \code{SGD} requires three parameters: The learning rate \code{lr}, \code{momentum} and \code{nesterov}.
@@ -230,9 +230,9 @@ The idea of momentum is that the direction vector points in the right direction,
 
 \subsubsection{Actual training}
 
-After the optimizer is defined, the model is compiled by calling the model compile function.
+After the optimizer is defined, the model is compiled.
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Model compile function.}]
 model.compile(
     loss='sparse_categorical_crossentropy', 
     optimizer=optimizer,
@@ -249,7 +249,7 @@ The training data is provided by generators; the function in this case is \code{
 Therefore, the training is performed by calling the following function:
 
 % TODO python and remove generator
-\begin{lstlisting}
+\begin{lstlisting}[caption={Initiating training of the model.}]
 history = model.fit_generator(
     train_generator,
     steps_per_epoch=20,
@@ -280,7 +280,7 @@ After each epoch the optimizer updates the parameters (the $\theta$ of the model
 As expected, the model starts with an accuracy of about 33\% by trying to classify the training data into three classes.
 As the data suggests, the model quickly learns some relationships between the input data and the label, as it already has an accuracy of almost 70\% after only four epochs.
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Results of the first model (shorted).}]
 Epoch 1/20
 20/20 [=====...=====] - 2s 79ms/step - loss: 1.1220 - acc: 0.3425
 Epoch 2/20
