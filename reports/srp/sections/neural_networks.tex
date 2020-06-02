@@ -40,6 +40,11 @@ $n$ is the number of nodes in the respective layer. Equation~\eqref{eq:node_valu
 
 One problem with the values of the individual cells is that they can be of any size. Numerically, this is very difficult to control, so the nodes themselves are given to another function first; this function is aptly called an activation function.
 
+Activation functions are used in different ways and give more possibilities to adjust yet new parameters to increase model performance.
+Previously we intrinsically assumed the linear function shown in figure~\ref{fig:activation_linear} with the mapping $g(a) = a$.
+The logistic sigmoid is often used in practice, because it creates a mapping of arbitrary numerical input and maps it into the interval $[0,1]$.
+The rectified linear unit is much easier computationally and is recommended for use with most feedforward neural networks\cite[p.169]{Goodfellow2017}\cite{Glorot2011}.
+
 \begin{figure}
     \centering
     \begin{subfigure}[b]{0.3\textwidth}
@@ -61,10 +66,6 @@ One problem with the values of the individual cells is that they can be of any s
     \label{fig:activation}
 \end{figure}
 
-Activation functions are used in different ways and give more possibilities to adjust yet new parameters to increase model performance.
-Previously we intrinsically assumed the linear function shown in figure~\ref{fig:activation_linear} with the mapping $g(a) = a$.
-The logistic sigmoid is often used in practice, because it creates a mapping of arbitrary numerical input and maps it into the interval $[0,1]$.
-The rectified linear unit is much easier computationally and is recommended for use with most feedforward neural networks\cite[p.169]{Goodfellow2017}\cite{Glorot2011}.
 Mathematical representations are shown in equation~\eqref{eq:sigmoid_relu}
 
 \begin{equation}

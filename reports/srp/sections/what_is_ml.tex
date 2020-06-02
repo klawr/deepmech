@@ -67,11 +67,11 @@ It is one of many hyperparameters that are not automatically adjusted during tra
 Optimal adjustment of hyperparameters is an important task that is difficult to automate and is therefore the focus of much research\footnote{There are algorithms for adjusting the learning rate, namely \name{AdaGrad} \cite{Duchi2010} and derived algorithms and is the main topic of the chapter \ref{ch:hyper_parameter_tuning}}.
 If the equation \eqref{eq:hypothesis} applies to the model in question, it is then sufficiently suitable for the given input.
 
-These concepts are presented below using a simple example.
+These concepts are presented now using a simple example.
 
 \subsection{Simple linear example} \label{ch:simple_linear_example}
 
-As an illustrative example, a model is created that translates Fahrenheit into Celsius.
+As an illustrative example, a model is created that translates Fahrenheit into Celsius\footnote{Please note that using a learning algorithm here is very inefficient and is in contrast to Maslow's hammer (\aka{https://en.wikipedia.org/wiki/Law_of_the_instrument}).}.
 The original equation is given by the linear function $y = mx + b$ as $F = C * 1.8 + 32$, with $F$ as degrees Fahrenheit and $C$ as degrees Celsius.
 
 A model to learn this relationship is defined in the listing~\ref{lst:c_to_f} \footnote{Also available at \aka{https://klawr.github.io/deepmech/reports/srp/demos/c_to_f.js}} .
@@ -105,8 +105,7 @@ It represents the optimization function that updates the parameters of the model
     \label{eq:sgd_mse_here}
 \end{equation}
 
-The respective output may look like this:
-\begin{lstlisting}
+\begin{lstlisting}[caption={Output of C to F converter.}]
 loss:  343041.666256673
 loss:  16242.7707476548
 loss:  88.27595280422442
