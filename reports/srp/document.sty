@@ -39,8 +39,9 @@
 
 \newcommand\name[1]{\texttt{#1}}
 
-\newcommand{\listlinkname}{Link Index}
+\newcommand{\akaAbb}{srp}
+\newcommand{\listlinkname}{Link Index - \url{https://aka.klawr.de/\akaAbb}}
 \newlistof{links}{aka}{\listlinkname}
-\newcommand{\theaka}{\url{https://aka.klawr.de/srp\#\thelinks}}
+\newcommand{\theaka}{\url{https://aka.klawr.de/\akaAbb\#\thelinks}}
 \newcommand{\aka}[1]{\refstepcounter{links}\theaka%
 \addcontentsline{aka}{links}{\url{\#\thelinks}: \tiny{\url{#1}}}}
