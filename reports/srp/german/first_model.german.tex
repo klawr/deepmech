@@ -37,7 +37,7 @@ Es ist eine gute Praxis, nie direkt mit den Rohdaten zu arbeiten, daher enthält
 
 Demnach beginnt das Training eines Modells in diesem Projekt stets mit folgendem Code:
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Laden der Daten.}]
     from os.path import join
     
     raw = join('data', 'raw')
@@ -53,7 +53,7 @@ Für das erste Modell reichen die Rohdaten selbst aus; daher werden sie einfach 
 Der dritte Parameter von \code{reset\_and\_distribute\_data} ist ein Array mit drei Zahlen, die die Verteilung der Trainings-, Validierungs- und Testdaten beschreiben.
 In diesem Beispiel werden die Validierungsdaten weggelassen, da keine Anpassungen an den Hyperparametern vorgenommen werden.
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Laden der Daten mittels Generator-Funktion.}]
     from tensorflow.keras.preprocessing.image import ImageDataGenerator
     
     def create_generator(data_dir, batch_size):
@@ -78,7 +78,7 @@ Diese Generatoren erkennen auch die Struktur der Rohdaten (verteilt in jeweilige
 
 \subsection{Modellkonstruktion}
 
-\begin{lstlisting}[label={lst:first_model}]
+\begin{lstlisting}[label={lst:first_model}, caption={Definition des ersten Modells.}]
     from tensorflow.keras import layers
     from tensorflow.keras import models
     
@@ -111,7 +111,7 @@ Der Knoten mit dem höchsten Wert wird entsprechend als das angenommene korrekte
 
 Eine Zusammenfassung des Modells wird gegeben als:
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Summary des ersten Modells.}]
     Model: "sequential"
     _________________________________________________________________
     Layer (type)                 Output Shape              Param #   
@@ -144,8 +144,8 @@ Wir werden mit einem \code{SGD}-Optimierer beginnen, was die Abkürzung für \na
 Stochastischer Gradientenabstieg wird bereits in Kapitel~\ref{ch:simple_linear_example} erwähnt, wo er sehr rudimentär implementiert wurde. In dem eigentlichen Training des Modells wird die Keras-Implementierung von \name{SGD} verwendet.
 Die Keras-Implementierung von SGD unterscheidet sich etwas von der allgemeinen Definition, da sie nicht von Natur aus eine Batch-Größe von eins annimmt, sondern die im jeweiligen Generator definierten Batch-Größen, so dass der Anwender entscheiden kann, ob er Full Batch, Mini Batch oder stochastischen Gradientenabstieg verwendet\footnote{Die hier verwendete Batch-Größe beträgt 20.}.
 
-\begin{lstlisting}
-    optimizer = SGD(lr=0.01, momentum=0.9, nesterov=True)
+\begin{lstlisting}[caption={Definition einer Optimierungsfunktion in Keras.}]
+optimizer = SGD(lr=0.01, momentum=0.9, nesterov=True)
 \end{lstlisting}
 
 Die Funktion \code{SGD} benötigt drei Parameter: Die Lernrate \code{lr}, \code{momentum} und \code{nesterov}.
@@ -226,7 +226,7 @@ Die Idee des Momentums ist, dass der Richtungsvektor in die richtige Richtung ze
 
 Nachdem der Optimierer definiert ist, wird das Modell durch den Aufruf der Modellkompilierfunktion kompiliert.
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Kompilierung des Modells.}]
     model.compile(
         loss='sparse_categorical_crossentropy', 
         optimizer=optimizer,
@@ -242,7 +242,7 @@ Das eigentliche Training erfolgt dann durch eine \code{Fit}-Funktion im Modell.
 Die Trainingsdaten werden durch Generatoren bereitgestellt; die Funktion ist in diesem Fall \code{fit\_generator}.
 Daher wird das Training durch den Aufruf der folgenden Funktion durchgeführt:
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Initialisierung des Trainings.}]
     history = model.fit_generator(
         train_generator,
         steps_per_epoch=20,
@@ -273,7 +273,7 @@ Nach jeder Epoche aktualisiert der Optimierer die Parameter (die $\theta$ des Mo
 Wie erwartet, beginnt das Modell mit einer Genauigkeit von etwa 33\%, indem es versucht, die Trainingsdaten in drei Klassen zu klassifizieren.
 Wie die Daten nahelegen, lernt das Modell schnell einige Beziehungen zwischen den Eingabedaten und dem jeweiligen Label, da es bereits nach nur vier Epochen eine Genauigkeit von fast 70\% hat.
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Resultate des Trainings (gekürzt).}]
     Epoch 1/20
     20/20 [=====...=====] - 2s 79ms/step - loss: 1.1220 - acc: 0.3425
     Epoch 2/20
