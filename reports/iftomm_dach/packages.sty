@@ -1,0 +1,179 @@
+
+% encoding and fonts
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage[per-mode = fraction]{siunitx}
+\usepackage{tabularx}
+\usepackage[table]{xcolor}
+
+\setkomafont{author}{\large} % Schriftgröße für Autoren
+\setkomafont{publishers}{\small} % Publisher Field wird benutzt um die Kontaktadresse zu setzen
+\setkomafont{section}{\large}
+\setkomafont{caption}{\small}
+
+\subtitle{\hphantom{Untertitel}}
+
+\renewcommand*{\titlepagestyle}{empty} % keine Header auf der Titelseite
+\pagestyle{empty} % jede Seite ohne Header und ohne Seitennummern
+
+\usepackage[ngerman, english]{babel} % es wird sowohl das deutsche als auch das englische Sprachpaket geladen
+
+\addto\captionsngerman{
+	\renewcommand{\figurename}{Abb.}%
+	\renewcommand{\tablename}{Tab.}%
+}
+\usepackage{caption}
+\captionsetup[table]{position=above,skip=5pt,indention=0pt,singlelinecheck=true}
+\captionsetup[figure]{position=below,indention=0pt,singlelinecheck=true}
+
+\usepackage[bookmarks=true,unicode=true]{hyperref}
+\hypersetup{hidelinks}
+
+% Font
+\usepackage{lmodern}
+\usepackage{txfonts}      % selects Times Roman as basic font
+
+% change default font to Times-Roman
+%\renewcommand{\sfdefault}{phv}
+%\renewcommand{\rmdefault}{ptm}
+%\renewcommand{\ttdefault}{pcr}
+
+%\usepackage{newtxtext}
+%\usepackage[cmintegrals]{newtxmath}
+%\renewcommand*{\familydefault}{\sfdefault} % serifenlose Schrift als default
+
+\usepackage[babel]{microtype} % Bessere Zeichensetzung
+
+\usepackage{geometry}
+\geometry{
+    paper=a5paper, % Blattgröße A5, 148mm x 210mm
+    width=112mm,
+    height=170mm,
+    includeheadfoot=false,
+    centering,
+    %left=2.4cm, right=1.2cm, top=2cm,bottom=2cm,
+    %showframe=true, %showframe für Entwicklung
+}
+\setlength{\parindent}{0pt}
+
+% Beginn Bibliography
+\usepackage[babel,german=quotes]{csquotes}
+\usepackage[backend=biber,style=numeric-comp,url=false,isbn=true, doi=true]{biblatex}
+%\usepackage[backend=biber, sorting=none, isbn=true, doi=true,
+%            %bibstyle=mimed2015,
+%            %citestyle = mimed2015,
+%            ]{biblatex}
+
+
+% Farbdefinitionen für Tabellen
+\colorlet{tablebodycolor}{white!100}
+\colorlet{tablerowcolor}{gray!10}
+\colorlet{tablesubheadcolor}{gray!30}
+\colorlet{tableheadcolor}{gray!25}
+
+
+% -----------------------------------------------------------------------------
+% !Mode:: "TeX:UTF-8:Hard"
+% -*-coding: utf-8 -*-
+% -----------------------------------------------------------------------------
+% Preamble Starts here:
+% -----------------------------------------------------------------------------
+
+% This file is based on biblatex bibliography drivers and macroses
+%
+
+%\ExecuteBibliographyOptions{defernumbers=true}
+%\ExecuteBibliographyOptions{isbn=false, url=false, doi=false, eprint=false} % Links ausschalten
+\ExecuteBibliographyOptions{giveninits=true} % Vornamen als Initialen
+\ExecuteBibliographyOptions{maxcitenames=3,maxbibnames=8}
+
+%\setlength{\bibitemsep}{0.5\baselineskip}
+%\setlength{\bibhang}{4ex}
+\DefineBibliographyStrings{ngerman}{andothers = {{et\,al.\adddot}},}
+\DeclareNameAlias{author}{sortname}
+\DeclareNameAlias{editor}{sortname}
+\renewcommand*{\labelnamepunct}{\addcolon\addspace}
+
+\defbibenvironment{nolabelbib}
+  {\list
+     {}
+     {\setlength{\leftmargin}{0\bibhang}%
+      \setlength{\itemindent}{-\leftmargin}%
+      \setlength{\itemsep}{\bibitemsep}%
+      \setlength{\parsep}{\bibparsep}}}
+  {\endlist}
+  {\item}
+
+
+\DeclareFieldFormat[inbook,thesis]{title}{\mkbibemph{#1}\addperiod} % italic title with period
+
+
+\DeclareBibliographyDriver{thesis}{%
+  \usebibmacro{bibindex}%
+  \usebibmacro{begentry}%
+  \usebibmacro{author}%
+  \setunit{\labelnamepunct}\newblock
+  \usebibmacro{title}%
+  \newunit
+  \printlist{language}%
+  \newunit\newblock
+  \usebibmacro{byauthor}%
+  \newunit\newblock
+  \printfield{note}%
+  \newunit\newblock
+  \printfield{type}%
+  \newunit
+  \usebibmacro{institution+location+date}%
+  \newunit\newblock
+  \usebibmacro{chapter+pages}%
+  \newunit
+  \printfield{pagetotal}%
+  \newunit\newblock
+  \iftoggle{bbx:isbn}
+    {\printfield{isbn}}
+    {}%
+  \newunit\newblock
+  \usebibmacro{doi+eprint+url}%
+  \newunit\newblock
+  \usebibmacro{addendum+pubstate}%
+  \setunit{\bibpagerefpunct}\newblock
+  \usebibmacro{pageref}%
+  \newunit\newblock
+  \iftoggle{bbx:related}
+    {\usebibmacro{related:init}%
+     \usebibmacro{related}}
+    {}%
+  \usebibmacro{finentry}}
+
+
+% =========================== Redefined macroses ==============================
+
+\renewbibmacro*{journal+issuetitle}{%
+  \usebibmacro{journal}%
+  \setunit*{\addspace}%
+  \iffieldundef{series}
+    {}
+    {\newunit
+     \printfield{series}%
+     \setunit{\addspace}}%
+  \printfield{volume}%
+  \setunit{\addspace}%
+  \usebibmacro{issue+date}%
+  \setunit{\addspace}%
+  \printfield{number}%
+  \setunit{\addcomma\space}%
+  \printfield{eid}%
+  \setunit{\addcolon\space}%
+  \usebibmacro{issue}%
+  \newunit}
+
+% Abkürzungen in Literaturverzeichnis erscheinen nicht in kleinen Kapitälchen
+%\renewcommand*{\mkbibacro}[1]{#1}
+\renewcommand*{\mkbibacro}[1]{\MakeLowercase{#1}}
+
+% gleiche Schriftart für URL und DOI
+\urlstyle{same}

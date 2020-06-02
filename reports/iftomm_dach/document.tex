@@ -1,0 +1,64 @@
+% !TeX encoding=utf8
+% !TeX program = pdflatex
+% !BIB = biber
+
+\listfiles % listet alle geladenen Pakete im .log file
+% sollte ihr .tech-file nicht kompilieren, so vergleichen Sie bitte Ihre Liste
+% mit PaketListe.txt
+
+\documentclass[paper=a5,
+      fontsize=10pt,
+      parskip=half-, %
+      ngerman   % Neue Rechtschreibung, d.\,h. (Silbentrennung)
+]{scrartcl}
+
+\usepackage{packages} % Präambel laden
+% NOTE selbstgemacht...
+\newcommand\name[1]{\texttt{#1}}
+\usepackage{float}
+\usepackage{subcaption}
+% NOTE selbstgemacht ende
+
+% Laden der .bib Datei
+\addbibresource{document.bib}
+
+% TITEL des Beitrags % \LARGE zur Erzeugung korrekter Überschriftengröße
+\title{\LARGE{Automatische Klassifizierung handgezeichneter Mechanismen durch maschinelles Lernen
+}}
+
+% AUTOREN (Vorname, Nachname)
+\author{Stefan Gössner*, Kai Lawrence**}
+
+% DATUM ausblenden
+\date{}
+
+% dieses Feld wird benutzt um die Kontaktadresse darzustellen
+% bitte nutzen sie ein hochgestellten Stern (*) um bei mehreren Instituten zu
+%unterscheiden
+\publishers{* FH Dortmund, Professur für Dynamik, Mechnanismentechnik und Webtechnologien\\
+	stefan.goessner@fh-dortmund.de
+\\ \vspace{\baselineskip}
+% Bei mehreren Instituten nutzen Sie bitte mehrere hochgestellte Sterne, um die
+%Autoren zuzuordnen
+** FH Dortmund, Maschinenbaustudent\\
+	kaihenning.lawrence002@stud.fh-dortmund.de}
+
+
+\begin{document}
+
+% Wahl der Sprache des Dokuments (ngerman oder englisch)
+\selectlanguage{ngerman}
+
+\maketitle % erzeuge Titel
+
+\input{sections/abstract}
+\input{sections/introduction}
+\input{sections/data}
+\input{sections/pipeline}
+\input{sections/training}
+\input{sections/examples}
+\input{sections/outlook}
+
+\printbibliography
+
+\end{document} 
