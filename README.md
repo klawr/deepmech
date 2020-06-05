@@ -11,7 +11,7 @@ The project can be reviewed in the respective [directory](reports/srp).
 After the initial experiments using symbols, the results were quickly advanced to detect contraints, too.
 The detection of symbols (nodes) and constraints allowed for the first detection of mechanical linkages.
 The results of these advances were subsequentially presented on the IFTOMM-D-A-CH 2020 in Lienz, Austria.
-The respective report is located [here](reports/iftomm_dach).
+The respective (german) report is located [here](reports/iftomm_dach).
 
 The third project revolves around bringing the applications on to different platforms.
 The respective student engineering project (sep) is a work in progress and will be updated.
