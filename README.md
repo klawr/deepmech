@@ -8,7 +8,7 @@ The first steps were done by detecting symbols used in mechanical drawings.
 This simple start allowed to learn about the basics of detection algorithms.
 The project can be reviewed in the respective [directory](reports/srp).
 
-After the initial experiments using symbols, the results were quickly advanced to detect contraints, too.
+After initial experiments using symbols, the resulting models are used to detect contraints, too.
 The detection of symbols (nodes) and constraints allowed for the first detection of mechanical linkages.
 The results of these advances were subsequentially presented on the IFTOMM-D-A-CH 2020 in Lienz, Austria.
 The respective (german) report is located [here](reports/iftomm_dach).
