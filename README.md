@@ -4,6 +4,8 @@ deepmech
 This is a monorepository for different projects and reports which revolve around deepmech.
 deepmech is a project which aims to bring automatic detection kinematic structures available on different platforms.
 
+The training data for these projects can be found [here](https://drive.google.com/drive/folders/1yZI5v3ws3b8GZMl_ACe4TO_qebdS2fUz?usp=sharing).
+
 The first steps were done by detecting symbols used in mechanical drawings.
 This simple start allowed to learn about the basics of detection algorithms.
 The project can be reviewed in the respective [directory](reports/srp).

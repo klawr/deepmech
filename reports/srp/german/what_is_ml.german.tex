@@ -72,7 +72,7 @@ Nachfolgend werden diese Konzepte anhand eines einfachen Beispiels vorgestellt.
 Als illustratives Beispiel wird ein Modell erstellt, das Fahrenheit in Celsius übersetzt.
 Die ursprüngliche Gleichung ist durch die lineare Funktion $y = mx + b$ als $F = C * 1,8 + 32$ gegeben, mit $F$ als Grad Fahrenheit und $C$ als Grad Celsius.
 
-Ein Modell, das diese Beziehung erlernen soll, ist in der Auflistung~\ref{lst:c_to_f} definiert \footnote{Auch verfügbar unter \aka{https://klawr.github.io/deepmech/reports/srp/demos/c_to_f.js}} .
+Ein Modell, das diese Beziehung erlernen soll, ist in der Auflistung~\ref{lst:c_to_f} definiert \footnote{Auch verfügbar unter \aka{https://github.com/klawr/deepmech/tree/master/reports/srp/code/c_to_f.js}} .
 
 \lstinputlisting[label={lst:c_to_f}, caption={Celsius zu Fahrenheit}]{code/c_to_f.js}
 
@@ -129,4 +129,4 @@ Durch Erhöhen der Iterationszahl kann das Ergebnis bis zu dem Punkt erhöht wer
 \end{SCfigure}
 
 Vorausgesetzt, dass diese Hypothese anfangs gut für die Aufgabe geeignet ist, ist es wichtig zu beachten, dass durch die Modifizierung der Hypothese zur Darstellung eines Polynoms höheren Grades (z.B. $y = nx^2 + mx + b$) die zusätzlichen Parameter gegen 0 konvergieren, was effektiv das gleiche Ergebnis wie zuvor liefert \footnote{Aber um ähnliche Ergebnisse zu erzielen, muss die Iterationszahl mindestens um den Faktor 20 erhöht werden.}.
-Das Experiment kann unter \aka{https://klawr.github.io/deepmech/reports/srp/demos/c_to_f_adv.js} nachvollzogen werden.
+Das Experiment kann unter \aka{https://github.com/klawr/deepmech/tree/master/reports/srp/code/c_to_f_adv.js} nachvollzogen werden.
