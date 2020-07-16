@@ -1,16 +1,15 @@
 deepmech
 ==============================
 
-This is a monorepository for different projects and reports which revolve around deepmech.
-deepmech is a project which aims to bring automatic detection kinematic structures available on different platforms.
+This is a [Monorepo](https://en.wikipedia.org/wiki/Monorepo) for different projects and reports which revolve around deepmech.
+deepmech aims to bring automatic detection kinematic structures available on different platforms.
 
-The training data for these projects can be found [here](https://drive.google.com/drive/folders/1yZI5v3ws3b8GZMl_ACe4TO_qebdS2fUz?usp=sharing).
+The training data used can be found [here](https://drive.google.com/drive/folders/1yZI5v3ws3b8GZMl_ACe4TO_qebdS2fUz?usp=sharing).
 
-The first steps were done by detecting symbols used in mechanical drawings.
-This simple start allowed to learn about the basics of detection algorithms.
-The project can be reviewed in the respective [directory](reports/srp).
+The first steps were to detect symbols used for mechanical linkage sketches to learn about the basics of detection algorithms.
+The respective project can be reviewed in the [student research project](reports/srp).
 
-After initial experiments using symbols, the resulting models are used to detect contraints, too.
+After initial experiments using symbols, the resulting models are used to detect contraints.
 The detection of symbols (nodes) and constraints allowed for the first detection of mechanical linkages.
 The results of these advances were subsequentially presented on the IFTOMM-D-A-CH 2020 in Lienz, Austria.
 The respective (german) report is located [here](reports/iftomm_dach).
