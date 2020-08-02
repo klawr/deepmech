@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "@tensorflow/tfjs-node": "^1.7.1",
+    "base-64": "^0.1.0",
+    "canvas": "^2.6.1",
+    "ijavascript": "^5.2.0"
+  }
+}
