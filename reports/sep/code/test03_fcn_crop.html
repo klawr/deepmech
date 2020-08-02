@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Symbol Classification</title>
+    <style>
+        table,
+        th,
+        td {
+            width: 8em;
+            height: 1.5em;
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+    </style>
+
+</head>
+
+<body>
+    <script src="loader.js"></script>
+    <script src="crop.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
+    <script src="https://gitcdn.xyz/repo/goessner/g2/master/src/g2.js"></script>
+
+    <input type="file" id="upload" accept="image/jpg, image/jpeg">
+    <br>
+    <img id="image" alt="" width=32 height=32>
+    <canvas id="resultImage"></canvas>
+
+    <script>
+        function toFullyConv(model) {
+            const newModel = tf.sequential();
+            newModel.add(tf.layers.inputLayer({
+                inputShape: [null, null, 1]
+            }));
+            let flattenedInput = false;
+            let fDim;
+
+            for (const layer of model.layers) {
+                if (layer.name.includes('flatten')) {
+                    flattenedInput = true;
+                    fDim = layer.input.shape;
+                }
+
+                else if (layer.name.includes('dense')) {
+                    inputShape = layer.input.shape;
+                    outputDim = layer.getWeights()[1].shape[0];
+                    const [W, b] = layer.getWeights();
+
+                    if (flattenedInput) {
+                        const shape = [fDim[1], fDim[2], fDim[3], outputDim];
+                        const newW = W.reshape(shape);
+                        newModel.add(tf.layers.conv2d({
+                            filters: outputDim,
+                            kernelSize: [fDim[1], fDim[2]],
+                            name: layer.name,
+                            strides: [1,1],
+                            activation: layer.activation,
+                            padding: 'valid',
+                            weights: [newW, b]
+                        }));
+                        flattenedInput = false;
+                    }
+                    else {
+                        const shape = [1, 1, inputShape[1], outputDim];
+                        const newW = W.reshape(shape);
+                        newModel.add(tf.layers.conv2d({
+                            filters: outputDim,
+                            kernelSize: [1, 1],
+                            strides: [1, 1],
+                            activation: layer.activation,
+                            padding: 'valid',
+                            weights: [newW, b]
+                        }))
+                    }
+                }
+
+                else {
+                    newModel.add(layer);
+                }
+            }
+            newModel.layers[1].strides = [1, 1]
+            return newModel;
+        }
+
+        const loader = new Loader();
+        const crop = new Crop();
+        const upload = document.getElementById('upload');
+        const image = document.getElementById('image');
+        const symbolClassifier = tf.loadLayersModel(loader);
+        const cropIdentifier = tf.loadLayersModel(crop)
+        const resultImage = document.getElementById('resultImage');
+        const ctx = resultImage.getContext('2d');
+
+        async function run() {
+            const t0 = performance.now();
+            const reader = new window.FileReader();
+            reader.readAsDataURL(upload.files[0]);
+
+            async function loadend() {
+                image.src = reader.result;
+
+                async function load() {
+                    image.height = image.naturalHeight;
+                    image.width = image.naturalWidth;
+                    let tensor = tf.browser.fromPixels(image, 1);
+                    tensor = tensor.div(255);
+                    await tf.browser.toPixels(tensor, resultImage);
+                    tensor = tensor.expandDims();
+                    const newModel = toFullyConv(await symbolClassifier)
+
+                    console.log('Beginning first scan: ', performance.now() - t0);
+                    const prediction = await newModel.predict(tensor, { batch_size: 1 }).arraySync()[0];
+                    console.log('First prediction finished: ', performance.now() - t0);
+                    const g = g2();
+                    function extractInterestingInfo(pred, idx) {
+                        const y = idx * 4;
+                        return pred.map((inner, i) => {
+                            const max = Math.max(...inner);
+                            const maxIndex = inner.indexOf(max);
+                            const x = i * 4;
+
+                            return { x, y, max, maxIndex }
+                        });
+                    }
+
+                    function prepareForFiltering(e) {
+                        color = ['transparent', 'red', 'blue'];
+                        return {
+                            ...e,
+                            b: 32,
+                            h: 32,
+                            ls: color[e.maxIndex],
+                            lw: 3
+                        }
+                    }
+
+                    function removeOverlaps(boxes) {
+                        const mostAccurate = [];
+                        while (boxes.length) {
+                             const max = boxes.pop();
+                            mostAccurate.push(max);
+                            boxes = boxes.filter(rec =>
+                                Math.abs(rec.x - max.x) >= rec.b ||
+                                Math.abs(rec.y - max.y) >= rec.h);
+                        }
+                        return mostAccurate;
+                    }
+
+                    nodes = removeOverlaps(prediction
+                        .map(extractInterestingInfo)
+                        .flat()
+                        .filter(e => e.maxIndex)
+                        .sort((a, b) => a.max - b.max)
+                        .map(prepareForFiltering)
+                    )
+                    nodes.forEach(e => { g.rec(e); });
+                    console.log('drew ', g.commands.length,
+                        'rectangles: ', performance.now() - t0);
+                    mirror = []
+                    boxes = nodes.flatMap(node1 => {
+                        return nodes.map(node2 => {
+                            x1 = Math.min(node1.x, node2.x);
+                            y1 = Math.min(node1.y, node2.y);
+                            x2 = Math.max(node1.x, node2.x);
+                            y2 = Math.max(node1.y, node2.y);
+
+                            if (x1 === x2 || y1 === y2) return
+
+                            m = 0
+                            if (x2 == node2.x) m++;
+                            if (y2 == node2.y) m+=2;
+                            mirror.push(m);
+
+                            return [y1, x1, y2, x2].map(c => (c + 16) / 360)
+                        })
+                    }).filter(e => e);
+                    const boxInd = new Array(boxes.length).fill(0)
+                    let blob = tf.image.cropAndResize(tensor, boxes, boxInd, [360, 360]);
+                    blob = blob.arraySync().map(((b, idx) => {
+                        console.log('start_:',idx, ': ', performance.now() - t0)
+                        box = boxes[idx]
+                        const height = parseInt((box[2]-box[0]) / (box[3]-box[1]) * 360)
+                        b = tf.image.resizeBilinear(b, [height, 360])
+                        console.log('resized_1_:',idx, ': ', performance.now() - t0)
+                        let pad = parseInt((height - 360) / 2);
+                        pad = pad < 0 ? [[-pad,-pad],[0,0]] : [[0,0],[pad,pad]];
+                        b = tf.squeeze(b)
+                        b = tf.pad2d(b, pad)
+                        b = tf.expandDims(b, -1)
+                        b = tf.image.resizeBilinear(b, [360, 360])
+                        console.log('resized_2_:',idx, ': ', performance.now() - t0)
+                        b = tf.squeeze(b);
+                        if (mirror[idx] == 1)
+                            return tf.reverse2d(b, 1)
+                        else if (mirror[idx] == 2)
+                            return tf.reverse2d(b, 0)
+                        else if (mirror[idx] == 3)
+                            return tf.reverse2d(b)
+                        else
+                            return b;
+                    }));
+                    blob = tf.stack(blob)
+                    blob = blob.expandDims(-1)
+                    const newModel2 = await cropIdentifier;
+                    console.log('Beginning second scan: ', performance.now() - t0);
+                    let constraints = newModel2.predict(
+                        blob, { batch_size: blob.shape[0] }).arraySync();
+                    console.log('Second prediction finished: ', performance.now() - t0);
+                    constraints = constraints.map(c => c.indexOf(Math.max(...c)));
+                    let num = 0;
+                    constraints.forEach((c, idx) => {
+                        if (!c) return
+                        num++
+                        let color = ['transparent', 'green', 'yellow']
+                        const lin = {
+                            y1: boxes[idx][0] * 360,
+                            x1: boxes[idx][1] * 360,
+                            y2: boxes[idx][2] * 360,
+                            x2: boxes[idx][3] * 360,                                
+
+                            ls: color[c],
+                            lw: 3
+                        }
+                        if (mirror[idx] === 1 || mirror[idx] === 3) {
+                            const tmp = lin.x1;
+                            lin.x1 = lin.x2;
+                            lin.x2 = tmp;
+                        }
+                        if (mirror[idx] === 2 || mirror[idx] === 3) {
+                            const tmp = lin.y1;
+                            lin.y1 = lin.y2;
+                            lin.y2 = tmp;
+                        }
+                        g.lin(lin)
+                    });
+                    console.log('drew ', num, 'constraints: ', performance.now() - t0);
+                    g.exe(ctx)
+                }
+                image.addEventListener('load', load, { once: true });
+            }
+            reader.addEventListener('loadend', loadend);
+        };
+        upload.addEventListener('input', run)
+    </script>
+</body>
+
+</html>

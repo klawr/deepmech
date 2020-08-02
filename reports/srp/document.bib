@@ -236,19 +236,19 @@
 
 @InProceedings{Sutskever2013,
   author    = {Ilya Sutskever and James Martens and George Dahl and Geoffrey Hinton},
-  title     = {On the importance of initialization and momentum in deep learning},
   booktitle = {Proceedings of the 30th International Conference on Machine Learning},
-  year      = {2013},
+  title     = {On the importance of initialization and momentum in deep learning},
   editor    = {Sanjoy Dasgupta and David McAllester},
-  volume    = {28},
-  series    = {Proceedings of Machine Learning Research},
   number    = {3},
-  publisher = {PMLR},
   pages     = {1139--1147},
+  publisher = {PMLR},
+  series    = {Proceedings of Machine Learning Research},
   url       = {http://proceedings.mlr.press/v28/sutskever13.html},
-  abstract  = {Deep and recurrent neural networks (DNNs and RNNs respectively) are powerful models that were considered to be almost impossible to train using stochastic gradient descent with momentum. In this paper, we show that when stochastic gradient descent with momentum uses a well-designed random initialization and a particular type of slowly increasing schedule for the momentum parameter, it can train both DNNs and RNNs (on datasets with long-term dependencies) to levels of performance that were previously achievable only with Hessian-Free optimization. We find that both the initialization and the momentum are crucial since poorly initialized networks cannot be trained with momentum and well-initialized networks perform markedly worse when the momentum is absent or poorly tuned.     Our success training these models suggests that previous attempts to train deep and recurrent neural networks from random initializations have likely failed due to poor initialization schemes. Furthermore, carefully tuned momentum methods suffice for dealing with the curvature issues in deep and recurrent network training objectives without the need for sophisticated second-order methods.   },
+  volume    = {28},
+  abstract  = {Deep and recurrent neural networks (DNNs and RNNs respectively) are powerful models that were considered to be almost impossible to train using stochastic gradient descent with momentum. In this paper, we show that when stochastic gradient descent with momentum uses a well-designed random initialization and a particular type of slowly increasing schedule for the momentum parameter, it can train both DNNs and RNNs (on datasets with long-term dependencies) to levels of performance that were previously achievable only with Hessian-Free optimization. We find that both the initialization and the momentum are crucial since poorly initialized networks cannot be trained with momentum and well-initialized networks perform markedly worse when the momentum is absent or poorly tuned.     Our success training these models suggests that previous attempts to train deep and recurrent neural networks from random initializations have likely failed due to poor initialization schemes. Furthermore, carefully tuned momentum methods suffice for dealing with the curvature issues in deep and recurrent network training objectives without the need for sophisticated second-order methods.},
   address   = {Atlanta, Georgia, USA},
   file      = {sutskever13.pdf:http\://proceedings.mlr.press/v28/sutskever13.pdf:PDF},
+  year      = {2013},
 }
 
 @Article{Nesterov1983,
@@ -299,18 +299,15 @@
 @Article{Wolpert1996,
   author   = {Wolpert, David H.},
   title    = {The Lack of A Priori Distinctions Between Learning Algorithms},
-  journal  = {Neural Computation},
-  year     = {1996},
-  volume   = {8},
-  number   = {7},
-  pages    = {1341-1390},
   doi      = {10.1162/neco.1996.8.7.1341},
   eprint   = {https://doi.org/10.1162/neco.1996.8.7.1341},
-  url      = { 
-        https://doi.org/10.1162/neco.1996.8.7.1341
-    
-},
-  abstract = { This is the first of two papers that use off-training set (OTS) error to investigate the assumption-free relationship between learning algorithms. This first paper discusses the senses in which there are no a priori distinctions between learning algorithms. (The second paper discusses the senses in which there are such distinctions.) In this first paper it is shown, loosely speaking, that for any two algorithms A and B, there are “as many” targets (or priors over targets) for which A has lower expected OTS error than B as vice versa, for loss functions like zero-one loss. In particular, this is true if A is cross-validation and B is “anti-cross-validation” (choose the learning algorithm with largest cross-validation error). This paper ends with a discussion of the implications of these results for computational learning theory. It is shown that one cannot say: if empirical misclassification rate is low, the Vapnik-Chervonenkis dimension of your generalizer is small, and the training set is large, then with high probability your OTS error is small. Other implications for “membership queries” algorithms and “punting” algorithms are also discussed. },
+  number   = {7},
+  pages    = {1341-1390},
+  url      = {https://doi.org/10.1162/neco.1996.8.7.1341},
+  volume   = {8},
+  abstract = {This is the first of two papers that use off-training set (OTS) error to investigate the assumption-free relationship between learning algorithms. This first paper discusses the senses in which there are no a priori distinctions between learning algorithms. (The second paper discusses the senses in which there are such distinctions.) In this first paper it is shown, loosely speaking, that for any two algorithms A and B, there are “as many” targets (or priors over targets) for which A has lower expected OTS error than B as vice versa, for loss functions like zero-one loss. In particular, this is true if A is cross-validation and B is “anti-cross-validation” (choose the learning algorithm with largest cross-validation error). This paper ends with a discussion of the implications of these results for computational learning theory. It is shown that one cannot say: if empirical misclassification rate is low, the Vapnik-Chervonenkis dimension of your generalizer is small, and the training set is large, then with high probability your OTS error is small. Other implications for “membership queries” algorithms and “punting” algorithms are also discussed.},
+  journal  = {Neural Computation},
+  year     = {1996},
 }
 
 @Article{Lecun1998,

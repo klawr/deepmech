@@ -1,6 +1,6 @@
 \section{First model}
 
-The Jupyter notebook for this chapter can be viewed at \url{https://aka.klawr.de/srp\#5}.
+The Jupyter notebook for this chapter can be viewed at \aka{https://github.com/klawr/deepmech/blob/master/reports/srp/notebooks/5-first_model.ipynb}.
 
 \subsection{Project structure}
 
@@ -29,7 +29,7 @@ The \name{reports} directory contains a folder for each report created in this p
 The notebook folder in this report contains \name{Jupyter} notebooks \cite{Jupyter2019} used in different chapters.
 The models are also trained in jupyter notebooks. 
 Jupyter notebooks are interactive Python code development editors that provide an easy way to efficiently write, test and comment code (with markdown).
-All notebooks with corresponding code are located in the \name{notebooks} directory at the root of this project\footnote{\url{https://aka.klawr.de/srp\#6}}.
+All notebooks with corresponding code are located in the \name{notebooks} directory at the root of this project\footnote{\aka{https://github.com/klawr/deepmech/tree/master/reports/srp/notebooks/}}.
 The respective directory also contains the code used, the trained models, images and the documents created for the creation of this report.
 
 % src
@@ -43,7 +43,7 @@ It is good practice to never work directly with the raw data, so the beginning o
 
 Accordingly, the training of a model in this project always starts with the following code:
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Loading Data.}]
 from os.path import join
 
 raw = join('data', 'raw')
@@ -59,7 +59,7 @@ For the first model, the raw data itself is sufficient; therefore, it is simply 
 The third parameter of \code{reset\_and\_distribute\_data} is an array of three numbers describing the distribution of training, validation, and test data.
 In this example, the validation data is omitted because no adjustments are made to the hyperparameters.
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Loading data with generator.}]
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 def create_generator(data_dir, batch_size):
@@ -75,7 +75,7 @@ train_generator = create_generator('train', 20)
 test_generator = create_generator('test', 10)
 \end{lstlisting}
 
-After the corresponding directories are filled with data, the \code{ImageDataGenerator}\footnote{\url{https://keras.io/preprocessing/image}} is used to allow the model to load the data later during the training process.
+After the corresponding directories are filled with data, the \code{ImageDataGenerator}\footnote{\aka{https://keras.io/preprocessing/image}} is used to allow the model to load the data later during the training process.
 The generators also define the size of the loaded image, which can be set to 32 pixels wide and 32 pixels high\footnote{The size of the images is determined manually, assuming that as long as a human is able to recognize the characteristic features of the image, the algorithm can learn them.} (as opposed to the original image size of 512x512) and a batch size\footnote{batch size is the number of images used between each backpropagation cycle.
 If the batch size matches the record size, it is called batch gradient descent, if the batch size is one, it is called stochastic gradient descent.
 Everything in between is called a mini-batch gradient descent.} of 20.
@@ -84,7 +84,7 @@ These generators also recognize the structure of the raw data (distributed in re
 
 \subsection{Creation of the model}
 
-\begin{lstlisting}[label={lst:first_model}]
+\begin{lstlisting}[caption={Definition of first model.},label={lst:first_model}]
 from tensorflow.keras import layers
 from tensorflow.keras import models
 
@@ -117,7 +117,7 @@ The node with the highest value is accordingly assumed to be the assumed correct
 
 A summary of the model is given as:
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Summary of first model.}]
 Model: "sequential"
 _________________________________________________________________
 Layer (type)                 Output Shape              Param #   
@@ -150,8 +150,8 @@ We will start with a \code{SGD} optimizer, which is the abbreviation for \name{S
 Stochastic gradient descent is already mentioned in chapter~\ref{ch:simple_linear_example}, where it was implemented very rudimentarily. In the training of this model, the Keras implementation of \name{SGD} is used.
 The Keras implementation of SGD differs somewhat from the general definition, since it does not inherently assume a batch size of one, but rather the batch sizes defined in the respective generator, so that the user can decide whether to use full batch, mini batch, or stochastic gradient descent\footnote{The batch size used here is 20.}.
 
-\begin{lstlisting}
-    optimizer = SGD(lr=0.01, momentum=0.9, nesterov=True)
+\begin{lstlisting}[caption={Definition of an optimizer using Keras' SGD function.}]
+optimizer = SGD(lr=0.01, momentum=0.9, nesterov=True)
 \end{lstlisting}
 
 The function \code{SGD} requires three parameters: The learning rate \code{lr}, \code{momentum} and \code{nesterov}.
@@ -188,7 +188,7 @@ On the other hand, a learning rate set to a high value cannot converge at all.
         \caption{Learning rate too small}
         \label{fig:lr_too-low}
     \end{subfigure}
-    \caption{If the learning rate is just right, the value of the loss function approaches a local optimum in an acceptable number of steps.
+    \caption[Learning rate]{If the learning rate is just right, the value of the loss function approaches a local optimum in an acceptable number of steps.
     If it is too high, it diverges.
     If the learning rate is too low, the values converge, but too many steps are needed to achieve this.
     Please note that these pictures show the parameter space in a very simplified way, since the function shown is completely convex and only two-dimensional.}
@@ -230,9 +230,9 @@ The idea of momentum is that the direction vector points in the right direction,
 
 \subsubsection{Actual training}
 
-After the optimizer is defined, the model is compiled by calling the model compile function.
+After the optimizer is defined, the model is compiled.
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Model compile function.}]
 model.compile(
     loss='sparse_categorical_crossentropy', 
     optimizer=optimizer,
@@ -249,7 +249,7 @@ The training data is provided by generators; the function in this case is \code{
 Therefore, the training is performed by calling the following function:
 
 % TODO python and remove generator
-\begin{lstlisting}
+\begin{lstlisting}[caption={Initiating training of the model.}]
 history = model.fit_generator(
     train_generator,
     steps_per_epoch=20,
@@ -273,14 +273,14 @@ After each epoch the optimizer updates the parameters (the $\theta$ of the model
         \caption{Loss}
         \label{fig:first_model_loss}
     \end{subfigure}
-    \caption{The callbacks of the training algorithm provide logs that can be used by TensorBoard to provide useful graphics for evaluating the model. The vertical axis represents the value of each epoch (shown on the horizontal axis).}
+    \caption[First model training]{The callbacks of the training algorithm provide logs that can be used by TensorBoard to provide useful graphics for evaluating the model. The vertical axis represents the value of each epoch (shown on the horizontal axis).}
     \label{fig:first_model_graphs}
 \end{figure}
 
 As expected, the model starts with an accuracy of about 33\% by trying to classify the training data into three classes.
 As the data suggests, the model quickly learns some relationships between the input data and the label, as it already has an accuracy of almost 70\% after only four epochs.
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Results of the first model (shorted).}]
 Epoch 1/20
 20/20 [=====...=====] - 2s 79ms/step - loss: 1.1220 - acc: 0.3425
 Epoch 2/20
