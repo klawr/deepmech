@@ -1,13 +1,8 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Language %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% NOTE: Project is written in english
-% \usepackage[ngerman]{babel}
-% \usepackage[autostyle,german=quotes]{csquotes}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Packages %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \usepackage{hyperref}
 \usepackage{enumitem}
 \usepackage{tasks}
 
+\usepackage{tocloft}
 \usepackage[toc,page]{appendix}
 
 \usepackage{amsmath}
@@ -28,8 +23,6 @@
 % TODO font
 \usepackage[onehalfspacing]{setspace}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Custom %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \usepackage{color}
 \definecolor{codeColor}{rgb}{0.25,0.25,1}
 
@@ -45,3 +38,10 @@
 \newcommand\code[1]{\textcolor{codeColor}{\texttt{#1}}}
 
 \newcommand\name[1]{\texttt{#1}}
+
+\newcommand{\akaAbb}{srp}
+\newcommand{\listlinkname}{Link Index - \url{https://aka.klawr.de/\akaAbb}}
+\newlistof{links}{aka}{\listlinkname}
+\newcommand{\theaka}{\url{https://aka.klawr.de/\akaAbb\#\thelinks}}
+\newcommand{\aka}[1]{\refstepcounter{links}\theaka%
+\addcontentsline{aka}{links}{\url{\#\thelinks}: \tiny{\url{#1}}}}

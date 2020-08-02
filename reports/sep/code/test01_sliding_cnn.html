@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Symbol Classification</title>
+    <style>
+        table,
+        th,
+        td {
+            width: 8em;
+            height: 1.5em;
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+    </style>
+
+</head>
+
+<body>
+    <script src="loader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
+    <script src="https://gitcdn.xyz/repo/goessner/g2/master/src/g2.js"></script>
+
+    <input type="file" id="upload" accept="image/jpg, image/jpeg">
+    <br>
+    <img id="image" alt="" width=32 height=32>
+    <canvas id="resultImage"></canvas>
+
+    <script>
+        const loader = new Loader();
+        const upload = document.getElementById('upload');
+        const image = document.getElementById('image');
+        const symbolClassifier = tf.loadLayersModel(loader);
+        const resultImage = document.getElementById('resultImage');
+        const ctx = resultImage.getContext('2d');
+
+        async function run() {
+            const t0 = performance.now();
+            const reader = new window.FileReader();
+            reader.readAsDataURL(upload.files[0]);
+
+            async function loadend() {
+                image.src = reader.result;
+
+                async function load() {
+                    image.height = image.naturalHeight;
+                    image.width = image.naturalWidth;
+                    let tensor = tf.browser.fromPixels(image, 1);
+                    tensor = tensor.div(255);
+                    await tf.browser.toPixels(tensor, resultImage);
+                    tensor = tensor.expandDims();
+                    function createBoxes(size, crop) {
+                        const arr = [];
+                        for (let i = 1; i < size.height - crop.height; i++) {
+                            for (let j = 1; j < size.width - crop.width; j++) {
+                                arr.push([
+                                    i / size.height,
+                                    j / size.width,
+                                    (i + crop.height - 1) / size.height,
+                                    (j + crop.width - 1) / size.width]);
+                            }
+                        }
+                        return arr;
+                    }
+                    const size = { width: image.width, height: image.height };
+                    const crop = { width: 32, height: 32 };
+                    const boxes = createBoxes(size, crop);
+                    const boxInd = new Array(boxes.length).fill(0)
+                    tensor = tf.image.cropAndResize(tensor, boxes, boxInd, [32, 32]);
+                    console.log('Beginning scan: ', performance.now() - t0);
+                    const prediction = await (await symbolClassifier)
+                        .predict(tensor, { batch_size: boxes.length }).array();
+                    console.log('Prediction finished: ', performance.now() - t0);
+
+                    const g = g2();
+
+                    function extractInterestingInfo(pred, idx) {
+                        const max = Math.max(...pred);
+                        return {
+                            idx, max, maxIndex: pred.indexOf(max)
+                        }
+                    }
+
+                    function prepareForFiltering(e, idx) {
+                        color = ['', 'red', 'blue'];
+                        return {
+                            ...e,
+                            x: boxes[e.idx][1] * size.width,
+                            y: boxes[e.idx][0] * size.height,
+                            b: crop.width,
+                            h: crop.height,
+                            ls: color[e.maxIndex],
+                            lw: 3
+                        }
+                    }
+
+                    function removeOverlaps(boxes) {
+                        const mostAccurate = [];
+                        while (boxes.length) {
+                            const max = boxes.pop();
+                            mostAccurate.push(max);
+                            boxes = boxes.filter(rec =>
+                                Math.abs(rec.x - max.x) >= rec.b ||
+                                Math.abs(rec.y - max.y) >= rec.h);
+                        }
+                        return mostAccurate;
+                    }
+
+                    removeOverlaps(prediction
+                        .map(extractInterestingInfo)
+                        .filter(e => e.maxIndex && e.max > 0.99)
+                        .sort((l, r) => l.max > r.max)
+                        .map(prepareForFiltering)
+                    ).forEach(e => { g.rec(e); });
+                    
+                    g.exe(ctx);
+                    console.log('drew ', g.commands.length,
+                        'rectangles: ', performance.now() - t0);
+                }
+                image.addEventListener('load', load, { once: true });
+            }
+            reader.addEventListener('loadend', loadend);
+        };
+        upload.addEventListener('input', run)
+    </script>
+</body>
+
+</html>

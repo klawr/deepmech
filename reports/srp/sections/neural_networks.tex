@@ -12,7 +12,7 @@ Rolnick and Tegmark \cite{Rolnick2017} show that in single-layer models the numb
 % TODO add some clues for notation
 \begin{figure}
     \centering
-    \caption{ A neural network with three input nodes, two hidden layers with five nodes each and an output layer with three nodes. The bias is added to each layer by prepending a node with value one. Every node is, like the previous example calculated by the sum of the product of the previous layer and their respective weight.  }
+    \caption[Neural Network]{ A neural network with three input nodes, two hidden layers with five nodes each and an output layer with three nodes. The bias is added to each layer by prepending a node with value one. Every node is, like the previous example calculated by the sum of the product of the previous layer and their respective weight.  }
     \includegraphics[width=0.6\textwidth]{images/2_nn_with_bias.png}
     \label{fig:nn}
 \end{figure}
@@ -40,6 +40,11 @@ $n$ is the number of nodes in the respective layer. Equation~\eqref{eq:node_valu
 
 One problem with the values of the individual cells is that they can be of any size. Numerically, this is very difficult to control, so the nodes themselves are given to another function first; this function is aptly called an activation function.
 
+Activation functions are used in different ways and give more possibilities to adjust yet new parameters to increase model performance.
+Previously we intrinsically assumed the linear function shown in figure~\ref{fig:activation_linear} with the mapping $g(a) = a$.
+The logistic sigmoid is often used in practice, because it creates a mapping of arbitrary numerical input and maps it into the interval $[0,1]$.
+The rectified linear unit is much easier computationally and is recommended for use with most feedforward neural networks\cite[p.169]{Goodfellow2017}\cite{Glorot2011}.
+
 \begin{figure}
     \centering
     \begin{subfigure}[b]{0.3\textwidth}
@@ -57,14 +62,10 @@ One problem with the values of the individual cells is that they can be of any s
         \caption{ReLU}
         \label{fig:activation_relu}
     \end{subfigure}
-    \caption{} % TODO maybe add some text to activation functions?
+    \caption{Activation functions}
     \label{fig:activation}
 \end{figure}
 
-Activation functions are used in different ways and give more possibilities to adjust yet new parameters to increase model performance.
-Previously we intrinsically assumed the linear function shown in figure~\ref{fig:activation_linear} with the mapping $g(a) = a$.
-The logistic sigmoid is often used in practice, because it creates a mapping of arbitrary numerical input and maps it into the interval $[0,1]$.
-The rectified linear unit is much easier computationally and is recommended for use with most feedforward neural networks\cite[p.169]{Goodfellow2017}\cite{Glorot2011}.
 Mathematical representations are shown in equation~\eqref{eq:sigmoid_relu}
 
 \begin{equation}

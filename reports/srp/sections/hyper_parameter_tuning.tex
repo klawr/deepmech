@@ -54,7 +54,7 @@ In the case of symbol recognition, the symbol can be rotated or mirrored so addi
 
 The data extension is done by adapting the \code{create\_generator} function previously used:
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Data augmentation.}]
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 def create_generator(data_dir, batch_size, datagen):
@@ -96,7 +96,7 @@ The loss and accuracy of the test set is 0.63 and 78\% respectively.
         \caption{Loss}
         \label{fig:first_model_data_augmentation_loss}
     \end{subfigure}
-    \caption{Compared to figure~\ref{fig:first_model_graphs}, accuracy and loss increases more slowly. Further epochs may improve the results, as the model does not seem to have fully converged after 20 epochs.}
+    \caption[Training after first augmentation]{Compared to figure~\ref{fig:first_model_graphs}, accuracy and loss increases more slowly. Further epochs may improve the results, as the model does not seem to have fully converged after 20 epochs.}
     \label{fig:first_model_data_augmentation_graphs}
 \end{figure}
 
@@ -106,12 +106,12 @@ The model accuracy of the training set also seems to increase at a lower rate, s
 
 Please note that the training set has practically grown by a factor of 1440 (360 degrees + rotations in two axes), which makes it possible to feed considerably more data into the model during training without having to expect too much overfitting.
 
-The goal of reducing overfitting seems to be solved in this regard; the difference between training and test accuracy is negligible\footnote{link to the respective notebook: \url{https://aka.klawr.de/srp\#7}}.
+The goal of reducing overfitting seems to be solved in this regard; the difference between training and test accuracy is negligible\footnote{link to the respective notebook: \aka{https://github.com/klawr/deepmech/blob/master/reports/srp/notebooks/6.2-feature_reduction.ipynb}}.
 
 \subsection{Feature reduction}
 
 Another thing that can improve the performance of the model is to reduce the size of the input.
-The phenomenon known as \textit{curses of dimensionality} describes the possibilities of different configurations that are possible with an increasing number of variables, and comes from Richard Bellman, who first refers to problems in dynamic programming \cite[p.ix]{Bellman1957}.
+The phenomenon known as \textit{curses of dimensionality} describes the possibilities of different configurations that are possible with an increasing number of variables, and is first discussed by Richard Bellman, who first refers to problems in dynamic programming \cite[p.ix]{Bellman1957}.
 
 The data is already greatly reduced by loading the data as images with a width and height of 32 pixels, although the data is raw as 512 by 512 images. This reduction has been done manually beforehand to keep the data relatively small, but the symbols are still clearly distinguishable.
 
@@ -122,7 +122,7 @@ Practically nothing should change, except the input size, which is adjusted to \
 
 The resulting model accordingly looks as follows:
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Summary of improved model.}]
 Model: "sequential"
 _________________________________________________________________
 Layer (type)                 Output Shape              Param #   
@@ -142,7 +142,7 @@ _________________________________________________________________
 \end{lstlisting}
 
 The number of trainable parameters is almost divided by a factor of three, reducing the size of the model from 807kb (from the previous models with 99491 parameters) to 295kb.
-Nevertheless, no accuracy is lost. \footnote{Link to the respective notebook: \url{https://aka.klawr.de/srp\#8}}.
+Nevertheless, no accuracy is lost\footnote{Link to the respective notebook: \aka{https://github.com/klawr/deepmech/blob/master/reports/srp/notebooks/6.4-convolutional_layer.ipynb}}.
 
 \subsection{Optimizers}
 
@@ -199,7 +199,7 @@ Additionally, each filter has its own bias $b_k$, which is added to the activati
 
 \begin{figure}
     \centering
-    \caption{  The bottom layer is the input, which is represented by a two-dimensional layer of size five by five (filter size is one), padded with a padding of one (drawn in gray) to ensure that the size remains the same when using a kernel of size three by three (highlighted by the red, green and blue rectangles). The stride used is one, i.e. the receptive field propagates one input node at each step. Here the process starts at the red rectangle, blue is the second step and green the last (25 steps in total). }
+    \caption[Convolutional layer]{ The bottom layer is the input, which is represented by a two-dimensional layer of size five by five (filter size is one), padded with a padding of one (drawn in gray) to ensure that the size remains the same when using a kernel of size three by three (highlighted by the red, green and blue rectangles). The stride used is one, i.e. the receptive field propagates one input node at each step. Here the process starts at the red rectangle, blue is the second step and green the last (25 steps in total). }
     \includegraphics[width=0.6\textwidth]{images/conv_layer.png}
     \label{fig:conv_layer}
 \end{figure}
@@ -207,8 +207,8 @@ Additionally, each filter has its own bias $b_k$, which is added to the activati
 In order for the output to be the same size as the input, numbers must be added to the input, since a kernel that is greater than one in any direction cannot cross an edge for the input (and the step must be 1 by 1).
 So padding is used to solve this problem by (typically) adding zeros around the input, resulting in a technique called zero padding.
 
-By using convolutional layers instead of dense layers, the model size is further reduced (295kb to 232kb) and accuracy is increased by a few percent. Adding pooling reduces the size further to 149kb and further improves the accuracy\footnote{Link to the respective notebooks: \url{https://aka.klawr.de/srp\#9} and \url{https://aka.klawr.de/srp\#10}.
-Pooling is a technique where a kernel (similar to the core of Convolutional Layers) scans over the input layer}.
+By using convolutional layers instead of dense layers, the model size is further reduced (295kb to 232kb) and accuracy is increased by a few percent. Adding pooling reduces the size further to 149kb and further improves the accuracy\footnote{Link to the respective notebooks: \aka{https://github.com/klawr/deepmech/blob/master/reports/srp/notebooks/6.4-convolutional_layer.ipynb} and \aka{https://github.com/klawr/deepmech/blob/master/reports/srp/notebooks/6.4.1-convolutional_layer_pooling.ipynb}}.
+Pooling is a technique where a kernel (similar to the core of Convolutional Layers) scans over the input layer.
 In the linked notebook, a kernel was used in pairs, taking the maximum value of the kernel and passing only the maximum value, thus halving the output size in width and height\footnote{This is appropriately called \name{MaxPooling}.}.
 
 \subsection{Tuning algorithms}
@@ -222,7 +222,7 @@ With two hyperparameters, this would mean checking each value on a two-dimension
 Another approach frequently used in practice is the random search.
 The random search works on the principle of randomly assigning hyperparameters and thus testing different models without any advantage of a combination.
 Of course, this (most likely) does not lead to an optimal result, but in practice this approach is often used because it usually gives an acceptable result by testing a wide range of possible configurations.
-A notebook was created to show the implementation of \name{keras tuner} in this project at \url{https://aka.klawr.de/srp\#12}.
+A notebook was created to show the implementation of \name{keras tuner} in this project at \aka{https://github.com/klawr/deepmech/blob/master/reports/srp/notebooks/6.5.2-random_tuner.ipynb}.
 
 Some more sophisticated methods are based on the random search approach, in which the results of the random search are repeatedly examined and then the hyperparameters are adjusted in favor of those that promise to yield better models.
 This approach is called zooming, because after each iteration you zoom into the most promising range of hyperparameters.
@@ -238,7 +238,7 @@ This method promises a much better use of resources and will most likely be able
 The final model tuner is designed to accept a \code{Hyperparameter} object that is supplied to a function that returns the respective model:
 
 % TODO python
-\begin{lstlisting}
+\begin{lstlisting}[caption={Function to find optimized model.}]
 def create_model(hp):
     model = models.Sequential()
     model.add(layers.Conv2D(2**hp.Int('2**num_filter_0', 4, 6),
@@ -279,7 +279,7 @@ def create_model(hp):
 This function extends \ref{lst:first_model} by implementing hyperparameters using \code{hyperparameter} of \name{keras tuner}.
 This will be implemented later using a custom class\footnote{The results are logged with \name{TensorBoard}, whose API is not yet supported by \name{keras tuner} itself. So the tuner is inherited from a custom class}:
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Definition of model tuner.}]
 tuner = customTuner(
     create_model,
     hyperparameters=hp,
@@ -292,7 +292,7 @@ tuner = customTuner(
 
 The training that was previously performed by the \code{fit} function is now performed by the \code{search} function of the tuner:
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Searching the best model.}]
 tuner.search(
     train_dataset,
     validation_data=validation_dataset,
@@ -303,9 +303,9 @@ tuner.search(
     callbacks=callbacks)
 \end{lstlisting}
 
-Another note to take here is that the generators used in \ref{ch:data_augmentation} have been replaced by custom functions to augment data. The data is then preprocessed using protocol buffers(\name{protobufs})\footnote{The final notebook using these can be found at \url{https://aka.klawr.de/srp\#11}}.
+Another note to take here is that the generators used in \ref{ch:data_augmentation} have been replaced by custom functions to augment data. The data is then preprocessed using protocol buffers(\name{protobufs})\footnote{The final notebook using these can be found at \aka{https://github.com/klawr/deepmech/blob/master/reports/srp/notebooks/6.5.1-manual_data_augmentation.ipynb}}.
 By pre-processing the image data in advance, the loading time of the data is significantly reduced.
-The code used for this can be viewed here: \url{https://aka.klawr.de/srp\#13}.
+The code used for this can be viewed here: \aka{https://github.com/klawr/deepmech/blob/master/reports/srp/notebooks/6.5.3-hyperband.ipynb}.
 
 After checking the data, an accuracy of 96.7\% on the test data was achieved with a model size of 4.3mb.
 
@@ -321,7 +321,7 @@ The final model has a size of 207kb with an accuracy of 99.3\% and a loss of 0.0
 
 The model is summarized as:
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Definition of final model.}]
 model = models.Sequential()
 model.add(layers.Conv2D(16, (4,4), activation='relu', padding='same',
     input_shape=(32, 32, 1)))
@@ -336,4 +336,4 @@ model.compile(loss='sparse_categorical_crossentropy',
     optimizer=optimizer,metrics=['acc'])
 \end{lstlisting}
 
-The code for the model creation can be viewed at \url{https://aka.klawr.de/srp\#14}.
+The code for the model creation can be viewed at \aka{https://github.com/klawr/deepmech/blob/master/reports/srp/code/symbol_classifier.py}.

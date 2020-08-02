@@ -31,7 +31,7 @@ The names of the different classes are set at the beginning of the script, with 
 Consideration of \textit{not found} is especially important because later, when searching for any image, most responses are likely to contain no symbol at all.
 
 With this script 500 symbols are created for each class.
-It is expected that these images will be augmented later to counteract overfitting, but for the task of distinguishing three different classes, this set should be sufficient\footnote{The code can be viewed at \url{https://aka.klawr.de/srp\#4}}.
+It is expected that these images will be augmented later to counteract overfitting, but for the task of distinguishing three different classes, this set should be sufficient\footnote{The code can be viewed at \aka{https://github.com/klawr/deepmech/tree/master/reports/srp/code/data_generation.py}}.
 
 \begin{figure}
     \centering
@@ -50,6 +50,6 @@ It is expected that these images will be augmented later to counteract overfitti
         \caption{Bases}
         \label{fig:25_bases}
     \end{subfigure}
-    \caption{Some examples of the data created with the described method. Only these three classes were created for the first tests. The images are created centered in a square, so that later any images can be scanned, using squares of different sizes as templates. }
+    \caption[Examples of node data for training]{Some examples of the data created with the described method. Only these three classes were created for the first tests. The images are created centered in a square, so that later any images can be scanned, using squares of different sizes as templates. }
     \label{fig:generated_data_samples}
 \end{figure}
