@@ -11,7 +11,7 @@
     │                         or if notebooks are not sufficient
     ├── images             <- Images used in the report.
     ├── notebooks          <- Jupyter notebooks. Naming convention is the respective chapter
-                              and a short `-` delimited description, e.g. 5-first_model.ipynb.
-    ├── sections           <- LaTeX chapter used in the main document.
+    │                         and a short `-` delimited description, e.g. 5-first_model.ipynb.
+    └── sections           <- LaTeX chapter used in the main document.
 
 ---
