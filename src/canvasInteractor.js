@@ -5,7 +5,8 @@
  * @license MIT License
  */
 /* jshint -W014 */
-
+// Managing multiple canvases per static interactor as singleton ... 
+// .. using a single requestAnimationFrame loop !
 const canvasInteractor = {
     create() {
         const o = Object.create(this.prototype);
@@ -22,7 +23,7 @@ const canvasInteractor = {
     tick(time) {
         canvasInteractor.fpsCount(time);
         for (const instance of canvasInteractor.instances) {
-            instance.notify('tick',{t:time,dt:(time-instance.t)/1000,dirty:instance.dirty});
+            instance.notify('tick',{t:time,dt:(time-instance.t)/1000,dirty:instance.dirty});  // notify listeners .. 
             instance.t = time;
             instance.dirty = false;
         }
@@ -40,7 +41,7 @@ const canvasInteractor = {
     },
     fpsCount(time) {
         if (time - canvasInteractor.fpsOrigin > 1000) {  // one second interval reached ...
-            let fps = ~~(canvasInteractor.frames*1000/(time - canvasInteractor.fpsOrigin) + 0.5); // ~~ as Math.floor()
+            const fps = ~~(canvasInteractor.frames*1000/(time - canvasInteractor.fpsOrigin) + 0.5); // ~~ as Math.floor()
             if (fps !== canvasInteractor.fps)
                 for (const instance of canvasInteractor.instances)
                     instance.notify('fps',canvasInteractor.fps=fps);
@@ -68,12 +69,11 @@ const canvasInteractor = {
                 delta: 0,
                 inside: false,
                 hit: false,  // something hit by pointer ...
+                dscl: 1,     // for zooming ...
                 eps: 5       // some pixel tolerance ...
             };
             this.dirty = true;
-            this.init(ctx);
-        },
-        init(ctx) {
+            // event handler registration
             const canvas = ctx.canvas;
             canvas.addEventListener("pointermove", this, false);
             canvas.addEventListener("pointerdown", this, false);
@@ -96,26 +96,24 @@ const canvasInteractor = {
 
             this.endTimer();
 
-            // delete this.signals;
-            // delete this.evt;
-            // delete this.ctx;
+            delete this.signals;
+            delete this.evt;
+            delete this.ctx;
 
             return this;
         },
         // canvas interaction interface
         handleEvent(e) {
             if (e.type in this && (e.isPrimary || e.type === 'wheel')) {  // can I handle events of type e.type .. ?
-                let bbox = e.target.getBoundingClientRect && e.target.getBoundingClientRect() || {left:0, top:0},
-                    x = e.clientX - Math.floor(bbox.left),
-                    y = e.clientY - Math.floor(bbox.top),
-//                    x = Math.round(e.clientX - Math.floor(bbox.left)),
-//                    y = Math.round(e.clientY - Math.floor(bbox.top)),
-                    btn = e.buttons !== undefined ? e.buttons : e.button || e.which;
+                const bbox = e.target.getBoundingClientRect && e.target.getBoundingClientRect() || {left:0, top:0},
+                      x = e.clientX - Math.floor(bbox.left),
+                      y = e.clientY - Math.floor(bbox.top),
+                      btn = e.buttons !== undefined ? e.buttons : e.button || e.which;
 
                 this.evt.type = e.type;
                 this.evt.basetype = e.type;  // obsolete now ... ?
-                this.evt.xi = this.evt.x;  // interim coordinates ...
-                this.evt.yi = this.evt.y;  // ... of previous event.
+                this.evt.xi = this.evt.x;    // interim coordinates ...
+                this.evt.yi = this.evt.y;    // ... of previous event.
                 this.evt.dx = this.evt.dy = 0;
                 this.evt.x = x;
                 this.evt.y = this.view.cartesian ? this.ctx.canvas.height - y : y;
@@ -128,11 +126,8 @@ const canvasInteractor = {
 
                 if (this.isDefaultPreventer(e.type))
                     e.preventDefault();
-                this[e.type]();  // handle specific event .. ?
-                this.notify(this.evt.type,this.evt);
-//                console.log('notify:'+this.evt.type)
-//                this.notify('pointer',this.evt);
-//                console.log({l:e.target.offsetLeft,t:e.target.offsetTop})
+                this[e.type]();  // handle specific event .. !
+                this.notify(this.evt.type,this.evt);  // .. tell the world .. !
             }
             else
                 console.log(e)
@@ -145,9 +140,7 @@ const canvasInteractor = {
                 this.evt.dyusr = this.evt.dy/this.view.scl;
                 this.evt.xusr -= this.evt.dxusr;  // correct usr coordinates ...
                 this.evt.yusr -= this.evt.dyusr;
-                if (!this.evt.hit) {      // perform panning ...
-                    this.view.x += this.evt.dx;
-                    this.view.y += this.evt.dy;
+                if (!this.evt.hit) {      // let outer app perform panning ...
                     this.evt.type = 'pan';
                 }
                 else
@@ -172,11 +165,8 @@ const canvasInteractor = {
             this.evt.inside = true;
         },
         wheel() {
-            let scl = this.evt.delta>0?8/10:10/8;
-            this.view.x = this.evt.x + scl*(this.view.x - this.evt.x);
-            this.view.y = this.evt.y + scl*(this.view.y - this.evt.y);
-            this.evt.eps /= scl;
-            this.view.scl *= scl;
+            this.evt.dscl = this.evt.delta>0?8/10:10/8;
+            this.evt.eps /= this.evt.dscl;
             this.dirty = true;
         },
         isDefaultPreventer(type) {
@@ -189,15 +179,14 @@ const canvasInteractor = {
             return p; 
         },
         // tickTimer interface
-        startTimer() {
-            this.notify('timerStart',this);
-            this.time0 = this.fpsOrigin = performance.now();
+        startTimer() {  // shouldn't there be a global startTimer method ?
             canvasInteractor.add(this);
+            this.notify('timerStart',this);                    // notify potential listeners .. 
             return this;
         },
         endTimer() {
-            canvasInteractor.remove(this);
-            this.notify('timerEnd',this.t/1000);
+            this.notify('timerEnd',this.t/1000);              // notify potential listeners .. 
+            canvasInteractor.remove(this);      
             return this;
         },
         // observable interface
