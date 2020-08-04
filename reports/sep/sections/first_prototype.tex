@@ -602,7 +602,8 @@ When the drawing mode is active this behavior has to be replaced.
 When the draw mode is active and \code{pointerdown} is issued an array is created which is then filled by the coordinates of the pointer on each \code{tick}\footnote{A \code{tick} is issued by the \name{canvasInteractor} on each requestAnimationFrame}.
 This approach creates one \code{ply} element for each consecutive line, which can be dragged or deleted by changing the respective mode using the  \name{g2.selector}.
 
-By starting a prediction the content of the canvas is fed into the trained models, as was discussed in chapter \ref{ch:conversion_to_web_context}.
-The prediction does not return anything here, but updates the \name{mec2} model.
+By starting a prediction the content of the canvas is fed into the trained models, as discussed in chapter \ref{ch:conversion_to_web_context}.
+The resulting prediction updates the \name{mec2} model.
 This is similar to the generation of bounding boxes, but instead of drawing them onto the canvas to show the results the respective coordinates are added to the \name{mec2} model.
+The assembled \name{mec2} model can than be rendered and interacted with.
 
