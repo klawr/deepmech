@@ -1,5 +1,7 @@
 # Student Engineering Project for deepmech
 
+# 🚧 PLEASE NOTE THAT THIS IS A WORK IN PROGRESS 🚧
+
 ## Organization of the Student Engineering Project:
 
     ├── document.bib       <- biblatex file containing all the references.
