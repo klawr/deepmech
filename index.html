@@ -6,9 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="Description" content="Detect mechanical linkages using computer vision.">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>mec2deepmech</title>
-
-
+    <title>deepmech</title>
 
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -24,28 +22,96 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
+            /* display: grid;
+            grid-template-columns: 300 auto; */
         }
+
+        /* body > nav {
+            overflow-y: scroll;
+            /* Hide scrollbar for Firefox
+            scrollbar-width: none;
+            grid-column: 1;
+            background: var(--bgcol-main);
+            color: var(--color-main);
+            position: sticky;
+            width: 275px;
+            top: 0.5rem;
+            height: 100vh;
+            margin: 0.5em 0.5em 0.5em 0;
+            border-right: 1px solid;
+            align-self: start;
+        }
+
+        body > mec-2 {
+            grid-column: 2;
+            display: block;
+        } */
     </style>
 </head>
 
 
 <body>
-    <mec-2 nav id="mecElement" cartesian grid x0="0" y0="0">
-        {}
+    <nav>
+        <div id="deepmech_nav"></div>
+    </nav>
+    <mec-2 id="mecElement" cartesian grid x0="100" y0="100">
+        {
+        "nodes":[
+        {"id":"A0","x":0,"y":0,"base":true},
+        {"id":"B0","x":200,"y":0,"base":true},
+        {"id":"A","x":0,"y":50},
+        {"id":"B","x":250,"y":120},
+        {"id":"C","x":125,"y":150},
+        {"id":"C0","x":350,"y":0,"base":true}
+        ],
+        "constraints":[
+        {"id":"a","p1":"A0","p2":"A","len":{"type":"const"},
+        "ori":{"type":"drive","func":"linear","Dt":1, "input": 0}},
+        {"id":"b","p1":"A","p2":"B","len":{"type":"const"}},
+        {"id":"c","p1":"B0","p2":"B","len":{"type":"const"}},
+        {"id":"b2","p1":"A","p2":"C","len":{"type":"const"},"ori":{"type":"const","ref":"b"}}
+        ],
+        "views":[
+        {"show":"pos","of":"C","as":"trace","mode":"preview","Dt":2,"fill":"orange"},
+        {"show":"vel","of":"C","as":"vector","at":"C0"}
+        ]
+        }
     </mec-2>
+
+
     <script>
         const mecElement = document.getElementById('mecElement');
         // TODO allow resizing...
-        mecElement.setAttribute('width', Math.min(globalThis.window.innerWidth, 800));
-        mecElement.setAttribute('height', Math.min(globalThis.window.innerHeight, 800)); // nav height is 22.67...
+        mecElement.setAttribute('width', mecElement.width || globalThis.window.innerWidth);
+        // nav height is 22.67 -> TODO nav is going to be replaced
+        mecElement.setAttribute('height', mecElement.height || globalThis.window.innerHeight);
     </script>
     <!-- Load models -->
     <script src="dist/models.js"></script>
     <script src="third_party/tf.min.js"></script>
     <!-- Load mec2 -->
     <script src="third_party/mec2.html.js"></script>
+
+    <!-- <script src="../../HiWi/forks/mec2/bin/g2.js"></script>
+    <script src="../../HiWi/forks/mec2/bin/g2.chart.element.js"></script>
+    <script src="../../HiWi/forks/mec2/bin/g2.selector.js"></script>
+    <script src="../../HiWi/forks/mec2/bin/mec.slider.js"></script>
+    <script src="../../HiWi/forks/mec2/bin/canvasInteractor.js"></script>
+    <script src="../../HiWi/forks/mec2/src/mec.core.js"></script>
+    <script src="../../HiWi/forks/mec2/src/mec.model.js"></script>
+    <script src="../../HiWi/forks/mec2/src/mec.node.js"></script>
+    <script src="../../HiWi/forks/mec2/src/mec.constraint.js"></script>
+    <script src="../../HiWi/forks/mec2/src/mec.msg.en.js"></script>
+    <script src="../../HiWi/forks/mec2/src/mec.drive.js"></script>
+    <script src="../../HiWi/forks/mec2/src/mec.load.js"></script>
+    <script src="../../HiWi/forks/mec2/src/mec.shape.js"></script>
+    <script src="../../HiWi/forks/mec2/src/mec.view.js"></script>
+    <script src="../../HiWi/forks/mec2/bin/mec.htmlelement.js"></script> -->
+
     <!-- Implement deepmech into mec2 (this is going to be depreceated using react) -->
-    <script src="dist/mec.deepmech.js"></script>
+    <!-- <script src="dist/mec.deepmech.js"></script> -->
+
+    <script src="dist/deepmech_bundle.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function () {
@@ -53,8 +119,13 @@
                     // Registration was successful
                     console.log('ServiceWorker registration successful with scope: ', registration.scope);
                 }, function (err) {
-                    // registration failed :
-                    console.log('ServiceWorker registration failed: ', err);
+                    if (window.document.URL.substring(0, 7) === "file://") {
+                        // running locally
+                        console.log('Happy coding! 😊')
+                    } else {
+                        // registration failed :
+                        console.log('ServiceWorker registration failed: ', err);
+                    }
                 });
             });
         }
