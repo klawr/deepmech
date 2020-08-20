@@ -1,0 +1,23 @@
+{
+  "name": "deepmech",
+  "version": "0.0.1",
+  "description": "Working with mechanical linkages using Machine Learning",
+  "main": "sw.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/klawr/deepmech.git"
+  },
+  "keywords": [
+    "detection",
+    "symbols",
+    "student",
+    "mechanical",
+    "linkages"
+  ],
+  "author": "Kai Lawrence",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/klawr/deepmech/issues"
+  },
+  "homepage": "https://deepmech.klawr.de"
+}

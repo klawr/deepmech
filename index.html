@@ -39,10 +39,13 @@
         mecElement.setAttribute('width', Math.min(globalThis.window.innerWidth, 800));
         mecElement.setAttribute('height', Math.min(globalThis.window.innerHeight, 800)); // nav height is 22.67...
     </script>
-    <script src="src/models.js"></script>
-    <script src="src/tf.min.js"></script>
-    <script src="src/mec2.html.js"></script>
-    <script src="src/mec.deepmech.js"></script>
+    <!-- Load models -->
+    <script src="dist/models.js"></script>
+    <script src="third_party/tf.min.js"></script>
+    <!-- Load mec2 -->
+    <script src="third_party/mec2.html.js"></script>
+    <!-- Implement deepmech into mec2 (this is going to be depreceated using react) -->
+    <script src="dist/mec.deepmech.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function () {
@@ -50,7 +53,7 @@
                     // Registration was successful
                     console.log('ServiceWorker registration successful with scope: ', registration.scope);
                 }, function (err) {
-                    // registration failed :(
+                    // registration failed :
                     console.log('ServiceWorker registration failed: ', err);
                 });
             });
