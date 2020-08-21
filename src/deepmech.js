@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Button from '@material-ui/core/Button';
 import Drawer from '@material-ui/core/Drawer';
+import Grid from '@material-ui/core/Grid'
 import IconButton from '@material-ui/core/IconButton';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -25,12 +25,15 @@ function DeepmechNav() {
                     <ChevronLeftIcon />
                 </IconButton>
                 <IconButton onClick={() => mecElement.run()}>
-                    <PlayArrowIcon/>
+                    <PlayArrowIcon />
                 </IconButton>
             </Drawer>
-            <IconButton onClick={toggleDrawer}>
-                <ChevronRightIcon />
-            </IconButton>
+            <Grid container direction="row">
+                <IconButton onClick={toggleDrawer}>
+                    <ChevronRightIcon />
+                </IconButton>
+                <h3> 🚧 Work in progress 🚧 </h3>
+            </Grid>
         </div>
     );
 }
