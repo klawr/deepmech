@@ -9,6 +9,7 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ClearIcon from '@material-ui/icons/Clear';
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 // import { makeStyles, useTheme } from '@material-ui/core/styles';
 
 function DeepmechNav() {
@@ -20,13 +21,15 @@ function DeepmechNav() {
         setOpen(!open);
     };
 
+    const ref = mecElement;
+
     const run = () => {
-        setPausing(!mecElement.pausing);
+        setPausing(!ref.pausing);
         mecElement.run();
     }
 
     const toggleGravity = () => {
-        setGravity(!mecElement.gravity);
+        setGravity(!ref.gravity);
         mecElement.toggleGravity();
     }
 
@@ -45,6 +48,9 @@ function DeepmechNav() {
                 <IconButton onClick={toggleGravity}>
                     g {gravity ? <ClearIcon /> : <ArrowDownwardIcon />}
                 </IconButton>
+                <IconButton onClick={ref.reset}>
+                    <RotateLeftIcon />
+                </IconButton>
             </Drawer>
             <Grid container direction="row">
                 <IconButton onClick={toggleDrawer}>
@@ -52,7 +58,7 @@ function DeepmechNav() {
                 </IconButton>
                 <h3> 🚧 Work in progress 🚧 </h3>
             </Grid>
-        </div >
+        </div>
     );
 }
 
