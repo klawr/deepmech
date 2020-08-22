@@ -82,20 +82,20 @@ function DeepmechNav() {
                 open={open}
                 anchor="left"
                 variant="persistent">
-                    <List>
+                <List>
 
-                <ListItem onClick={toggleDrawer}>
-                    <ChevronLeftIcon />
-                </ListItem>
-                <ListItem onClick={run}>
-                    {pausing ? <PlayArrowIcon /> : <PauseIcon />}
-                </ListItem>
-                <ListItem onClick={toggleGravity}>
-                    g {gravity ? <ClearIcon /> : <ArrowDownwardIcon />}
-                </ListItem>
-                <ListItem onClick={ref.reset}>
-                    <RotateLeftIcon />
-                </ListItem>
+                    <ListItem onClick={toggleDrawer}>
+                        <ChevronLeftIcon />
+                    </ListItem>
+                    <ListItem onClick={run}>
+                        {pausing ? <PlayArrowIcon /> : <PauseIcon />}
+                    </ListItem>
+                    <ListItem onClick={toggleGravity}>
+                        g {gravity ? <ClearIcon /> : <ArrowDownwardIcon />}
+                    </ListItem>
+                    <ListItem onClick={ref.reset}>
+                        <RotateLeftIcon />
+                    </ListItem>
                 </List>
             </Drawer>
             <AppBar position="fixed"

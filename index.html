@@ -8,6 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>deepmech</title>
 
+    <link rel="stylesheet" href="dist/style.css">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -15,51 +16,19 @@
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
-    </style>
 </head>
-
 
 <body>
     <div id="deepmech_nav"></div>
-    <mec-2 id="mecElement" cartesian grid x0="100" y0="100">
-        {
-        "nodes":[
-        {"id":"A0","x":0,"y":0,"base":true},
-        {"id":"B0","x":200,"y":0,"base":true},
-        {"id":"A","x":0,"y":50},
-        {"id":"B","x":250,"y":120},
-        {"id":"C","x":125,"y":150},
-        {"id":"C0","x":350,"y":0,"base":true}
-        ],
-        "constraints":[
-        {"id":"a","p1":"A0","p2":"A","len":{"type":"const"},
-        "ori":{"type":"free"}},
-        {"id":"b","p1":"A","p2":"B","len":{"type":"const"}},
-        {"id":"c","p1":"B0","p2":"B","len":{"type":"const"}},
-        {"id":"b2","p1":"A","p2":"C","len":{"type":"const"},"ori":{"type":"const","ref":"b"}}
-        ],
-        "views":[
-        {"show":"pos","of":"C","as":"trace","mode":"preview","Dt":2,"fill":"orange"},
-        {"show":"vel","of":"C","as":"vector","at":"C0"}
-        ]
-        }
-    </mec-2>
+    <mec-2 id="mecElement" cartesian grid x0="100" y0="100"></mec-2>
     <script>
-        const mecElement = document.getElementById('mecElement');
+        // const mecElement = document.getElementById('mecElement');
         
-        window.onresize = function () {
-            mecElement.width = globalThis.window.innerWidth;
-            mecElement.height = globalThis.window.innerHeight;
-        };
+
     </script>
 
     <!-- Load models -->
+    <script src="dist/model.js"></script>
     <script src="dist/models.js"></script>
     <script src="third_party/tf.min.js"></script>
     <!-- Load mec2 -->
