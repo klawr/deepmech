@@ -30,6 +30,10 @@ const useStyle = makeStyles((theme) => ({
     drawerPaper: {
         width: drawerWidth,
     },
+    right: {
+        marginLeft: 'auto',
+        marginRight: 0,
+    },
     hide: {
         display: 'none',
     },
@@ -50,13 +54,18 @@ const useStyle = makeStyles((theme) => ({
 }));
 
 function DeepmechNav() {
-    const [open, setOpen] = React.useState(false);
+    const [openLeft, setOpenLeft] = React.useState(false);
+    const [openRight, setOpenRight] = React.useState(false);
     const [gravity, setGravity] = React.useState(false);
     const [pausing, setPausing] = React.useState(true);
 
-    const toggleDrawer = () => {
-        setOpen(!open);
+    const toggleLeftDrawer = () => {
+        setOpenLeft(!openLeft);
     };
+
+    const toggleRightDrawer = () => {
+        setOpenRight(!openRight);
+    }
 
     const ref = mecElement;
 
@@ -76,15 +85,12 @@ function DeepmechNav() {
         <div className={classes.root}>
             <Drawer
                 className={classes.drawer}
-                classes={{
-                    paper: classes.drawerPaper,
-                }}
-                open={open}
+                classes={{ paper: classes.drawerPaper }}
+                open={openLeft}
                 anchor="left"
                 variant="persistent">
                 <List>
-
-                    <ListItem onClick={toggleDrawer}>
+                    <ListItem onClick={toggleLeftDrawer}>
                         <ChevronLeftIcon />
                     </ListItem>
                     <ListItem onClick={run}>
@@ -98,15 +104,32 @@ function DeepmechNav() {
                     </ListItem>
                 </List>
             </Drawer>
+            <Drawer
+                className={classes.drawer}
+                classes={{ paper: classes.drawerPaper }}
+                open={openRight}
+                anchor="right"
+                variant="persistent">
+                <List>
+                    <ListItem onClick={toggleRightDrawer}>
+                        <ChevronRightIcon />
+                    </ListItem>
+                </List>
+            </Drawer>
             <AppBar position="fixed"
-                className={clsx(classes.appBar, { [classes.appBarShift]: open, })}>
+                className={clsx(classes.appBar, { [classes.appBarShift]: openLeft, })}>
                 <Grid container direction="row">
                     <IconButton
-                        onClick={toggleDrawer}
-                        className={clsx(classes.menuButton, open && classes.hide)} >
+                        onClick={toggleLeftDrawer}
+                        className={clsx(classes.menuButton, openLeft && classes.hide)} >
                         <ChevronRightIcon />
                     </IconButton>
                     <h3>&nbsp; 🚧 Work in progress 🚧 </h3>
+                    <IconButton
+                        onClick={toggleRightDrawer}
+                        className={clsx(classes.right, classes.menuButton, openRight && classes.hide)} >
+                        <ChevronLeftIcon />
+                    </IconButton>
                 </Grid>
             </AppBar>
         </div>
