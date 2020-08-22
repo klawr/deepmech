@@ -17,35 +17,10 @@
     <meta name="theme-color" content="#ffffff">
     <style>
         body {
-            width: 100%;
-            height: 100%;
             margin: 0;
             padding: 0;
             overflow: hidden;
-            /* display: grid;
-            grid-template-columns: 300 auto; */
         }
-
-        /* body > nav {
-            overflow-y: scroll;
-            /* Hide scrollbar for Firefox
-            scrollbar-width: none;
-            grid-column: 1;
-            background: var(--bgcol-main);
-            color: var(--color-main);
-            position: sticky;
-            width: 275px;
-            top: 0.5rem;
-            height: 100vh;
-            margin: 0.5em 0.5em 0.5em 0;
-            border-right: 1px solid;
-            align-self: start;
-        }
-
-        body > mec-2 {
-            grid-column: 2;
-            display: block;
-        } */
     </style>
 </head>
 
@@ -77,11 +52,13 @@
     </mec-2>
     <script>
         const mecElement = document.getElementById('mecElement');
-        // TODO allow resizing...
-        mecElement.setAttribute('width', mecElement.width || globalThis.window.innerWidth);
-        // nav height is 22.67 -> TODO nav is going to be replaced
-        mecElement.setAttribute('height', mecElement.height || globalThis.window.innerHeight);
+        
+        window.onresize = function () {
+            mecElement.width = globalThis.window.innerWidth;
+            mecElement.height = globalThis.window.innerHeight;
+        };
     </script>
+
     <!-- Load models -->
     <script src="dist/models.js"></script>
     <script src="third_party/tf.min.js"></script>
@@ -125,7 +102,6 @@
                 });
             });
         }
-
     </script>
 </body>
 
