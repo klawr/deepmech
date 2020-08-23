@@ -114,6 +114,11 @@ function DeepmechNav() {
                     <ListItem onClick={toggleRightDrawer}>
                         <ChevronRightIcon />
                     </ListItem>
+                    {Object.entries(JSON.parse(mecElement._model.asJSON())).map(list => (
+                        <ListItem>
+                            {list[0]}
+                        </ListItem>
+                    ))}
                 </List>
             </Drawer>
             <AppBar position="fixed"
