@@ -91,6 +91,32 @@ function sanitizeValue(val) {
     }
 }
 
+function createTable(list) {
+    return <TableContainer>
+        <Table>
+            <TableHead>
+                <TableRow>
+                    {createHeader(list).map(key => (
+                        <TableCell key={key}>
+                            <b>{key}</b>
+                        </TableCell>))}
+                </TableRow>
+            </TableHead>
+            <TableBody>
+                {list.map && list.map((elm, idx) => (
+                    <TableRow key={idx}>
+                        {Object.entries(elm).map(val => (
+                            <TableCell key={val[0]}>
+                                {sanitizeValue(val[1])}
+                            </TableCell>
+                        ))}
+                    </TableRow>
+                ))}
+            </TableBody>
+        </Table>
+    </TableContainer>
+}
+
 function DeepmechNav() {
     const [openLeft, setOpenLeft] = React.useState(false);
     const [openRight, setOpenRight] = React.useState(false);
@@ -153,25 +179,12 @@ function DeepmechNav() {
                         <ChevronRightIcon />
                     </ListItem>
                     {Object.entries(JSON.parse(mecElement._model.asJSON())).map(list => (
-                        <Accordion>
+                        <Accordion key={list[0]}>
                             <AccordionSummary>
                                 {list[0]}
                             </AccordionSummary>
                             <AccordionDetails>
-                                <TableContainer>
-                                    <Table>
-                                        <TableHead>
-                                            <TableRow>
-                                                {createHeader(list[1]).map(key => (<TableCell><b>{key}</b></TableCell>))}
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {list[1].map && list[1].map(elm => (<TableRow>
-                                                {Object.values(elm).map(val => (<TableCell>{sanitizeValue(val)}</TableCell>))}
-                                            </TableRow>))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
+                                {createTable(list[1])}
                             </AccordionDetails>
                         </Accordion>
                     ))}
