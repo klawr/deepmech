@@ -15,6 +15,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ClearIcon from '@material-ui/icons/Clear';
+import CreateIcon from '@material-ui/icons/Create';
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
@@ -165,6 +166,9 @@ function DeepmechNav() {
                     </ListItem>
                     <ListItem onClick={ref.reset}>
                         <RotateLeftIcon />
+                    </ListItem>
+                    <ListItem>
+                        <CreateIcon />
                     </ListItem>
                 </List>
             </Drawer>
