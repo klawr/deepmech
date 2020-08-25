@@ -123,6 +123,7 @@ function DeepmechNav() {
     const [openRight, setOpenRight] = React.useState(false);
     const [gravity, setGravity] = React.useState(false);
     const [pausing, setPausing] = React.useState(true);
+    const [drawing, setDrawMode] = React.useState(false);
 
     const toggleLeftDrawer = () => {
         setOpenLeft(!openLeft);
@@ -144,6 +145,10 @@ function DeepmechNav() {
         mecElement.toggleGravity();
     }
 
+    const toggleDrawMode = () => {
+        setDrawMode(!drawing);
+    }
+
     const classes = useStyle();
 
     return (
@@ -154,7 +159,7 @@ function DeepmechNav() {
                 open={openLeft}
                 anchor="left"
                 variant="persistent">
-                <List>
+                <List className={clsx(drawing && classes.hide)}>
                     <ListItem onClick={toggleLeftDrawer}>
                         <ChevronLeftIcon />
                     </ListItem>
@@ -167,7 +172,7 @@ function DeepmechNav() {
                     <ListItem onClick={ref.reset}>
                         <RotateLeftIcon />
                     </ListItem>
-                    <ListItem>
+                    <ListItem onClick={toggleDrawMode}>
                         <CreateIcon />
                     </ListItem>
                 </List>
