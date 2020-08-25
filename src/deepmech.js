@@ -176,6 +176,14 @@ function DeepmechNav() {
                         <CreateIcon />
                     </ListItem>
                 </List>
+                <List className={clsx(!drawing && classes.hide)}>
+                    <ListItem onClick={toggleLeftDrawer}>
+                        <ChevronLeftIcon />
+                    </ListItem>
+                    <ListItem onClick={toggleDrawMode}>
+                        <RotateLeftIcon />
+                    </ListItem>
+                </List>
             </Drawer>
             <Drawer
                 className={classes.rightDrawer}
