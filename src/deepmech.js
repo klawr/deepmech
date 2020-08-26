@@ -55,6 +55,11 @@ const useStyle = makeStyles((theme) => ({
     hide: {
         display: 'none',
     },
+    drawCanvas: {
+        width: '100vw',
+        height: '100vh',
+        backgroundColor: '#000',
+    },
     appBar: {
         transition: theme.transitions.create(['margin', 'width'], {
             easing: theme.transitions.easing.sharp,
@@ -153,6 +158,7 @@ function DeepmechNav() {
 
     return (
         <div className={classes.root}>
+            <canvas className={clsx(classes.drawCanvas, !drawing && classes.hide)} />
             <Drawer
                 className={classes.leftDrawer}
                 classes={{ paper: classes.leftDrawerPaper }}
