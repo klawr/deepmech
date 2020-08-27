@@ -15,6 +15,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ClearIcon from '@material-ui/icons/Clear';
+import CreateIcon from '@material-ui/icons/Create';
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
@@ -53,6 +54,11 @@ const useStyle = makeStyles((theme) => ({
     },
     hide: {
         display: 'none',
+    },
+    drawCanvas: {
+        width: '100vw',
+        height: '100vh',
+        backgroundColor: '#000',
     },
     appBar: {
         transition: theme.transitions.create(['margin', 'width'], {
@@ -145,17 +151,22 @@ function DeepmechNav() {
         mecElement.toggleGravity();
     }
 
+    const toggleDrawMode = () => {
+        setDrawMode(!drawing);
+    }
+
     const classes = useStyle();
 
     return (
         <div className={classes.root}>
+            <canvas className={clsx(classes.drawCanvas, !drawing && classes.hide)} />
             <Drawer
                 className={classes.leftDrawer}
                 classes={{ paper: classes.leftDrawerPaper }}
                 open={state.left}
                 anchor="left"
                 variant="persistent">
-                <List>
+                <List className={clsx(drawing && classes.hide)}>
                     <ListItem onClick={toggleLeftDrawer}>
                         <ChevronLeftIcon />
                     </ListItem>
@@ -166,6 +177,17 @@ function DeepmechNav() {
                         g {state.gravity ? <ClearIcon /> : <ArrowDownwardIcon />}
                     </ListItem>
                     <ListItem onClick={ref.reset}>
+                        <RotateLeftIcon />
+                    </ListItem>
+                    <ListItem onClick={toggleDrawMode}>
+                        <CreateIcon />
+                    </ListItem>
+                </List>
+                <List className={clsx(!drawing && classes.hide)}>
+                    <ListItem onClick={toggleLeftDrawer}>
+                        <ChevronLeftIcon />
+                    </ListItem>
+                    <ListItem onClick={toggleDrawMode}>
                         <RotateLeftIcon />
                     </ListItem>
                 </List>
