@@ -26,7 +26,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 
-const leftDrawerWidth = 100;
+const leftDrawerWidth = "auto";
 const rightDrawerWidth = "auto";
 
 const useStyle = makeStyles((theme) => ({
@@ -118,28 +118,30 @@ function createTable(list) {
 }
 
 function DeepmechNav() {
-    const [openLeft, setOpenLeft] = React.useState(false);
-    const [openRight, setOpenRight] = React.useState(false);
-    const [gravity, setGravity] = React.useState(false);
-    const [pausing, setPausing] = React.useState(true);
+    const [state, toggleState] = React.useState({
+        left: false,
+        right: false,
+        gravity: false,
+        pausing: true
+    });
 
     const toggleLeftDrawer = () => {
-        setOpenLeft(!openLeft);
+        toggleState({ ...state, left: !state.left });
     };
 
     const toggleRightDrawer = () => {
-        setOpenRight(!openRight);
+        toggleState({ ...state, right: !state.right });
     }
 
     const ref = mecElement;
 
     const run = () => {
-        setPausing(!ref.pausing);
+        toggleState({ ...state, pausing: !state.pausing });
         mecElement.run();
     }
 
     const toggleGravity = () => {
-        setGravity(!ref.gravity);
+        toggleState({ ...state, gravity: !state.gravity });
         mecElement.toggleGravity();
     }
 
@@ -150,7 +152,7 @@ function DeepmechNav() {
             <Drawer
                 className={classes.leftDrawer}
                 classes={{ paper: classes.leftDrawerPaper }}
-                open={openLeft}
+                open={state.left}
                 anchor="left"
                 variant="persistent">
                 <List>
@@ -158,10 +160,10 @@ function DeepmechNav() {
                         <ChevronLeftIcon />
                     </ListItem>
                     <ListItem onClick={run}>
-                        {pausing ? <PlayArrowIcon /> : <PauseIcon />}
+                        {state.pausing ? <PlayArrowIcon /> : <PauseIcon />}
                     </ListItem>
                     <ListItem onClick={toggleGravity}>
-                        g {gravity ? <ClearIcon /> : <ArrowDownwardIcon />}
+                        g {state.gravity ? <ClearIcon /> : <ArrowDownwardIcon />}
                     </ListItem>
                     <ListItem onClick={ref.reset}>
                         <RotateLeftIcon />
@@ -171,7 +173,7 @@ function DeepmechNav() {
             <Drawer
                 className={classes.rightDrawer}
                 classes={{ paper: classes.rightDrawerPaper }}
-                open={openRight}
+                open={state.right}
                 anchor="right"
                 variant="persistent">
                 <List>
@@ -191,17 +193,17 @@ function DeepmechNav() {
                 </List>
             </Drawer>
             <AppBar position="fixed"
-                className={clsx(classes.appBar, { [classes.appBarShift]: openLeft, })}>
+                className={clsx(classes.appBar, { [classes.appBarShift]: state.leftDrawerWidth, })}>
                 <Grid container direction="row">
                     <IconButton
                         onClick={toggleLeftDrawer}
-                        className={clsx(classes.menuButton, openLeft && classes.hide)} >
+                        className={clsx(classes.menuButton, state.left && classes.hide)} >
                         <ChevronRightIcon />
                     </IconButton>
                     <h3>&nbsp; 🚧 Work in progress 🚧 </h3>
                     <IconButton
                         onClick={toggleRightDrawer}
-                        className={clsx(classes.right, classes.menuButton, openRight && classes.hide)} >
+                        className={clsx(classes.right, classes.menuButton, state.right && classes.hide)} >
                         <ChevronLeftIcon />
                     </IconButton>
                 </Grid>
