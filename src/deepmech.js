@@ -128,7 +128,8 @@ function DeepmechNav() {
         left: false,
         right: false,
         gravity: false,
-        pausing: true
+        pausing: true,
+        drawing: false,
     });
 
     const toggleLeftDrawer = () => {
@@ -152,21 +153,21 @@ function DeepmechNav() {
     }
 
     const toggleDrawMode = () => {
-        setDrawMode(!drawing);
+        setDrawMode({ ...state, drawing: !state.drawing });
     }
 
     const classes = useStyle();
 
     return (
         <div className={classes.root}>
-            <canvas className={clsx(classes.drawCanvas, !drawing && classes.hide)} />
+            <canvas className={clsx(classes.drawCanvas, !state.drawing && classes.hide)} />
             <Drawer
                 className={classes.leftDrawer}
                 classes={{ paper: classes.leftDrawerPaper }}
                 open={state.left}
                 anchor="left"
                 variant="persistent">
-                <List className={clsx(drawing && classes.hide)}>
+                <List className={clsx(state.drawing && classes.hide)}>
                     <ListItem onClick={toggleLeftDrawer}>
                         <ChevronLeftIcon />
                     </ListItem>
@@ -183,7 +184,7 @@ function DeepmechNav() {
                         <CreateIcon />
                     </ListItem>
                 </List>
-                <List className={clsx(!drawing && classes.hide)}>
+                <List className={clsx(!state.drawing && classes.hide)}>
                     <ListItem onClick={toggleLeftDrawer}>
                         <ChevronLeftIcon />
                     </ListItem>
