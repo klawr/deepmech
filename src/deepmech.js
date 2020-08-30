@@ -19,6 +19,7 @@ import CreateIcon from '@material-ui/icons/Create';
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -132,12 +133,19 @@ function DeepmechNav() {
         drawing: false,
     });
 
-    const toggleLeftDrawer = () => {
-        toggleState({ ...state, left: !state.left });
+    const toggleLeftDrawer = (anchor, change) => (event) => {
+        if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+            return;
+        }
+        toggleState({ ...state, left: change });
     };
 
-    const toggleRightDrawer = () => {
-        toggleState({ ...state, right: !state.right });
+    const toggleRightDrawer = (change) => (event) => {
+        if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+            return;
+        }
+
+        toggleState({ ...state, right: change });
     }
 
     const ref = mecElement;
@@ -168,7 +176,7 @@ function DeepmechNav() {
                 anchor="left"
                 variant="persistent">
                 <List className={clsx(state.drawing && classes.hide)}>
-                    <ListItem onClick={toggleLeftDrawer}>
+                    <ListItem onClick={toggleLeftDrawer(false)}>
                         <ChevronLeftIcon />
                     </ListItem>
                     <ListItem onClick={run}>
@@ -185,7 +193,7 @@ function DeepmechNav() {
                     </ListItem>
                 </List>
                 <List className={clsx(!state.drawing && classes.hide)}>
-                    <ListItem onClick={toggleLeftDrawer}>
+                    <ListItem onClick={toggleLeftDrawer(false)}>
                         <ChevronLeftIcon />
                     </ListItem>
                     <ListItem onClick={toggleDrawMode}>
@@ -193,14 +201,13 @@ function DeepmechNav() {
                     </ListItem>
                 </List>
             </Drawer>
-            <Drawer
-                className={classes.rightDrawer}
-                classes={{ paper: classes.rightDrawerPaper }}
+            <SwipeableDrawer
                 open={state.right}
-                anchor="right"
-                variant="persistent">
+                onClose={toggleRightDrawer(false)}
+                onOpen={toggleRightDrawer(true)}
+                anchor="right">
                 <List>
-                    <ListItem onClick={toggleRightDrawer}>
+                    <ListItem onClick={toggleRightDrawer(false)}>
                         <ChevronRightIcon />
                     </ListItem>
                     {Object.entries(JSON.parse(mecElement._model.asJSON())).map(list => (
@@ -214,18 +221,18 @@ function DeepmechNav() {
                         </Accordion>
                     ))}
                 </List>
-            </Drawer>
+            </SwipeableDrawer>
             <AppBar position="fixed"
                 className={clsx(classes.appBar, { [classes.appBarShift]: state.leftDrawerWidth, })}>
                 <Grid container direction="row">
                     <IconButton
-                        onClick={toggleLeftDrawer}
+                        onClick={toggleLeftDrawer(true)}
                         className={clsx(classes.menuButton, state.left && classes.hide)} >
                         <ChevronRightIcon />
                     </IconButton>
                     <h3>&nbsp; 🚧 Work in progress 🚧 </h3>
                     <IconButton
-                        onClick={toggleRightDrawer}
+                        onClick={toggleRightDrawer(true)}
                         className={clsx(classes.right, classes.menuButton, state.right && classes.hide)} >
                         <ChevronLeftIcon />
                     </IconButton>
