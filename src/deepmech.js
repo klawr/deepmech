@@ -42,13 +42,6 @@ const useStyle = makeStyles((theme) => ({
     leftDrawerPaper: {
         width: leftDrawerWidth,
     },
-    rightDrawer: {
-        width: rightDrawerWidth,
-        flexShrink: 0,
-    },
-    rightDrawerPaper: {
-        width: rightDrawerWidth,
-    },
     right: {
         marginLeft: 'auto',
         marginRight: 0,
