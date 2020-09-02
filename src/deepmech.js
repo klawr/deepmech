@@ -16,6 +16,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ClearIcon from '@material-ui/icons/Clear';
 import CreateIcon from '@material-ui/icons/Create';
+import GitHubIcon from '@material-ui/icons/GitHub';
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
@@ -184,6 +185,11 @@ function DeepmechNav() {
                     <ListItem onClick={toggleDrawMode}>
                         <CreateIcon />
                     </ListItem>
+                    <ListItem>
+                        <a href="https://github.com/klawr/deepmech">
+                            <GitHubIcon />
+                        </a>
+                    </ListItem>
                 </List>
                 <List className={clsx(!state.drawing && classes.hide)}>
                     <ListItem onClick={toggleLeftDrawer(false)}>
@@ -231,7 +237,7 @@ function DeepmechNav() {
                     </IconButton>
                 </Grid>
             </AppBar>
-        </div>
+        </div >
     );
 }
 
