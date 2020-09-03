@@ -230,6 +230,7 @@ function DeepmechNav() {
                     className={clsx(classes.menuButton, state.left && classes.hide)} >
                     <ChevronRightIcon />
                 </IconButton>
+                <h3>&nbsp; 🚧 Work in progress 🚧 </h3>
                 <IconButton
                     onClick={toggleRightDrawer(true)}
                     className={clsx(classes.right, classes.menuButton, state.right && classes.hide)} >
