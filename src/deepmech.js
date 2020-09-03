@@ -36,6 +36,9 @@ const useStyle = makeStyles((theme) => ({
     root: {
         display: 'flex'
     },
+    buttonGrid: {
+        position: 'absolute'
+    },
     leftDrawer: {
         width: leftDrawerWidth,
         flexShrink: 0,
@@ -221,22 +224,18 @@ function DeepmechNav() {
                     ))}
                 </List>
             </SwipeableDrawer>
-            <AppBar position="fixed"
-                className={clsx(classes.appBar, { [classes.appBarShift]: state.leftDrawerWidth, })}>
-                <Grid container direction="row">
-                    <IconButton
-                        onClick={toggleLeftDrawer(true)}
-                        className={clsx(classes.menuButton, state.left && classes.hide)} >
-                        <ChevronRightIcon />
-                    </IconButton>
-                    <h3>&nbsp; 🚧 Work in progress 🚧 </h3>
-                    <IconButton
-                        onClick={toggleRightDrawer(true)}
-                        className={clsx(classes.right, classes.menuButton, state.right && classes.hide)} >
-                        <ChevronLeftIcon />
-                    </IconButton>
-                </Grid>
-            </AppBar>
+            <Grid className={classes.buttonGrid} container direction="row">
+                <IconButton
+                    onClick={toggleLeftDrawer(true)}
+                    className={clsx(classes.menuButton, state.left && classes.hide)} >
+                    <ChevronRightIcon />
+                </IconButton>
+                <IconButton
+                    onClick={toggleRightDrawer(true)}
+                    className={clsx(classes.right, classes.menuButton, state.right && classes.hide)} >
+                    <ChevronLeftIcon />
+                </IconButton>
+            </Grid>
         </div >
     );
 }
