@@ -21,6 +21,9 @@ const useStyle = makeStyles((theme) => ({
         marginLeft: 'auto',
         marginRight: 0,
     },
+    rightDrawer: {
+        width: rightDrawerWidth,
+    },
     hide: {
         display: 'none',
     },

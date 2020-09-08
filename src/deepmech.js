@@ -160,6 +160,7 @@ function DeepmechNav() {
             </Drawer>
             <SwipeableDrawer
                 open={state.right}
+                className={classes.rightDrawer}
                 onClose={toggleRightDrawer(false)}
                 onOpen={toggleRightDrawer(true)}
                 anchor="right">
