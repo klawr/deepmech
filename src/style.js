@@ -17,6 +17,10 @@ export const useStyle = makeStyles((theme) => ({
     leftDrawerPaper: {
         width: leftDrawerWidth,
     },
+    listBottom: {
+        position: 'absolute',
+        bottom: '0%'
+    },
     right: {
         marginLeft: 'auto',
         marginRight: 0,

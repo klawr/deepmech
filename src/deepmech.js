@@ -143,6 +143,8 @@ function DeepmechNav() {
                     <ListItem onClick={toggleDrawMode}>
                         <CreateIcon />
                     </ListItem>
+                </List>
+                <List className={classes.listBottom}>
                     <ListItem>
                         <a href="https://github.com/klawr/deepmech">
                             <GitHubIcon />
