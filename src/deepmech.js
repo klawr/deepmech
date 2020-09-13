@@ -5,7 +5,6 @@ import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import AppBar from '@material-ui/core/AppBar';
-import Drawer from '@material-ui/core/Drawer';
 import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -13,13 +12,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import IconButton from '@material-ui/core/IconButton';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
-import ClearIcon from '@material-ui/icons/Clear';
-import CreateIcon from '@material-ui/icons/Create';
-import GitHubIcon from '@material-ui/icons/GitHub';
-import PauseIcon from '@material-ui/icons/Pause';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -28,6 +20,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import { useStyle } from './style';
+import { LeftDrawer } from './LeftDrawer';
 
 function createHeader(arr) {
     const header = [];
@@ -102,63 +95,15 @@ function DeepmechNav() {
 
     const ref = mecElement;
 
-    const run = () => {
-        toggleState({ ...state, pausing: !state.pausing });
-        mecElement.run();
-    }
-
-    const toggleGravity = () => {
-        toggleState({ ...state, gravity: !state.gravity });
-        mecElement.toggleGravity();
-    }
-
-    const toggleDrawMode = () => {
-        setDrawMode({ ...state, drawing: !state.drawing });
-    }
-
     const classes = useStyle();
 
     return (
         <div className={classes.root}>
             <canvas className={clsx(classes.drawCanvas, !state.drawing && classes.hide)} />
-            <Drawer
-                className={classes.leftDrawer}
-                open={state.left}
-                anchor="left"
-                variant="persistent">
-                <List className={clsx(state.drawing && classes.hide)}>
-                    <ListItem onClick={toggleLeftDrawer(false)}>
-                        <ChevronLeftIcon />
-                    </ListItem>
-                    <ListItem onClick={run}>
-                        {state.pausing ? <PlayArrowIcon /> : <PauseIcon />}
-                    </ListItem>
-                    <ListItem onClick={toggleGravity}>
-                        g {state.gravity ? <ClearIcon /> : <ArrowDownwardIcon />}
-                    </ListItem>
-                    <ListItem onClick={ref.reset}>
-                        <RotateLeftIcon />
-                    </ListItem>
-                    <ListItem onClick={toggleDrawMode}>
-                        <CreateIcon />
-                    </ListItem>
-                </List>
-                <List className={classes.listBottom}>
-                    <ListItem>
-                        <a href="https://github.com/klawr/deepmech">
-                            <GitHubIcon />
-                        </a>
-                    </ListItem>
-                </List>
-                <List className={clsx(!state.drawing && classes.hide)}>
-                    <ListItem onClick={toggleLeftDrawer(false)}>
-                        <ChevronLeftIcon />
-                    </ListItem>
-                    <ListItem onClick={toggleDrawMode}>
-                        <RotateLeftIcon />
-                    </ListItem>
-                </List>
-            </Drawer>
+            <LeftDrawer
+                mec2={ref}
+                state={state}
+                toggleState={toggleState}/>
             <SwipeableDrawer
                 open={state.right}
                 className={classes.rightDrawer}
