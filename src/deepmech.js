@@ -123,7 +123,6 @@ function DeepmechNav() {
             <canvas className={clsx(classes.drawCanvas, !state.drawing && classes.hide)} />
             <Drawer
                 className={classes.leftDrawer}
-                classes={{ paper: classes.leftDrawerPaper }}
                 open={state.left}
                 anchor="left"
                 variant="persistent">

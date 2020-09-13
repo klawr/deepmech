@@ -14,9 +14,6 @@ export const useStyle = makeStyles((theme) => ({
         width: leftDrawerWidth,
         flexShrink: 0,
     },
-    leftDrawerPaper: {
-        width: leftDrawerWidth,
-    },
     listBottom: {
         position: 'absolute',
         bottom: '0%'
