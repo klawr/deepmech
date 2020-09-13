@@ -12,7 +12,7 @@ import { useStyle } from './style';
 import { LeftDrawer } from './LeftDrawer';
 import { RightDrawer } from './RightDrawer';
 
-function DeepmechNav() {
+function DeepmechUI() {
     const [state, toggleState] = React.useState({
         left: false,
         right: false,
@@ -68,4 +68,4 @@ function DeepmechNav() {
     );
 }
 
-ReactDOM.render(<DeepmechNav />, document.getElementById('deepmech_nav'))
+ReactDOM.render(<DeepmechUI />, document.getElementById('deepmech_nav'))
