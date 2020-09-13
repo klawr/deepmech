@@ -5,7 +5,6 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';

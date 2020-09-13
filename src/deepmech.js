@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import clsx from 'clsx';
 
-import AppBar from '@material-ui/core/AppBar';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
