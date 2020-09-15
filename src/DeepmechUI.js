@@ -20,20 +20,12 @@ export function DeepmechUI(props) {
         drawing: false,
     });
 
-    const toggleLeftDrawer = (change) => (event) => {
+    const toggleDrawer = (side, change) => (event) => {
         if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
             return;
         }
-        toggleState({ ...state, left: change });
+        toggleState({ ...state, [side]: change });
     };
-
-    const toggleRightDrawer = (change) => (event) => {
-        if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-            return;
-        }
-
-        toggleState({ ...state, right: change });
-    }
 
     const classes = useStyle();
 
@@ -50,13 +42,13 @@ export function DeepmechUI(props) {
                 toggleState={toggleState}/>
             <Grid className={classes.buttonGrid} container direction="row">
                 <IconButton
-                    onClick={toggleLeftDrawer(true)}
+                    onClick={toggleDrawer("left", true)}
                     className={clsx(classes.menuButton, state.left && classes.hide)} >
                     <ChevronRightIcon />
                 </IconButton>
                 <h3>&nbsp; 🚧 Work in progress 🚧 </h3>
                 <IconButton
-                    onClick={toggleRightDrawer(true)}
+                    onClick={toggleDrawer("right", true)}
                     className={clsx(classes.right, classes.menuButton, state.right && classes.hide)} >
                     <ChevronLeftIcon />
                 </IconButton>
