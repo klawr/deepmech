@@ -1,11 +1,10 @@
 import React from 'react';
-
 import clsx from 'clsx';
+
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-
 
 import { useStyle } from './style';
 import { LeftDrawer } from './LeftDrawer';
@@ -33,13 +32,15 @@ export function DeepmechUI(props) {
         <div className={classes.root}>
             <canvas className={clsx(classes.drawCanvas, !state.drawing && classes.hide)} />
             <LeftDrawer
+                classes={classes}
                 mec2={props.mec2}
                 state={state}
-                toggleState={toggleState}/>
+                toggleState={toggleState} />
             <RightDrawer
+                classes={classes}
                 mec2={props.mec2}
                 state={state}
-                toggleState={toggleState}/>
+                toggleState={toggleState} />
             <Grid container direction="row"
                 className={classes.buttonGrid}>
                 <IconButton onClick={openDrawer("left")}

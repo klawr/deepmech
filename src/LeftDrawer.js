@@ -15,11 +15,7 @@ import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 
-import { useStyle } from './style';
-
 export function LeftDrawer(props) {
-    const classes = useStyle();
-
     const run = () => {
         props.toggleState({ ...props.state, pausing: !props.state.pausing });
         props.mecElement.run();
@@ -42,11 +38,11 @@ export function LeftDrawer(props) {
     }
 
     return <Drawer
-        className={classes.leftDrawer}
+        className={props.classes.leftDrawer}
         open={props.state.left}
         anchor="left"
         variant="persistent">
-        <List className={clsx(props.state.drawing && classes.hide)}>
+        <List className={clsx(props.state.drawing && props.classes.hide)}>
             <ListItem onClick={toggleLeftDrawer(false)}>
                 <ChevronLeftIcon />
             </ListItem>
@@ -63,14 +59,14 @@ export function LeftDrawer(props) {
                 <CreateIcon />
             </ListItem>
         </List>
-        <List className={classes.listBottom}>
+        <List className={props.classes.listBottom}>
             <ListItem>
                 <a href="https://github.com/klawr/deepmech">
                     <GitHubIcon />
                 </a>
             </ListItem>
         </List>
-        <List className={clsx(!props.state.drawing && classes.hide)}>
+        <List className={clsx(!props.state.drawing && props.classes.hide)}>
             <ListItem onClick={toggleLeftDrawer(false)}>
                 <ChevronLeftIcon />
             </ListItem>

@@ -73,11 +73,9 @@ export function RightDrawer(props) {
         props.toggleState({ ...props.state, right: change });
     }
 
-    const classes = useStyle();
-
     return <SwipeableDrawer
         open={props.state.right}
-        className={classes.rightDrawer}
+        className={props.classes.rightDrawer}
         onClose={toggleRightDrawer(false)}
         onOpen={toggleRightDrawer(true)}
         anchor="right">
