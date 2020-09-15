@@ -9,6 +9,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { useStyle } from './style';
 import { LeftDrawer } from './LeftDrawer';
 import { RightDrawer } from './RightDrawer';
+import { DeepmechDraw } from './DeepmechDraw';
 
 export function DeepmechUI(props) {
     const [state, toggleState] = React.useState({
@@ -30,7 +31,9 @@ export function DeepmechUI(props) {
 
     return (
         <div className={classes.root}>
-            <canvas className={clsx(classes.drawCanvas, !state.drawing && classes.hide)} />
+            <DeepmechDraw
+                classes={classes}
+                state={state} />
             <LeftDrawer
                 classes={classes}
                 mec2={props.mec2}

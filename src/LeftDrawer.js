@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 import clsx from 'clsx';
 import Drawer from '@material-ui/core/Drawer';
@@ -34,7 +33,7 @@ export function LeftDrawer(props) {
     }
 
     const toggleDrawMode = () => {
-        setDrawMode({ ...props.state, drawing: !props.state.drawing });
+        props.toggleState({ ...props.state, drawing: !props.state.drawing });
     }
 
     return <Drawer
