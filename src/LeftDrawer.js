@@ -20,11 +20,8 @@ export function LeftDrawer(props) {
         props.mecElement.run();
     }
 
-    const toggleLeftDrawer = (change) => (event) => {
-        if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-            return;
-        }
-        props.toggleState({ ...props.state, left: change });
+    const closeDrawer = () => (event) => {
+        props.toggleState({ ...props.state, left: false });
     };
     
     const toggleGravity = () => {
@@ -42,7 +39,7 @@ export function LeftDrawer(props) {
         anchor="left"
         variant="persistent">
         <List className={clsx(props.state.drawing && props.classes.hide)}>
-            <ListItem onClick={toggleLeftDrawer(false)}>
+            <ListItem onClick={closeDrawer()}>
                 <ChevronLeftIcon />
             </ListItem>
             <ListItem onClick={run}>
@@ -66,7 +63,7 @@ export function LeftDrawer(props) {
             </ListItem>
         </List>
         <List className={clsx(!props.state.drawing && props.classes.hide)}>
-            <ListItem onClick={toggleLeftDrawer(false)}>
+            <ListItem onClick={closeDrawer()}>
                 <ChevronLeftIcon />
             </ListItem>
             <ListItem onClick={toggleDrawMode}>
