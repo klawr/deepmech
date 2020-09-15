@@ -47,12 +47,12 @@ export function DeepmechUI(props) {
             <Grid container direction="row"
                 className={classes.buttonGrid}>
                 <IconButton onClick={openDrawer("left")}
-                    className={clsx(classes.menuButton, state.left && classes.hide)} >
+                    className={clsx(classes.menuButton)} >
                     <ChevronRightIcon />
                 </IconButton>
                 <h3>&nbsp; 🚧 Work in progress 🚧 </h3>
                 <IconButton onClick={openDrawer("right")}
-                    className={clsx(classes.right, classes.menuButton, state.right && classes.hide)} >
+                    className={clsx(classes.right, classes.menuButton)} >
                     <ChevronLeftIcon />
                 </IconButton>
             </Grid>
