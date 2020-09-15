@@ -1,7 +1,6 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import clsx from 'clsx';
 
+import clsx from 'clsx';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
@@ -12,7 +11,7 @@ import { useStyle } from './style';
 import { LeftDrawer } from './LeftDrawer';
 import { RightDrawer } from './RightDrawer';
 
-function DeepmechUI() {
+export function DeepmechUI(props) {
     const [state, toggleState] = React.useState({
         left: false,
         right: false,
@@ -36,19 +35,17 @@ function DeepmechUI() {
         toggleState({ ...state, right: change });
     }
 
-    const ref = mecElement;
-
     const classes = useStyle();
 
     return (
         <div className={classes.root}>
             <canvas className={clsx(classes.drawCanvas, !state.drawing && classes.hide)} />
             <LeftDrawer
-                mec2={ref}
+                mec2={props.mec2}
                 state={state}
                 toggleState={toggleState}/>
             <RightDrawer
-                mec2={ref}
+                mec2={props.mec2}
                 state={state}
                 toggleState={toggleState}/>
             <Grid className={classes.buttonGrid} container direction="row">
@@ -67,5 +64,3 @@ function DeepmechUI() {
         </div >
     );
 }
-
-ReactDOM.render(<DeepmechUI />, document.getElementById('deepmech_nav'))

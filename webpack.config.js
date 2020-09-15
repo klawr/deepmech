@@ -2,7 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-   entry: './src/DeepmechUI.js',
+   entry: './src/App.js',
    output: {
       filename: './dist/deepmech_bundle.js'
    },

@@ -42,7 +42,7 @@ export function LeftDrawer(props) {
     }
 
     return <Drawer
-        className={props.className}
+        className={classes.leftDrawer}
         open={props.state.left}
         anchor="left"
         variant="persistent">
