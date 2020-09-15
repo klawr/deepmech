@@ -20,11 +20,11 @@ export function DeepmechUI(props) {
         drawing: false,
     });
 
-    const toggleDrawer = (side, change) => (event) => {
+    const openDrawer = (side) => (event) => {
         if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
             return;
         }
-        toggleState({ ...state, [side]: change });
+        toggleState({ ...state, [side]: true });
     };
 
     const classes = useStyle();
@@ -40,15 +40,14 @@ export function DeepmechUI(props) {
                 mec2={props.mec2}
                 state={state}
                 toggleState={toggleState}/>
-            <Grid className={classes.buttonGrid} container direction="row">
-                <IconButton
-                    onClick={toggleDrawer("left", true)}
+            <Grid container direction="row"
+                className={classes.buttonGrid}>
+                <IconButton onClick={openDrawer("left")}
                     className={clsx(classes.menuButton, state.left && classes.hide)} >
                     <ChevronRightIcon />
                 </IconButton>
                 <h3>&nbsp; 🚧 Work in progress 🚧 </h3>
-                <IconButton
-                    onClick={toggleDrawer("right", true)}
+                <IconButton onClick={openDrawer("right")}
                     className={clsx(classes.right, classes.menuButton, state.right && classes.hide)} >
                     <ChevronLeftIcon />
                 </IconButton>
