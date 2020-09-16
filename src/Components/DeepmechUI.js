@@ -54,6 +54,6 @@ export default function DeepmechUI(props) {
                     <ChevronLeftIcon />
                 </IconButton>
             </Grid>
-        </div >
+        </div>
     );
 }

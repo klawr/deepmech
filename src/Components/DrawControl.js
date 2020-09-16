@@ -10,12 +10,14 @@ import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 export default function DrawControl(props) {
     const toggleDrawMode = () => {
         props.toggleState({ ...props.state, drawing: !props.state.drawing });
-    }
+    };
 
     return <List>
         <ListItem onClick={toggleDrawMode}>
-            <CreateIcon className={clsx({ [props.classes.hide]: props.state.drawing })} />
-            <RotateLeftIcon className={clsx({ [props.classes.hide]: !props.state.drawing })} />
+            <CreateIcon className={clsx({
+                [props.classes.hide]: props.state.drawing })} />
+            <RotateLeftIcon className={clsx({
+                [props.classes.hide]: !props.state.drawing })} />
         </ListItem>
     </List>
 }
