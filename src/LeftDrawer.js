@@ -6,6 +6,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import Divider from '@material-ui/core/Divider';
 import GitHubIcon from '@material-ui/icons/GitHub';
 
 import { MecControl } from './MecControl';
@@ -27,15 +28,18 @@ export function LeftDrawer(props) {
                 <ChevronLeftIcon />
             </ListItem>
         </List>
+        <Divider/>
         <MecControl mec2={props.mec2}
             state={props.state}
             className={clsx({ [props.classes.hide]: props.state.drawing })} />
+        <Divider/>
         <DrawControl
             state={props.state}
             toggleState={props.toggleState}
             classes={props.classes}
             state={props.state}
         />
+        <Divider/>
         <List className={props.classes.listBottom}>
             <ListItem>
                 <a href="https://github.com/klawr/deepmech" target="_blank">
