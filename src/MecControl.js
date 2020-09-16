@@ -10,22 +10,27 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 
 export function MecControl(props) {
+    const [state, toggleState] = React.useState({
+        gravity: false,
+        pausing: true,
+    });
+
     const run = () => {
-        props.toggleState({ ...props.state, pausing: !props.state.pausing });
-        props.mecElement.run();
+        toggleState({ ...state, pausing: !state.pausing });
+        props.mec2.run();
     }
 
     const toggleGravity = () => {
-        props.toggleState({ ...props.state, gravity: !props.state.gravity });
-        mecElement.toggleGravity();
+        toggleState({ ...state, gravity: !state.gravity });
+        props.mec2.toggleGravity();
     }
 
     return <List className={props.className}>
         <ListItem onClick={run}>
-            {props.state.pausing ? <PlayArrowIcon /> : <PauseIcon />}
+            {state.pausing ? <PlayArrowIcon /> : <PauseIcon />}
         </ListItem>
         <ListItem onClick={toggleGravity}>
-            g {props.state.gravity ? <ClearIcon /> : <ArrowDownwardIcon />}
+            g {state.gravity ? <ClearIcon /> : <ArrowDownwardIcon />}
         </ListItem>
         <ListItem onClick={props.mec2.reset}>
             <RotateLeftIcon />

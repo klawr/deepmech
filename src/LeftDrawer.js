@@ -30,7 +30,6 @@ export function LeftDrawer(props) {
         </List>
         <Divider/>
         <MecControl mec2={props.mec2}
-            state={props.state}
             className={clsx({ [props.classes.hide]: props.state.drawing })} />
         <Divider/>
         <DrawControl

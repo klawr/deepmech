@@ -15,8 +15,6 @@ export function DeepmechUI(props) {
     const [state, toggleState] = React.useState({
         left: false,
         right: false,
-        gravity: false,
-        pausing: true,
         drawing: false,
     });
 
