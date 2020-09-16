@@ -7,7 +7,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
-export function MecTable(props) {
+export default function MecTable(props) {
     function createHeader(arr) {
         const header = [];
         for (const obj of arr) {

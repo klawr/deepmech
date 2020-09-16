@@ -7,7 +7,7 @@ import ListItem from '@material-ui/core/ListItem';
 import CreateIcon from '@material-ui/icons/Create';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 
-export function DrawControl(props) {
+export default function DrawControl(props) {
     const toggleDrawMode = () => {
         props.toggleState({ ...props.state, drawing: !props.state.drawing });
     }

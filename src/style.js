@@ -3,7 +3,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 const leftDrawerWidth = "auto";
 const rightDrawerWidth = Math.min(250, globalThis.innerWidth);
 
-export const useStyle = makeStyles((theme) => ({
+const useStyle = makeStyles((theme) => ({
     root: {
         display: 'flex'
     },
@@ -48,3 +48,5 @@ export const useStyle = makeStyles((theme) => ({
         }),
     },
 }));
+
+export default useStyle;

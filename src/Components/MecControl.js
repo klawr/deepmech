@@ -9,7 +9,7 @@ import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 
-export function MecControl(props) {
+export default function MecControl(props) {
     const [state, toggleState] = React.useState({
         gravity: false,
         pausing: true,

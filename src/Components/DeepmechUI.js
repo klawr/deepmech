@@ -6,12 +6,12 @@ import IconButton from '@material-ui/core/IconButton';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
-import { useStyle } from '../style';
-import { LeftDrawer } from './LeftDrawer';
-import { RightDrawer } from './RightDrawer';
-import { DeepmechDraw } from './DeepmechDraw';
+import useStyle from '../style';
+import LeftDrawer from './LeftDrawer';
+import RightDrawer from './RightDrawer';
+import DeepmechDraw from './DeepmechDraw';
 
-export function DeepmechUI(props) {
+export default function DeepmechUI(props) {
     const [state, toggleState] = React.useState({
         left: false,
         right: false,

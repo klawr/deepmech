@@ -9,12 +9,12 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import Divider from '@material-ui/core/Divider';
 import GitHubIcon from '@material-ui/icons/GitHub';
 
-import { MecControl } from './MecControl';
-import { DrawControl } from './DrawControl';
+import MecControl from './MecControl';
+import DrawControl from './DrawControl';
 
-export function LeftDrawer(props) {
+export default function LeftDrawer(props) {
 
-    const closeDrawer = () => (event) => {
+    const closeDrawer = () => () => {
         props.toggleState({ ...props.state, left: false });
     };
 

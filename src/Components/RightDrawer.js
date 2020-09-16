@@ -9,9 +9,9 @@ import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
-import { MecTable } from './MecTable';
+import MecTable from './MecTable';
 
-export function RightDrawer(props) {
+export default function RightDrawer(props) {
     const toggleRightDrawer = (change) => (event) => {
         if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
             return;
