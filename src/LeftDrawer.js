@@ -6,21 +6,16 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import CreateIcon from '@material-ui/icons/Create';
 import GitHubIcon from '@material-ui/icons/GitHub';
-import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 
 import { MecControl } from './MecControl';
+import { DrawControl } from './DrawControl';
 
 export function LeftDrawer(props) {
 
     const closeDrawer = () => (event) => {
         props.toggleState({ ...props.state, left: false });
     };
-
-    const toggleDrawMode = () => {
-        props.toggleState({ ...props.state, drawing: !props.state.drawing });
-    }
 
     return <Drawer
         className={props.classes.leftDrawer}
@@ -34,13 +29,13 @@ export function LeftDrawer(props) {
         </List>
         <MecControl mec2={props.mec2}
             state={props.state}
-            className={clsx({[props.classes.hide]: props.state.drawing})}/>
-        <List>
-            <ListItem onClick={toggleDrawMode}>
-                <CreateIcon className={clsx({[props.classes.hide]: props.state.drawing})}/>
-                <RotateLeftIcon className={clsx({[props.classes.hide]: !props.state.drawing})}/>
-            </ListItem>
-        </List>
+            className={clsx({ [props.classes.hide]: props.state.drawing })} />
+        <DrawControl
+            state={props.state}
+            toggleState={props.toggleState}
+            classes={props.classes}
+            state={props.state}
+        />
         <List className={props.classes.listBottom}>
             <ListItem>
                 <a href="https://github.com/klawr/deepmech" target="_blank">
