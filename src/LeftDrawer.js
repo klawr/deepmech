@@ -57,7 +57,7 @@ export function LeftDrawer(props) {
         </List>
         <List className={props.classes.listBottom}>
             <ListItem>
-                <a href="https://github.com/klawr/deepmech">
+                <a href="https://github.com/klawr/deepmech" target="_blank">
                     <GitHubIcon />
                 </a>
             </ListItem>
