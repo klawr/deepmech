@@ -24,7 +24,9 @@
     "url": "https://github.com/klawr/deepmech/issues"
   },
   "homepage": "https://deepmech.klawr.de",
-  "dependencies": {},
+  "dependencies": {
+    "react-responsive": "^8.1.0"
+  },
   "devDependencies": {
     "@babel/cli": "^7.10.5",
     "@babel/core": "^7.11.1",
