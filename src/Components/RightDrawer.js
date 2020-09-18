@@ -36,7 +36,7 @@ export default function RightDrawer(props) {
         variant={locked ? 'persistent' : 'temporary'}
         anchor="right">
         <List>
-            <ListItem style={{padding: 0}}>
+            <ListItem style={{ padding: 0 }}>
                 <ListButton onClick={toggleRightDrawer(false)} tooltip="Close drawer">
                     <ChevronRightIcon />
                 </ListButton>
@@ -44,7 +44,7 @@ export default function RightDrawer(props) {
                     tooltip={(locked ? "Unlock" : "Lock") + " drawer"}
                     className={props.classes.right}
                     onClick={() => toggleLock(!locked)}>
-                    {locked ? <LockOpenIcon /> : <LockIcon />}
+                    {locked ? <LockIcon /> : <LockOpenIcon />}
                 </ListButton>
             </ListItem>
             {Object.entries(JSON.parse(props.mec2._model.asJSON())).map(list => (
