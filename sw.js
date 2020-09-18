@@ -2,13 +2,18 @@ const APP_PREFIX = 'mecEdit';
 const VERSION = '24.02.2020-20:51';
 const CACHE_NAME = 'deepmech_' + VERSION;
 const urlsToCache = [
-    '/', '/index.html', '/site.manifest',
-    '/favicon-16x16.png', '/favicon-32x32.png',
-    '/apple-touch-icon.png', '/safari-pinned-tab.svg',
-    '/favicon.ico', '/browserconfig.xml',
-    '/src/canvasInteractor.js', '/src/g2.js', '/src/g2.selector.js',
-    '/src/mec-chart.htmlelement.js', '/src/mec.deepmech.js', '/src/mec.htmlelement.js',
-    '/src/mec.slider.js', '/src/mec2.min.js', '/src/models.js', '/src/tf.min.js'
+    '/',
+    '/index.html',
+    // assets
+    'assets/site.manifest',
+    'assets/favicon-16x16.png', 'assets/favicon-32x32.png',
+    'assets/apple-touch-icon.png', 'assets/safari-pinned-tab.svg',
+    'assets/favicon.ico', 'assets/browserconfig.xml',
+    // dist
+    '/dist/deepmech_bundle.js',
+    '/dist/model.js', '/dist/models.js',
+    // third_party
+    '/third_party/tf.min.js', '/third_party/mec2.html.js',
 ];
 
 self.addEventListener('install', function (event) {

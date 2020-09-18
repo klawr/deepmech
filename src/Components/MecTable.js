@@ -1,13 +1,11 @@
 import React from 'react';
 
-import InputBase from '@material-ui/core/InputBase';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import { TextField } from '@material-ui/core';
 
 export default function MecTable(props) {
     function createHeader(arr) {
@@ -23,13 +21,13 @@ export default function MecTable(props) {
     }
 
     function SanitizedTableCell(props) {
-        if (typeof val === "object") {
-            return <TableCell key={props.key}>
+        if (typeof props.value === "object") {
+            return <TableCell>
                 {JSON.stringify(props.value)}
             </TableCell>
         }
         else {
-            return <TableCell key={props.key}>
+            return <TableCell>
                 {props.value.toString()}
             </TableCell>
         }
