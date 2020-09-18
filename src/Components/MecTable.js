@@ -49,7 +49,7 @@ export default function MecTable(props) {
                     <TableRow key={idx}>
                         {Object.entries(elm).map(val => (
                             <TableCell key={val[0]}>
-                                <SanitizedValue value={val[1]}/>
+                                <SanitizedValue value={val[1]} />
                             </TableCell>
                         ))}
                     </TableRow>
