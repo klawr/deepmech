@@ -1,12 +1,13 @@
 import React from 'react';
 import clsx from 'clsx';
 
-import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 
 import CreateIcon from '@material-ui/icons/Create';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
+
+import Button from './Button';
 
 export default function DrawControl(props) {
     const toggleDrawMode = () => {
@@ -15,14 +16,16 @@ export default function DrawControl(props) {
 
     return <List>
         <ListItem>
-            <IconButton onClick={toggleDrawMode}>
+            <Button
+                onClick={toggleDrawMode}
+                tooltip={(props.state.drawing ? "Exit" : "Activate") + " draw mode"}>
                 <CreateIcon className={clsx({
                     [props.classes.hide]: props.state.drawing
                 })} />
                 <RotateLeftIcon className={clsx({
                     [props.classes.hide]: !props.state.drawing
                 })} />
-            </IconButton>
+            </Button>
         </ListItem>
     </List>
 }

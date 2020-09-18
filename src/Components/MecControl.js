@@ -1,6 +1,5 @@
 import React from 'react';
 
-import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 
@@ -9,6 +8,8 @@ import ClearIcon from '@material-ui/icons/Clear';
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
+
+import Button from './Button';
 
 export default function MecControl(props) {
     const [state, toggleState] = React.useState({
@@ -28,19 +29,19 @@ export default function MecControl(props) {
 
     return <List className={props.className}>
         <ListItem>
-            <IconButton onClick={run}>
+            <Button onClick={run} tooltip="Run/Pause mechanism">
                 {state.pausing ? <PlayArrowIcon /> : <PauseIcon />}
-            </IconButton>
+            </Button>
         </ListItem>
         <ListItem>
-            <IconButton onClick={toggleGravity}>
+            <Button onClick={toggleGravity} tooltip="Toggle gravity">
                 g {state.gravity ? <ClearIcon /> : <ArrowDownwardIcon />}
-            </IconButton>
+            </Button>
         </ListItem>
         <ListItem>
-            <IconButton onClick={props.mec2.reset}>
+            <Button onClick={props.mec2.reset} tooltip="Reset">
                 <RotateLeftIcon />
-            </IconButton>
+            </Button>
         </ListItem>
     </List>
 }

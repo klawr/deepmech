@@ -3,7 +3,6 @@ import React from 'react';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
-import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
@@ -12,6 +11,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import LockIcon from '@material-ui/icons/Lock';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 
+import Button from './Button';
 import MecTable from './MecTable';
 
 export default function RightDrawer(props) {
@@ -37,14 +37,15 @@ export default function RightDrawer(props) {
         anchor="right">
         <List>
             <ListItem>
-                <IconButton onClick={toggleRightDrawer(false)}>
+                <Button onClick={toggleRightDrawer(false)} tooltip="Close drawer">
                     <ChevronRightIcon />
-                </IconButton>
-                <IconButton
+                </Button>
+                <Button
+                    tooltip={(locked ? "Unlock" : "Lock") + " drawer"}
                     className={props.classes.right}
                     onClick={() => toggleLock(!locked)}>
                     {locked ? <LockOpenIcon /> : <LockIcon />}
-                </IconButton>
+                </Button>
             </ListItem>
             {Object.entries(JSON.parse(props.mec2._model.asJSON())).map(list => (
                 <Accordion key={list[0]}>

@@ -3,7 +3,6 @@ import clsx from 'clsx';
 
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
-import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 
@@ -12,6 +11,7 @@ import GitHubIcon from '@material-ui/icons/GitHub';
 
 import MecControl from './MecControl';
 import DrawControl from './DrawControl';
+import Button from './Button';
 
 export default function LeftDrawer(props) {
     const closeDrawer = () => () => {
@@ -24,9 +24,9 @@ export default function LeftDrawer(props) {
         variant="persistent">
         <List>
             <ListItem>
-                <IconButton onClick={closeDrawer()}>
+                <Button onClick={closeDrawer()} tooltip="Close drawer">
                     <ChevronLeftIcon />
-                </IconButton>
+                </Button>
             </ListItem>
         </List>
         <Divider />
@@ -42,11 +42,11 @@ export default function LeftDrawer(props) {
         <Divider />
         <List className={props.classes.listBottom}>
             <ListItem>
-                <IconButton>
-                    <a href="https://github.com/klawr/deepmech" target="_blank">
+                <a href="https://github.com/klawr/deepmech" target="_blank">
+                    <Button tooltip="Project page">
                         <GitHubIcon />
-                    </a>
-                </IconButton>
+                    </Button>
+                </a>
             </ListItem>
         </List>
     </Drawer>
