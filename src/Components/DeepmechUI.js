@@ -1,7 +1,7 @@
 import React from 'react';
-import clsx from 'clsx';
 
 import Grid from '@material-ui/core/Grid';
+
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
@@ -9,7 +9,7 @@ import useStyle from '../style';
 import LeftDrawer from './LeftDrawer';
 import RightDrawer from './RightDrawer';
 import DeepmechDraw from './DeepmechDraw';
-import Button from './Button';
+import ListButton from './ListButton';
 
 export default function DeepmechUI(props) {
     const [state, toggleState] = React.useState({
@@ -44,15 +44,18 @@ export default function DeepmechUI(props) {
                 toggleState={toggleState} />
             <Grid container direction="row"
                 className={classes.buttonGrid}>
-                <Button onClick={openDrawer('left')} tooltip="Open left drawer">
+                <ListButton
+                    onClick={openDrawer('left')}
+                    tooltip="Open left drawer">
                     <ChevronRightIcon />
-                </Button>
+                </ListButton>
                 <h3>&nbsp; 🚧 Work in progress 🚧 </h3>
-                <Button onClick={openDrawer("right")}
+                <ListButton
+                    onClick={openDrawer("right")}
                     tooltip="Open right drawer"
                     className={classes.right} >
                     <ChevronLeftIcon />
-                </Button>
+                </ListButton>
             </Grid>
         </div>
     );

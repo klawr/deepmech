@@ -1,7 +1,6 @@
 import React from 'react';
 
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
 
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ClearIcon from '@material-ui/icons/Clear';
@@ -9,7 +8,7 @@ import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 
-import Button from './Button';
+import ListButton from './ListButton';
 
 export default function MecControl(props) {
     const [state, toggleState] = React.useState({
@@ -28,20 +27,14 @@ export default function MecControl(props) {
     }
 
     return <List className={props.className}>
-        <ListItem>
-            <Button onClick={run} tooltip="Run/Pause mechanism">
-                {state.pausing ? <PlayArrowIcon /> : <PauseIcon />}
-            </Button>
-        </ListItem>
-        <ListItem>
-            <Button onClick={toggleGravity} tooltip="Toggle gravity">
-                g {state.gravity ? <ClearIcon /> : <ArrowDownwardIcon />}
-            </Button>
-        </ListItem>
-        <ListItem>
-            <Button onClick={props.mec2.reset} tooltip="Reset">
-                <RotateLeftIcon />
-            </Button>
-        </ListItem>
+        <ListButton onClick={run} tooltip="Run/Pause mechanism">
+            {state.pausing ? <PlayArrowIcon /> : <PauseIcon />}
+        </ListButton>
+        <ListButton onClick={toggleGravity} tooltip="Toggle gravity">
+            g {state.gravity ? <ClearIcon /> : <ArrowDownwardIcon />}
+        </ListButton>
+        <ListButton onClick={props.mec2.reset} tooltip="Reset">
+            <RotateLeftIcon />
+        </ListButton>
     </List>
 }

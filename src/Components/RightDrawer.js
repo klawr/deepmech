@@ -11,7 +11,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import LockIcon from '@material-ui/icons/Lock';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 
-import Button from './Button';
+import ListButton from './ListButton';
 import MecTable from './MecTable';
 
 export default function RightDrawer(props) {
@@ -36,16 +36,16 @@ export default function RightDrawer(props) {
         variant={locked ? 'persistent' : 'temporary'}
         anchor="right">
         <List>
-            <ListItem>
-                <Button onClick={toggleRightDrawer(false)} tooltip="Close drawer">
+            <ListItem style={{padding: 0}}>
+                <ListButton onClick={toggleRightDrawer(false)} tooltip="Close drawer">
                     <ChevronRightIcon />
-                </Button>
-                <Button
+                </ListButton>
+                <ListButton
                     tooltip={(locked ? "Unlock" : "Lock") + " drawer"}
                     className={props.classes.right}
                     onClick={() => toggleLock(!locked)}>
                     {locked ? <LockOpenIcon /> : <LockIcon />}
-                </Button>
+                </ListButton>
             </ListItem>
             {Object.entries(JSON.parse(props.mec2._model.asJSON())).map(list => (
                 <Accordion key={list[0]}>
