@@ -1,10 +1,7 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-
 module.exports = {
    entry: './src/App.js',
    output: {
-      filename: './dist/deepmech_bundle.js'
+      filename: './dist/deepmech_bundle.js',
    },
    devServer: {
       inline: true,
@@ -16,12 +13,13 @@ module.exports = {
             test: /\.jsx?$/,
             exclude: /node_modules/,
             loader: 'babel-loader',
+            options: {
+               "presets": [
+                  "@babel/env",
+                  "@babel/react"
+               ]
+            }
          }
       ]
    },
-   plugins:[
-      new HtmlWebpackPlugin({
-         template: './index.html'
-      })
-   ]
 }
