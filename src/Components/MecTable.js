@@ -34,7 +34,7 @@ export default function MecTable(props) {
         }
     }
 
-    return <TableContainer>
+    return <TableContainer style={{ maxWidth: globalThis.innerWidth - 30 }}>
         <Table>
             <TableHead>
                 <TableRow>

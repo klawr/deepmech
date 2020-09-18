@@ -20,9 +20,12 @@ export default function RightDrawer(props) {
         props.toggleState({ ...props.state, right: change });
     }
 
+    window.addEventListener('resize', () => {
+        props.toggleState({ ...props.state, right: false });
+    });
+
     return <SwipeableDrawer
         open={props.state.right}
-        className={props.classes.rightDrawer}
         onClose={toggleRightDrawer(false)}
         onOpen={toggleRightDrawer(true)}
         anchor="right">
