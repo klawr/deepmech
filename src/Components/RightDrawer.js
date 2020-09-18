@@ -9,10 +9,14 @@ import ListItem from '@material-ui/core/ListItem';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import LockIcon from '@material-ui/icons/Lock';
+import LockOpenIcon from '@material-ui/icons/LockOpen';
 
 import MecTable from './MecTable';
 
 export default function RightDrawer(props) {
+    const [locked, toggleLock] = React.useState(false);
+
     const toggleRightDrawer = (change) => (event) => {
         if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
             return;
@@ -29,12 +33,17 @@ export default function RightDrawer(props) {
         open={props.state.right}
         onClose={toggleRightDrawer(false)}
         onOpen={toggleRightDrawer(true)}
-        variant="temporary"
+        variant={locked ? 'persistent' : 'temporary'}
         anchor="right">
         <List>
             <ListItem>
                 <IconButton onClick={toggleRightDrawer(false)}>
-                <ChevronRightIcon />
+                    <ChevronRightIcon />
+                </IconButton>
+                <IconButton
+                    className={props.classes.right}
+                    onClick={() => toggleLock(!locked)}>
+                    {locked ? <LockOpenIcon /> : <LockIcon />}
                 </IconButton>
             </ListItem>
             {Object.entries(JSON.parse(props.mec2._model.asJSON())).map(list => (
