@@ -7,6 +7,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import { TextField } from '@material-ui/core';
 
 export default function MecTable(props) {
     function createHeader(arr) {
@@ -21,16 +22,16 @@ export default function MecTable(props) {
         return header;
     }
 
-    function SanitizedValue(props) {
+    function SanitizedTableCell(props) {
         if (typeof val === "object") {
-            return <InputBase
-                style={{ width: 40 }}
-                value={JSON.stringify(props.value)} />
+            return <TableCell key={props.key}>
+                {JSON.stringify(props.value)}
+            </TableCell>
         }
         else {
-            return <InputBase
-                style={{ width: 40 }}
-                value={props.value.toString()} />
+            return <TableCell key={props.key}>
+                {props.value.toString()}
+            </TableCell>
         }
     }
 
@@ -48,13 +49,11 @@ export default function MecTable(props) {
                 {props.list.map && props.list.map((elm, idx) => (
                     <TableRow key={idx}>
                         {Object.entries(elm).map(val => (
-                            <TableCell key={val[0]}>
-                                <SanitizedValue value={val[1]} />
-                            </TableCell>
+                            <SanitizedTableCell key={val[0]} value={val[1]} />
                         ))}
                     </TableRow>
                 ))}
             </TableBody>
         </Table>
-    </TableContainer>
+    </TableContainer >
 }
