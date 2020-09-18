@@ -1,5 +1,6 @@
 import React from 'react';
 
+import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 
@@ -26,14 +27,20 @@ export default function MecControl(props) {
     }
 
     return <List className={props.className}>
-        <ListItem onClick={run}>
-            {state.pausing ? <PlayArrowIcon /> : <PauseIcon />}
+        <ListItem>
+            <IconButton onClick={run}>
+                {state.pausing ? <PlayArrowIcon /> : <PauseIcon />}
+            </IconButton>
         </ListItem>
-        <ListItem onClick={toggleGravity}>
-            g {state.gravity ? <ClearIcon /> : <ArrowDownwardIcon />}
+        <ListItem>
+            <IconButton onClick={toggleGravity}>
+                g {state.gravity ? <ClearIcon /> : <ArrowDownwardIcon />}
+            </IconButton>
         </ListItem>
-        <ListItem onClick={props.mec2.reset}>
-            <RotateLeftIcon />
+        <ListItem>
+            <IconButton onClick={props.mec2.reset}>
+                <RotateLeftIcon />
+            </IconButton>
         </ListItem>
     </List>
 }

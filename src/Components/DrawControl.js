@@ -1,6 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 
+import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 
@@ -13,11 +14,15 @@ export default function DrawControl(props) {
     };
 
     return <List>
-        <ListItem onClick={toggleDrawMode}>
-            <CreateIcon className={clsx({
-                [props.classes.hide]: props.state.drawing })} />
-            <RotateLeftIcon className={clsx({
-                [props.classes.hide]: !props.state.drawing })} />
+        <ListItem>
+            <IconButton onClick={toggleDrawMode}>
+                <CreateIcon className={clsx({
+                    [props.classes.hide]: props.state.drawing
+                })} />
+                <RotateLeftIcon className={clsx({
+                    [props.classes.hide]: !props.state.drawing
+                })} />
+            </IconButton>
         </ListItem>
     </List>
 }
