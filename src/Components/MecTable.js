@@ -1,5 +1,6 @@
 import React from 'react';
 
+import InputBase from '@material-ui/core/InputBase';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -19,13 +20,17 @@ export default function MecTable(props) {
         }
         return header;
     }
-    
-    function sanitizeValue(val) {
+
+    function SanitizedValue(props) {
         if (typeof val === "object") {
-            return JSON.stringify(val);
+            return <InputBase
+                style={{ width: 40 }}
+                value={JSON.stringify(props.value)} />
         }
         else {
-            return val.toString();
+            return <InputBase
+                style={{ width: 40 }}
+                value={props.value.toString()} />
         }
     }
 
@@ -44,7 +49,7 @@ export default function MecTable(props) {
                     <TableRow key={idx}>
                         {Object.entries(elm).map(val => (
                             <TableCell key={val[0]}>
-                                {sanitizeValue(val[1])}
+                                <SanitizedValue value={val[1]}/>
                             </TableCell>
                         ))}
                     </TableRow>
