@@ -5,6 +5,7 @@ import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 
+import Brightness4Icon from '@material-ui/icons/Brightness4';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import GitHubIcon from '@material-ui/icons/GitHub';
 
@@ -38,6 +39,11 @@ export default function LeftDrawer(props) {
         />
         <Divider />
         <List className={props.classes.listBottom}>
+            <ListButton
+                onClick={() => props.toggleDarkMode(!props.state.dark)}
+                tooltip="Toggle dark mode">
+                <Brightness4Icon/>
+            </ListButton>
             <ListButton tooltip="Project page">
                 <a href="https://github.com/klawr/deepmech" target="_blank">
                     <GitHubIcon />
