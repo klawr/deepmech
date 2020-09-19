@@ -2,10 +2,7 @@ import React from 'react';
 
 import { Grid } from '@material-ui/core';
 
-import {
-    ChevronLeft,
-    ChevronRight,
-} from '@material-ui/icons';
+import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 
 import {
     createMuiTheme,

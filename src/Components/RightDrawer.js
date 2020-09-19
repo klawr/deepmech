@@ -9,11 +9,7 @@ import {
     SwipeableDrawer,
 } from '@material-ui/core';
 
-import {
-    ChevronRight,
-    Lock,
-    LockOpen
-} from '@material-ui/icons';
+import { ChevronRight, Lock, LockOpen } from '@material-ui/icons';
 
 import ListButton from './ListButton';
 import MecTable from './MecTable';
