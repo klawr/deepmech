@@ -1,13 +1,17 @@
 import React from 'react';
 import clsx from 'clsx';
 
-import Divider from '@material-ui/core/Divider';
-import Drawer from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
+import {
+    Divider,
+    Drawer,
+    List,
+} from '@material-ui/core';
 
-import Brightness4Icon from '@material-ui/icons/Brightness4';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import GitHubIcon from '@material-ui/icons/GitHub';
+import {
+    Brightness4 as Brightness4Icon,
+    ChevronLeft as ChevronLeftIcon,
+    GitHub as GitHubIcon,
+} from '@material-ui/icons';
 
 import MecControl from './MecControl';
 import DrawControl from './DrawControl';

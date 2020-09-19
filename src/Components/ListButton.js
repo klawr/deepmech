@@ -1,8 +1,10 @@
 import React from 'react';
 
-import IconButton from '@material-ui/core/IconButton';
-import ListItem from '@material-ui/core/ListItem';
-import Tooltip from '@material-ui/core/Tooltip';
+import {
+    IconButton,
+    ListItem,
+    Tooltip,
+} from '@material-ui/core';
 
 export default function ListButton(props) {
     return <div className={props.className}>

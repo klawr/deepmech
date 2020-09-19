@@ -1,12 +1,16 @@
 import React from 'react';
 
-import List from '@material-ui/core/List';
+import {
+    List
+ } from '@material-ui/core';
 
-import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
-import ClearIcon from '@material-ui/icons/Clear';
-import PauseIcon from '@material-ui/icons/Pause';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import RotateLeftIcon from '@material-ui/icons/RotateLeft';
+import {
+    ArrowDownward as ArrowDownwardIcon,
+    Clear as ClearIcon,
+    Pause as PauseIcon,
+    PlayArrow as PlayArrowIcon,
+    RotateLeft as RotateLeftIcon,
+ } from '@material-ui/icons';
 
 import ListButton from './ListButton';
 

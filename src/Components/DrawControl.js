@@ -1,10 +1,12 @@
 import React from 'react';
 import clsx from 'clsx';
 
-import List from '@material-ui/core/List';
+import { List } from '@material-ui/core';
 
-import CreateIcon from '@material-ui/icons/Create';
-import RotateLeftIcon from '@material-ui/icons/RotateLeft';
+import {
+    Create as CreateIcon,
+    RotateLeft as RotateLeftIcon,
+} from '@material-ui/icons';
 
 import ListButton from './ListButton';
 

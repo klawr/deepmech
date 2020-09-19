@@ -1,15 +1,19 @@
 import React from 'react';
 
-import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    List,
+    ListItem,
+    SwipeableDrawer,
+} from '@material-ui/core';
 
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import LockIcon from '@material-ui/icons/Lock';
-import LockOpenIcon from '@material-ui/icons/LockOpen';
+import {
+    ChevronRight as ChevronRightIcon,
+    Lock as LockIcon,
+    LockOpen as LockOpenIcon
+} from '@material-ui/icons';
 
 import ListButton from './ListButton';
 import MecTable from './MecTable';

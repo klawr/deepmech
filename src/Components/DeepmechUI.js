@@ -1,11 +1,16 @@
 import React from 'react';
 
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@material-ui/core';
 
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
-import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
+import {
+    ChevronLeft as ChevronLeftIcon,
+    ChevronRight as ChevronRightIcon,
+} from '@material-ui/icons';
+
+import {
+    createMuiTheme,
+    ThemeProvider as MuiThemeProvider
+} from '@material-ui/core/styles';
 
 import useStyle from '../style';
 import LeftDrawer from './LeftDrawer';
