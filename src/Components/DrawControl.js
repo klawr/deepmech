@@ -1,11 +1,13 @@
 import React from 'react';
 import clsx from 'clsx';
 
-import { List } from '@material-ui/core';
+import {
+    List
+} from '@material-ui/core';
 
 import {
-    Create as CreateIcon,
-    RotateLeft as RotateLeftIcon,
+    Create,
+    RotateLeft,
 } from '@material-ui/icons';
 
 import ListButton from './ListButton';
@@ -19,10 +21,10 @@ export default function DrawControl(props) {
         <ListButton
             onClick={toggleDrawMode}
             tooltip={(props.state.drawing ? "Exit" : "Activate") + " draw mode"}>
-            <CreateIcon className={clsx({
+            <Create className={clsx({
                 [props.classes.hide]: props.state.drawing
             })} />
-            <RotateLeftIcon className={clsx({
+            <RotateLeft className={clsx({
                 [props.classes.hide]: !props.state.drawing
             })} />
         </ListButton>

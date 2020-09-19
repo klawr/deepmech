@@ -10,9 +10,9 @@ import {
 } from '@material-ui/core';
 
 import {
-    ChevronRight as ChevronRightIcon,
-    Lock as LockIcon,
-    LockOpen as LockOpenIcon
+    ChevronRight,
+    Lock,
+    LockOpen
 } from '@material-ui/icons';
 
 import ListButton from './ListButton';
@@ -42,13 +42,13 @@ export default function RightDrawer(props) {
         <List>
             <ListItem style={{ padding: 0 }}>
                 <ListButton onClick={toggleRightDrawer(false)} tooltip="Close drawer">
-                    <ChevronRightIcon />
+                    <ChevronRight />
                 </ListButton>
                 <ListButton
                     tooltip={(locked ? "Unlock" : "Lock") + " drawer"}
                     className={props.classes.right}
                     onClick={() => toggleLock(!locked)}>
-                    {locked ? <LockIcon /> : <LockOpenIcon />}
+                    {locked ? <Lock /> : <LockOpen />}
                 </ListButton>
             </ListItem>
             {Object.entries(JSON.parse(props.mec2._model.asJSON())).map(list => (

@@ -8,9 +8,9 @@ import {
 } from '@material-ui/core';
 
 import {
-    Brightness4 as Brightness4Icon,
-    ChevronLeft as ChevronLeftIcon,
-    GitHub as GitHubIcon,
+    Brightness4,
+    ChevronLeft,
+    GitHub,
 } from '@material-ui/icons';
 
 import MecControl from './MecControl';
@@ -28,7 +28,7 @@ export default function LeftDrawer(props) {
         variant="persistent">
         <List>
             <ListButton onClick={closeDrawer()} tooltip="Close drawer">
-                <ChevronLeftIcon />
+                <ChevronLeft />
             </ListButton>
         </List>
         <Divider />
@@ -46,11 +46,11 @@ export default function LeftDrawer(props) {
             <ListButton
                 onClick={() => props.toggleState({ ...props.state, ['dark']: !props.state.dark })}
                 tooltip="Toggle dark mode">
-                <Brightness4Icon/>
+                <Brightness4/>
             </ListButton>
             <ListButton tooltip="Project page">
                 <a href="https://github.com/klawr/deepmech" target="_blank">
-                    <GitHubIcon />
+                    <GitHub />
                 </a>
             </ListButton>
         </List>

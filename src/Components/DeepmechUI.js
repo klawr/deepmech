@@ -3,8 +3,8 @@ import React from 'react';
 import { Grid } from '@material-ui/core';
 
 import {
-    ChevronLeft as ChevronLeftIcon,
-    ChevronRight as ChevronRightIcon,
+    ChevronLeft,
+    ChevronRight,
 } from '@material-ui/icons';
 
 import {
@@ -82,14 +82,14 @@ export default function DeepmechUI(props) {
                     <ListButton
                         onClick={openDrawer('left')}
                         tooltip="Open left drawer">
-                        <ChevronRightIcon />
+                        <ChevronRight />
                     </ListButton>
                     <h3>&nbsp; 🚧 WIP 🚧 </h3>
                     <ListButton
                         onClick={openDrawer("right")}
                         tooltip="Open right drawer"
                         className={classes.right} >
-                        <ChevronLeftIcon />
+                        <ChevronLeft />
                     </ListButton>
                 </Grid>
             </div>
