@@ -4,6 +4,7 @@ import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
+    Grid,
     List,
     ListItem,
     SwipeableDrawer,
@@ -36,7 +37,7 @@ export default function RightDrawer(props) {
         variant={locked ? 'persistent' : 'temporary'}
         anchor="right">
         <List>
-            <ListItem style={{ padding: 0 }}>
+            <Grid container direction="row">
                 <ListButton onClick={toggleRightDrawer(false)} tooltip="Close drawer">
                     <ChevronRight />
                 </ListButton>
@@ -46,7 +47,7 @@ export default function RightDrawer(props) {
                     onClick={() => toggleLock(!locked)}>
                     {locked ? <Lock /> : <LockOpen />}
                 </ListButton>
-            </ListItem>
+            </Grid>
             {Object.entries(JSON.parse(props.mec2._model.asJSON())).map(list => (
                 <Accordion key={list[0]}>
                     <AccordionSummary>
