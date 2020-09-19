@@ -40,7 +40,7 @@ export default function LeftDrawer(props) {
         <Divider />
         <List className={props.classes.listBottom}>
             <ListButton
-                onClick={() => props.toggleDarkMode(!props.state.dark)}
+                onClick={() => props.toggleState({ ...props.state, ['dark']: !props.state.dark })}
                 tooltip="Toggle dark mode">
                 <Brightness4Icon/>
             </ListButton>

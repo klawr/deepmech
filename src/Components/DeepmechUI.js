@@ -14,21 +14,24 @@ import DeepmechDraw from './DeepmechDraw';
 import ListButton from './ListButton';
 
 export default function DeepmechUI(props) {
+    const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
     const [state, toggleState] = React.useState({
         left: false,
         right: false,
         drawing: false,
-        dark: false,
+        dark: dark,
     });
 
-    const cnv = props.mec2._root.childNodes[3].childNodes[1];
+    window.matchMedia('(prefers-color-scheme: dark)')
+        .addEventListener('change', event => {
+            toggleState({ ...state, ['dark']: event.matches });
+        });
 
-    function toggleDarkMode(bool) {
-        toggleState({ ...state, dark: bool });
-        props.mec2._show.darkmode = bool;
-        // TODO this should be done by mec2...
-        cnv.style.backgroundColor = bool ? '#777' : '#eee';
-    }
+    props.mec2._show.darkmode = state.dark;
+    // TODO this should be done by mec2...
+    const cnv = props.mec2._root.childNodes[3].childNodes[1];
+    cnv.style.backgroundColor = state.dark ? '#777' : '#eee';
 
     const openDrawer = (side) => (event) => {
         if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -61,7 +64,6 @@ export default function DeepmechUI(props) {
                     classes={classes}
                     mec2={props.mec2}
                     state={state}
-                    toggleDarkMode={toggleDarkMode}
                     toggleState={toggleState} />
                 <RightDrawer
                     classes={classes}
