@@ -14,7 +14,9 @@ import DeepmechDraw from './DeepmechDraw';
 import ListButton from './ListButton';
 
 export default function DeepmechUI(props) {
-    const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const dark = window.matchMedia ?
+        window.matchMedia('(prefers-color-scheme: dark)').matches :
+        false; // Default to light mode
 
     const [state, toggleState] = React.useState({
         left: false,
