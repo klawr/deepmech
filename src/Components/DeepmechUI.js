@@ -49,7 +49,7 @@ export default function DeepmechUI(props) {
                     tooltip="Open left drawer">
                     <ChevronRightIcon />
                 </ListButton>
-                <h3>&nbsp; 🚧 Work in progress 🚧 </h3>
+                <h3>&nbsp; 🚧 WIP 🚧 </h3>
                 <ListButton
                     onClick={openDrawer("right")}
                     tooltip="Open right drawer"
