@@ -1,19 +1,10 @@
 import React from 'react';
 
-import {
-    Accordion,
-    AccordionDetails,
-    AccordionSummary,
-    Grid,
-    List,
-    ListItem,
-    SwipeableDrawer,
-} from '@material-ui/core';
-
+import { Grid, List, SwipeableDrawer } from '@material-ui/core';
 import { ChevronRight, Lock, LockOpen } from '@material-ui/icons';
 
 import ListButton from './ListButton';
-import MecTable from './MecTable';
+import MecDetails from './MecDetails';
 
 export default function RightDrawer(props) {
     const [locked, toggleLock] = React.useState(false);
@@ -49,14 +40,7 @@ export default function RightDrawer(props) {
                 </ListButton>
             </Grid>
             {Object.entries(JSON.parse(props.mec2._model.asJSON())).map(list => (
-                <Accordion key={list[0]}>
-                    <AccordionSummary>
-                        {list[0]}
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        <MecTable list={list[1]} />
-                    </AccordionDetails>
-                </Accordion>
+                <MecDetails classes={props.classes} key={list[0]} list={list}/>
             ))}
         </List>
     </SwipeableDrawer>
