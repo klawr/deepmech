@@ -1,8 +1,6 @@
 import React from 'react';
-
 import { Checkbox, } from '@material-ui/core';
-
-import MecTable from './MecTable';
+import { MecTable } from '..';
 
 export default function Nodes(props) {
     function SanitizedCell(props) {

@@ -1,17 +1,6 @@
 import React from 'react';
-
-import {
-    Accordion,
-    AccordionDetails,
-    AccordionSummary,
-} from '@material-ui/core';
-
-import {
-    Id,
-    Nodes,
-    Constraints,
-    Views,
-} from '..';
+import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core';
+import { Id, Nodes, Constraints, Views } from '..';
 
 export default function MecProperties(props) {
     function Acc(elm) {

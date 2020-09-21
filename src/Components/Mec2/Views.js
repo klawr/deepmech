@@ -1,6 +1,5 @@
 import React from 'react';
-
-import MecTable from './MecTable';
+import { MecTable } from '..';
 
 export default function Views(props) {
     function SanitizedCell(props) {

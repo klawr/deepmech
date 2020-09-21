@@ -1,8 +1,5 @@
 import React from 'react';
-
-import {
-    MecTable
-} from '..';
+import { MecTable } from '..';
 
 export default function Constraints(props) {
     function SanitizedCell(props) {
