@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core/styles';
 
 
-export default function DeepmechUI(props) {
+export default function DeepmechUI({mec2}) {
     const dark = window.matchMedia ?
         window.matchMedia('(prefers-color-scheme: dark)').matches :
         false; // Default to light mode
@@ -25,9 +25,9 @@ export default function DeepmechUI(props) {
             toggleState({ ...state, ['dark']: event.matches });
         });
 
-    props.mec2._show.darkmode = state.dark;
+    mec2._show.darkmode = state.dark;
     // TODO this should be done by mec2...
-    const cnv = props.mec2._root.childNodes[3].childNodes[1];
+    const cnv = mec2._root.childNodes[3].childNodes[1];
     cnv.style.backgroundColor = state.dark ? '#777' : '#eee';
 
     const openDrawer = (side) => (event) => {
@@ -58,15 +58,11 @@ export default function DeepmechUI(props) {
                     classes={classes}
                     state={state} />
                 <LeftDrawer
-                    classes={classes}
-                    mec2={props.mec2}
-                    state={state}
-                    toggleState={toggleState} />
+                    classes={classes} mec2={mec2}
+                    state={state} toggleState={toggleState} />
                 <RightDrawer
-                    classes={classes}
-                    mec2={props.mec2}
-                    state={state}
-                    toggleState={toggleState} />
+                    classes={classes} mec2={mec2}
+                    state={state} toggleState={toggleState} />
                 <Grid container direction="row"
                     className={classes.buttonGrid}>
                     <ListButton

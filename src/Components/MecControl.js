@@ -10,7 +10,7 @@ import {
  } from '@material-ui/icons';
 
 
-export default function MecControl(props) {
+export default function MecControl({mec2, className}) {
     const [state, toggleState] = React.useState({
         gravity: false,
         pausing: true,
@@ -18,22 +18,22 @@ export default function MecControl(props) {
 
     const run = () => {
         toggleState({ ...state, pausing: !state.pausing });
-        props.mec2.run();
+        mec2.run();
     }
 
     const toggleGravity = () => {
         toggleState({ ...state, gravity: !state.gravity });
-        props.mec2.toggleGravity();
+        mec2.toggleGravity();
     }
 
-    return <List className={props.className}>
+    return <List className={className}>
         <ListButton onClick={run} tooltip="Run/Pause mechanism">
             {state.pausing ? <PlayArrow /> : <Pause />}
         </ListButton>
         <ListButton onClick={toggleGravity} tooltip="Toggle gravity">
             g {state.gravity ? <Clear /> : <ArrowDownward />}
         </ListButton>
-        <ListButton onClick={props.mec2.reset} tooltip="Reset">
+        <ListButton onClick={mec2.reset} tooltip="Reset">
             <RotateLeft />
         </ListButton>
     </List>

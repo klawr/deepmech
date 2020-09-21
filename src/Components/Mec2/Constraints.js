@@ -1,21 +1,21 @@
 import React from 'react';
 import { MecTable } from '..';
 
-export default function Constraints(props) {
-    function SanitizedCell(props) {
-        if (typeof props.value === "object") {
-            return <div> {JSON.stringify(props.value)} </div>
+export default function Constraints({head, elms}) {
+    function SanitizedCell({value}) {
+        if (typeof value === "object") {
+            return <div> {JSON.stringify(value)} </div>
         }
-        else if (props.value === undefined) {
+        else if (value === undefined) {
             return <div />
         }
         else {
-            return <div> {props.value} </div>
+            return <div> {value} </div>
         }
     }
 
     return <MecTable
         SanitizedCell={SanitizedCell}
-        head={props.head}
-        list={props.elms} />
+        head={head}
+        list={elms} />
 }

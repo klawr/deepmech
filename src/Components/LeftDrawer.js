@@ -4,13 +4,13 @@ import { Divider, Drawer, List } from '@material-ui/core';
 import { Brightness4, ChevronLeft, GitHub } from '@material-ui/icons';
 import { MecControl, DrawControl, ListButton } from '.';
 
-export default function LeftDrawer(props) {
+export default function LeftDrawer({ state, toggleState, classes, mec2 }) {
     const closeDrawer = () => () => {
-        props.toggleState({ ...props.state, left: false });
+        toggleState({ ...state, left: false });
     };
 
     return <Drawer
-        open={props.state.left}
+        open={state.left}
         anchor="left"
         variant="persistent">
         <List>
@@ -19,19 +19,14 @@ export default function LeftDrawer(props) {
             </ListButton>
         </List>
         <Divider />
-        <MecControl mec2={props.mec2}
-            className={clsx({ [props.classes.hide]: props.state.drawing })} />
+        <MecControl mec2={mec2}
+            className={clsx({ [classes.hide]: state.drawing })} />
         <Divider />
-        <DrawControl
-            state={props.state}
-            toggleState={props.toggleState}
-            classes={props.classes}
-            state={props.state}
-        />
+        <DrawControl state={state} toggleState={toggleState} classes={classes} />
         <Divider />
-        <List className={props.classes.listBottom}>
+        <List className={classes.listBottom}>
             <ListButton
-                onClick={() => props.toggleState({ ...props.state, ['dark']: !props.state.dark })}
+                onClick={() => toggleState({ ...state, ['dark']: !state.dark })}
                 tooltip="Toggle dark mode">
                 <Brightness4 />
             </ListButton>

@@ -1,28 +1,28 @@
 import React from 'react';
 import { MecTable, RadioSelect } from '..';
 
-export default function Views(props) {
-    function SanitizedCell(props) {
-        if (props.title === "as") {
+export default function Views({head, elms}) {
+    function SanitizedCell({title, value}) {
+        if (title === "as") {
             return <RadioSelect
                 title={"as"}
                 onChange={(prop) => console.log(prop)}
-                selected={props.value}
+                selected={value}
                 options={Object.keys(mec.view).filter(e => e !== "extend")} />
         }
-        if (typeof props.value === "object") {
-            return <div> {JSON.stringify(props.value)} </div>
+        if (typeof value === "object") {
+            return <div> {JSON.stringify(value)} </div>
         }
-        else if (props.value === undefined) {
+        else if (value === undefined) {
             return <div />
         }
         else {
-            return <div> {props.value} </div>
+            return <div> {value} </div>
         }
     }
 
     return <MecTable
         SanitizedCell={SanitizedCell}
-        head={props.head}
-        list={props.elms} />
+        head={head}
+        list={elms} />
 }

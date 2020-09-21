@@ -2,26 +2,26 @@ import React from 'react';
 import { Checkbox, } from '@material-ui/core';
 import { MecTable } from '..';
 
-export default function Nodes(props) {
-    function SanitizedCell(props) {
+export default function Nodes({head, elms}) {
+    function SanitizedCell({title, value}) {
         // Custom mec2 properties
-        if (props.title === "base") {
-            return <Checkbox checked={!!props.value} />
+        if (title === "base") {
+            return <Checkbox checked={!!value} />
         }
 
-        if (typeof props.value === "object") {
-            return <div> {JSON.stringify(props.value)} </div>
+        if (typeof value === "object") {
+            return <div> {JSON.stringify(value)} </div>
         }
-        else if (props.value === undefined) {
+        else if (value === undefined) {
             return <div />
         }
         else {
-            return <div> {props.value} </div>
+            return <div> {value} </div>
         }
     }
 
     return <MecTable
         SanitizedCell={SanitizedCell}
-        head={props.head}
-        list={props.elms} />
+        head={head}
+        list={elms} />
 }

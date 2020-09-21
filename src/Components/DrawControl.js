@@ -4,20 +4,20 @@ import { List } from '@material-ui/core';
 import { Create, RotateLeft } from '@material-ui/icons';
 import { ListButton } from '.';
 
-export default function DrawControl(props) {
+export default function DrawControl({classes, state, toggleState}) {
     const toggleDrawMode = () => {
-        props.toggleState({ ...props.state, drawing: !props.state.drawing });
+        toggleState({ ...state, drawing: !state.drawing });
     };
 
     return <List>
         <ListButton
             onClick={toggleDrawMode}
-            tooltip={(props.state.drawing ? "Exit" : "Activate") + " draw mode"}>
+            tooltip={(state.drawing ? "Exit" : "Activate") + " draw mode"}>
             <Create className={clsx({
-                [props.classes.hide]: props.state.drawing
+                [classes.hide]: state.drawing
             })} />
             <RotateLeft className={clsx({
-                [props.classes.hide]: !props.state.drawing
+                [classes.hide]: !state.drawing
             })} />
         </ListButton>
     </List>

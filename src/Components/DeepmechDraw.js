@@ -1,9 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 
-export default function DeepmechDraw(props) {
+export default function DeepmechDraw({classes, state}) {
     return <canvas
-        className={clsx(props.classes.drawCanvas,
-            !props.state.drawing &&
-             props.classes.hide)} />
+        className={clsx(classes.drawCanvas, !state.drawing && classes.hide)} />
 }
