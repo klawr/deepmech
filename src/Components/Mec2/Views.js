@@ -21,8 +21,5 @@ export default function Views({head, elms}) {
         }
     }
 
-    return <MecTable
-        SanitizedCell={SanitizedCell}
-        head={head}
-        list={elms} />
+    return <MecTable SanitizedCell={SanitizedCell} head={head} list={elms} />
 }

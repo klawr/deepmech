@@ -5,7 +5,7 @@ import { Brightness4, ChevronLeft, GitHub } from '@material-ui/icons';
 import { MecControl, DrawControl, ListButton } from '.';
 
 export default function LeftDrawer({ state, toggleState, classes, mec2 }) {
-    const closeDrawer = () => () => {
+    const closeDrawer = () => {
         toggleState({ ...state, left: false });
     };
 
@@ -14,7 +14,7 @@ export default function LeftDrawer({ state, toggleState, classes, mec2 }) {
         anchor="left"
         variant="persistent">
         <List>
-            <ListButton onClick={closeDrawer()} tooltip="Close drawer">
+            <ListButton onClick={closeDrawer} tooltip="Close drawer">
                 <ChevronLeft />
             </ListButton>
         </List>

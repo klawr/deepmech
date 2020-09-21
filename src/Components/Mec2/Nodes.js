@@ -20,8 +20,5 @@ export default function Nodes({head, elms}) {
         }
     }
 
-    return <MecTable
-        SanitizedCell={SanitizedCell}
-        head={head}
-        list={elms} />
+    return <MecTable SanitizedCell={SanitizedCell} head={head} list={elms} />
 }
