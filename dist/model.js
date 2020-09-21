@@ -1,5 +1,6 @@
 const model =
 {
+    "id": "MecModel",
     "nodes": [
         { "id": "A0", "x": 0, "y": 0, "base": true },
         { "id": "B0", "x": 200, "y": 0, "base": true },

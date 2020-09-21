@@ -1,11 +1,10 @@
 import React from 'react';
-import { Grid, ListItem } from '@material-ui/core';
+import { ListItem, TextField } from '@material-ui/core';
 
-export default function Id({id, classes}) {
+export default function Id({ mec2 }) {
     return <ListItem>
-        <Grid container direction='row'>
-            <div> Id </div>
-            <div className={classes.right}> {id} </div>
-        </Grid>
+        <TextField
+            label="Id" value={mec2._model.id}
+            onChange={(e) => mec2._model.id = e.target.value} />
     </ListItem>
 }
