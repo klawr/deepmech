@@ -1,9 +1,12 @@
-* {
+@font-face {
     font-family: "Cascadia Code";
-    src: urls('./assets/CascadiaCode.ttf');
+    src: local("Cascadia Code"),
+         url('../assets/CascadiaCode.ttf') format('truetype'),
+         url('../assets/CascadiaCode.woff2') format('woff2');
 }
 
 body {
+    font-family: 'Cascadia Code';
     margin: 0;
     padding: 0;
     overflow: hidden;
