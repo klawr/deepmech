@@ -1,11 +1,8 @@
 import React from 'react';
 import clsx from 'clsx';
-
 import { List } from '@material-ui/core';
-
 import { Create, RotateLeft } from '@material-ui/icons';
-
-import ListButton from './ListButton';
+import { ListButton } from '.';
 
 export default function DrawControl(props) {
     const toggleDrawMode = () => {

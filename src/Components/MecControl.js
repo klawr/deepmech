@@ -1,7 +1,6 @@
 import React from 'react';
-
 import { List } from '@material-ui/core';
-
+import { ListButton } from '.';
 import {
     ArrowDownward,
     Clear,
@@ -10,7 +9,6 @@ import {
     RotateLeft,
  } from '@material-ui/icons';
 
-import ListButton from './ListButton';
 
 export default function MecControl(props) {
     const [state, toggleState] = React.useState({

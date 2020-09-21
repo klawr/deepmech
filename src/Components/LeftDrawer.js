@@ -1,13 +1,8 @@
 import React from 'react';
 import clsx from 'clsx';
-
 import { Divider, Drawer, List } from '@material-ui/core';
-
 import { Brightness4, ChevronLeft, GitHub } from '@material-ui/icons';
-
-import MecControl from './MecControl';
-import DrawControl from './DrawControl';
-import ListButton from './ListButton';
+import { MecControl, DrawControl, ListButton } from '.';
 
 export default function LeftDrawer(props) {
     const closeDrawer = () => () => {
@@ -38,7 +33,7 @@ export default function LeftDrawer(props) {
             <ListButton
                 onClick={() => props.toggleState({ ...props.state, ['dark']: !props.state.dark })}
                 tooltip="Toggle dark mode">
-                <Brightness4/>
+                <Brightness4 />
             </ListButton>
             <ListButton tooltip="Project page">
                 <a href="https://github.com/klawr/deepmech" target="_blank">

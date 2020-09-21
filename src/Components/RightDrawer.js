@@ -1,10 +1,7 @@
 import React from 'react';
-
 import { Grid, List, SwipeableDrawer } from '@material-ui/core';
 import { ChevronRight, Lock, LockOpen } from '@material-ui/icons';
-
-import ListButton from './ListButton';
-import MecDetails from './Mec2/MecDetails';
+import { ListButton, MecDetails } from '.';
 
 export default function RightDrawer(props) {
     const [locked, toggleLock] = React.useState(false);

@@ -1,19 +1,12 @@
 import React from 'react';
-
 import { Grid } from '@material-ui/core';
-
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
-
+import { useStyle, LeftDrawer, RightDrawer, DeepmechDraw, ListButton } from '.';
 import {
     createMuiTheme,
     ThemeProvider as MuiThemeProvider
 } from '@material-ui/core/styles';
 
-import useStyle from '../style';
-import LeftDrawer from './LeftDrawer';
-import RightDrawer from './RightDrawer';
-import DeepmechDraw from './DeepmechDraw';
-import ListButton from './ListButton';
 
 export default function DeepmechUI(props) {
     const dark = window.matchMedia ?
