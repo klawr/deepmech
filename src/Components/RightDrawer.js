@@ -37,7 +37,8 @@ export default function RightDrawer({ state, toggleState, classes, mec2 }) {
                 </ListButton>
             </Grid>
             {Object.entries(JSON.parse(mec2._model.asJSON())).map(list => (
-                <MecProperties classes={classes} key={list[0]} list={list} />
+                <MecProperties key={list[0]}
+                    classes={classes} prop={list[0]} value={list[1]} />
             ))}
         </List>
     </SwipeableDrawer>

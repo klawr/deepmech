@@ -2,34 +2,33 @@ import React from 'react';
 import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core';
 import { Id, Nodes, Constraints, Views } from '..';
 
-export default function MecProperties({list}) {
+export default function MecProperties({ classes, prop, value }) {
     function Acc(elm) {
         return <Accordion>
-            <AccordionSummary> {list[0]} </AccordionSummary>
+            <AccordionSummary> {prop} </AccordionSummary>
             <AccordionDetails> {elm} </AccordionDetails>
         </Accordion>
     }
 
-    let head;
-    if (Array.isArray(list[1])) {
+    function getProps() {
         const props = new Set();
-        list[1].forEach(p => Object.keys(p).forEach(k => props.add(k)));
-        head = Array.from(props);
+        value.forEach(p => Object.keys(p).forEach(k => props.add(k)));
+        return Array.from(props);
     }
 
-    switch (list[0]) {
+    switch (prop) {
         case 'id':
-            return <Id classes={classes} id={list[1]} />;
+            return <Id classes={classes} id={value} />;
         case 'nodes':
-            return Acc(<Nodes head={head} elms={list[1]} />);
+            return Acc(<Nodes head={getProps()} elms={value} />);
         case 'constraints':
-            return Acc(<Constraints head={head} elms={list[1]} />);
+            return Acc(<Constraints head={getProps()} elms={value} />);
         case 'views':
-            return Acc(<Views head={head} elms={list[1]} />);
+            return Acc(<Views head={getProps()} elms={value} />);
         case 'gravity':
             return <div />;
         default: {
-            console.warn(`mec2 property ${list[0]} has no corresponding component...`)
+            console.warn(`mec2 property ${prop} has no corresponding component...`)
             return <div />;
         }
     };
