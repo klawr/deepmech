@@ -1,36 +1,39 @@
 import React from 'react';
 
 import {
+    Checkbox,
     Table,
     TableBody,
     TableCell,
     TableContainer,
     TableHead,
     TableRow,
- } from '@material-ui/core';
+} from '@material-ui/core';
 
 export default function MecTable(props) {
-    function createHeader(arr) {
-        const header = [];
-        for (const obj of arr) {
-            for (const key of Object.keys(obj)) {
-                if (!header.includes(key)) {
-                    header.push(key);
-                }
-            }
-        }
-        return header;
-    }
+    const properties = new Set();
+
+    props.list.forEach(p => Object.keys(p).forEach(k => properties.add(k)));
 
     function SanitizedTableCell(props) {
+        // Custom mec2 properties
+        if (props.title === "base") {
+            return <TableCell>
+                <Checkbox checked={!!props.value}/>
+            </TableCell>
+        }
+
         if (typeof props.value === "object") {
             return <TableCell>
                 {JSON.stringify(props.value)}
             </TableCell>
         }
+        else if (props.value === undefined) {
+            return <TableCell></TableCell>
+        }
         else {
             return <TableCell>
-                {props.value.toString()}
+                {props.value}
             </TableCell>
         }
     }
@@ -39,17 +42,18 @@ export default function MecTable(props) {
         <Table>
             <TableHead>
                 <TableRow>
-                    {createHeader(props.list).map(key => (
+                    {Array.from(properties).map(key =>
                         <TableCell key={key}>
                             <b>{key}</b>
-                        </TableCell>))}
+                        </TableCell>)}
                 </TableRow>
             </TableHead>
             <TableBody>
-                {props.list.map && props.list.map((elm, idx) => (
+                {props.list.map((elm, idx) => (
                     <TableRow key={idx}>
-                        {Object.entries(elm).map(val => (
-                            <SanitizedTableCell key={val[0]} value={val[1]} />
+                        {Array.from(properties).map(prop => (
+                            <SanitizedTableCell
+                                title={prop} key={prop} value={elm[prop]} />
                         ))}
                     </TableRow>
                 ))}
