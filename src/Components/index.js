@@ -8,7 +8,7 @@ export { default as MecControl } from './MecControl';
 
 export { default as ListButton } from './ListButton';
 
-export { default as MecDetails } from './Mec2/MecDetails';
+export { default as MecProperties } from './Mec2/MecProperties';
 export { default as MecTable } from './Mec2/MecTable';
 
 export { default as Id } from './Mec2/Id';

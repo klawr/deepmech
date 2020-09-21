@@ -13,7 +13,7 @@ import {
     Views,
 } from '..';
 
-export default function MecDetails(props) {
+export default function MecProperties(props) {
     function Acc(elm) {
         return <Accordion>
             <AccordionSummary> {props.list[0]} </AccordionSummary>
