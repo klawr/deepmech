@@ -14,31 +14,36 @@ import {
 } from '..';
 
 export default function MecDetails(props) {
-    function MecElement() {
-        const properties = new Set();
-        props.list[1].forEach && props.list[1].forEach(p => Object.keys(p).forEach(k => properties.add(k)));
-        const head = Array.from(properties);
-        const elms = props.list[1];
-
-
-        switch (props.list[0]) {
-            case 'nodes': return <Nodes head={head} elms={elms} />
-            case 'constraints': return <Constraints head={head} elms={elms} />
-            case 'views': return <Views head={head} elms={elms} />
-            default: {
-                console.warn(`mec2 property ${props.list[0]} has no corresponding component...`)
-                return <div />;
-            }
-        };
-    }
-
-    if (props.list[0] === 'id') {
-        return <Id classes={props.classes} list={props.list} />
-    }
-    else {
+    function Acc(elm) {
         return <Accordion>
             <AccordionSummary> {props.list[0]} </AccordionSummary>
-            <AccordionDetails> <MecElement /> </AccordionDetails>
+            <AccordionDetails> {elm} </AccordionDetails>
         </Accordion>
     }
+
+    let head;
+    let elms;
+    if (Array.isArray(props.list[1])) {
+        const properties = new Set();
+        props.list[1].forEach(p => Object.keys(p).forEach(k => properties.add(k)));
+        elms = props.list[1];
+        head = Array.from(properties);
+    }
+
+    switch (props.list[0]) {
+        case 'id':
+            return <Id classes={props.classes} list={props.list} />;
+        case 'nodes':
+            return Acc(<Nodes head={head} elms={elms} />);
+        case 'constraints':
+            return Acc(<Constraints head={head} elms={elms} />);
+        case 'views':
+            return Acc(<Views head={head} elms={elms} />);
+        case 'gravity':
+            return <div />;
+        default: {
+            console.warn(`mec2 property ${props.list[0]} has no corresponding component...`)
+            return <div />;
+        }
+    };
 }
