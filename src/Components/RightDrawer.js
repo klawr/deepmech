@@ -14,7 +14,7 @@ export default function RightDrawer({ state, toggleState, classes, mec2 }) {
         toggleState({ ...state, right: change });
     }
 
-    window.addEventListener('resize', () => {
+    window.addEventListener('orientationchange', () => {
         toggleState({ ...state, right: false });
     });
 
