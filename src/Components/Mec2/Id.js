@@ -5,6 +5,6 @@ export default function Id({ mec2 }) {
     return <ListItem>
         <TextField
             label="Id" defaultValue={mec2._model.id}
-            onChange={(e) => (mec2._model.id = e.target.value)} />
+            onChange={(e) => { mec2._model.id = e.target.value; }} />
     </ListItem>
 }
