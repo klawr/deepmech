@@ -1,33 +1,24 @@
 import React from 'react';
 import { Checkbox, InputBase, } from '@material-ui/core';
-import { MecTable } from '..';
-
-function handleUpdate(ref, prop, fn) {
-    const [val, changeVal] = React.useState(ref[prop]);
-    function handleChange(targetValue) {
-        changeVal(targetValue);
-        ref[prop] = targetValue;
-        if (fn) fn(targetValue);
-        mec2._model.reset();
-        mec2.render();
-    };
-
-    return [val, handleChange];
-}
+import { MecTable, handleMecUpdate } from '..';
 
 export default function Nodes({ mec2, head, elms }) {
     function SanitizedCell({ prop, elm }) {
         const node = mec2._model.nodeById(elm.id);
 
+        function handleNodeUpdate(fn) {
+            return handleMecUpdate(mec2, node, prop, fn);
+        }
+
         switch (prop) {
             case 'base':
-                const [checked, toggleCheck] = handleUpdate(node, prop);
+                const [checked, toggleCheck] = handleNodeUpdate();
                 return <Checkbox
                     checked={checked}
                     onChange={(e) => toggleCheck(e.target.checked)} />
             case 'x':
             case 'y':
-                const [value, changeValue] = handleUpdate(node, prop);
+                const [value, changeValue] = handleNodeUpdate();
                 return <InputBase
                     value={value}
                     onChange={(e) => changeValue(e.target.value)} />
@@ -42,7 +33,7 @@ export default function Nodes({ mec2, head, elms }) {
                     });
                 }
 
-                const [id, changeId] = handleUpdate(node, prop, propagateChange);
+                const [id, changeId] = handleNodeUpdate(propagateChange);
                 return <InputBase value={id} onChange={(e) => changeId(e.target.value)} />
             default: return <div>{elm[prop]}</div>
         }
