@@ -22,7 +22,7 @@ export default function MecTable({head, list, SanitizedCell}) {
                     <TableRow key={idx}>
                         {head.map(prop => (
                             <TableCell key={prop}>
-                                <SanitizedCell title={prop} value={elm[prop]} />
+                                <SanitizedCell elm={elm} prop={prop} />
                             </TableCell>
                         ))}
                     </TableRow>

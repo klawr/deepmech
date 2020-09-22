@@ -2,22 +2,22 @@ import React from 'react';
 import { MecTable, RadioSelect } from '..';
 
 export default function Views({head, elms}) {
-    function SanitizedCell({title, value}) {
-        if (title === "as") {
+    function SanitizedCell({prop, elm}) {
+        if (prop === "as") {
             return <RadioSelect
                 title={"as"}
-                onChange={(prop) => console.log(prop)}
-                selected={value}
+                onChange={(p) => console.log(p)}
+                selected={elm[prop]}
                 options={Object.keys(mec.view).filter(e => e !== "extend")} />
         }
-        if (typeof value === "object") {
-            return <div> {JSON.stringify(value)} </div>
+        if (typeof elm[prop] === "object") {
+            return <div> {JSON.stringify(elm[prop])} </div>
         }
-        else if (value === undefined) {
+        else if (elm[prop] === undefined) {
             return <div />
         }
         else {
-            return <div> {value} </div>
+            return <div> {elm[prop]} </div>
         }
     }
 

@@ -2,15 +2,15 @@ import React from 'react';
 import { MecTable } from '..';
 
 export default function Constraints({head, elms}) {
-    function SanitizedCell({value}) {
-        if (typeof value === "object") {
-            return <div> {JSON.stringify(value)} </div>
+    function SanitizedCell({elm, prop}) {
+        if (typeof elm[prop] === "object") {
+            return <div> {JSON.stringify(elm[prop])} </div>
         }
-        else if (value === undefined) {
+        else if (prop === undefined) {
             return <div />
         }
         else {
-            return <div> {value} </div>
+            return <div> {elm[prop]} </div>
         }
     }
 
