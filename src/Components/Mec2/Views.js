@@ -14,10 +14,17 @@ export default function Views({ mec2, head, elms, updateModel }) {
                 v.as === elm.as)[0];
         }
 
-        const view = elm.id && mec2._model.viewById(elm.id) || 
+        const view = elm.id && mec2._model.viewById(elm.id) ||
             viewBySimilarity();
 
         switch (prop) {
+            case 'show':
+                const [show, changeShow] = handleViewsUpdate();
+                return <RadioSelect
+                    options={Object.keys(mec.aly)} // mec is the global mec object
+                    onChange={(val) => changeShow(val)}
+                    selected={show}
+                    title={prop} />
             case 'of':
                 const [of, changeOf] = handleViewsUpdate();
                 return <RadioSelect
