@@ -1,9 +1,30 @@
 import React from 'react';
-import { MecTable, RadioSelect } from '..';
+import { MecTable, RadioSelect, handleMecUpdate } from '..';
 
-export default function Views({ head, elms }) {
-    function SanitizedCell({ prop, elm }) {
+export default function Views({ mec2, head, elms, updateModel }) {
+    function SanitizedCell({ elm, prop }) {
+        function handleViewsUpdate(fn) {
+            return handleMecUpdate(mec2, view, prop, updateModel, fn);
+        }
+
+        function viewBySimilarity() {
+            return mec2._model.views.filter(v =>
+                v.show === elm.show &&
+                v.of.id === elm.of &&
+                v.as === elm.as)[0];
+        }
+
+        const view = elm.id && mec2._model.viewById(elm.id) || 
+            viewBySimilarity();
+
         switch (prop) {
+            case 'of':
+                const [of, changeOf] = handleViewsUpdate();
+                return <RadioSelect
+                    options={mec2._model.nodes.map(n => n.id)}
+                    onChange={(val) => changeOf(mec2._model.nodeById(val))}
+                    selected={of.id}
+                    title={prop} />
             case 'as':
                 return <RadioSelect
                     title={"as"}
