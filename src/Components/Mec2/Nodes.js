@@ -1,6 +1,6 @@
 import React from 'react';
 import { Checkbox, InputBase, } from '@material-ui/core';
-import { MecTable, handleMecUpdate } from '..';
+import { MecTable, handleMecUpdate, UpdateText } from '..';
 
 export default function Nodes({ mec2, head, elms, updateModel }) {
     function SanitizedCell({ prop, elm }) {
@@ -34,7 +34,7 @@ export default function Nodes({ mec2, head, elms, updateModel }) {
                 }
 
                 const [id, changeId] = handleNodeUpdate(propagateChange);
-                return <InputBase value={id} onChange={(e) => changeId(e.target.value)} />
+                return <UpdateText title={prop} value={id} onSubmit={changeId} />
             default: return <div>{elm[prop]}</div>
         }
     }
