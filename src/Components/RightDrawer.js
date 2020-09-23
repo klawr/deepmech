@@ -18,6 +18,8 @@ export default function RightDrawer({ state, toggleState, classes, mec2 }) {
         toggleState({ ...state, right: false });
     });
 
+    const [model, updateModel] = React.useState(JSON.parse(mec2._model.asJSON()));
+
     return <SwipeableDrawer
         open={state.right}
         onClose={toggleRightDrawer(false)}
@@ -36,14 +38,11 @@ export default function RightDrawer({ state, toggleState, classes, mec2 }) {
                     {locked ? <Lock /> : <LockOpen />}
                 </ListButton>
             </Grid>
-            {Object.entries(JSON.parse(mec2._model.asJSON())).map(list => (
-                <MecProperties
-                    key={list[0]}
-                    mec2={mec2}
-                    classes={classes}
-                    prop={list[0]}
-                    value={list[1]} />
-            ))}
+            <MecProperties
+                mec2={mec2}
+                model={model}
+                updateModel={updateModel}
+                classes={classes} />
         </List>
     </SwipeableDrawer>
 }

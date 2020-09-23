@@ -2,34 +2,34 @@ import React from 'react';
 import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core';
 import { Id, Nodes, Constraints, Views } from '..';
 
-export default function MecProperties({ classes, prop, value, mec2 }) {
+export default function MecProperties({ classes, mec2, model, updateModel }) {
     function Acc(elm) {
         return <Accordion>
-            <AccordionSummary> {prop} </AccordionSummary>
+            <AccordionSummary> {elm.type.name} </AccordionSummary>
             <AccordionDetails> {elm} </AccordionDetails>
         </Accordion>
     }
 
-    function getProps() {
+    function getProps(arr) {
         const props = new Set();
-        value.forEach(p => Object.keys(p).forEach(k => props.add(k)));
+        arr.forEach(p => Object.keys(p).forEach(k => props.add(k)));
         return Array.from(props);
     }
 
-    switch (prop) {
-        case 'id':
-            return <Id classes={classes} mec2={mec2} />;
-        case 'nodes':
-            return Acc(<Nodes head={getProps()} elms={value} mec2={mec2} />);
-        case 'constraints':
-            return Acc(<Constraints head={getProps()} elms={value} mec2={mec2} />);
-        case 'views':
-            return Acc(<Views head={getProps()} elms={value} mec2={mec2} />);
-        case 'gravity':
-            return <div />;
-        default: {
-            console.warn(`mec2 property ${prop} has no corresponding component...`)
-            return <div />;
-        }
-    };
+    return <div>
+        <Id classes={classes} mec2={mec2} />
+        <div>
+            {Acc(<Nodes
+                head={getProps(model.nodes)}
+                updateModel={updateModel}
+                elms={model.nodes}
+                mec2={mec2} />)}
+        </div>
+        <div>
+            {Acc(<Constraints head={getProps(model.constraints)} elms={model.constraints} mec2={mec2} />)}
+        </div>
+        <div>
+            {Acc(<Views head={getProps(model.views)} elms={model.views} mec2={mec2} />)}
+        </div>
+    </div>
 }

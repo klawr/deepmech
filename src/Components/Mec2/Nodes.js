@@ -2,12 +2,12 @@ import React from 'react';
 import { Checkbox, InputBase, } from '@material-ui/core';
 import { MecTable, handleMecUpdate } from '..';
 
-export default function Nodes({ mec2, head, elms }) {
+export default function Nodes({ mec2, head, elms, updateModel }) {
     function SanitizedCell({ prop, elm }) {
         const node = mec2._model.nodeById(elm.id);
 
         function handleNodeUpdate(fn) {
-            return handleMecUpdate(mec2, node, prop, fn);
+            return handleMecUpdate(mec2, node, prop, updateModel,fn);
         }
 
         switch (prop) {
