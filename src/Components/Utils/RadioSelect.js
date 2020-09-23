@@ -30,7 +30,7 @@ export default function RadioSelect({selected, options, title, onChange}) {
 
     return <div>
         <Button
-            style={{ textTransform: 'lowercase' }}
+            style={{ textTransform: 'none' }}
             onClick={handleClick}>
             {value}
         </Button>

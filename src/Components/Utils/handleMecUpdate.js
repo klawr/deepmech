@@ -1,14 +1,14 @@
 import React from 'react';
 
-export default function handleMecUpdate(mec2, ref, prop, fn) {
-    const [val, changeVal] = React.useState(ref[prop]);
+export default function handleMecUpdate(mec2, elm, prop, fn) {
+    const [value, changeValue] = React.useState(elm[prop]);
     function handleChange(targetValue) {
-        changeVal(targetValue);
-        ref[prop] = targetValue;
+        changeValue(targetValue);
+        elm[prop] = targetValue;
         if (fn) fn(targetValue);
         mec2._model.reset();
         mec2.render();
     };
 
-    return [val, handleChange];
+    return [value, handleChange];
 }
