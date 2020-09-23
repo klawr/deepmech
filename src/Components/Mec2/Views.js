@@ -33,10 +33,11 @@ export default function Views({ mec2, head, elms, updateModel }) {
                     selected={of.id}
                     title={prop} />
             case 'as':
+                const [as, changeAs] = handleViewsUpdate();
                 return <RadioSelect
-                    title={"as"}
-                    onChange={(p) => console.log(p)}
-                    selected={elm[prop]}
+                    title={prop}
+                    onChange={(val) => changeAs(val)}
+                    selected={as}
                     options={Object.keys(mec.view).filter(e => e !== "extend")} />
             default:
                 if (typeof elm[prop] === "object") {
