@@ -1,6 +1,5 @@
 import React from 'react';
-import { MecTable, handleMecUpdate, RadioSelect } from '..';
-import { InputBase } from '@material-ui/core';
+import { MecTable, handleMecUpdate, RadioSelect, UpdateText } from '..';
 
 export default function Constraints({ mec2, head, elms, updateModel }) {
     function SanitizedCell({ elm, prop }) {
@@ -13,7 +12,7 @@ export default function Constraints({ mec2, head, elms, updateModel }) {
         switch (prop) {
             case 'id':
                 const [id, changeId] = handleConstraintUpdate();
-                return <InputBase value={id} onChange={(e) => changeId(e.target.value)} />
+                return <UpdateText title={prop} value={id} onSubmit={changeId} />
             case 'p1':
             case 'p2':
                 const [p, changeP] = handleConstraintUpdate();
