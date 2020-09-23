@@ -19,9 +19,7 @@ export default function Nodes({ mec2, head, elms, updateModel }) {
             case 'x':
             case 'y':
                 const [value, changeValue] = handleNodeUpdate();
-                return <InputBase
-                    value={value}
-                    onChange={(e) => changeValue(e.target.value)} />
+                return <UpdateText title={prop} value={value} onSubmit={changeValue} />
             case 'id':
                 function propagateChange(newId) {
                     mec2._model.constraints.forEach(c => {
