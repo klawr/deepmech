@@ -7,7 +7,7 @@ export default function Nodes({ mec2, head, elms, updateModel }) {
         const node = mec2._model.nodeById(elm.id);
 
         function handleNodeUpdate(fn) {
-            return handleMecUpdate(mec2, node, prop, updateModel,fn);
+            return handleMecUpdate(mec2, node, prop, updateModel, fn);
         }
 
         switch (prop) {

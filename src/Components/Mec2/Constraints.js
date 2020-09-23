@@ -2,12 +2,12 @@ import React from 'react';
 import { MecTable, handleMecUpdate, RadioSelect } from '..';
 import { InputBase } from '@material-ui/core';
 
-export default function Constraints({ mec2, head, elms }) {
+export default function Constraints({ mec2, head, elms, updateModel }) {
     function SanitizedCell({ elm, prop }) {
         const constraint = mec2._model.constraintById(elm.id);
 
         function handleConstraintUpdate(fn) {
-            return handleMecUpdate(mec2, constraint, prop, fn);
+            return handleMecUpdate(mec2, constraint, prop, updateModel, fn);
         }
 
         switch (prop) {
