@@ -8,6 +8,7 @@ export { default as MecControl } from './MecControl';
 export { default as ListButton } from './Utils/ListButton';
 export { default as RadioSelect } from './Utils/RadioSelect';
 export { default as handleMecUpdate } from './Utils/handleMecUpdate';
+export { default as UpdateText } from './Utils/UpdateText';
 
 export { default as MecProperties } from './Mec2/MecProperties';
 export { default as MecTable } from './Mec2/MecTable';
