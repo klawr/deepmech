@@ -9,8 +9,9 @@ const useStyle = makeStyles(() => ({
         paddingTop: 8, // Stolen from MuiListPadding to align with drawer
     },
     listBottom: {
-        position: 'absolute',
-        bottom: '0%'
+        position: 'relative',
+        marginBottom: 0,
+        marginTop: 'auto'
     },
     right: {
         marginLeft: 'auto',
