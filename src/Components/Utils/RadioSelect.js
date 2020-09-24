@@ -10,7 +10,7 @@ import {
     Button,
 } from '@material-ui/core';
 
-export default function RadioSelect({selected, options, title, onChange}) {
+export default function RadioSelect({selected, options, title, label, onChange}) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [value, setValue] = React.useState(selected || options[0]);
 
@@ -32,7 +32,7 @@ export default function RadioSelect({selected, options, title, onChange}) {
         <Button
             style={{ textTransform: 'none' }}
             onClick={handleClick}>
-            {value}
+            {label || value}
         </Button>
         <Menu anchorEl={anchorEl}
             open={Boolean(anchorEl)}
