@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core/styles';
 
 
-export default function DeepmechUI({mec2}) {
+export default function DeepmechUI({ mec2 }) {
     const dark = window.matchMedia ?
         window.matchMedia('(prefers-color-scheme: dark)').matches :
         false; // Default to light mode
@@ -63,21 +63,23 @@ export default function DeepmechUI({mec2}) {
                 <RightDrawer
                     classes={classes} mec2={mec2}
                     state={state} toggleState={toggleState} />
-                <Grid container direction="row"
-                    className={classes.buttonGrid}>
-                    <ListButton
-                        onClick={openDrawer('left')}
-                        tooltip="Open left drawer">
-                        <ChevronRight />
-                    </ListButton>
-                    <h3>&nbsp; 🚧 WIP 🚧 </h3>
-                    <ListButton
-                        onClick={openDrawer("right")}
-                        tooltip="Open right drawer"
-                        className={classes.right} >
-                        <ChevronLeft />
-                    </ListButton>
-                </Grid>
+                <MuiThemeProvider theme={state.drawing ? darkTheme : undefined}>
+                    <Grid container direction="row"
+                        className={classes.buttonGrid}>
+                        <ListButton
+                            onClick={openDrawer('left')}
+                            tooltip="Open left drawer">
+                            <ChevronRight />
+                        </ListButton>
+                        <h3>&nbsp; 🚧 WIP 🚧 </h3>
+                        <ListButton
+                            onClick={openDrawer("right")}
+                            tooltip="Open right drawer"
+                            className={classes.right} >
+                            <ChevronLeft />
+                        </ListButton>
+                    </Grid>
+                </MuiThemeProvider>
             </div>
         </MuiThemeProvider>
     );
