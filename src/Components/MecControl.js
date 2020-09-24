@@ -33,7 +33,7 @@ export default function MecControl({mec2, className}) {
         <ListButton onClick={toggleGravity} tooltip="Toggle gravity">
             g {state.gravity ? <Clear /> : <ArrowDownward />}
         </ListButton>
-        <ListButton onClick={mec2.reset} tooltip="Reset">
+        <ListButton onClick={() => mec2.reset()} tooltip="Reset">
             <RotateLeft />
         </ListButton>
     </List>
