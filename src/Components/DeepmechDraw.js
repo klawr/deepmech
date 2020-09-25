@@ -53,7 +53,7 @@ export default function DeepmechDraw({ mec2, classes, mode }) {
 
         function pointerup() {
             // If pts is a point => remove ply
-            if (ply.pts.length <= 1) {
+            if (ply?.pts?.length <= 1) {
                 ply_placeholder.del(ply_placeholder.commands.length - 1);
             }
             // Reset ply
