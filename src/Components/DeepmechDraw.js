@@ -7,13 +7,10 @@ export default function DeepmechDraw({ mec2, classes, mode }) {
         });
         canvasInteractor.add(interactor);
 
-        const effects = [
-            ['tick', drawTick],
-            ['pointerdown', pointerdown],
-            ['pointerup', pointerup],
-            ['click', pointerup],
-        ];
-        effects.forEach(e => interactor.on(...e));
+        interactor.on('tick', drawTick);
+        interactor.on('pointerdown', pointerdown);
+        interactor.on('pointerup', pointerup);
+        interactor.on('click', pointerup);
 
         const view = mec2._interactor.view;
         const img_placeholder = g2();
