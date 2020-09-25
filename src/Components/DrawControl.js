@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import clsx from 'clsx';
 import { List } from '@material-ui/core';
 import { Create, RotateLeft } from '@material-ui/icons';
 import { ListButton, DeepmechDraw } from '.';
