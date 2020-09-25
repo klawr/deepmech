@@ -1,5 +1,5 @@
 import React from 'react';
-import mec2Draw from './Utils/mec2Draw';
+import { mec2Draw } from '.';
 
 export default function DeepmechDraw({ mec2, classes, state }) {
     const canvasRef = React.useRef(null);
