@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function mec2Draw(ctx, mec2) {
     const interactor = canvasInteractor.create(ctx, {
         x: mec2.x0, y: mec2.y0, cartesian: mec2.cartesian
