@@ -1,7 +1,7 @@
 import React from 'react';
 
-export default function DeepmechDraw({ mec2, classes, state }) {
-    function handleInteractor(ctx, mec2, state) {
+export default function DeepmechDraw({ mec2, classes, mode }) {
+    function handleInteractor(ctx, mec2, mode) {
         const interactor = canvasInteractor.create(ctx, {
             x: mec2.x0, y: mec2.y0, cartesian: mec2.cartesian
         });
@@ -33,7 +33,7 @@ export default function DeepmechDraw({ mec2, classes, state }) {
         let plyShadow = "white";
 
         function pointerdown(e) {
-            if (state.draw) {
+            if (mode.draw) {
                 // Set ply and add to command queue
                 const x = (e.x - view.x) / view.scl;
                 const y = (e.y - view.y) / view.scl;
@@ -45,7 +45,7 @@ export default function DeepmechDraw({ mec2, classes, state }) {
                 ply_placeholder.ply(ply);
             }
 
-            if (state.delete) {
+            if (mode.delete) {
                 // Filter selected node from commands array
                 ply_placeholder.commands = ply_placeholder.commands.filter(
                     cmd => cmd.a !== mec2._selector.selection);
@@ -66,7 +66,7 @@ export default function DeepmechDraw({ mec2, classes, state }) {
         function drawTick() {
             let { type, x, y } = interactor.evt;
 
-            if (state.draw && type === 'pan' && ply) {
+            if (mode.draw && type === 'pan' && ply) {
                 x = (x - view.x) / view.scl;
                 y = (y - view.y) / view.scl;
 
@@ -77,7 +77,7 @@ export default function DeepmechDraw({ mec2, classes, state }) {
                     ply.pts.push({ x, y });
                 }
             }
-            else if (state.delete || state.drag) {
+            else if (mode.delete || mode.drag) {
                 ply_placeholder.exe(mec2._selector);
             }
 
@@ -95,8 +95,9 @@ export default function DeepmechDraw({ mec2, classes, state }) {
 
     React.useEffect(() => {
         const ctx = canvasRef.current.getContext('2d');
-        return handleInteractor(ctx, mec2, state);
-    }, []);
+        return handleInteractor(ctx, mec2, mode);
+    });
+
 
     return <canvas
         className={classes.drawCanvas}
