@@ -3,5 +3,6 @@ import clsx from 'clsx';
 
 export default function DeepmechDraw({classes, state}) {
     return <canvas
-        className={clsx(classes.drawCanvas, !state.drawing && classes.hide)} />
+        className={classes.drawCanvas}
+        width={globalThis.innerWidth} height={globalThis.innerHeight} />
 }

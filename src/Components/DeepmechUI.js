@@ -37,33 +37,23 @@ export default function DeepmechUI({ mec2 }) {
         toggleState({ ...state, [side]: true });
     };
 
-    const darkTheme = createMuiTheme({
-        palette: {
-            type: 'dark',
-        },
-    });
-
-    const lightTheme = createMuiTheme({
-        palette: {
-            type: 'light',
-        },
-    });
+    const darkTheme = createMuiTheme({ palette: { type: 'dark' } });
+    const lightTheme = createMuiTheme({ palette: { type: 'light' } });
 
     const classes = useStyle();
 
     return (
         <MuiThemeProvider theme={state.dark ? darkTheme : lightTheme}>
             <div className={classes.root}>
-                <DeepmechDraw
-                    classes={classes}
-                    state={state} />
+                <div className={classes.drawElement} id="deepmech_draw" />
+
                 <LeftDrawer
                     classes={classes} mec2={mec2}
                     state={state} toggleState={toggleState} />
                 <RightDrawer
                     classes={classes} mec2={mec2}
                     state={state} toggleState={toggleState} />
-                <MuiThemeProvider theme={state.drawing ? darkTheme : undefined}>
+                <MuiThemeProvider theme={state.drawing || state.dark ? darkTheme : lightTheme}>
                     <Grid container direction="row"
                         className={classes.buttonGrid}>
                         <ListButton

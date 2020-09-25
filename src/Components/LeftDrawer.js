@@ -22,7 +22,7 @@ export default function LeftDrawer({ state, toggleState, classes, mec2 }) {
         <MecControl mec2={mec2}
             className={clsx({ [classes.hide]: state.drawing })} />
         <Divider />
-        <DrawControl state={state} toggleState={toggleState} classes={classes} />
+        <DrawControl mec2={mec2} state={state} toggleState={toggleState} classes={classes} />
         <Divider />
         <List className={classes.listBottom}>
             <ListButton

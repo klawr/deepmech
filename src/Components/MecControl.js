@@ -9,7 +9,6 @@ import {
     RotateLeft,
  } from '@material-ui/icons';
 
-
 export default function MecControl({mec2, className}) {
     const [state, toggleState] = React.useState({
         gravity: false,

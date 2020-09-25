@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
 import DeepmechUI from './Components/DeepmechUI'
 
 ReactDOM.render(

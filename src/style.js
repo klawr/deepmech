@@ -20,11 +20,16 @@ const useStyle = makeStyles(() => ({
     hide: {
         display: 'none',
     },
-    drawCanvas: {
+    drawElement: {
+        pointerEvents: 'none',
+        position: 'absolute',
         width: '100vw',
         height: '100vh',
-        backgroundColor: '#000',
     },
+    drawCanvas: {
+        pointerEvents: 'all',
+        backgroundColor: 'black', // NOTE #000c may be cool too
+    }
 }));
 
 export default useStyle;
