@@ -6,7 +6,7 @@ export default function DeepmechDraw({ mec2, classes, state }) {
 
     React.useEffect(() => {
         const ctx = canvasRef.current.getContext('2d');
-        return mec2Draw(ctx, mec2);
+        return mec2Draw(ctx, mec2, state);
     }, []);
 
     return <canvas

@@ -6,6 +6,12 @@ import { Create, RotateLeft } from '@material-ui/icons';
 import { ListButton, DeepmechDraw } from '.';
 
 export default function DrawControl({ mec2, classes, state, toggleState }) {
+    const [thisState, toggleThisState] = React.useState({
+        draw: true,
+        delete: false,
+        drag: false
+    });
+
     const deepmechDraw = document.getElementById('deepmech_draw')
 
     const toggleDrawMode = () => {
@@ -19,7 +25,7 @@ export default function DrawControl({ mec2, classes, state, toggleState }) {
 
     function activateDrawMode() {
         ReactDOM.render(<DeepmechDraw
-            classes={classes} mec2={mec2} state={state} />, deepmechDraw);
+            classes={classes} mec2={mec2} state={thisState} />, deepmechDraw);
     }
 
     function deactivateDrawMode() {

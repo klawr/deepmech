@@ -1,4 +1,4 @@
-export default function mec2Draw(ctx, mec2) {
+export default function mec2Draw(ctx, mec2, state) {
     const interactor = canvasInteractor.create(ctx, {
         x: mec2.x0, y: mec2.y0, cartesian: mec2.cartesian
     });
@@ -24,14 +24,13 @@ export default function mec2Draw(ctx, mec2) {
     });
     const ply_placeholder = g2();
 
-    let mode = 'draw';
     // A reference to the polyline which is drawn at the moment
     let ply;
     // placeholder for theming later on?
     let plyShadow = "white";
 
     function pointerdown(e) {
-        if (mode === "draw") {
+        if (state.draw) {
             // Set ply and add to command queue
             const x = (e.x - view.x) / view.scl;
             const y = (e.y - view.y) / view.scl;
@@ -43,7 +42,7 @@ export default function mec2Draw(ctx, mec2) {
             ply_placeholder.ply(ply);
         }
 
-        if (mode === "delete") {
+        if (state.delete) {
             // Filter selected node from commands array
             ply_placeholder.commands = ply_placeholder.commands.filter(
                 cmd => cmd.a !== mec2._selector.selection);
@@ -64,8 +63,7 @@ export default function mec2Draw(ctx, mec2) {
     function drawTick() {
         let { type, x, y } = interactor.evt;
 
-        // "ply" is only defined between "pointerdown" and "pointerup"/"click" (pan) in draw mode
-        if (mode === "draw" && type === 'pan' && ply) {
+        if (state.draw && type === 'pan' && ply) {
             x = (x - view.x) / view.scl;
             y = (y - view.y) / view.scl;
 
@@ -76,7 +74,7 @@ export default function mec2Draw(ctx, mec2) {
                 ply.pts.push({ x, y });
             }
         }
-        else if (mode === "delete" || mode === "drag") {
+        else if (state.delete || state.drag) {
             ply_placeholder.exe(mec2._selector);
         }
 
