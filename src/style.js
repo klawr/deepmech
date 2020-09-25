@@ -5,6 +5,7 @@ const useStyle = makeStyles(() => ({
         display: 'flex'
     },
     buttonGrid: {
+        pointerEvents: 'none',
         position: 'absolute',
         paddingTop: 8, // Stolen from MuiListPadding to align with drawer
     },
