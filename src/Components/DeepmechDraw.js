@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default function DeepmechDraw({ mec2, classes, state }) {
-    function mec2Draw(ctx, mec2, state) {
+    function handleInteractor(ctx, mec2, state) {
         const interactor = canvasInteractor.create(ctx, {
             x: mec2.x0, y: mec2.y0, cartesian: mec2.cartesian
         });
@@ -95,7 +95,7 @@ export default function DeepmechDraw({ mec2, classes, state }) {
 
     React.useEffect(() => {
         const ctx = canvasRef.current.getContext('2d');
-        return mec2Draw(ctx, mec2, state);
+        return handleInteractor(ctx, mec2, state);
     }, []);
 
     return <canvas
