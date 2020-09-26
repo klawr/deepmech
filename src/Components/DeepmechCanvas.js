@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function DeepmechDraw({ mec2, classes, mode }) {
+export default function DeepmechCanvas({ mec2, classes, mode }) {
     function handleInteractor(ctx, mec2, mode) {
         const interactor = canvasInteractor.create(ctx, {
             x: mec2.x0, y: mec2.y0, cartesian: mec2.cartesian

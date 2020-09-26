@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { Divider, List, ListItem, Tooltip } from '@material-ui/core';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab'
 import { CameraAlt, Create, Delete, RotateLeft } from '@material-ui/icons';
-import { ListButton, DeepmechDraw } from '.';
+import { ListButton, DeepmechCanvas } from '.';
 
 export default function DrawControl({ mec2, classes, state, toggleState }) {
     const [mode, changeMode] = React.useState({
@@ -14,15 +14,15 @@ export default function DrawControl({ mec2, classes, state, toggleState }) {
         delete: false,
     });
 
-    const deepmechDraw = document.getElementById('deepmech_draw')
+    const deepmechCanvas = document.getElementById('deepmech_canvas')
 
     const toggleDrawMode = () => {
         toggleState({ ...state, drawing: !state.drawing });
         if (!state.drawing) {
-            ReactDOM.render(<DeepmechDraw
-                classes={classes} mec2={mec2} mode={mode} />, deepmechDraw);
+            ReactDOM.render(<DeepmechCanvas
+                classes={classes} mec2={mec2} mode={mode} />, deepmechCanvas);
         } else {
-            ReactDOM.unmountComponentAtNode(deepmechDraw);
+            ReactDOM.unmountComponentAtNode(deepmechCanvas);
         }
     };
 

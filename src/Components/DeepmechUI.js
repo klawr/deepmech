@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
-import { useStyle, LeftDrawer, RightDrawer, DeepmechDraw, ListButton } from '.';
+import { useStyle, LeftDrawer, RightDrawer, DeepmechCanvas, ListButton } from '.';
 import {
     createMuiTheme,
     ThemeProvider as MuiThemeProvider
@@ -45,7 +45,7 @@ export default function DeepmechUI({ mec2 }) {
     return (
         <MuiThemeProvider theme={state.dark ? darkTheme : lightTheme}>
             <div className={classes.root}>
-                <div className={classes.drawElement} id="deepmech_draw" />
+                <div className={classes.drawElement} id="deepmech_canvas" />
 
                 <LeftDrawer
                     classes={classes} mec2={mec2}

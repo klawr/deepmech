@@ -1,6 +1,6 @@
 export { default as LeftDrawer } from './LeftDrawer';
 export { default as RightDrawer } from './RightDrawer';
-export { default as DeepmechDraw } from './DeepmechDraw';
+export { default as DeepmechCanvas } from './DeepmechCanvas';
 export { default as DeepmechUI } from './DeepmechUI';
 export { default as DrawControl } from './DrawControl';
 export { default as MecControl } from './MecControl';
