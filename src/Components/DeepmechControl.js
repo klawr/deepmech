@@ -6,7 +6,7 @@ import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab'
 import { CameraAlt, Create, Delete, RotateLeft } from '@material-ui/icons';
 import { ListButton, DeepmechCanvas } from '.';
 
-export default function DrawControl({ mec2, classes, state, toggleState }) {
+export default function DeepmechControl({ mec2, classes, state, toggleState }) {
     const [mode, changeMode] = React.useState({
         draw: true,
         drag: false,

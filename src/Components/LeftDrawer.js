@@ -2,7 +2,7 @@ import React from 'react';
 import clsx from 'clsx';
 import { Divider, Drawer, List } from '@material-ui/core';
 import { Brightness4, ChevronLeft, GitHub } from '@material-ui/icons';
-import { MecControl, DrawControl, ListButton } from '.';
+import { MecControl, DeepmechControl, ListButton } from '.';
 
 export default function LeftDrawer({ state, toggleState, classes, mec2 }) {
     const closeDrawer = () => {
@@ -22,7 +22,7 @@ export default function LeftDrawer({ state, toggleState, classes, mec2 }) {
         <MecControl mec2={mec2}
             className={clsx({ [classes.hide]: state.drawing })} />
         <Divider />
-        <DrawControl mec2={mec2} state={state} toggleState={toggleState} classes={classes} />
+        <DeepmechControl mec2={mec2} state={state} toggleState={toggleState} classes={classes} />
         <Divider />
         <List className={classes.listBottom}>
             <ListButton
