@@ -1,6 +1,6 @@
 import React from 'react';
 import { List } from '@material-ui/core';
-import { ListButton } from '.';
+import { ListButton } from '..';
 import {
     ArrowDownward,
     Clear,
