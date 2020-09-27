@@ -19,18 +19,24 @@ export default function DeepmechControl({ mec2, classes, state, toggleState }) {
     const toggleDrawMode = () => {
         toggleState({ ...state, drawing: !state.drawing });
         if (!state.drawing) {
-            ReactDOM.render(<DeepmechCanvas
-                classes={classes} mec2={mec2} mode={mode} />, deepmechCanvas);
+            renderDeepmechCanvas();
         } else {
             ReactDOM.unmountComponentAtNode(deepmechCanvas);
         }
     };
 
+    function renderDeepmechCanvas() {
+        ReactDOM.render(<DeepmechCanvas
+            classes={classes} mec2={mec2} mode={mode} />, deepmechCanvas);
+    }
+
     const onChange = (event, newValue) => {
         if (newValue) {
-            mode[newValue] = true;
+            // TODO this is bad...find something else
             mode[getTrueKey()] = false;
-            changeMode({ ...mode, [getTrueKey()]: false, [newValue]: true });
+            mode[newValue] = true;
+            changeMode({ ...mode })
+            renderDeepmechCanvas();
         }
     }
 
