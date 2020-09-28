@@ -3,6 +3,8 @@ import { Checkbox, InputBase, } from '@material-ui/core';
 import { MecTable, handleMecUpdate, UpdateText } from '..';
 
 export default function Nodes({ mec2, head, elms, updateModel }) {
+    head.includes('base') || head.push('base');
+
     function SanitizedCell({ prop, elm }) {
         const node = mec2._model.nodeById(elm.id);
 
