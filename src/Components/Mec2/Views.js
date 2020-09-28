@@ -1,7 +1,9 @@
 import React from 'react';
 import { MecTable, RadioSelect, handleMecUpdate } from '..';
 
-export default function Views({ mec2, head, elms, updateModel }) {
+export default function Views({ mec2, elms, updateModel }) {
+    const head = ['show', 'of', 'as'];
+
     function SanitizedCell({ elm, prop }) {
         function handleViewsUpdate(fn) {
             return handleMecUpdate(mec2, view, prop, updateModel, fn);

@@ -1,10 +1,8 @@
 import React from 'react';
 import { MecTable, handleMecUpdate, RadioSelect, UpdateText, ObjectMenu } from '..';
 
-export default function Constraints({ mec2, head, elms, updateModel }) {
-    // If all are 'free':
-    head.includes('len') || head.push('len');
-    head.includes('ori') || head.push('ori');
+export default function Constraints({ mec2, elms, updateModel }) {
+    const head = ['id', 'p1', 'p2', 'len', 'ori'];
 
     function SanitizedCell({ elm, prop }) {
         const constraint = mec2._model.constraintById(elm.id);
