@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Grid } from '@material-ui/core';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
-import { LeftDrawer, RightDrawer, ListButton } from '.';
+import { DeepmechCanvas, LeftDrawer, RightDrawer, ListButton } from '.';
 import { UIselect, UIactions } from '../Features';
 import { lightTheme, darkTheme, useStyle } from '../style';
 
@@ -20,7 +20,8 @@ export default function DeepmechUI({ mec2 }) {
     return (
         <MuiThemeProvider theme={selectedDarkmode ? darkTheme : lightTheme}>
             <div className={classes.root}>
-                <div className={classes.drawElement} id="deepmech_canvas" />
+                {selectedDeepmech &&
+                    <DeepmechCanvas classes={classes} mec2={mec2} />}
                 <LeftDrawer classes={classes} mec2={mec2} />
                 <RightDrawer classes={classes} mec2={mec2} />
                 <MuiThemeProvider theme={selectedDeepmech || selectedDarkmode ?

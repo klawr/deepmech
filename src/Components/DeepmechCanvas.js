@@ -1,6 +1,11 @@
 import React from 'react';
 
-export default function DeepmechCanvas({ mec2, classes, mode }) {
+import { useSelector } from 'react-redux';
+import { selectMode } from '../Features';
+ 
+export default function DeepmechCanvas({ mec2, classes }) {
+    const mode = useSelector(selectMode);
+
     function handleInteractor(ctx, mec2, mode) {
         const interactor = canvasInteractor.create(ctx, {
             x: mec2.x0, y: mec2.y0, cartesian: mec2.cartesian
@@ -30,7 +35,7 @@ export default function DeepmechCanvas({ mec2, classes, mode }) {
         let plyShadow = "white";
 
         function pointerdown(e) {
-            if (mode.draw) {
+            if (mode === 'draw') {
                 // Set ply and add to command queue
                 const x = (e.x - view.x) / view.scl;
                 const y = (e.y - view.y) / view.scl;
@@ -42,7 +47,7 @@ export default function DeepmechCanvas({ mec2, classes, mode }) {
                 ply_placeholder.ply(ply);
             }
 
-            if (mode.delete) {
+            if (mode === 'delete') {
                 // Filter selected node from commands array
                 ply_placeholder.commands = ply_placeholder.commands.filter(
                     cmd => cmd.a !== mec2._selector.selection);
@@ -63,7 +68,7 @@ export default function DeepmechCanvas({ mec2, classes, mode }) {
         function drawTick() {
             let { type, x, y } = interactor.evt;
 
-            if (mode.draw && type === 'pan' && ply) {
+            if (mode === 'draw' && type === 'pan' && ply) {
                 x = (x - view.x) / view.scl;
                 y = (y - view.y) / view.scl;
 
@@ -74,7 +79,7 @@ export default function DeepmechCanvas({ mec2, classes, mode }) {
                     ply.pts.push({ x, y });
                 }
             }
-            else if (mode.delete || mode.drag) {
+            else if (mode === 'delete' || mode === 'drag') {
                 ply_placeholder.exe(mec2._selector);
             }
 

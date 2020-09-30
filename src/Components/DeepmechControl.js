@@ -1,48 +1,16 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Divider, List, ListItem, Tooltip } from '@material-ui/core';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab'
 import { CameraAlt, Create, Delete, RotateLeft } from '@material-ui/icons';
-import { ListButton, DeepmechCanvas } from '.';
-import { UIselect, UIactions } from '../Features';
+import { ListButton } from '.';
+import { UIselect, UIactions, changeMode, selectMode } from '../Features';
 
-export default function DeepmechControl({ mec2, classes }) {
-    const [mode, changeMode] = React.useState({
-        draw: true,
-        drag: false,
-        camera: false,
-        delete: false,
-    });
-
+export default function DeepmechControl() {
     const dispatch = useDispatch();
 
     const selectedDeepmech = useSelector(UIselect).deepmech;
-    const deepmechCanvas = document.getElementById('deepmech_canvas')
-
-    const toggleDrawMode = () => {
-        dispatch(UIactions.deepmech(!selectedDeepmech));
-        if (!selectedDeepmech) {
-            renderDeepmechCanvas();
-        } else {
-            ReactDOM.unmountComponentAtNode(deepmechCanvas);
-        }
-    };
-
-    function renderDeepmechCanvas() {
-        ReactDOM.render(<DeepmechCanvas
-            classes={classes} mec2={mec2} mode={mode} />, deepmechCanvas);
-    }
-
-    const onChange = (event, newValue) => {
-        if (newValue) {
-            // TODO this is bad...find something else
-            mode[getTrueKey()] = false;
-            mode[newValue] = true;
-            changeMode({ ...mode })
-            renderDeepmechCanvas();
-        }
-    }
+    const mode = useSelector(selectMode);
 
     function Toggle(elm, value, tooltip) {
         return <ToggleButton value={value}>
@@ -52,10 +20,6 @@ export default function DeepmechControl({ mec2, classes }) {
         </ToggleButton>
     }
 
-    function getTrueKey() {
-        return Object.keys(mode).filter(k => mode[k])[0];
-    }
-
     return <List>
         {selectedDeepmech &&
             <div>
@@ -63,8 +27,8 @@ export default function DeepmechControl({ mec2, classes }) {
                     <ToggleButtonGroup
                         exclusive
                         orientation="vertical"
-                        value={getTrueKey()}
-                        onChange={onChange}>
+                        value={mode}
+                        onChange={(e, val) => val && dispatch(changeMode(val))}>
                         {Toggle(<Create />, "draw", "Draw")}
                         {Toggle(<CameraAlt />, "camera", "Camera")}
                         {Toggle(<Delete />, "delete", "Delete")}
@@ -73,7 +37,7 @@ export default function DeepmechControl({ mec2, classes }) {
                 <Divider />
             </div>}
         <ListButton
-            onClick={toggleDrawMode}
+            onClick={() => dispatch(UIactions.deepmech(!selectedDeepmech))}
             tooltip={(selectedDeepmech ? "Exit" : "Activate") + " draw mode"}>
             {selectedDeepmech ? <RotateLeft /> : <Create />}
         </ListButton>

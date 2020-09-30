@@ -4,3 +4,7 @@ export {
     actions as UIactions,
     select as UIselect,
 } from './UISlice';
+export {
+    changeMode,
+    selectMode
+} from './DeepmechSlice';
