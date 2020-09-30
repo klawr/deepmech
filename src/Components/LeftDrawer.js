@@ -1,8 +1,8 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Divider, Drawer, List } from '@material-ui/core';
 import { Brightness4, ChevronLeft, GitHub } from '@material-ui/icons';
 import { MecControl, DeepmechControl, ListButton } from '.';
-import { useSelector, useDispatch } from 'react-redux';
 import { UIactions, UIselect } from '../Features';
 
 export default function LeftDrawer({ classes, mec2 }) {

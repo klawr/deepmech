@@ -1,19 +1,11 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Grid } from '@material-ui/core';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
-import {
-    LeftDrawer,
-    RightDrawer,
-    ListButton
-} from '.';
-import {
-    lightTheme,
-    darkTheme,
-    useStyle,
-} from '../style';
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
-import { useSelector, useDispatch } from 'react-redux';
+import { LeftDrawer, RightDrawer, ListButton } from '.';
 import { UIselect, UIactions } from '../Features';
+import { lightTheme, darkTheme, useStyle } from '../style';
 
 export default function DeepmechUI({ mec2 }) {
     const dispatch = useDispatch();

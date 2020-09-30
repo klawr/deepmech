@@ -1,8 +1,8 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Grid, List, SwipeableDrawer } from '@material-ui/core';
 import { ChevronRight, Lock, LockOpen } from '@material-ui/icons';
 import { ListButton, MecProperties } from '.';
-import { useSelector, useDispatch } from 'react-redux';
 import { UIactions, UIselect } from '../Features';
 
 export default function RightDrawer({ classes, mec2 }) {
