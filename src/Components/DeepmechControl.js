@@ -5,7 +5,7 @@ import { Divider, List, ListItem, Tooltip } from '@material-ui/core';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab'
 import { CameraAlt, Create, Delete, RotateLeft } from '@material-ui/icons';
 import { ListButton, DeepmechCanvas } from '.';
-import { select, actions } from '../Features/UISlice';
+import { UIselect, UIactions } from '../Features';
 
 export default function DeepmechControl({ mec2, classes }) {
     const [mode, changeMode] = React.useState({
@@ -17,11 +17,11 @@ export default function DeepmechControl({ mec2, classes }) {
 
     const dispatch = useDispatch();
 
-    const selectedDeepmech = useSelector(select).deepmech;
+    const selectedDeepmech = useSelector(UIselect).deepmech;
     const deepmechCanvas = document.getElementById('deepmech_canvas')
 
     const toggleDrawMode = () => {
-        dispatch(actions.deepmech(!selectedDeepmech));
+        dispatch(UIactions.deepmech(!selectedDeepmech));
         if (!selectedDeepmech) {
             renderDeepmechCanvas();
         } else {
