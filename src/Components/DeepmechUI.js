@@ -7,12 +7,12 @@ import {
     ThemeProvider as MuiThemeProvider
 } from '@material-ui/core/styles';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectDarkmode, left, right, selectDeepmech } from '../Features/UISlice';
+import { select, actions } from '../Features/UISlice';
 
 export default function DeepmechUI({ mec2 }) {
     const dispatch = useDispatch();
-    const selectedDarkmode = useSelector(selectDarkmode);
-    const selectedDeepmech = useSelector(selectDeepmech);
+    const selectedDarkmode = useSelector(select).darkmode;
+    const selectedDeepmech = useSelector(select).deepmech;
     const lightTheme = createMuiTheme({ palette: { type: 'light' } });
     const darkTheme = createMuiTheme({ palette: { type: 'dark' } });
 
@@ -33,13 +33,13 @@ export default function DeepmechUI({ mec2 }) {
                     <Grid container direction="row"
                         className={classes.buttonGrid}>
                         <ListButton
-                            onClick={() => dispatch(left(true))}
+                            onClick={() => dispatch(actions.left(true))}
                             tooltip="Open left drawer">
                             <ChevronRight />
                         </ListButton>
                         <h3>&nbsp; 🚧 WIP 🚧 </h3>
                         <ListButton
-                            onClick={() => dispatch(right(true))}
+                            onClick={() => dispatch(actions.right(true))}
                             tooltip="Open right drawer"
                             className={classes.right} >
                             <ChevronLeft />

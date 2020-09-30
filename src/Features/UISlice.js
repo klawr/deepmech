@@ -26,11 +26,7 @@ export const slice = createSlice({
     },
 });
 
-export const { left, right, deepmech, darkmode } = slice.actions;
-
-export const selectLeft = state => state.UI.left;
-export const selectRight = state => state.UI.right;
-export const selectDeepmech = state => state.UI.deepmech;
-export const selectDarkmode = state => state.UI.darkmode;
+export const actions = slice.actions;
+export const select = state => state.UI;
 
 export default slice.reducer;
