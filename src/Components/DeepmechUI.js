@@ -21,9 +21,7 @@ export default function DeepmechUI({ mec2 }) {
     const selectedDeepmech = useSelector(UIselect).deepmech;
 
     mec2._show.darkmode = selectedDarkmode;
-    // TODO this should be done by mec2...
-    const cnv = mec2._root.childNodes[3].childNodes[1];
-    cnv.style.backgroundColor = selectedDarkmode ? '#777' : '#eee';
+    mec2._ctx.canvas.style.backgroundColor = selectedDarkmode ? '#777' : '#eee';
 
     const classes = useStyle();
 
