@@ -1,12 +1,14 @@
 import React from 'react';
 import { MecTable, RadioSelect, handleMecUpdate } from '..';
+import { useSelector } from 'react-redux';
+import { selectModel } from '../../Features';
 
-export default function Views({ mec2, elms, updateModel }) {
+export default function Views({ mec2 }) {
     const head = ['show', 'of', 'as'];
 
     function SanitizedCell({ elm, prop }) {
         function handleViewsUpdate(fn) {
-            return handleMecUpdate(mec2, view, prop, updateModel, fn);
+            return handleMecUpdate(mec2, view, prop, () => { }, fn);
         }
 
         function viewBySimilarity() {
@@ -49,5 +51,8 @@ export default function Views({ mec2, elms, updateModel }) {
         }
     }
 
-    return <MecTable SanitizedCell={SanitizedCell} head={head} list={elms} />
+    return <MecTable
+        SanitizedCell={SanitizedCell}
+        head={head}
+        list={useSelector(selectModel).views} />
 }

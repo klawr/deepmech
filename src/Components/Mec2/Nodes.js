@@ -1,15 +1,17 @@
 import React from 'react';
-import { Checkbox, InputBase, } from '@material-ui/core';
+import { Checkbox } from '@material-ui/core';
 import { MecTable, handleMecUpdate, UpdateText } from '..';
+import { useSelector } from 'react-redux';
+import { selectModel } from '../../Features';
 
-export default function Nodes({ mec2, elms, updateModel }) {
+export default function Nodes({ mec2 }) {
     const head = ['id', 'x', 'y', 'base'];
 
     function SanitizedCell({ prop, elm }) {
         const node = mec2._model.nodeById(elm.id);
 
         function handleNodeUpdate(fn) {
-            return handleMecUpdate(mec2, node, prop, updateModel, fn);
+            return handleMecUpdate(mec2, node, prop, () => {}, fn);
         }
 
         switch (prop) {
@@ -39,5 +41,8 @@ export default function Nodes({ mec2, elms, updateModel }) {
         }
     }
 
-    return <MecTable SanitizedCell={SanitizedCell} head={head} list={elms} />
+    return <MecTable
+        SanitizedCell={SanitizedCell}
+        head={head}
+        list={useSelector(selectModel).nodes} />
 }

@@ -6,5 +6,9 @@ export {
 } from './UISlice';
 export {
     changeMode,
-    selectMode
+    selectMode,
 } from './DeepmechSlice';
+export {
+    selectModel,
+    updateModel,
+} from './MecModelSlice';

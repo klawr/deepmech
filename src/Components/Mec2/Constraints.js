@@ -1,14 +1,22 @@
 import React from 'react';
-import { MecTable, handleMecUpdate, RadioSelect, UpdateText, ObjectMenu } from '..';
+import {
+    MecTable,
+    handleMecUpdate,
+    RadioSelect,
+    UpdateText,
+    ObjectMenu
+} from '..';
+import { useSelector } from 'react-redux';
+import { selectModel } from '../../Features';
 
-export default function Constraints({ mec2, elms, updateModel }) {
+export default function Constraints({ mec2 }) {
     const head = ['id', 'p1', 'p2', 'len', 'ori'];
 
     function SanitizedCell({ elm, prop }) {
         const constraint = mec2._model.constraintById(elm.id);
 
         function handleConstraintUpdate(fn) {
-            return handleMecUpdate(mec2, constraint, prop, updateModel, fn);
+            return handleMecUpdate(mec2, constraint, prop, () => { }, fn);
         }
 
         switch (prop) {
@@ -25,9 +33,9 @@ export default function Constraints({ mec2, elms, updateModel }) {
                     title={prop} />
             case 'len':
             case 'ori':
-                elm[prop] = elm[prop] || { type: 'free' };
+                const proxy = elm[prop] || { type: 'free' };
                 const [obj, changeObj] = handleConstraintUpdate();
-                return <ObjectMenu label={prop} title={elm[prop].type}>
+                return <ObjectMenu label={prop} title={proxy.type}>
                     {Object.entries(obj).map(e => {
                         switch (e[0]) {
                             case 'type':
@@ -57,5 +65,8 @@ export default function Constraints({ mec2, elms, updateModel }) {
         }
     }
 
-    return <MecTable SanitizedCell={SanitizedCell} head={head} list={elms} />
+    return <MecTable
+        SanitizedCell={SanitizedCell}
+        head={head}
+        list={useSelector(selectModel).constraints} />
 }

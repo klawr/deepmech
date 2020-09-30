@@ -10,7 +10,7 @@ export default function RightDrawer({ classes, mec2 }) {
     const open = useSelector(UIselect).right;
 
     const [locked, toggleLock] = React.useState(false);
-    const [model, updateModel] = React.useState(JSON.parse(mec2._model.asJSON()));
+    // const [model, updateModel] = React.useState(JSON.parse(mec2._model.asJSON()));
 
     window.addEventListener('orientationchange', () => dispatch(UIactions.right(false)));
 
@@ -34,11 +34,7 @@ export default function RightDrawer({ classes, mec2 }) {
                     {locked ? <Lock /> : <LockOpen />}
                 </ListButton>
             </Grid>
-            <MecProperties
-                mec2={mec2}
-                model={model}
-                updateModel={updateModel}
-                classes={classes} />
+            <MecProperties mec2={mec2} classes={classes} />
         </List>
     </SwipeableDrawer>
 }
