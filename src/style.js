@@ -1,6 +1,9 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { createMuiTheme, makeStyles } from '@material-ui/core/styles';
 
-const useStyle = makeStyles(() => ({
+export const lightTheme = createMuiTheme({ palette: { type: 'light' } });
+export const darkTheme = createMuiTheme({ palette: { type: 'dark' } });
+
+export const useStyle = makeStyles(() => ({
     root: {
         display: 'flex'
     },
@@ -32,5 +35,3 @@ const useStyle = makeStyles(() => ({
         backgroundColor: 'black', // NOTE #000c may be cool too
     }
 }));
-
-export default useStyle;
