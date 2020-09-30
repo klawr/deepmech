@@ -5,7 +5,6 @@ import { selectModel, updateModel } from '../../Features';
 import { useDispatch, useSelector } from 'react-redux';
 
 export default function MecProperties({ classes, mec2 }) {
-    useDispatch()(updateModel(JSON.parse(mecElement._model.asJSON())));
 
     function Acc(elm, title) {
         return <Accordion>
@@ -16,12 +15,8 @@ export default function MecProperties({ classes, mec2 }) {
 
     return <div>
         <Id classes={classes} mec2={mec2} />
-        {Acc(<Nodes mec2={mec2} />, 'nodes')}
-        {Acc(<Constraints
-            elms={model.constraints}
-            mec2={mec2} />, 'constraints')}
-        {Acc(<Views
-            elms={model.views}
-            mec2={mec2} />, 'views')}
+        {Acc(<Nodes />, 'nodes')}
+        {Acc(<Constraints />, 'constraints')}
+        {Acc(<Views />, 'views')}
     </div>
 }

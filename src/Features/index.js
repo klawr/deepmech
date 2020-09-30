@@ -11,4 +11,5 @@ export {
 export {
     selectModel,
     updateModel,
+    updateElement,
 } from './MecModelSlice';

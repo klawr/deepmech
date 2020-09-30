@@ -6,52 +6,54 @@ import {
     UpdateText,
     ObjectMenu
 } from '..';
-import { useSelector } from 'react-redux';
-import { selectModel } from '../../Features';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectModel, updateElement } from '../../Features';
 
-export default function Constraints({ mec2 }) {
+export default function Constraints() {
     const head = ['id', 'p1', 'p2', 'len', 'ori'];
+    const dispatch = useDispatch();
+    const model = useSelector(selectModel);
 
-    function SanitizedCell({ elm, prop }) {
-        const constraint = mec2._model.constraintById(elm.id);
-
-        function handleConstraintUpdate(fn) {
-            return handleMecUpdate(mec2, constraint, prop, () => { }, fn);
-        }
+    function SanitizedCell({ elm, idx, prop }) {
+        function update(value) {
+            dispatch(updateElement({
+                list: 'constraints',
+                idx: idx,
+                property: prop,
+                value: value,
+            }));
+        };
 
         switch (prop) {
-            case 'id':
-                const [id, changeId] = handleConstraintUpdate();
-                return <UpdateText title={prop} value={id} onSubmit={changeId} />
+            case 'id': return <UpdateText title={prop} value={elm[prop]} onSubmit={update} />
             case 'p1':
             case 'p2':
-                const [p, changeP] = handleConstraintUpdate();
+                // const [p, changeP] = handleConstraintUpdate();
                 return <RadioSelect
-                    options={mec2._model.nodes.map(n => n.id)}
-                    onChange={(val) => changeP(mec2._model.nodeById(val))}
-                    selected={p.id}
+                    options={model.nodes.map(n => n.id)}
+                    onChange={update}
+                    selected={elm[prop]}
                     title={prop} />
             case 'len':
             case 'ori':
                 const proxy = elm[prop] || { type: 'free' };
-                const [obj, changeObj] = handleConstraintUpdate();
                 return <ObjectMenu label={prop} title={proxy.type}>
-                    {Object.entries(obj).map(e => {
+                    {Object.entries(proxy).map(e => {
                         switch (e[0]) {
                             case 'type':
                                 return <RadioSelect key={e[0]}
-                                    onChange={(t) => changeObj({ ...obj, [e[0]]: t })}
+                                    onChange={(t) => update({ ...elm[prop], [e[0]]: t })}
                                     title={e[0]}
                                     label={`${e[0]}: ${e[1]}`}
                                     selected={e[1]}
                                     options={['const', 'free', 'drive']} />
                             case 'ref':
                                 return <RadioSelect key={e[0]}
-                                    onChange={e => changeObj(e.target.value)}
+                                    onChange={e => update(e.target.value)}
                                     title={e[0]}
                                     label={`${prop}: e[1]`}
                                     selected={e[1]}
-                                    options={mec2._model.nodes.map(n => n.id)} />
+                                    options={model.nodes.map(n => n.id)} />
                             default:
                                 return <div>{e[0]}</div>
                         };

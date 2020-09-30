@@ -1,47 +1,42 @@
 import React from 'react';
 import { MecTable, RadioSelect, handleMecUpdate } from '..';
-import { useSelector } from 'react-redux';
-import { selectModel } from '../../Features';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectModel, updateElement } from '../../Features';
 
-export default function Views({ mec2 }) {
+export default function Views() {
     const head = ['show', 'of', 'as'];
+    const dispatch = useDispatch();
+    const model = useSelector(selectModel);
 
-    function SanitizedCell({ elm, prop }) {
-        function handleViewsUpdate(fn) {
-            return handleMecUpdate(mec2, view, prop, () => { }, fn);
+    function SanitizedCell({ elm, idx, prop }) {
+
+        function update(value) {
+            dispatch(updateElement({
+                list: 'views',
+                idx: idx,
+                property: prop,
+                value,
+            }));
         }
-
-        function viewBySimilarity() {
-            return mec2._model.views.filter(v =>
-                v.show === elm.show &&
-                v.of.id === elm.of &&
-                v.as === elm.as)[0];
-        }
-
-        const view = elm.id && mec2._model.viewById(elm.id) ||
-            viewBySimilarity();
 
         switch (prop) {
             case 'show':
-                const [show, changeShow] = handleViewsUpdate();
                 return <RadioSelect
                     options={Object.keys(mec.aly)} // mec is the global mec object
-                    onChange={(val) => changeShow(val)}
-                    selected={show}
+                    onChange={update}
+                    selected={elm[prop]}
                     title={prop} />
             case 'of':
-                const [of, changeOf] = handleViewsUpdate();
                 return <RadioSelect
-                    options={mec2._model.nodes.map(n => n.id)}
-                    onChange={(val) => changeOf(mec2._model.nodeById(val))}
-                    selected={of.id}
+                    options={model.nodes.map(n => n.id)}
+                    onChange={update}
+                    selected={elm[prop]}
                     title={prop} />
             case 'as':
-                const [as, changeAs] = handleViewsUpdate();
                 return <RadioSelect
                     title={prop}
-                    onChange={(val) => changeAs(val)}
-                    selected={as}
+                    onChange={update}
+                    selected={elm[prop]}
                     options={Object.keys(mec.view).filter(e => e !== "extend")} />
             default:
                 if (typeof elm[prop] === "object") {

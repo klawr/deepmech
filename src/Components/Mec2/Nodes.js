@@ -1,42 +1,40 @@
 import React from 'react';
 import { Checkbox } from '@material-ui/core';
 import { MecTable, handleMecUpdate, UpdateText } from '..';
-import { useSelector } from 'react-redux';
-import { selectModel } from '../../Features';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectModel, updateElement } from '../../Features';
 
-export default function Nodes({ mec2 }) {
+export default function Nodes() {
     const head = ['id', 'x', 'y', 'base'];
+    const dispatch = useDispatch();
+    const model = useSelector(selectModel);
 
-    function SanitizedCell({ prop, elm }) {
-        const node = mec2._model.nodeById(elm.id);
-
-        function handleNodeUpdate(fn) {
-            return handleMecUpdate(mec2, node, prop, () => {}, fn);
+    function SanitizedCell({ prop, idx, elm }) {
+        function update(value, list = 'nodes', i = idx, property = prop) {
+            dispatch(updateElement({ value, list, idx: i, property }));
         }
 
         switch (prop) {
             case 'base':
-                const [checked, toggleCheck] = handleNodeUpdate();
-                return <Checkbox
-                    checked={checked}
-                    onChange={(e) => toggleCheck(e.target.checked)} />
+                return <Checkbox checked={!!elm[prop]} onChange={(e) => update(e.target.checked)} />
             case 'x':
             case 'y':
-                const [value, changeValue] = handleNodeUpdate();
-                return <UpdateText title={prop} value={value} onSubmit={changeValue} />
+                return <UpdateText title={prop} value={elm[prop]} onSubmit={update} />
             case 'id':
                 function propagateChange(newId) {
-                    mec2._model.constraints.forEach(c => {
-                        if (c.p1 === id) c.p1 = newId;
-                        if (c.p2 === id) c.p2 = newId;
+                    model.constraints.forEach((c, idx) => {
+                        if (c.p1 === elm[prop]) update(newId, 'constraints', idx, 'p1');
+                        if (c.p2 === elm[prop]) update(newId, 'constraints', idx, 'p1');
                     });
-                    mec2._model.views.forEach(v => {
-                        if (v.of === id) v.of = newId;
+                    model.constraints.forEach((v, idx) => {
+                        if (v.of === elm[prop]) update(newId, 'views', idx, 'of');
                     });
                 }
 
-                const [id, changeId] = handleNodeUpdate(propagateChange);
-                return <UpdateText title={prop} value={id} onSubmit={changeId} />
+                return <UpdateText title={prop} value={elm[prop]} onSubmit={(e) => {
+                    propagateChange(e);
+                    update(e);
+                }} />
             default: return <div>{elm[prop]}</div>
         }
     }
