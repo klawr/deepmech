@@ -1,12 +1,13 @@
 import React from 'react';
-import clsx from 'clsx';
 import ReactDOM from 'react-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { Divider, List, ListItem, Tooltip } from '@material-ui/core';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab'
 import { CameraAlt, Create, Delete, RotateLeft } from '@material-ui/icons';
 import { ListButton, DeepmechCanvas } from '.';
+import { selectDeepmech, deepmech } from '../Features/UISlice';
 
-export default function DeepmechControl({ mec2, classes, state, toggleState }) {
+export default function DeepmechControl({ mec2, classes }) {
     const [mode, changeMode] = React.useState({
         draw: true,
         drag: false,
@@ -14,11 +15,14 @@ export default function DeepmechControl({ mec2, classes, state, toggleState }) {
         delete: false,
     });
 
+    const dispatch = useDispatch();
+
+    const selectedDeepmech = useSelector(selectDeepmech);
     const deepmechCanvas = document.getElementById('deepmech_canvas')
 
     const toggleDrawMode = () => {
-        toggleState({ ...state, drawing: !state.drawing });
-        if (!state.drawing) {
+        dispatch(deepmech(!selectedDeepmech));
+        if (!selectedDeepmech) {
             renderDeepmechCanvas();
         } else {
             ReactDOM.unmountComponentAtNode(deepmechCanvas);
@@ -53,24 +57,25 @@ export default function DeepmechControl({ mec2, classes, state, toggleState }) {
     }
 
     return <List>
-        <div className={clsx({ [classes.hide]: !state.drawing })}>
-            <ListItem>
-                <ToggleButtonGroup
-                    exclusive
-                    orientation="vertical"
-                    value={getTrueKey()}
-                    onChange={onChange}>
-                    {Toggle(<Create />, "draw", "Draw")}
-                    {Toggle(<CameraAlt />, "camera", "Camera")}
-                    {Toggle(<Delete />, "delete", "Delete")}
-                </ToggleButtonGroup>
-            </ListItem>
-            <Divider />
-        </div>
+        {selectedDeepmech &&
+            <div>
+                <ListItem>
+                    <ToggleButtonGroup
+                        exclusive
+                        orientation="vertical"
+                        value={getTrueKey()}
+                        onChange={onChange}>
+                        {Toggle(<Create />, "draw", "Draw")}
+                        {Toggle(<CameraAlt />, "camera", "Camera")}
+                        {Toggle(<Delete />, "delete", "Delete")}
+                    </ToggleButtonGroup>
+                </ListItem>
+                <Divider />
+            </div>}
         <ListButton
             onClick={toggleDrawMode}
-            tooltip={(state.drawing ? "Exit" : "Activate") + " draw mode"}>
-            {state.drawing ? <RotateLeft /> : <Create />}
+            tooltip={(selectedDeepmech ? "Exit" : "Activate") + " draw mode"}>
+            {selectedDeepmech ? <RotateLeft /> : <Create />}
         </ListButton>
     </List>
 }

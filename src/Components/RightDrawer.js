@@ -2,33 +2,29 @@ import React from 'react';
 import { Grid, List, SwipeableDrawer } from '@material-ui/core';
 import { ChevronRight, Lock, LockOpen } from '@material-ui/icons';
 import { ListButton, MecProperties } from '.';
+import { useSelector, useDispatch } from 'react-redux';
+import { right, selectRight } from '../Features/UISlice';
 
-export default function RightDrawer({ state, toggleState, classes, mec2 }) {
+export default function RightDrawer({ classes, mec2 }) {
+    const dispatch = useDispatch();
+    const open = useSelector(selectRight);
+
     const [locked, toggleLock] = React.useState(false);
-
-    const toggleRightDrawer = (change) => (event) => {
-        if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-            return;
-        }
-
-        toggleState({ ...state, right: change });
-    }
-
-    window.addEventListener('orientationchange', () => {
-        toggleState({ ...state, right: false });
-    });
-
     const [model, updateModel] = React.useState(JSON.parse(mec2._model.asJSON()));
 
+    window.addEventListener('orientationchange', () => dispatch(right(false)));
+
     return <SwipeableDrawer
-        open={state.right}
-        onClose={toggleRightDrawer(false)}
-        onOpen={toggleRightDrawer(true)}
+        open={open}
+        onClose={() => dispatch(right(false))}
+        onOpen={() => dispatch(right(true))}
         variant={locked ? 'persistent' : 'temporary'}
         anchor="right">
         <List>
             <Grid container direction="row">
-                <ListButton onClick={toggleRightDrawer(false)} tooltip="Close drawer">
+                <ListButton
+                    onClick={() => dispatch(right(false))}
+                    tooltip="Close drawer">
                     <ChevronRight />
                 </ListButton>
                 <ListButton

@@ -3,30 +3,37 @@ import clsx from 'clsx';
 import { Divider, Drawer, List } from '@material-ui/core';
 import { Brightness4, ChevronLeft, GitHub } from '@material-ui/icons';
 import { MecControl, DeepmechControl, ListButton } from '.';
+import { useSelector, useDispatch } from 'react-redux';
+import { darkmode, selectDarkmode, left, selectLeft, selectDeepmech } from '../Features/UISlice';
 
-export default function LeftDrawer({ state, toggleState, classes, mec2 }) {
-    const closeDrawer = () => {
-        toggleState({ ...state, left: false });
-    };
+export default function LeftDrawer({ classes, mec2 }) {
+    const dispatch = useDispatch();
+    const open = useSelector(selectLeft);
+    const selectedDarkmode = useSelector(selectDarkmode);
+    const selectedDeepmech = useSelector(selectDeepmech);
 
     return <Drawer
-        open={state.left}
+        open={open}
         anchor="left"
         variant="persistent">
         <List>
-            <ListButton onClick={closeDrawer} tooltip="Close drawer">
+            <ListButton
+                onClick={() => dispatch(left(false))}
+                tooltip="Close drawer">
                 <ChevronLeft />
             </ListButton>
         </List>
         <Divider />
-        <MecControl mec2={mec2}
-            className={clsx({ [classes.hide]: state.drawing })} />
-        <Divider />
-        <DeepmechControl mec2={mec2} state={state} toggleState={toggleState} classes={classes} />
+        {selectedDeepmech ? <div /> :
+            <div>
+                <MecControl mec2={mec2} />
+                <Divider />
+            </div>}
+        <DeepmechControl mec2={mec2} classes={classes} />
         <Divider />
         <List className={classes.listBottom}>
             <ListButton
-                onClick={() => toggleState({ ...state, ['dark']: !state.dark })}
+                onClick={() => dispatch(darkmode(!selectedDarkmode))}
                 tooltip="Toggle dark mode">
                 <Brightness4 />
             </ListButton>
