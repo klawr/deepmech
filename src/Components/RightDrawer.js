@@ -9,7 +9,7 @@ export default function RightDrawer({ classes, mec2 }) {
     const dispatch = useDispatch();
     const open = useSelector(UIselect).right;
 
-    const [locked, toggleLock] = React.useState(false);
+    const [locked, toggleLock] = React.useState(globalThis.innerWidth > 1200);
     // const [model, updateModel] = React.useState(JSON.parse(mec2._model.asJSON()));
 
     window.addEventListener('orientationchange', () => dispatch(UIactions.right(false)));
