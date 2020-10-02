@@ -3,21 +3,16 @@ import { createSlice } from '@reduxjs/toolkit';
 export const slice = createSlice({
     name: 'MecModel',
     initialState: {
-        model: JSON.parse(mecElement._model.asJSON()),
+        queue: [],
     },
     reducers: {
-        updateElement: (state, action) => {
-            const pl = action.payload;
-            state.model[pl.list][pl.idx][pl.property] = pl.value;
-            mecElement._model[pl.list][pl.idx][pl.property] = pl.value;
-            mecElement._model.init();
-            mecElement._model.reset();
-            mecElement.render();
+        add: (state, action) => {
+            state.queue.push(action.payload);
         }
     },
 });
 
-export const { updateModel, updateElement } = slice.actions;
-export const selectModel = state => state.MecModel.model;
+export const { add } = slice.actions;
+export const selectQueue = state => state.MecModel.queue;
 
 export default slice.reducer;

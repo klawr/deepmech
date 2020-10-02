@@ -4,7 +4,7 @@ import { Grid } from '@material-ui/core';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import { DeepmechCanvas, LeftDrawer, RightDrawer, ListButton } from '.';
-import { UIselect, UIactions, updateModel } from '../Features';
+import { UIselect, UIactions } from '../Features';
 import { lightTheme, darkTheme, useStyle } from '../style';
 
 export default function DeepmechUI({ mec2 }) {

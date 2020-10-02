@@ -9,7 +9,5 @@ export {
     selectMode,
 } from './DeepmechSlice';
 export {
-    selectModel,
-    updateModel,
-    updateElement,
+    add,
 } from './MecModelSlice';

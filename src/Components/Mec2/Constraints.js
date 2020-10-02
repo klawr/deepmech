@@ -1,29 +1,26 @@
 import React from 'react';
 import {
     MecTable,
-    handleMecUpdate,
     RadioSelect,
     UpdateText,
     ObjectMenu
 } from '..';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectModel, updateElement } from '../../Features';
+import { add } from '../../Features';
 
 export default function Constraints() {
     const head = ['id', 'p1', 'p2', 'len', 'ori'];
     const dispatch = useDispatch();
-    const model = useSelector(selectModel);
 
     function SanitizedCell({ elm, idx, prop }) {
         function update(value) {
-            dispatch(updateElement({
+            dispatch(add({
                 list: 'constraints',
                 idx: idx,
                 property: prop,
                 value: value,
             }));
         };
-
         switch (prop) {
             case 'id': return <UpdateText title={prop} value={elm[prop]} onSubmit={update} />
             case 'p1':
@@ -32,7 +29,7 @@ export default function Constraints() {
                 return <RadioSelect
                     options={model.nodes.map(n => n.id)}
                     onChange={update}
-                    selected={elm[prop]}
+                    selected={elm[prop].id}
                     title={prop} />
             case 'len':
             case 'ori':
@@ -70,5 +67,5 @@ export default function Constraints() {
     return <MecTable
         SanitizedCell={SanitizedCell}
         head={head}
-        list={useSelector(selectModel).constraints} />
+        list={mecElement._model.constraints} />
 }

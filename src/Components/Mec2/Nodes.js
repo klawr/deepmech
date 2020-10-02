@@ -1,17 +1,16 @@
 import React from 'react';
 import { Checkbox } from '@material-ui/core';
 import { MecTable, handleMecUpdate, UpdateText } from '..';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectModel, updateElement } from '../../Features';
+import { useDispatch } from 'react-redux';
+import { add } from '../../Features';
 
 export default function Nodes() {
     const head = ['id', 'x', 'y', 'base'];
     const dispatch = useDispatch();
-    const model = useSelector(selectModel);
 
     function SanitizedCell({ prop, idx, elm }) {
         function update(value, list = 'nodes', i = idx, property = prop) {
-            dispatch(updateElement({ value, list, idx: i, property }));
+            dispatch(add({ value, list, idx: i, property }));
         }
 
         switch (prop) {
@@ -42,5 +41,5 @@ export default function Nodes() {
     return <MecTable
         SanitizedCell={SanitizedCell}
         head={head}
-        list={useSelector(selectModel).nodes} />
+        list={mecElement._model.nodes} />
 }

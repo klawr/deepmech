@@ -1,17 +1,16 @@
 import React from 'react';
 import { MecTable, RadioSelect, handleMecUpdate } from '..';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectModel, updateElement } from '../../Features';
+import { useDispatch } from 'react-redux';
+import { add } from '../../Features';
 
 export default function Views() {
     const head = ['show', 'of', 'as'];
     const dispatch = useDispatch();
-    const model = useSelector(selectModel);
 
     function SanitizedCell({ elm, idx, prop }) {
 
         function update(value) {
-            dispatch(updateElement({
+            dispatch(add({
                 list: 'views',
                 idx: idx,
                 property: prop,
@@ -30,7 +29,7 @@ export default function Views() {
                 return <RadioSelect
                     options={model.nodes.map(n => n.id)}
                     onChange={update}
-                    selected={elm[prop]}
+                    selected={elm[prop].id}
                     title={prop} />
             case 'as':
                 return <RadioSelect
@@ -49,5 +48,5 @@ export default function Views() {
     return <MecTable
         SanitizedCell={SanitizedCell}
         head={head}
-        list={useSelector(selectModel).views} />
+        list={mecElement._model.views} />
 }

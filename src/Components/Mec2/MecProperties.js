@@ -1,8 +1,6 @@
 import React from 'react';
 import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core';
 import { Id, Nodes, Constraints, Views } from '..';
-import { selectModel, updateModel } from '../../Features';
-import { useDispatch, useSelector } from 'react-redux';
 
 export default function MecProperties({ classes, mec2 }) {
 
