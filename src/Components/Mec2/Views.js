@@ -15,6 +15,7 @@ export default function Views() {
                 idx: idx,
                 property: prop,
                 value,
+                previous: elm[prop],
             }));
         }
 

@@ -19,6 +19,7 @@ export default function Constraints() {
                 idx: idx,
                 property: prop,
                 value: value,
+                previous: elm[prop],
             }));
         };
         switch (prop) {

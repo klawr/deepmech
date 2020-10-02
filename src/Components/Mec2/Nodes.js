@@ -9,8 +9,13 @@ export default function Nodes() {
     const dispatch = useDispatch();
 
     function SanitizedCell({ prop, idx, elm }) {
-        function update(value, list = 'nodes', i = idx, property = prop) {
-            dispatch(add({ value, list, idx: i, property }));
+        function update(
+            value,
+            list = 'nodes',
+            i = idx,
+            property = prop,
+            previous = elm[prop]) {
+            dispatch(add({ value, list, idx: i, property, previous }));
         }
 
         switch (prop) {
@@ -22,8 +27,8 @@ export default function Nodes() {
             case 'id':
                 function propagateChange(newId) {
                     model.constraints.forEach((c, idx) => {
-                        if (c.p1 === elm[prop]) update(newId, 'constraints', idx, 'p1');
-                        if (c.p2 === elm[prop]) update(newId, 'constraints', idx, 'p1');
+                        if (c.p1 === elm[prop]) update(newId, 'constraints', idx, 'p1', c.p1);
+                        if (c.p2 === elm[prop]) update(newId, 'constraints', idx, 'p1', c.p2);
                     });
                     model.constraints.forEach((v, idx) => {
                         if (v.of === elm[prop]) update(newId, 'views', idx, 'of');
