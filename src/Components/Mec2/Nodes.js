@@ -25,20 +25,7 @@ export default function Nodes() {
             case 'y':
                 return <UpdateText title={prop} value={elm[prop]} onSubmit={v => update(+v)} />
             case 'id':
-                function propagateChange(newId) {
-                    model.constraints.forEach((c, idx) => {
-                        if (c.p1 === elm[prop]) update(newId, 'constraints', idx, 'p1', c.p1);
-                        if (c.p2 === elm[prop]) update(newId, 'constraints', idx, 'p1', c.p2);
-                    });
-                    model.constraints.forEach((v, idx) => {
-                        if (v.of === elm[prop]) update(newId, 'views', idx, 'of');
-                    });
-                }
-
-                return <UpdateText title={prop} value={elm[prop]} onSubmit={(e) => {
-                    propagateChange(e);
-                    update(e);
-                }} />
+                return <UpdateText title={prop} value={elm[prop]} onSubmit={update} />
             default: return <div>{elm[prop]}</div>
         }
     }
