@@ -5,7 +5,7 @@ import {
     UpdateText,
     ObjectMenu
 } from '..';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { add } from '../../Features';
 
 export default function Constraints() {
