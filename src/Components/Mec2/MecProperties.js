@@ -1,6 +1,6 @@
 import React from 'react';
-import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core';
-import { Id, Nodes, Constraints, Views } from '..';
+import { Accordion, AccordionDetails, AccordionSummary, Grid } from '@material-ui/core';
+import { Id, Nodes, Constraints, Views, UndoRedo } from '..';
 
 export default function MecProperties({ classes, mec2 }) {
 
@@ -12,7 +12,10 @@ export default function MecProperties({ classes, mec2 }) {
     }
 
     return <div>
-        <Id classes={classes} mec2={mec2} />
+        <Grid container direction="row">
+            <Id mec2={mec2} />
+            <UndoRedo classes={classes}/>
+        </Grid>
         {Acc(<Nodes />, 'nodes')}
         {Acc(<Constraints />, 'constraints')}
         {Acc(<Views />, 'views')}

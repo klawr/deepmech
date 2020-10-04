@@ -7,8 +7,11 @@ export const slice = createSlice({
     },
     reducers: {
         add: (state, action) => {
+            if (action.payload.value === action.payload.previous) {
+                return;
+            }
             state.queue.push(action.payload);
-        }
+        },
     },
 });
 
