@@ -12,8 +12,8 @@ function handleMecModelUpdate() {
         return;
     }
     mecElement._model[a.list][a.idx][a.property] = a.value;
-    mecElement._model.init();
-    mecElement._model.reset();
+    mecElement._model.preview();
+    mecElement._model.pose();
     mecElement.render();
 
     lastMecModelAction = a;

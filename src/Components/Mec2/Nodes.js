@@ -23,7 +23,7 @@ export default function Nodes() {
                 return <Checkbox checked={!!elm[prop]} onChange={(e) => update(e.target.checked)} />
             case 'x':
             case 'y':
-                return <UpdateText title={prop} value={elm[prop]} onSubmit={update} />
+                return <UpdateText title={prop} value={elm[prop]} onSubmit={v => update(+v)} />
             case 'id':
                 function propagateChange(newId) {
                     model.constraints.forEach((c, idx) => {
