@@ -4,13 +4,14 @@ export const slice = createSlice({
     name: 'MecModel',
     initialState: {
         queue: [],
+        index: 0,
     },
     reducers: {
         add: (state, action) => {
             if (action.payload.value === action.payload.previous) {
                 return;
             }
-            state.queue.push(action.payload);
+            state.index = state.queue.push(action.payload);
         },
     },
 });
