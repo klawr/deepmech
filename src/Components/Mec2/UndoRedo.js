@@ -11,16 +11,12 @@ export default function UndoRedo({ classes }) {
     const [undoEnabled, changeUndoEnabled] = React.useState(false);
     const [redoEnabled, changeRedoEnabled] = React.useState(false);
 
-    let selected = 0;
     function monitorChange() {
+        // Check if change is related to Model? ...
         const m = store.getState().MecModel;
-        const q = m.queue;
         const s = m.selected;
-        if (selected === s) return;
         changeUndoEnabled(s > 0);
-        // changeRedoEnabled(s < q.length);
-
-        selected = s;
+        changeRedoEnabled(s < m.queue.length);
     }
     React.useEffect(() => store.subscribe(monitorChange));
 
@@ -33,12 +29,12 @@ export default function UndoRedo({ classes }) {
             onClick={() => dispatch(undo())}>
             <Undo />
         </ListButton>
-        {/* <ListButton
+        <ListButton
             tooltip="Redo"
             enabled={redoEnabled}
             onClick={() => dispatch(redo())}>
             <Redo />
-        </ListButton> */}
+        </ListButton>
     </Grid>
 
 }
