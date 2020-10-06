@@ -20,12 +20,24 @@ export default function Nodes() {
 
         switch (prop) {
             case 'base':
-                return <Checkbox checked={!!elm[prop]} onChange={(e) => update(e.target.checked)} />
+                const [checked, changeChecked] = React.useState(!!elm[prop]);
+                return <Checkbox
+                    checked={checked}
+                    onChange={(e) => {
+                        changeChecked(e.target.checked)
+                        update(e.target.checked)
+                    }} />
             case 'x':
             case 'y':
-                return <UpdateText title={prop} value={elm[prop]} onSubmit={v => update(+v)} />
+                return <UpdateText
+                    title={prop}
+                    value={Math.round(elm[prop])}
+                    onSubmit={v => update(+v)} />
             case 'id':
-                return <UpdateText title={prop} value={elm[prop]} onSubmit={update} />
+                return <UpdateText
+                    title={prop}
+                    value={elm[prop]}
+                    onSubmit={update} />
             default: return <div>{elm[prop]}</div>
         }
     }

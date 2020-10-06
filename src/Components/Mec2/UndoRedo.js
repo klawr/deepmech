@@ -11,15 +11,12 @@ export default function UndoRedo({ classes }) {
     const [undoEnabled, changeUndoEnabled] = React.useState(false);
     const [redoEnabled, changeRedoEnabled] = React.useState(false);
 
-    function monitorChange() {
+    React.useEffect(() => store.subscribe(() => {
         // Check if change is related to Model? ...
         const m = store.getState().MecModel;
-        const s = m.selected;
-        changeUndoEnabled(s > 0);
-        changeRedoEnabled(s < m.queue.length);
-    }
-    React.useEffect(() => store.subscribe(monitorChange));
-
+        changeUndoEnabled(m.selected > 0);
+        changeRedoEnabled(m.selected < m.queue.length);
+    }));
 
     return <Grid style={{ position: 'absolute' }} container direction="row">
         <ListButton
