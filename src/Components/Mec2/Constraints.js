@@ -12,35 +12,28 @@ export default function Constraints() {
     const head = ['id', 'p1', 'p2', 'len', 'ori'];
     const dispatch = useDispatch();
 
-    function SanitizedCell({ elm, idx, prop }) {
-        function update(value) {
-            dispatch(add({
-                list: 'constraints',
-                idx: idx,
-                property: prop,
-                value: value,
-                previous: elm[prop],
-            }));
+    function SanitizedCell({ elm, idx, prop: property }) {
+        function update(value, previous = elm[property]) {
+            dispatch(add({ list: 'constraints', idx, property, value, previous }));
         };
-        switch (prop) {
-            case 'id': return <UpdateText title={prop} value={elm[prop]} onSubmit={update} />
+        switch (property) {
+            case 'id': return <UpdateText title={property} value={elm[property]} onSubmit={update} />
             case 'p1':
             case 'p2':
-                // const [p, changeP] = handleConstraintUpdate();
                 return <RadioSelect
                     options={model.nodes.map(n => n.id)}
-                    onChange={update}
-                    selected={elm[prop].id}
-                    title={prop} />
+                    onChange={(v) => update(v, elm[property].id)}
+                    selected={elm[property].id}
+                    title={property} />
             case 'len':
             case 'ori':
-                const proxy = elm[prop] || { type: 'free' };
-                return <ObjectMenu label={prop} title={proxy.type}>
+                const proxy = elm[property] || { type: 'free' };
+                return <ObjectMenu label={property} title={proxy.type}>
                     {Object.entries(proxy).map(e => {
                         switch (e[0]) {
                             case 'type':
                                 return <RadioSelect key={e[0]}
-                                    onChange={(t) => update({ ...elm[prop], [e[0]]: t })}
+                                    onChange={(t) => update({ ...elm[property], [e[0]]: t })}
                                     title={e[0]}
                                     label={`${e[0]}: ${e[1]}`}
                                     selected={e[1]}
@@ -49,7 +42,7 @@ export default function Constraints() {
                                 return <RadioSelect key={e[0]}
                                     onChange={e => update(e.target.value)}
                                     title={e[0]}
-                                    label={`${prop}: e[1]`}
+                                    label={`${property}: e[1]`}
                                     selected={e[1]}
                                     options={model.nodes.map(n => n.id)} />
                             default:
@@ -58,10 +51,10 @@ export default function Constraints() {
                     })}
                 </ObjectMenu>
             default:
-                if (typeof elm[prop] === 'object') {
-                    return <div> {JSON.stringify(elm[prop])} </div>
+                if (typeof elm[property] === 'object') {
+                    return <div> {JSON.stringify(elm[property])} </div>
                 }
-                return <div>{elm[prop]}</div>
+                return <div>{elm[property]}</div>
         }
     }
 

@@ -7,42 +7,35 @@ export default function Views() {
     const head = ['show', 'of', 'as'];
     const dispatch = useDispatch();
 
-    function SanitizedCell({ elm, idx, prop }) {
+    function SanitizedCell({ elm, idx, prop: property }) {
 
-        function update(value) {
-            dispatch(add({
-                list: 'views',
-                idx: idx,
-                property: prop,
-                value,
-                previous: elm[prop],
-            }));
+        function update(value, previous = elm[property]) {
+            dispatch(add({ list: 'views', idx, property, value, previous }));
         }
-
-        switch (prop) {
+        switch (property) {
             case 'show':
                 return <RadioSelect
                     options={Object.keys(mec.aly)} // mec is the global mec object
                     onChange={update}
-                    selected={elm[prop]}
-                    title={prop} />
+                    selected={elm[property]}
+                    title={property} />
             case 'of':
                 return <RadioSelect
                     options={model.nodes.map(n => n.id)}
-                    onChange={update}
-                    selected={elm[prop].id}
-                    title={prop} />
+                    onChange={(v) => update(v, elm[property].id)}
+                    selected={elm[property].id}
+                    title={property} />
             case 'as':
                 return <RadioSelect
-                    title={prop}
+                    title={property}
                     onChange={update}
-                    selected={elm[prop]}
+                    selected={elm[property]}
                     options={Object.keys(mec.view).filter(e => e !== "extend")} />
             default:
-                if (typeof elm[prop] === "object") {
-                    return <div> {JSON.stringify(elm[prop])} </div>
+                if (typeof elm[property] === "object") {
+                    return <div> {JSON.stringify(elm[property])} </div>
                 }
-                return <div> {elm[prop]} </div>
+                return <div> {elm[property]} </div>
         }
     }
 
