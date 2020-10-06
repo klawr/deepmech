@@ -10,5 +10,8 @@ export {
 } from './DeepmechSlice';
 export {
     add,
+    undo,
+    redo,
     selectQueue,
+    selectSelected,
 } from './MecModelSlice';

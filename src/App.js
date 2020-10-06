@@ -4,19 +4,22 @@ import { Provider } from 'react-redux';
 import { DeepmechUI } from './Components';
 import { store } from './Features';
 
-let lastMecModelAction;
+let selected = 0;
 function handleMecModelUpdate() {
-    const q = store.getState().MecModel.queue;
-    const a = q[q.length - 1];
-    if (lastMecModelAction === a || !q[0]) {
-        return;
-    }
-    mecElement._model[a.list][a.idx][a.property] = a.value;
+    const m = store.getState().MecModel;
+    const q = m.queue;
+    const s = m.selected;
+    // selected is guaranteed to change on every action
+    if (selected === s) return
+    // if selected < s, the last action was an update, otherwise it was an undo
+    const a = selected < s ? q[s - 1] : q[s];
+    mecElement._model[a.list][a.idx][a.property]
+        = selected < s ? a.value : a.previous;
     mecElement._model.preview();
     mecElement._model.pose();
     mecElement.render();
 
-    lastMecModelAction = a;
+    selected = s;
 }
 
 store.subscribe(handleMecModelUpdate);
