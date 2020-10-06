@@ -8,11 +8,12 @@ import { Grid } from '@material-ui/core';
 export default function UndoRedo({ classes }) {
     const dispatch = useDispatch();
 
+    // NOTE we assume to start with a clean MecModel.queue:
     const [undoEnabled, changeUndoEnabled] = React.useState(false);
     const [redoEnabled, changeRedoEnabled] = React.useState(false);
 
     React.useEffect(() => store.subscribe(() => {
-        // Check if change is related to Model? ...
+        // TODO Check if change is related to Model? ...
         const m = store.getState().MecModel;
         changeUndoEnabled(m.selected > 0);
         changeRedoEnabled(m.selected < m.queue.length);
