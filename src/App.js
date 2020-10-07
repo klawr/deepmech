@@ -13,24 +13,9 @@ function handleMecModelUpdate() {
     // if selected < s, the last action was an update, otherwise it was an undo
     const a = selected < s ? m.queue[s - 1] : m.queue[s];
     const model = mecElement._model;
-    if (selected < s) {
-        if (typeof a.value === 'object') {
-            Object.entries(a.value).forEach(e => {
-                console.log(e);
-                model[a.list][a.idx][e[0]]= e[1];
-            });
-        } else {
-            model[a.list][a.idx][a.property] = a.value;
-        }
-    } else {
-        if (typeof a.value === 'object') {
-            Object.entries(a.previous).forEach(e => {
-                model[a.list][a.idx][e[0]] = e[1];
-            });
-        } else {
-            model[a.list][a.idx][a.property] = a.previous;
-        }
-    }
+    Object.entries(selected < s ? a.value : a.previous).forEach(e => {
+        model[a.list][a.idx][e[0]] = e[1];
+    });
     // TODO this should be done in mecElement
     model.constraints = model.constraints.map(c => {
         c.p1 = typeof c.p1 === 'object' ? c.p1 : model.nodeById(c.p1);

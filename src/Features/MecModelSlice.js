@@ -8,7 +8,9 @@ export const slice = createSlice({
     },
     reducers: {
         add: (state, action) => {
-            if (action.payload.value === action.payload.previous) {
+            // TODO this can be done sleeker...
+            if (JSON.stringify(action.payload.value) ===
+                JSON.stringify(action.payload.previous)) {
                 return;
             }
             const selected = state.queue.push(action.payload);

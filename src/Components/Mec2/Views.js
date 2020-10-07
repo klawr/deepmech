@@ -10,7 +10,11 @@ export default function Views() {
     function SanitizedCell({ elm, idx, prop: property }) {
 
         function update(value, previous = elm[property]) {
-            dispatch(add({ list: 'views', idx, property, value, previous }));
+            dispatch(add({
+                list: 'views', idx,
+                value: { [property]: value },
+                previous: { [property]: previous }
+            }));
         }
         switch (property) {
             case 'show':
