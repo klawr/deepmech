@@ -35,17 +35,18 @@ export default function Nodes() {
             }));
         }
 
-        mecElement._interactor.on('pointerdown', deepmechNodeDown);
-        mecElement._interactor.on('drag', deepmechNodeDrag);
-        mecElement._interactor.on('pointerup', deepmechNodeUp);
+        const o = {
+            pointerdown: deepmechNodeDown,
+            drag: deepmechNodeDrag,
+            pointerup: deepmechNodeUp,
+        }
+
+        Object.entries(o).forEach(e => mecElement._interactor.on(...e))
 
         return () => {
-            mecElement._interactor.remove('pointerdown', deepmechNodeDown);
-            mecElement._interactor.remove('drag', deepmechNodeDrag);
-            mecElement._interactor.remove('pointerup', deepmechNodeUp);
+            Object.entries(o).forEach(e => mecElement._interactor.remove(...e));
         }
     });
-    // store.subscribe(handleMecModelUpdate);
 
     function SanitizedCell({ prop: property, idx, elm }) {
         function update(value, previous = elm[property]) {
