@@ -19,9 +19,8 @@ export default function Nodes() {
         }
 
         function deepmechNodeDrag(e) {
-            console.log(selection x)
             if (selection && selection.drag) {
-                value = { x: Math.round(e.xusr), y: Math.round(e.yusr) }
+                value = { x: selection.x, y: selection.y }
             }
         }
 
