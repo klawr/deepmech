@@ -9,7 +9,11 @@ export default function Constraints() {
 
     function SanitizedCell({ elm, idx, prop: property }) {
         function update(value, previous = elm[property]) {
-            dispatch(add({ list: 'constraints', idx, property, value, previous }));
+            dispatch(add({
+                list: 'constraints', idx,
+                value: { [property]: value },
+                previous: { [property]: previous }
+            }));
         };
         switch (property) {
             case 'id': return <UpdateText title={property} value={elm[property]} onSubmit={update} />

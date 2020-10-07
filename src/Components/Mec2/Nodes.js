@@ -12,31 +12,38 @@ export default function Nodes() {
         let previous;
         let value;
         let selection;
+
+        function deepmechNodeDown(e) {
+            selection = mecElement._selector.selection;
+            previous = { x: selection.x, y: selection.y };
+        }
+
+        function deepmechNodeDrag(e) {
+            console.log(selection x)
+            if (selection && selection.drag) {
+                value = { x: Math.round(e.xusr), y: Math.round(e.yusr) }
+            }
+        }
+
         function deepmechNodeUp() {
-            if (!value) return;
-            const list = 'nodes';
-            const idx = mecElement._model.nodes.indexOf(selection);
+            if (!value) {
+                previous = undefined;
+                return;
+            }
             dispatch(add({
-                list, idx, value: { ...value }, previous: { ...previous }
+                list: 'nodes', idx: mecElement._model.nodes.indexOf(selection),
+                value: { ...value }, previous: { ...previous }
             }));
             previous = undefined;
             value = undefined;
         }
 
-        function deepmechNodeDrag(e) {
-            selection = mecElement._selector.selection;
-            if (selection && selection.drag) {
-                if (!previous) {
-                    previous = { x: Math.round(e.xusr), y: Math.round(e.yusr) };
-                }
-                value = { x: Math.round(e.xusr), y: Math.round(e.yusr) }
-            }
-        }
-
+        mecElement._interactor.on('pointerdown', deepmechNodeDown);
         mecElement._interactor.on('drag', deepmechNodeDrag);
         mecElement._interactor.on('pointerup', deepmechNodeUp);
 
         return () => {
+            mecElement._interactor.remove('pointerdown', deepmechNodeDown);
             mecElement._interactor.remove('drag', deepmechNodeDrag);
             mecElement._interactor.remove('pointerup', deepmechNodeUp);
         }
@@ -45,7 +52,11 @@ export default function Nodes() {
 
     function SanitizedCell({ prop: property, idx, elm }) {
         function update(value, previous = elm[property]) {
-            dispatch(add({ list: 'nodes', idx, property, value, previous }));
+            dispatch(add({
+                list: 'nodes', idx,
+                value: { [property]: value },
+                previous: { [property]: previous }
+            }));
         }
 
         switch (property) {
