@@ -33,8 +33,6 @@ export default function Nodes() {
                 list: 'nodes', idx: mecElement._model.nodes.indexOf(selection),
                 value: { ...value }, previous: { ...previous }
             }));
-            previous = undefined;
-            value = undefined;
         }
 
         mecElement._interactor.on('pointerdown', deepmechNodeDown);
