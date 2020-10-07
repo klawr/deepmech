@@ -8,19 +8,14 @@ export default function Nodes() {
     const head = ['id', 'x', 'y', 'base'];
     const dispatch = useDispatch();
 
-    function SanitizedCell({ prop, idx, elm }) {
-        function update(
-            value,
-            list = 'nodes',
-            i = idx,
-            property = prop,
-            previous = elm[prop]) {
-            dispatch(add({ value, list, idx: i, property, previous }));
+    function SanitizedCell({ prop: property, idx, elm }) {
+        function update(value, previous = elm[property]) {
+            dispatch(add({ list: 'nodes', idx, property, value, previous }));
         }
 
-        switch (prop) {
+        switch (property) {
             case 'base':
-                const [checked, changeChecked] = React.useState(!!elm[prop]);
+                const [checked, changeChecked] = React.useState(!!elm[property]);
                 return <Checkbox
                     checked={checked}
                     onChange={(e) => {
@@ -30,15 +25,15 @@ export default function Nodes() {
             case 'x':
             case 'y':
                 return <UpdateText
-                    title={prop}
-                    value={Math.round(elm[prop])}
+                    title={property}
+                    value={Math.round(elm[property])}
                     onSubmit={v => update(+v)} />
             case 'id':
                 return <UpdateText
-                    title={prop}
-                    value={elm[prop]}
+                    title={property}
+                    value={elm[property]}
                     onSubmit={update} />
-            default: return <div>{elm[prop]}</div>
+            default: return <div>{elm[property]}</div>
         }
     }
 

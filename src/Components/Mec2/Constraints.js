@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-    MecTable,
-    RadioSelect,
-    UpdateText,
-    ObjectMenu
-} from '..';
+import { MecTable, RadioSelect, UpdateText, ObjectMenu } from '..';
 import { useDispatch } from 'react-redux';
 import { add } from '../../Features';
 

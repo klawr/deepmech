@@ -10,7 +10,6 @@ export default function UndoRedo({ classes }) {
     const queue = useSelector(selectQueue);
     const selected = useSelector(selectSelected);
 
-    // NOTE we assume to start with a clean MecModel.queue:
     const [undoEnabled, changeUndoEnabled] = React.useState(selected > 0);
     const [redoEnabled, changeRedoEnabled] = React.useState(selected > queue.length);
 
