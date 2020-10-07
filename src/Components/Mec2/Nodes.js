@@ -17,10 +17,7 @@ export default function Nodes() {
             const list = 'nodes';
             const idx = mecElement._model.nodes.indexOf(selection);
             dispatch(add({
-                list, idx, property: 'x', value: value.x, previous: previous.x
-            }));
-            dispatch(add({
-                list, idx, property: 'y', value: value.y, previous: previous.y
+                list, idx, value: { ...value }, previous: { ...previous }
             }));
             previous = undefined;
             value = undefined;
@@ -29,8 +26,10 @@ export default function Nodes() {
         function deepmechNodeDrag(e) {
             selection = mecElement._selector.selection;
             if (selection && selection.drag) {
-                previous = previous || { x: e.xusr, y: e.yusr };
-                value = { x: e.xusr, y: e.yusr }
+                if (!previous) {
+                    previous = { x: Math.round(e.xusr), y: Math.round(e.yusr) };
+                }
+                value = { x: Math.round(e.xusr), y: Math.round(e.yusr) }
             }
         }
 
