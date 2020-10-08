@@ -35,6 +35,7 @@ export default function DeepmechUI({ mec2 }) {
                         </ListButton>
                         <h3>&nbsp; 🚧 WIP 🚧 </h3>
                         <ListButton
+                            enabled={!selectedDeepmech} 
                             onClick={() => dispatch(UIactions.right(true))}
                             tooltip="Open right drawer"
                             className={classes.right} >
