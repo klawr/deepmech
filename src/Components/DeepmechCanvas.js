@@ -26,11 +26,10 @@ function handleInteractor(ctx, mec2, mode) {
         x: mec2.x0, y: mec2.y0, cartesian: mec2.cartesian
     });
     canvasInteractor.add(interactor);
+    const selector = g2.selector(interactor.evt);
 
     const o = { tick, pointerdown, pointerup, click: pointerup }
-
     Object.entries(o).forEach(e => interactor.on(...e));
-
 
     const view = mec2._interactor.view;
     const img_placeholder = g2();
@@ -67,9 +66,9 @@ function handleInteractor(ctx, mec2, mode) {
             case 'delete':
                 // Filter selected node from commands array
                 ply_placeholder.commands = ply_placeholder.commands.filter(
-                    cmd => cmd.a !== mec2._selector.selection);
-                mec2._selector.evt.hit = false; // selector gets confused
-                mec2._selector.selection = false; // overwrite selection
+                    cmd => cmd.a !== selector.selection);
+                selector.evt.hit = false; // selector gets confused
+                selector.selection = false; // overwrite selection
         }
     }
 
@@ -78,8 +77,8 @@ function handleInteractor(ctx, mec2, mode) {
         if (ply?.pts?.length <= 1) {
             ply_placeholder.del(ply_placeholder.commands.length - 1);
         }
-        // Reset ply
-        ply = undefined;
+        // // Reset ply
+        // ply = undefined;
     }
 
     function tick() {
@@ -101,7 +100,8 @@ function handleInteractor(ctx, mec2, mode) {
                 break;
             case 'delete':
             case 'drag':
-                ply_placeholder.exe(mec2._selector);
+                ply_placeholder.exe(selector);
+                break;
         }
         ply_placeholder.exe(ctx);
     }
