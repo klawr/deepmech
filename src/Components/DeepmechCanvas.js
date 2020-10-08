@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useSelector } from 'react-redux';
 import { selectMode } from '../Features';
- 
+
 export default function DeepmechCanvas({ mec2, classes }) {
     const mode = useSelector(selectMode);
 
@@ -12,10 +12,10 @@ export default function DeepmechCanvas({ mec2, classes }) {
         });
         canvasInteractor.add(interactor);
 
-        interactor.on('tick', drawTick);
-        interactor.on('pointerdown', pointerdown);
-        interactor.on('pointerup', pointerup);
-        interactor.on('click', pointerup);
+        const o = { tick, pointerdown, pointerup, click: pointerup }
+
+        Object.entries(o).forEach(e => interactor.on(...e));
+
 
         const view = mec2._interactor.view;
         const img_placeholder = g2();
@@ -29,30 +29,32 @@ export default function DeepmechCanvas({ mec2, classes }) {
         });
         const ply_placeholder = g2();
 
+        mec_placeholder.exe(ctx);
+
         // A reference to the polyline which is drawn at the moment
         let ply;
         // placeholder for theming later on?
         let plyShadow = "white";
 
         function pointerdown(e) {
-            if (mode === 'draw') {
-                // Set ply and add to command queue
-                const x = (e.x - view.x) / view.scl;
-                const y = (e.y - view.y) / view.scl;
-                ply = {
-                    pts: [{ x, y }], lw: '2', ls: '#fff', lc: 'round', lj: 'round',
-                    // White shadow to see this on black background
-                    get sh() { return this.state & g2.OVER ? [0, 0, 5, plyShadow] : false; },
-                };
-                ply_placeholder.ply(ply);
-            }
-
-            if (mode === 'delete') {
-                // Filter selected node from commands array
-                ply_placeholder.commands = ply_placeholder.commands.filter(
-                    cmd => cmd.a !== mec2._selector.selection);
-                mec2._selector.evt.hit = false; // selector gets confused
-                mec2._selector.selection = false; // overwrite selection
+            switch (mode) {
+                case 'draw':
+                    // Set ply and add to command queue
+                    const x = (e.x - view.x) / view.scl;
+                    const y = (e.y - view.y) / view.scl;
+                    ply = {
+                        pts: [{ x, y }], lw: '2', ls: '#fff', lc: 'round', lj: 'round',
+                        // White shadow to see this on black background
+                        get sh() { return this.state & g2.OVER ? [0, 0, 5, plyShadow] : false; },
+                    };
+                    ply_placeholder.ply(ply);
+                    break;
+                case 'delete':
+                    // Filter selected node from commands array
+                    ply_placeholder.commands = ply_placeholder.commands.filter(
+                        cmd => cmd.a !== mec2._selector.selection);
+                    mec2._selector.evt.hit = false; // selector gets confused
+                    mec2._selector.selection = false; // overwrite selection
             }
         }
 
@@ -65,28 +67,29 @@ export default function DeepmechCanvas({ mec2, classes }) {
             ply = undefined;
         }
 
-        function drawTick() {
+        function tick() {
             let { type, x, y } = interactor.evt;
 
-            if (mode === 'draw' && type === 'pan' && ply) {
-                x = (x - view.x) / view.scl;
-                y = (y - view.y) / view.scl;
+            switch (mode) {
+                case 'draw':
+                    if (type === 'pan' && ply) {
+                        x = (x - view.x) / view.scl;
+                        y = (y - view.y) / view.scl;
 
-                // Omit very small changes
-                const tolerance = 0.1;
-                const last = ply.pts[ply.pts.length - 1];
-                if (Math.hypot(x - last.x, y - last.y) > tolerance) {
-                    ply.pts.push({ x, y });
-                }
+                        // Omit very small changes
+                        const tolerance = 0.1;
+                        const last = ply.pts[ply.pts.length - 1];
+                        if (Math.hypot(x - last.x, y - last.y) > tolerance) {
+                            ply.pts.push({ x, y });
+                        }
+                    }
+                    break;
+                case 'delete':
+                case 'drag':
+                    ply_placeholder.exe(mec2._selector);
             }
-            else if (mode === 'delete' || mode === 'drag') {
-                ply_placeholder.exe(mec2._selector);
-            }
-
             ply_placeholder.exe(ctx);
         }
-
-        mec_placeholder.exe(ctx);
 
         return () => {
             canvasInteractor.remove(interactor);
@@ -94,7 +97,6 @@ export default function DeepmechCanvas({ mec2, classes }) {
     }
 
     const canvasRef = React.useRef(null);
-
     React.useEffect(() => {
         const ctx = canvasRef.current.getContext('2d');
         return handleInteractor(ctx, mec2, mode);
