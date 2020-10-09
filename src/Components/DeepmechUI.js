@@ -15,13 +15,25 @@ export default function DeepmechUI({ mec2 }) {
     mec2._show.darkmode = selectedDarkmode;
     mec2._ctx.canvas.style.backgroundColor = selectedDarkmode ? '#777' : '#eee';
 
+    const placeholder = {
+        ply: g2(),
+        mec: g2().view(mec2._interactor.view).use({
+            grp: () => ({
+                commands: mec2._g.commands.filter(c =>
+                    mec2._model.nodes.includes(c.a) ||
+                    mec2._model.constraints.includes(c.a))
+            })
+        }),
+        img: g2(),
+    }
+
     const classes = useStyle();
 
     return (
         <MuiThemeProvider theme={selectedDarkmode ? darkTheme : lightTheme}>
             <div className={classes.root}>
                 {selectedDeepmech &&
-                    <DeepmechCanvas classes={classes} mec2={mec2} />}
+                    <DeepmechCanvas placeholder={placeholder} classes={classes} mec2={mec2} />}
                 <LeftDrawer classes={classes} mec2={mec2} />
                 <RightDrawer classes={classes} mec2={mec2} />
                 <MuiThemeProvider theme={selectedDeepmech || selectedDarkmode ?
@@ -35,7 +47,7 @@ export default function DeepmechUI({ mec2 }) {
                         </ListButton>
                         <h3>&nbsp; 🚧 WIP 🚧 </h3>
                         <ListButton
-                            enabled={!selectedDeepmech} 
+                            enabled={!selectedDeepmech}
                             onClick={() => dispatch(UIactions.right(true))}
                             tooltip="Open right drawer"
                             className={classes.right} >

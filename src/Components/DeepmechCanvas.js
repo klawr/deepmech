@@ -3,7 +3,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectMode, UIactions } from '../Features';
 
-export default function DeepmechCanvas({ mec2, classes }) {
+export default function DeepmechCanvas({ mec2, classes, placeholder }) {
     const mode = useSelector(selectMode);
 
     const dispatch = useDispatch();
@@ -11,9 +11,8 @@ export default function DeepmechCanvas({ mec2, classes }) {
     React.useEffect(() => {
         const ctx = canvasRef.current.getContext('2d');
         dispatch(UIactions.right(false))
-        return handleInteractor(ctx, mec2, mode);
+        return handleInteractor(ctx, mec2, mode, placeholder);
     });
-
 
     return <canvas
         className={classes.drawCanvas}
@@ -21,7 +20,7 @@ export default function DeepmechCanvas({ mec2, classes }) {
         ref={canvasRef} />
 }
 
-function handleInteractor(ctx, mec2, mode) {
+function handleInteractor(ctx, mec2, mode, placeholder) {
     const interactor = canvasInteractor.create(ctx, {
         x: mec2.x0, y: mec2.y0, cartesian: mec2.cartesian
     });
@@ -32,18 +31,8 @@ function handleInteractor(ctx, mec2, mode) {
     Object.entries(o).forEach(e => interactor.on(...e));
 
     const view = mec2._interactor.view;
-    const img_placeholder = g2();
-    // Copy only nodes and constraints to command queue
-    const mec_placeholder = g2().view(view).use({
-        grp: () => ({
-            commands: mec2._g.commands.filter(c =>
-                mec2._model.nodes.includes(c.a) ||
-                mec2._model.constraints.includes(c.a))
-        })
-    });
-    const ply_placeholder = g2();
 
-    mec_placeholder.exe(ctx);
+    placeholder.mec.exe(ctx);
 
     // A reference to the polyline which is drawn at the moment
     let ply;
@@ -61,11 +50,11 @@ function handleInteractor(ctx, mec2, mode) {
                     // White shadow to see this on black background
                     get sh() { return this.state & g2.OVER ? [0, 0, 5, plyShadow] : false; },
                 };
-                ply_placeholder.ply(ply);
+                placeholder.ply.ply(ply);
                 break;
             case 'delete':
                 // Filter selected node from commands array
-                ply_placeholder.commands = ply_placeholder.commands.filter(
+                placeholder.ply.commands = placeholder.ply.commands.filter(
                     cmd => cmd.a !== selector.selection);
                 selector.evt.hit = false; // selector gets confused
                 selector.selection = false; // overwrite selection
@@ -75,7 +64,7 @@ function handleInteractor(ctx, mec2, mode) {
     function pointerup() {
         // If pts is a point => remove ply
         if (ply?.pts?.length <= 1) {
-            ply_placeholder.del(ply_placeholder.commands.length - 1);
+            placeholder.ply.del(placeholder.ply.commands.length - 1);
         }
         // // Reset ply
         // ply = undefined;
@@ -100,10 +89,10 @@ function handleInteractor(ctx, mec2, mode) {
                 break;
             case 'delete':
             case 'drag':
-                ply_placeholder.exe(selector);
+                placeholder.ply.exe(selector);
                 break;
         }
-        ply_placeholder.exe(ctx);
+        placeholder.ply.exe(ctx);
     }
 
     return () => {
