@@ -101,6 +101,7 @@ function handleInteractor(ctx, mec2, mode, placeholder) {
     }
 
     return () => {
+        Object.entries(o).forEach(e => interactor.remove(...e));
         canvasInteractor.remove(interactor);
     };
 }
