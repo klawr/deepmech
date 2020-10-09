@@ -32,12 +32,17 @@ function handleInteractor(ctx, mec2, mode, placeholder) {
 
     const view = mec2._interactor.view;
 
-    placeholder.mec.exe(ctx);
-
     // A reference to the polyline which is drawn at the moment
     let ply;
     // placeholder for theming later on?
     let plyShadow = "white";
+
+    function render() {
+        g2().clr().exe(ctx);
+        Object.values(placeholder).forEach(q => {
+            q.exe(ctx);
+        });
+    };
 
     function pointerdown(e) {
         switch (mode) {
@@ -58,6 +63,7 @@ function handleInteractor(ctx, mec2, mode, placeholder) {
                     cmd => cmd.a !== selector.selection);
                 selector.evt.hit = false; // selector gets confused
                 selector.selection = false; // overwrite selection
+                break;
         }
     }
 
@@ -67,12 +73,11 @@ function handleInteractor(ctx, mec2, mode, placeholder) {
             placeholder.ply.del(placeholder.ply.commands.length - 1);
         }
         // // Reset ply
-        // ply = undefined;
+        ply = undefined;
     }
 
     function tick() {
         let { type, x, y } = interactor.evt;
-
         switch (mode) {
             case 'draw':
                 if (type === 'pan' && ply) {
@@ -92,7 +97,7 @@ function handleInteractor(ctx, mec2, mode, placeholder) {
                 placeholder.ply.exe(selector);
                 break;
         }
-        placeholder.ply.exe(ctx);
+        render();
     }
 
     return () => {
