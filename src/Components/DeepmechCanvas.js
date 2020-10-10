@@ -27,7 +27,7 @@ function handleInteractor(ctx, mec2, mode, placeholder) {
     canvasInteractor.add(interactor);
     const selector = g2.selector(interactor.evt);
 
-    const o = { tick, pointerdown, pointerup, click: pointerup }
+    const o = { tick, pointerdown, pointerup, drag, click: pointerup }
     Object.entries(o).forEach(e => interactor.on(...e));
 
     const view = mec2._interactor.view;
@@ -39,9 +39,7 @@ function handleInteractor(ctx, mec2, mode, placeholder) {
 
     function render() {
         g2().clr().exe(ctx);
-        Object.values(placeholder).forEach(q => {
-            q.exe(ctx);
-        });
+        Object.values(placeholder).forEach(q => { q.exe(ctx); });
     };
 
     function pointerdown(e) {
@@ -76,8 +74,19 @@ function handleInteractor(ctx, mec2, mode, placeholder) {
         ply = undefined;
     }
 
+    function drag(e) {
+        switch (mode) {
+            case 'drag':
+                // console.log(interactor.evt)
+                if (selector.selection?.drag) {
+                    selector.selection.drag({ dx: e.dxusr, dy: e.dyusr });
+                }
+                break;
+        }
+    }
+
     function tick() {
-        let { type, x, y } = interactor.evt;
+        let { type, x, y, dx, dy } = interactor.evt;
         switch (mode) {
             case 'draw':
                 if (type === 'pan' && ply) {
@@ -92,8 +101,8 @@ function handleInteractor(ctx, mec2, mode, placeholder) {
                     }
                 }
                 break;
-            case 'delete':
             case 'drag':
+            case 'delete':
                 placeholder.ply.exe(selector);
                 break;
         }

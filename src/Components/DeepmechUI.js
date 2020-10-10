@@ -16,7 +16,7 @@ export default function DeepmechUI({ mec2 }) {
     mec2._ctx.canvas.style.backgroundColor = selectedDarkmode ? '#777' : '#eee';
 
     const placeholder = {
-        ply: g2(),
+        ply: g2().view(mec2._interactor.view),
         mec: g2().view(mec2._interactor.view).use({
             grp: () => ({
                 commands: mec2._g.commands.filter(c =>

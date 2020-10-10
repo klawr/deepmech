@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Divider, List, ListItem, Tooltip } from '@material-ui/core';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab'
-import { CameraAlt, Create, Delete, RotateLeft } from '@material-ui/icons';
+import { CameraAlt, Create, Delete, PanTool, RotateLeft } from '@material-ui/icons';
 import { ListButton } from '.';
 import { UIselect, UIactions, changeMode, selectMode } from '../Features';
 
@@ -30,8 +30,9 @@ export default function DeepmechControl() {
                         value={mode}
                         onChange={(e, val) => val && dispatch(changeMode(val))}>
                         {Toggle(<Create />, "draw", "Draw")}
-                        {Toggle(<CameraAlt />, "camera", "Camera")}
+                        {Toggle(<PanTool />, "drag", "Drag")}
                         {Toggle(<Delete />, "delete", "Delete")}
+                        {Toggle(<CameraAlt />, "camera", "Camera")}
                     </ToggleButtonGroup>
                 </ListItem>
                 <Divider />
