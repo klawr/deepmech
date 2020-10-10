@@ -40,7 +40,7 @@ export default function DeepmechControl() {
             </div>}
         <ListButton
             onClick={() => dispatch(UIactions.deepmech(!selectedDeepmech))}
-            tooltip={(selectedDeepmech ? "Exit" : "Activate") + " draw mode"}>
+            tooltip={(selectedDeepmech ? "Exit" : "Activate") + " deepmech"}>
             {selectedDeepmech ? <RotateLeft /> : <DeepmechIcon />}
         </ListButton>
     </List>
