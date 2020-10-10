@@ -5,6 +5,7 @@ import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab'
 import { CameraAlt, Create, Delete, PanTool, RotateLeft } from '@material-ui/icons';
 import { ListButton } from '.';
 import { UIselect, UIactions, changeMode, selectMode } from '../Features';
+import DeepmechIcon from './DeepmechIcon';
 
 export default function DeepmechControl() {
     const dispatch = useDispatch();
@@ -40,7 +41,7 @@ export default function DeepmechControl() {
         <ListButton
             onClick={() => dispatch(UIactions.deepmech(!selectedDeepmech))}
             tooltip={(selectedDeepmech ? "Exit" : "Activate") + " draw mode"}>
-            {selectedDeepmech ? <RotateLeft /> : <Create />}
+            {selectedDeepmech ? <RotateLeft /> : <DeepmechIcon />}
         </ListButton>
     </List>
 }
