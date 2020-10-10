@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Divider, List, ListItem, Tooltip } from '@material-ui/core';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab'
 import { CameraAlt, Create, Delete, PanTool, RotateLeft } from '@material-ui/icons';
-import { ListButton } from '.';
-import { UIselect, UIactions, changeMode, selectMode } from '../Features';
+import { ListButton } from '..';
+import { UIselect, UIactions, changeMode, selectMode } from '../../Features';
 import DeepmechIcon from './DeepmechIcon';
 
 export default function DeepmechControl() {

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { selectMode, UIactions } from '../Features';
+import { selectMode, UIactions } from '../../Features';
 
 export default function DeepmechCanvas({ mec2, classes, placeholder }) {
     const mode = useSelector(selectMode);

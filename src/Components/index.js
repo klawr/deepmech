@@ -1,8 +1,9 @@
 export { default as LeftDrawer } from './LeftDrawer';
 export { default as RightDrawer } from './RightDrawer';
-export { default as DeepmechCanvas } from './DeepmechCanvas';
 export { default as DeepmechUI } from './DeepmechUI';
-export { default as DeepmechControl } from './DeepmechControl';
+
+export { default as DeepmechCanvas } from './Deepmech/DeepmechCanvas';
+export { default as DeepmechControl } from './Deepmech/DeepmechControl';
 
 export { default as ListButton } from './Utils/ListButton';
 export { default as RadioSelect } from './Utils/RadioSelect';
