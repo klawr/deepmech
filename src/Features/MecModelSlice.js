@@ -7,6 +7,7 @@ export const slice = createSlice({
     initialState: {
         queue: [],
         selected: 0,
+        id: ref._model.id,
         pausing: ref.pausing,
         darkmode: ref._show.darkmode,
         gravity: ref.gravity,
@@ -45,11 +46,11 @@ export const slice = createSlice({
         },
         toggleRun: (state) => {
             ref.pausing = !state.pausing;
-            state.pausing = !state.pausing;
+            state.pausing = ref.pausing;
         },
         pause: (state) => {
             ref.pausing = true;
-            state.pausing = true;
+            state.pausing = ref.pausing;
         },
         toggleDarkmode: (state) => {
             state.darkmode = !state.darkmode;
@@ -58,8 +59,12 @@ export const slice = createSlice({
         },
         toggleGravity: (state) => {
             ref.gravity = !state.gravity;
-            state.gravity = !state.gravity;
+            state.gravity = ref.gravity;
         },
+        updateId: (state, action) => {
+            ref._model.id = action.payload;
+            state.id = ref._model.id;
+        }
     },
 });
 
@@ -71,11 +76,13 @@ export const {
     toggleRun,
     toggleDarkmode,
     toggleGravity,
+    updateId,
 } = slice.actions;
 export const selectQueue = state => state.MecModel.queue;
 export const selectView = state => state.MecModel.view;
 export const selectSelected = state => state.MecModel.selected;
 export const selectPausing = state => state.MecModel.pausing;
 export const selectGravity = state => state.MecModel.gravity;
+export const selectId = state => state.MecModel.id;
 
 export default slice.reducer;

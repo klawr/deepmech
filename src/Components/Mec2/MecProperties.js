@@ -3,7 +3,7 @@ import { Accordion, AccordionDetails, AccordionSummary, Grid } from '@material-u
 import { Id, Nodes, Constraints, Views, UndoRedo } from '..';
 import { store } from '../../Features';
 
-export default function MecProperties({ classes, mec2 }) {
+export default function MecProperties({ classes }) {
 
     function Acc(elm, title) {
         return <Accordion>
@@ -18,7 +18,7 @@ export default function MecProperties({ classes, mec2 }) {
 
     return <div>
         <Grid container direction="row">
-            <Id mec2={mec2} />
+            <Id />
             <UndoRedo classes={classes}/>
         </Grid>
         {Acc(<Nodes />, 'nodes')}

@@ -16,6 +16,8 @@ export {
     toggleRun,
     toggleGravity,
     toggleDarkmode,
+    updateId,
+    selectId,
     selectQueue,
     selectSelected,
     selectView,

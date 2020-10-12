@@ -5,7 +5,7 @@ import { ChevronRight, Lock, LockOpen } from '@material-ui/icons';
 import { ListButton, MecProperties } from '.';
 import { UIactions, UIselect } from '../Features';
 
-export default function RightDrawer({ classes, mec2 }) {
+export default function RightDrawer({ classes }) {
     const dispatch = useDispatch();
     const open = useSelector(UIselect).right;
 
@@ -33,7 +33,7 @@ export default function RightDrawer({ classes, mec2 }) {
                     {locked ? <Lock /> : <LockOpen />}
                 </ListButton>
             </Grid>
-            <MecProperties mec2={mec2} classes={classes} />
+            <MecProperties classes={classes} />
         </List>
     </SwipeableDrawer>
 }

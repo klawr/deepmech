@@ -1,10 +1,15 @@
 import React from 'react';
 import { ListItem, TextField } from '@material-ui/core';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateId, selectId } from '../../Features';
 
-export default function Id({ mec2 }) {
+export default function Id() {
+    const dispatch = useDispatch();
+    const selectedId = useSelector(selectId);
+
     return <ListItem>
         <TextField
-            label="Id" defaultValue={mec2._model.id}
-            onChange={(e) => { mec2._model.id = e.target.value; }} />
+            label="Id" defaultValue={selectedId}
+            onChange={(e) => { dispatch(updateId(e.target.value)) }} />
     </ListItem>
 }

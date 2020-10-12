@@ -56,9 +56,9 @@ function App() {
         ply: g2().view(selectedView),
         mec: g2().view(selectedView).use({
             grp: () => ({
-                commands: mecElement._g.commands.filter(c =>
-                    mecElement._model.nodes.includes(c.a) ||
-                    mecElement._model.constraints.includes(c.a))
+                commands: ref._g.commands.filter(c =>
+                    ref._model.nodes.includes(c.a) ||
+                    ref._model.constraints.includes(c.a))
             })
         }),
         img: g2(),
