@@ -20,7 +20,6 @@ export {
     selectId,
     selectQueue,
     selectSelected,
-    selectView,
     selectPausing,
     selectGravity,
 } from './MecModelSlice';

@@ -4,7 +4,7 @@ import { Provider, useSelector, useDispatch } from 'react-redux';
 import { Grid } from '@material-ui/core';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
-import { store, UIselect, UIactions, selectView } from './Features';
+import { store, UIselect, UIactions } from './Features';
 import { lightTheme, darkTheme, useStyle } from './style';
 import {
     DeepmechCanvas,
@@ -27,7 +27,7 @@ function handleMecModelUpdate() {
     Object.entries(selected < s ? a.value : a.previous).forEach(e => {
         model[a.list][a.idx][e[0]] = e[1];
     });
-    // TODO this should be done in mecElement or in Node
+    // TODO this should be done in Node
     model.constraints = model.constraints.map(c => {
         c.p1 = typeof c.p1 === 'object' ? c.p1 : model.nodeById(c.p1);
         c.p2 = typeof c.p2 === 'object' ? c.p2 : model.nodeById(c.p2);
@@ -39,28 +39,37 @@ function handleMecModelUpdate() {
     });
     model.preview();
     model.pose();
-    mecElement.render();
+    ref.render();
 
     selected = s;
 }
 
 store.subscribe(handleMecModelUpdate);
 
+// Let g2 beg simulate view (beg does not respect cartesian)
+function begSimView({ x = 0, y = 0, scl = 1, cartesian = false }) {
+    return {
+        matrix: (cartesian ?
+            [scl, 0, 0, -scl, x, ref._ctx.canvas.height - 1 - y] :
+            [scl, 0, 0, scl, x, y])
+    };
+};
+
 function App() {
     const dispatch = useDispatch();
     const selectedDarkmode = useSelector(UIselect).darkmode;
     const selectedDeepmech = useSelector(UIselect).deepmech;
-    const selectedView = useSelector(selectView);
 
     const placeholder = {
-        ply: g2().view(selectedView),
-        mec: g2().view(selectedView).use({
-            grp: () => ({
-                commands: ref._g.commands.filter(c =>
-                    ref._model.nodes.includes(c.a) ||
-                    ref._model.constraints.includes(c.a))
-            })
-        }),
+        ply: g2(),
+        mec: g2().beg(begSimView(ref._interactor.view))
+            .use({
+                grp: () => ({
+                    commands: ref._g.commands.filter(c =>
+                        ref._model.nodes.includes(c.a) ||
+                        ref._model.constraints.includes(c.a))
+                })
+            }).end(),
         img: g2(),
     }
 
@@ -69,7 +78,7 @@ function App() {
     return <MuiThemeProvider theme={selectedDarkmode ? darkTheme : lightTheme}>
         <div className={classes.root}>
             {selectedDeepmech &&
-                <DeepmechCanvas placeholder={placeholder} classes={classes} mec2={mecElement} />}
+                <DeepmechCanvas placeholder={placeholder} classes={classes} />}
             <LeftDrawer classes={classes} mecReset={() => ref.reset()} />
             <RightDrawer classes={classes} />
             <MuiThemeProvider theme={selectedDeepmech || selectedDarkmode ?

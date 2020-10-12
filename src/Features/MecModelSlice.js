@@ -11,11 +11,6 @@ export const slice = createSlice({
         pausing: ref.pausing,
         darkmode: ref._show.darkmode,
         gravity: ref.gravity,
-        view: {
-            x: ref.x0,
-            y: ref.y0,
-            cartesian: ref.cartesian,
-        }
     },
     reducers: {
         add: (state, action) => {
@@ -79,7 +74,6 @@ export const {
     updateId,
 } = slice.actions;
 export const selectQueue = state => state.MecModel.queue;
-export const selectView = state => state.MecModel.view;
 export const selectSelected = state => state.MecModel.selected;
 export const selectPausing = state => state.MecModel.pausing;
 export const selectGravity = state => state.MecModel.gravity;
