@@ -5,6 +5,9 @@ export const slice = createSlice({
     initialState: {
         queue: [],
         selected: 0,
+        pause: true,
+        darkmode: false,
+        gravity: false,
     },
     reducers: {
         add: (state, action) => {
@@ -32,11 +35,23 @@ export const slice = createSlice({
             if (state.selected < state.queue.length) {
                 state.selected += 1;
             }
-        }
+        },
+        run: (state) => {
+            state.run = true;
+        },
+        pause: (state) => {
+            state.pause = true;
+        },
+        toggleDarkmode: (state) => {
+            state.darkmode = !state.darkmode;
+        },
+        toggleGravity: (state) =>{
+            state.gravity = !state.gravity;
+        },
     },
 });
 
-export const { add, undo, redo } = slice.actions;
+export const { add, undo, redo, run, pause, toggleDarkmode } = slice.actions;
 export const selectQueue = state => state.MecModel.queue;
 export const selectSelected = state => state.MecModel.selected;
 

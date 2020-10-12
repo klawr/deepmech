@@ -13,15 +13,18 @@ import {
     ListButton
 } from './Components';
 
+const ref = mecElement;
+
 let selected = 0;
 function handleMecModelUpdate() {
     const m = store.getState().MecModel;
     const s = m.selected;
+    ref.pausing = m.pause;
     // selected is guaranteed to change on every action
     if (selected === s) return
     // if selected < s, the last action was an update, otherwise it was an undo
     const a = selected < s ? m.queue[s - 1] : m.queue[s];
-    const model = mecElement._model;
+    const model = ref._model;
     Object.entries(selected < s ? a.value : a.previous).forEach(e => {
         model[a.list][a.idx][e[0]] = e[1];
     });

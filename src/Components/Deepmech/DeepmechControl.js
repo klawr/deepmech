@@ -4,8 +4,15 @@ import { Divider, List, ListItem, Tooltip } from '@material-ui/core';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab'
 import { CameraAlt, Create, Delete, PanTool, RotateLeft } from '@material-ui/icons';
 import { ListButton } from '..';
-import { UIselect, UIactions, changeMode, selectMode } from '../../Features';
+import {
+    UIselect,
+    UIactions,
+    changeMode,
+    selectMode,
+    pause
+} from '../../Features';
 import DeepmechIcon from './DeepmechIcon';
+import { togglePause } from '../../Features/MecModelSlice';
 
 export default function DeepmechControl() {
     const dispatch = useDispatch();
@@ -19,6 +26,13 @@ export default function DeepmechControl() {
                 {elm}
             </Tooltip>
         </ToggleButton>
+    }
+
+    function toggleDeepmech() {
+        dispatch(UIactions.deepmech(!selectedDeepmech));
+        if (selectedDeepmech) {
+            dispatch(pause);
+        }
     }
 
     return <List>
@@ -39,7 +53,7 @@ export default function DeepmechControl() {
                 <Divider />
             </div>}
         <ListButton
-            onClick={() => dispatch(UIactions.deepmech(!selectedDeepmech))}
+            onClick={toggleDeepmech}
             tooltip={(selectedDeepmech ? "Exit" : "Activate") + " deepmech"}>
             {selectedDeepmech ? <RotateLeft /> : <DeepmechIcon />}
         </ListButton>

@@ -12,6 +12,8 @@ export {
     add,
     undo,
     redo,
+    run,
+    pause,
     selectQueue,
     selectSelected,
 } from './MecModelSlice';
