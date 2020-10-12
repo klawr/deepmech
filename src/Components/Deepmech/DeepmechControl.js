@@ -12,7 +12,6 @@ import {
     pause
 } from '../../Features';
 import DeepmechIcon from './DeepmechIcon';
-import { togglePause } from '../../Features/MecModelSlice';
 
 export default function DeepmechControl() {
     const dispatch = useDispatch();

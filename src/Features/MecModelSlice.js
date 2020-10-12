@@ -7,9 +7,14 @@ export const slice = createSlice({
     initialState: {
         queue: [],
         selected: 0,
-        pause: true,
+        pausing: ref.pausing,
         darkmode: ref._show.darkmode,
-        gravity: false,
+        gravity: ref.gravity,
+        view: {
+            x: ref.x0,
+            y: ref.y0,
+            cartesian: ref.cartesian,
+        }
     },
     reducers: {
         add: (state, action) => {
@@ -38,25 +43,39 @@ export const slice = createSlice({
                 state.selected += 1;
             }
         },
-        run: (state) => {
-            state.run = true;
+        toggleRun: (state) => {
+            ref.pausing = !state.pausing;
+            state.pausing = !state.pausing;
         },
         pause: (state) => {
-            state.pause = true;
+            ref.pausing = true;
+            state.pausing = true;
         },
         toggleDarkmode: (state) => {
             state.darkmode = !state.darkmode;
             ref._show.darkmode = state.darkmode;
             ref._ctx.canvas.style.backgroundColor = state.darkmode ? '#777' : '#eee';
         },
-        toggleGravity: (state) =>{
+        toggleGravity: (state) => {
+            ref.gravity = !state.gravity;
             state.gravity = !state.gravity;
         },
     },
 });
 
-export const { add, undo, redo, run, pause, toggleDarkmode } = slice.actions;
+export const {
+    add,
+    undo,
+    redo,
+    pause,
+    toggleRun,
+    toggleDarkmode,
+    toggleGravity,
+} = slice.actions;
 export const selectQueue = state => state.MecModel.queue;
+export const selectView = state => state.MecModel.view;
 export const selectSelected = state => state.MecModel.selected;
+export const selectPausing = state => state.MecModel.pausing;
+export const selectGravity = state => state.MecModel.gravity;
 
 export default slice.reducer;

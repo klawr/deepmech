@@ -4,7 +4,7 @@ import { Provider, useSelector, useDispatch } from 'react-redux';
 import { Grid } from '@material-ui/core';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
-import { store, UIselect, UIactions } from './Features';
+import { store, UIselect, UIactions, selectView } from './Features';
 import { lightTheme, darkTheme, useStyle } from './style';
 import {
     DeepmechCanvas,
@@ -19,7 +19,6 @@ let selected = 0;
 function handleMecModelUpdate() {
     const m = store.getState().MecModel;
     const s = m.selected;
-    ref.pausing = m.pause;
     // selected is guaranteed to change on every action
     if (selected === s) return
     // if selected < s, the last action was an update, otherwise it was an undo
@@ -51,13 +50,11 @@ function App() {
     const dispatch = useDispatch();
     const selectedDarkmode = useSelector(UIselect).darkmode;
     const selectedDeepmech = useSelector(UIselect).deepmech;
-
-    mecElement._show.darkmode = selectedDarkmode;
-    mecElement._ctx.canvas.style.backgroundColor = selectedDarkmode ? '#777' : '#eee';
+    const selectedView = useSelector(selectView);
 
     const placeholder = {
-        ply: g2().view(mecElement._interactor.view),
-        mec: g2().view(mecElement._interactor.view).use({
+        ply: g2().view(selectedView),
+        mec: g2().view(selectedView).use({
             grp: () => ({
                 commands: mecElement._g.commands.filter(c =>
                     mecElement._model.nodes.includes(c.a) ||
