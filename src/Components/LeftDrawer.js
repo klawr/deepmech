@@ -5,7 +5,7 @@ import { Brightness4, ChevronLeft, GitHub } from '@material-ui/icons';
 import { MecControl, DeepmechControl, ListButton } from '.';
 import { UIactions, UIselect, toggleDarkmode } from '../Features';
 
-export default function LeftDrawer({ classes, mec2 }) {
+export default function LeftDrawer({ classes, mecReset }) {
     const dispatch = useDispatch();
     const open = useSelector(UIselect).left;
     const selectedDarkmode = useSelector(UIselect).darkmode;
@@ -25,7 +25,7 @@ export default function LeftDrawer({ classes, mec2 }) {
         <Divider />
         {selectedDeepmech ? <div /> :
             <div>
-                <MecControl mec2={mec2} />
+                <MecControl mecReset={mecReset} />
                 <Divider />
             </div>}
         <DeepmechControl classes={classes} />

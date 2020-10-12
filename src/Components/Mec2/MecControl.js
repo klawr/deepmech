@@ -14,7 +14,7 @@ import {
 } from '../../Features';
 import { useDispatch, useSelector } from 'react-redux';
 
-export default function MecControl({ mec2, className }) {
+export default function MecControl({ mecReset, className }) {
     const dispatch = useDispatch();
     const selectedPausing = useSelector(selectPausing);
     const selectedGravity = useSelector(selectGravity);
@@ -26,7 +26,7 @@ export default function MecControl({ mec2, className }) {
         <ListButton onClick={() => dispatch(toggleGravity())} tooltip="Toggle gravity">
             g {selectedGravity ? <Clear /> : <ArrowDownward />}
         </ListButton>
-        <ListButton onClick={() => mec2.reset()} tooltip="Reset">
+        <ListButton onClick={mecReset} tooltip="Reset">
             <RotateLeft />
         </ListButton>
     </List>

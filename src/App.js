@@ -70,8 +70,8 @@ function App() {
         <div className={classes.root}>
             {selectedDeepmech &&
                 <DeepmechCanvas placeholder={placeholder} classes={classes} mec2={mecElement} />}
-            <LeftDrawer classes={classes} mec2={mecElement} />
-            <RightDrawer classes={classes} mec2={mecElement} />
+            <LeftDrawer classes={classes} mecReset={() => ref.reset()} />
+            <RightDrawer classes={classes} />
             <MuiThemeProvider theme={selectedDeepmech || selectedDarkmode ?
                 darkTheme : lightTheme}>
                 <Grid container direction="row"
