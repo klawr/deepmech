@@ -20,7 +20,10 @@ export default function UndoRedo({ classes }) {
         changeRedoEnabled(m.selected < m.queue.length);
     }));
 
-    return <Grid style={{ position: 'absolute' }} container direction="row">
+    return <Grid
+        style={{ position: 'absolute', pointerEvents: 'none' }}
+        container
+        direction="row">
         <ListButton
             className={classes.right}
             tooltip="Undo"
