@@ -14,6 +14,7 @@ export {
     redo,
     run,
     pause,
+    toggleDarkmode,
     selectQueue,
     selectSelected,
 } from './MecModelSlice';

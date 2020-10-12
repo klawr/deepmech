@@ -1,12 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+const ref = mecElement;
+
 export const slice = createSlice({
     name: 'MecModel',
     initialState: {
         queue: [],
         selected: 0,
         pause: true,
-        darkmode: false,
+        darkmode: ref._show.darkmode,
         gravity: false,
     },
     reducers: {
@@ -44,6 +46,8 @@ export const slice = createSlice({
         },
         toggleDarkmode: (state) => {
             state.darkmode = !state.darkmode;
+            ref._show.darkmode = state.darkmode;
+            ref._ctx.canvas.style.backgroundColor = state.darkmode ? '#777' : '#eee';
         },
         toggleGravity: (state) =>{
             state.gravity = !state.gravity;

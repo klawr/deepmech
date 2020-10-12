@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Divider, Drawer, List } from '@material-ui/core';
 import { Brightness4, ChevronLeft, GitHub } from '@material-ui/icons';
 import { MecControl, DeepmechControl, ListButton } from '.';
-import { UIactions, UIselect } from '../Features';
+import { UIactions, UIselect, toggleDarkmode } from '../Features';
 
 export default function LeftDrawer({ classes, mec2 }) {
     const dispatch = useDispatch();
@@ -28,11 +28,14 @@ export default function LeftDrawer({ classes, mec2 }) {
                 <MecControl mec2={mec2} />
                 <Divider />
             </div>}
-        <DeepmechControl mec2={mec2} classes={classes} />
+        <DeepmechControl classes={classes} />
         <Divider />
         <List className={classes.listBottom}>
             <ListButton
-                onClick={() => dispatch(UIactions.darkmode(!selectedDarkmode))}
+                onClick={() => {
+                    dispatch(toggleDarkmode(!selectedDarkmode));
+                    dispatch(UIactions.darkmode(!selectedDarkmode));
+                }}
                 tooltip="Toggle dark mode">
                 <Brightness4 />
             </ListButton>
