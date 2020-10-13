@@ -63,7 +63,7 @@ export const slice = createSlice({
     },
 });
 
-export const actionMec = slice.actions;
-export const selectMec = state => state.MecModel;
+export const mecAction = slice.actions;
+export const mecSelect = state => state.MecModel;
 
 export default slice.reducer;

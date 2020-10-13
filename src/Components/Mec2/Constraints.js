@@ -1,7 +1,7 @@
 import React from 'react';
 import { MecTable, RadioSelect, UpdateText, ObjectMenu } from '..';
 import { useDispatch } from 'react-redux';
-import { actionMec } from '../../Features';
+import { mecAction } from '../../Features';
 
 export default function Constraints() {
     const head = ['id', 'p1', 'p2', 'len', 'ori'];
@@ -9,7 +9,7 @@ export default function Constraints() {
 
     function SanitizedCell({ elm, idx, prop: property }) {
         function update(value, previous = elm[property]) {
-            dispatch(actionMec.add({
+            dispatch(mecAction.add({
                 list: 'constraints', idx,
                 value: { [property]: value },
                 previous: { [property]: previous }

@@ -9,6 +9,6 @@ export {
     selectMode,
 } from './DeepmechSlice';
 export {
-    actionMec,
-    selectMec,
+    mecAction,
+    mecSelect,
 } from './MecModelSlice';

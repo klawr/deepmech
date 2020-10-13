@@ -1,13 +1,13 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { actionMec, selectMec, store } from '../../Features';
+import { mecAction, mecSelect, store } from '../../Features';
 import { ListButton } from '..';
 import { Redo, Undo } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
 
 export default function UndoRedo({ classes }) {
     const dispatch = useDispatch();
-    const mec = useSelector(selectMec);
+    const mec = useSelector(mecSelect);
 
     const [undoEnabled, changeUndoEnabled] = React.useState(mec.selected > 0);
     const [redoEnabled, changeRedoEnabled] = React.useState(mec.selected > mec.queue.length);
@@ -27,13 +27,13 @@ export default function UndoRedo({ classes }) {
             className={classes.right}
             tooltip="Undo"
             enabled={undoEnabled}
-            onClick={() => dispatch(actionMec.undo())}>
+            onClick={() => dispatch(mecAction.undo())}>
             <Undo />
         </ListButton>
         <ListButton
             tooltip="Redo"
             enabled={redoEnabled}
-            onClick={() => dispatch(actionMec.redo())}>
+            onClick={() => dispatch(mecAction.redo())}>
             <Redo />
         </ListButton>
     </Grid>

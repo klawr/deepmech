@@ -2,7 +2,7 @@ import React from 'react';
 import { Checkbox } from '@material-ui/core';
 import { MecTable, UpdateText } from '..';
 import { useDispatch } from 'react-redux';
-import { actionMec } from '../../Features';
+import { mecAction } from '../../Features';
 
 export default function Nodes() {
     const head = ['id', 'x', 'y', 'base'];
@@ -50,7 +50,7 @@ export default function Nodes() {
 
     function SanitizedCell({ prop: property, idx, elm }) {
         function update(value, previous = elm[property]) {
-            dispatch(actionMec.add({
+            dispatch(mecAction.add({
                 list: 'nodes', idx,
                 value: { [property]: value },
                 previous: { [property]: previous }

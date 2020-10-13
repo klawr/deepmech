@@ -1,7 +1,7 @@
 import React from 'react';
 import { MecTable, RadioSelect, handleMecUpdate } from '..';
 import { useDispatch } from 'react-redux';
-import { actionMec } from '../../Features';
+import { mecAction } from '../../Features';
 
 export default function Views() {
     const head = ['show', 'of', 'as'];
@@ -10,7 +10,7 @@ export default function Views() {
     function SanitizedCell({ elm, idx, prop: property }) {
 
         function update(value, previous = elm[property]) {
-            dispatch(actionMec.add({
+            dispatch(mecAction.add({
                 list: 'views', idx,
                 value: { [property]: value },
                 previous: { [property]: previous }
