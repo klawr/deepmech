@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import UIReducer from './UISlice';
+import UIReducer from './UiSlice';
 import DeepmechReducer from './DeepmechSlice';
 import MecModelReducer from './MecModelSlice';
 

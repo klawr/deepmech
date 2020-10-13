@@ -4,7 +4,7 @@ import { Provider, useSelector, useDispatch } from 'react-redux';
 import { Grid } from '@material-ui/core';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
-import { store, UIselect, UIactions } from './Features';
+import { store, UiSelect, UiAction } from './Features';
 import { lightTheme, darkTheme, useStyle } from './style';
 import {
     DeepmechCanvas,
@@ -57,8 +57,7 @@ function begSimView({ x = 0, y = 0, scl = 1, cartesian = false }) {
 
 function App() {
     const dispatch = useDispatch();
-    const selectedDarkmode = useSelector(UIselect).darkmode;
-    const selectedDeepmech = useSelector(UIselect).deepmech;
+    const UI = useSelector(UiSelect);
 
     const placeholder = {
         ply: g2(),
@@ -75,25 +74,25 @@ function App() {
 
     const classes = useStyle();
 
-    return <MuiThemeProvider theme={selectedDarkmode ? darkTheme : lightTheme}>
+    return <MuiThemeProvider theme={UI.darkmode ? darkTheme : lightTheme}>
         <div className={classes.root}>
-            {selectedDeepmech &&
+            {UI.deepmech &&
                 <DeepmechCanvas placeholder={placeholder} classes={classes} />}
             <LeftDrawer classes={classes} mecReset={() => ref.reset()} />
             <RightDrawer classes={classes} />
-            <MuiThemeProvider theme={selectedDeepmech || selectedDarkmode ?
+            <MuiThemeProvider theme={UI.deepmech || UI.darkmode ?
                 darkTheme : lightTheme}>
                 <Grid container direction="row"
                     className={classes.buttonGrid}>
                     <ListButton
-                        onClick={() => dispatch(UIactions.left(true))}
+                        onClick={() => dispatch(UiAction.left(true))}
                         tooltip="Open left drawer">
                         <ChevronRight />
                     </ListButton>
                     <h3>&nbsp; 🚧 WIP 🚧 </h3>
                     <ListButton
-                        enabled={!selectedDeepmech}
-                        onClick={() => dispatch(UIactions.right(true))}
+                        enabled={!UI.deepmech}
+                        onClick={() => dispatch(UiAction.right(true))}
                         tooltip="Open right drawer"
                         className={classes.right} >
                         <ChevronLeft />

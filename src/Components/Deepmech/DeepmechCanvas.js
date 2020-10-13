@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { selectMode, UIactions } from '../../Features';
+import { selectMode, UiAction } from '../../Features';
 
 export default function DeepmechCanvas({ classes, placeholder }) {
     const mode = useSelector(selectMode);
@@ -10,7 +10,7 @@ export default function DeepmechCanvas({ classes, placeholder }) {
     const canvasRef = React.useRef(null);
     React.useEffect(() => {
         const ctx = canvasRef.current.getContext('2d');
-        dispatch(UIactions.right(false));
+        dispatch(UiAction.right(false));
         return handleInteractor(ctx, mode, placeholder);
     });
 

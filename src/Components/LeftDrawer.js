@@ -3,13 +3,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Divider, Drawer, List } from '@material-ui/core';
 import { Brightness4, ChevronLeft, GitHub } from '@material-ui/icons';
 import { MecControl, DeepmechControl, ListButton } from '.';
-import { UIactions, UIselect, mecAction } from '../Features';
+import { UiAction, UiSelect, mecAction } from '../Features';
 
 export default function LeftDrawer({ classes, mecReset }) {
     const dispatch = useDispatch();
-    const open = useSelector(UIselect).left;
-    const selectedDarkmode = useSelector(UIselect).darkmode;
-    const selectedDeepmech = useSelector(UIselect).deepmech;
+    const open = useSelector(UiSelect).left;
+    const selectedDarkmode = useSelector(UiSelect).darkmode;
+    const selectedDeepmech = useSelector(UiSelect).deepmech;
 
     return <Drawer
         open={open}
@@ -17,7 +17,7 @@ export default function LeftDrawer({ classes, mecReset }) {
         variant="persistent">
         <List>
             <ListButton
-                onClick={() => dispatch(UIactions.left(false))}
+                onClick={() => dispatch(UiAction.left(false))}
                 tooltip="Close drawer">
                 <ChevronLeft />
             </ListButton>
@@ -34,7 +34,7 @@ export default function LeftDrawer({ classes, mecReset }) {
             <ListButton
                 onClick={() => {
                     dispatch(mecAction.toggleDarkmode(!selectedDarkmode));
-                    dispatch(UIactions.darkmode(!selectedDarkmode));
+                    dispatch(UiAction.darkmode(!selectedDarkmode));
                 }}
                 tooltip="Toggle dark mode">
                 <Brightness4 />

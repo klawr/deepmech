@@ -3,26 +3,26 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Grid, List, SwipeableDrawer } from '@material-ui/core';
 import { ChevronRight, Lock, LockOpen } from '@material-ui/icons';
 import { ListButton, MecProperties } from '.';
-import { UIactions, UIselect } from '../Features';
+import { UiAction, UiSelect } from '../Features';
 
 export default function RightDrawer({ classes }) {
     const dispatch = useDispatch();
-    const open = useSelector(UIselect).right;
+    const right = useSelector(UiSelect).right;
 
     const [locked, toggleLock] = React.useState(globalThis.innerWidth > 1200);
 
-    window.addEventListener('orientationchange', () => dispatch(UIactions.right(false)));
+    window.addEventListener('orientationchange', () => dispatch(UiAction.right(false)));
 
     return <SwipeableDrawer
-        open={open}
-        onClose={() => dispatch(UIactions.right(false))}
-        onOpen={() => dispatch(UIactions.right(true))}
+        open={right}
+        onClose={() => dispatch(UiAction.right(false))}
+        onOpen={() => dispatch(UiAction.right(true))}
         variant={locked ? 'persistent' : 'temporary'}
         anchor="right">
         <List>
             <Grid container direction="row">
                 <ListButton
-                    onClick={() => dispatch(UIactions.right(false))}
+                    onClick={() => dispatch(UiAction.right(false))}
                     tooltip="Close drawer">
                     <ChevronRight />
                 </ListButton>

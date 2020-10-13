@@ -5,8 +5,8 @@ import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab'
 import { CameraAlt, Create, Delete, PanTool, RotateLeft } from '@material-ui/icons';
 import { ListButton } from '..';
 import {
-    UIselect,
-    UIactions,
+    UiSelect,
+    UiAction,
     changeMode,
     selectMode,
     mecAction
@@ -16,7 +16,7 @@ import DeepmechIcon from './DeepmechIcon';
 export default function DeepmechControl() {
     const dispatch = useDispatch();
 
-    const selectedDeepmech = useSelector(UIselect).deepmech;
+    const UI = useSelector(UiSelect);
     const mode = useSelector(selectMode);
 
     function Toggle(elm, value, tooltip) {
@@ -28,14 +28,14 @@ export default function DeepmechControl() {
     }
 
     function toggleDeepmech() {
-        dispatch(UIactions.deepmech(!selectedDeepmech));
-        if (selectedDeepmech) {
+        dispatch(UiAction.deepmech(!UI.deepmech));
+        if (UI.deepmech) {
             dispatch(mecAction.pause);
         }
     }
 
     return <List>
-        {selectedDeepmech &&
+        {UI.deepmech &&
             <div>
                 <ListItem>
                     <ToggleButtonGroup
@@ -53,8 +53,8 @@ export default function DeepmechControl() {
             </div>}
         <ListButton
             onClick={toggleDeepmech}
-            tooltip={(selectedDeepmech ? "Exit" : "Activate") + " deepmech"}>
-            {selectedDeepmech ? <RotateLeft /> : <DeepmechIcon />}
+            tooltip={(UI.deepmech ? "Exit" : "Activate") + " deepmech"}>
+            {UI.deepmech ? <RotateLeft /> : <DeepmechIcon />}
         </ListButton>
     </List>
 }

@@ -26,7 +26,7 @@ export const slice = createSlice({
     },
 });
 
-export const actions = slice.actions;
-export const select = state => state.UI;
+export const UiAction = slice.actions;
+export const UiSelect = state => state.UI;
 
 export default slice.reducer;
