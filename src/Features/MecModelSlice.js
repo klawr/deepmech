@@ -73,10 +73,6 @@ export const {
     toggleGravity,
     updateId,
 } = slice.actions;
-export const selectQueue = state => state.MecModel.queue;
-export const selectSelected = state => state.MecModel.selected;
-export const selectPausing = state => state.MecModel.pausing;
-export const selectGravity = state => state.MecModel.gravity;
-export const selectId = state => state.MecModel.id;
+export const selectModel = state => state.MecModel;
 
 export default slice.reducer;

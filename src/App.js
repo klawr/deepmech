@@ -27,7 +27,7 @@ function handleMecModelUpdate() {
     Object.entries(selected < s ? a.value : a.previous).forEach(e => {
         model[a.list][a.idx][e[0]] = e[1];
     });
-    // TODO this should be done in Node
+    // TODO this should be done in mecElement
     model.constraints = model.constraints.map(c => {
         c.p1 = typeof c.p1 === 'object' ? c.p1 : model.nodeById(c.p1);
         c.p2 = typeof c.p2 === 'object' ? c.p2 : model.nodeById(c.p2);

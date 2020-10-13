@@ -1,11 +1,11 @@
 import React from 'react';
 import { ListItem, TextField } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateId, selectId } from '../../Features';
+import { updateId, selectModel } from '../../Features';
 
 export default function Id() {
     const dispatch = useDispatch();
-    const selectedId = useSelector(selectId);
+    const selectedId = useSelector(selectModel).id;
 
     return <ListItem>
         <TextField

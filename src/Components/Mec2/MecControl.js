@@ -8,23 +8,19 @@ import {
     PlayArrow,
     RotateLeft,
 } from '@material-ui/icons';
-import {
-    toggleRun, toggleGravity,
-    selectPausing, selectGravity
-} from '../../Features';
+import { toggleRun, toggleGravity, selectModel } from '../../Features';
 import { useDispatch, useSelector } from 'react-redux';
 
 export default function MecControl({ mecReset, className }) {
     const dispatch = useDispatch();
-    const selectedPausing = useSelector(selectPausing);
-    const selectedGravity = useSelector(selectGravity);
+    const mec = useSelector(selectModel);
 
     return <List className={className}>
         <ListButton onClick={() => dispatch(toggleRun())} tooltip="Run/Pause mechanism">
-            {selectedPausing ? <PlayArrow /> : <Pause />}
+            {mec.pausing ? <PlayArrow /> : <Pause />}
         </ListButton>
         <ListButton onClick={() => dispatch(toggleGravity())} tooltip="Toggle gravity">
-            g {selectedGravity ? <Clear /> : <ArrowDownward />}
+            g {mec.gravity ? <Clear /> : <ArrowDownward />}
         </ListButton>
         <ListButton onClick={mecReset} tooltip="Reset">
             <RotateLeft />
