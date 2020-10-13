@@ -1,17 +1,17 @@
 import React from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { selectMode, UiAction } from '../../Features';
+import { deepmechSelect, UiAction } from '../../Features';
 
 export default function DeepmechCanvas({ classes, placeholder }) {
-    const mode = useSelector(selectMode);
+    const deepmech = useSelector(deepmechSelect);
 
     const dispatch = useDispatch();
     const canvasRef = React.useRef(null);
     React.useEffect(() => {
         const ctx = canvasRef.current.getContext('2d');
         dispatch(UiAction.right(false));
-        return handleInteractor(ctx, mode, placeholder);
+        return handleInteractor(ctx, deepmech.mode, placeholder);
     });
 
     return <canvas

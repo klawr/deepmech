@@ -12,7 +12,7 @@ export const slice = createSlice({
     },
 });
 
-export const { changeMode } = slice.actions;
-export const selectMode = state => state.Deepmech.mode;
+export const deepmechAction = slice.actions;
+export const deepmechSelect = state => state.Deepmech;
 
 export default slice.reducer;

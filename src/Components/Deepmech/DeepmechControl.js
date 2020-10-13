@@ -7,8 +7,8 @@ import { ListButton } from '..';
 import {
     UiSelect,
     UiAction,
-    changeMode,
-    selectMode,
+    deepmechAction,
+    deepmechSelect,
     mecAction
 } from '../../Features';
 import DeepmechIcon from './DeepmechIcon';
@@ -17,7 +17,7 @@ export default function DeepmechControl() {
     const dispatch = useDispatch();
 
     const UI = useSelector(UiSelect);
-    const mode = useSelector(selectMode);
+    const deepmech = useSelector(deepmechSelect);
 
     function Toggle(elm, value, tooltip) {
         return <ToggleButton value={value}>
@@ -41,8 +41,8 @@ export default function DeepmechControl() {
                     <ToggleButtonGroup
                         exclusive
                         orientation="vertical"
-                        value={mode}
-                        onChange={(e, val) => val && dispatch(changeMode(val))}>
+                        value={deepmech.mode}
+                        onChange={(e, val) => val && dispatch(deepmechAction.changeMode(val))}>
                         {Toggle(<Create />, "draw", "Draw")}
                         {Toggle(<PanTool />, "drag", "Drag")}
                         {Toggle(<Delete />, "delete", "Delete")}
