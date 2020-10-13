@@ -17,5 +17,5 @@ export {
     toggleGravity,
     toggleDarkmode,
     updateId,
-    selectModel,
+    selectMec,
 } from './MecModelSlice';

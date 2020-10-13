@@ -73,6 +73,4 @@ export const {
     toggleGravity,
     updateId,
 } = slice.actions;
-export const selectModel = state => state.MecModel;
-
-export default slice.reducer;
+export const selectMec = state => state.MecModel;

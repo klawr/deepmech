@@ -1,13 +1,13 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { undo, redo, store, selectModel } from '../../Features';
+import { undo, redo, store, selectMec } from '../../Features';
 import { ListButton } from '..';
 import { Redo, Undo } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
 
 export default function UndoRedo({ classes }) {
     const dispatch = useDispatch();
-    const mec = useSelector(selectModel);
+    const mec = useSelector(selectMec);
 
     const [undoEnabled, changeUndoEnabled] = React.useState(mec.selected > 0);
     const [redoEnabled, changeRedoEnabled] = React.useState(mec.selected > mec.queue.length);
