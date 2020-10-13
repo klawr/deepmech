@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { undo, redo, store, selectMec } from '../../Features';
+import { actionMec, selectMec, store } from '../../Features';
 import { ListButton } from '..';
 import { Redo, Undo } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
@@ -27,13 +27,13 @@ export default function UndoRedo({ classes }) {
             className={classes.right}
             tooltip="Undo"
             enabled={undoEnabled}
-            onClick={() => dispatch(undo())}>
+            onClick={() => dispatch(actionMec.undo())}>
             <Undo />
         </ListButton>
         <ListButton
             tooltip="Redo"
             enabled={redoEnabled}
-            onClick={() => dispatch(redo())}>
+            onClick={() => dispatch(actionMec.redo())}>
             <Redo />
         </ListButton>
     </Grid>

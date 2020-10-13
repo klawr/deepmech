@@ -1,7 +1,7 @@
 import React from 'react';
 import { ListItem, TextField } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateId, selectMec } from '../../Features';
+import { actionMec, selectMec } from '../../Features';
 
 export default function Id() {
     const dispatch = useDispatch();
@@ -10,6 +10,6 @@ export default function Id() {
     return <ListItem>
         <TextField
             label="Id" defaultValue={selectedId}
-            onChange={(e) => { dispatch(updateId(e.target.value)) }} />
+            onChange={(e) => { dispatch(actionMec.updateId(e.target.value)) }} />
     </ListItem>
 }

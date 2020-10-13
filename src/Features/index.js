@@ -9,13 +9,6 @@ export {
     selectMode,
 } from './DeepmechSlice';
 export {
-    add,
-    undo,
-    redo,
-    pause,
-    toggleRun,
-    toggleGravity,
-    toggleDarkmode,
-    updateId,
+    actionMec,
     selectMec,
 } from './MecModelSlice';

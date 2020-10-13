@@ -9,7 +9,7 @@ import {
     UIactions,
     changeMode,
     selectMode,
-    pause
+    actionMec
 } from '../../Features';
 import DeepmechIcon from './DeepmechIcon';
 
@@ -30,7 +30,7 @@ export default function DeepmechControl() {
     function toggleDeepmech() {
         dispatch(UIactions.deepmech(!selectedDeepmech));
         if (selectedDeepmech) {
-            dispatch(pause);
+            dispatch(actionMec.pause);
         }
     }
 

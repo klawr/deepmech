@@ -63,14 +63,7 @@ export const slice = createSlice({
     },
 });
 
-export const {
-    add,
-    undo,
-    redo,
-    pause,
-    toggleRun,
-    toggleDarkmode,
-    toggleGravity,
-    updateId,
-} = slice.actions;
+export const actionMec = slice.actions;
 export const selectMec = state => state.MecModel;
+
+export default slice.reducer;
