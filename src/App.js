@@ -15,33 +15,39 @@ import {
 
 const ref = mecElement;
 
-let selected = 0;
+let counter = 0;
 function handleMecModelUpdate() {
-    const m = store.getState().MecModel;
-    const s = m.selected;
+    const mec = store.getState().MecModel;
+    const select = mec.selected;
     // selected is guaranteed to change on every action
-    if (selected === s) return
+    if (counter === select) return
     // if selected < s, the last action was an update, otherwise it was an undo
-    const a = selected < s ? m.queue[s - 1] : m.queue[s];
-    const model = ref._model;
-    Object.entries(selected < s ? a.value : a.previous).forEach(e => {
-        model[a.list][a.idx][e[0]] = e[1];
-    });
-    // TODO this should be done in mecElement
-    model.constraints = model.constraints.map(c => {
-        c.p1 = typeof c.p1 === 'object' ? c.p1 : model.nodeById(c.p1);
-        c.p2 = typeof c.p2 === 'object' ? c.p2 : model.nodeById(c.p2);
-        return c;
-    });
-    model.views = model.views.map(v => {
-        v.of = typeof v.of === 'object' ? v.of : model.nodeById(v.of);
-        return v;
-    });
-    model.preview();
-    model.pose();
+    const action = counter < select ? mec.queue[select - 1] : mec.queue[select];
+    const step = counter < select ? action.value : action.previous
+    Object.entries(step).forEach(e => ref._model[action.list][action.idx][e[0]] = e[1]);
+
+    // Replace nodes given as Id with respective objects.
+    // The object itself can't be given to the payload, because of the
+    // altered prototype
+    function checkForNode(...node) {
+        node.filter(p => typeof step[p] === 'string')
+            .forEach(p => {
+                ref._model[action.list][action.idx][p] =
+                    ref._model.nodeById(step[p])
+            });
+    }
+    if (action.list === 'constraints') {
+        checkForNode('p1', 'p2')
+    }
+    if (action.list === 'views') {
+        checkForNode('of');
+    }
+
+    ref._model.preview();
+    ref._model.pose();
     ref.render();
 
-    selected = s;
+    counter = select;
 }
 
 store.subscribe(handleMecModelUpdate);
