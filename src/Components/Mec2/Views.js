@@ -7,7 +7,7 @@ export default function Views() {
     const head = ['show', 'of', 'as'];
     const dispatch = useDispatch();
 
-    function SanitizedCell({ elm, idx, prop: property }) {
+    function SanitizedCell({ elm, idx, property }) {
 
         function update(value, previous = elm[property]) {
             dispatch(mecAction.add({

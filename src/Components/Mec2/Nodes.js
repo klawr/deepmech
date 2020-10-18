@@ -48,7 +48,7 @@ export default function Nodes() {
         }
     });
 
-    function SanitizedCell({ prop: property, idx, elm }) {
+    function SanitizedCell({ property, idx, elm }) {
         function update(value, previous = elm[property]) {
             dispatch(mecAction.add({
                 list: 'nodes', idx,

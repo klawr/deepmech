@@ -7,7 +7,7 @@ export default function Constraints() {
     const head = ['id', 'p1', 'p2', 'len', 'ori'];
     const dispatch = useDispatch();
 
-    function SanitizedCell({ elm, idx, prop: property }) {
+    function SanitizedCell({ elm, idx, property }) {
         function update(value, previous = elm[property]) {
             dispatch(mecAction.add({
                 list: 'constraints', idx,
