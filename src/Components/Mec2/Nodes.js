@@ -4,13 +4,20 @@ import {
     AccordionDetails,
     AccordionSummary,
     Checkbox,
+    Grid,
 } from '@material-ui/core';
 import { MecTable, UpdateText } from '..';
 import { useDispatch } from 'react-redux';
 import { mecAction } from '../../Features';
+import MultiSelect from '../Utils/MultiSelect';
 
 export default function Nodes() {
-    const head = ['id', 'x', 'y', 'base'];
+    const [head, updateHead] = React.useState({
+        id: true,
+        x: true,
+        y: true,
+        base: true,
+    });
     const dispatch = useDispatch();
 
     React.useEffect(() => {
@@ -89,10 +96,13 @@ export default function Nodes() {
     return <Accordion>
         <AccordionSummary> nodes </AccordionSummary>
         <AccordionDetails>
-            <MecTable
-                SanitizedCell={SanitizedCell}
-                head={head}
-                list={mecElement._model.nodes} />
+            <Grid container direction="row">
+                <MultiSelect options={head} updateOptions={updateHead}/>
+                <MecTable
+                    SanitizedCell={SanitizedCell}
+                    head={Object.entries(head).filter(h => h[1]).map(h => h[0])}
+                    list={mecElement._model.nodes} />
+            </Grid>
         </AccordionDetails>
     </Accordion>
 }

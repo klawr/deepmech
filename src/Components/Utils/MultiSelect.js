@@ -1,16 +1,17 @@
 import React from 'react';
 
 import {
+    Button,
     FormControl,
-    FormLabel,
-    Checkbox,
     FormControlLabel,
+    Checkbox,
+    FormGroup,
     Menu,
 } from '@material-ui/core';
+import { KeyboardArrowDown } from '@material-ui/icons';
 
-export default function MultiSelect({selected, options, title, label, onChange}) {
+export default function MultiSelect({ options, updateOptions }) {
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const [value, setValue] = React.useState(selected || options[0]);
 
     function handleClose() {
         setAnchorEl(null);
@@ -20,31 +21,30 @@ export default function MultiSelect({selected, options, title, label, onChange})
         setAnchorEl(event.currentTarget);
     };
 
-    const handleChange = (event) => {
-        setValue(event.target.value);
-        onChange(event.target.value);
-        handleClose();
+    const handleChange = (event, label) => {
+        updateOptions({ ...options, [label]: event.target.checked });
     };
 
     return <div>
         <Button
-            style={{ textTransform: 'none' }}
+            size='small'
+            style={{ position: 'absolute', right: 0, top: "1em" }}
             onClick={handleClick}>
-            {label || value}
+            <KeyboardArrowDown />
         </Button>
         <Menu anchorEl={anchorEl}
             open={Boolean(anchorEl)}
             onClose={handleClose}>
             <FormControl>
-                <FormLabel style={{ padding: 10 }}>{title}</FormLabel>
-                <RadioGroup value={value} onChange={handleChange}>
-                    {options.map((o, i) =>
-                        <FormControlLabel
-                            key={i}
-                            style={{ paddingLeft: 10, paddingRight: 10 }}
-                            value={o} label={o}
-                            control={<Radio />} />)}
-                </RadioGroup>
+                <FormGroup>
+                    {Object.entries(options).map((o, i) =>
+                        <FormControlLabel key={i} style={{ padding: 10 }} label={o[0]}
+                            control={<Checkbox
+                                style={{ paddingLeft: 10, paddingRight: 10 }}
+                                onChange={(e) => handleChange(e, o[0])}
+                                checked={o[1]} label={o[0]} />}
+                        />)}
+                </FormGroup>
             </FormControl>
         </Menu>
     </div>

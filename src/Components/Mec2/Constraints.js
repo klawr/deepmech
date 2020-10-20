@@ -3,13 +3,21 @@ import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
+    Grid,
 } from '@material-ui/core';
 import { MecTable, RadioSelect, UpdateText, ObjectMenu } from '..';
 import { useDispatch } from 'react-redux';
 import { mecAction } from '../../Features';
+import MultiSelect from '../Utils/MultiSelect';
 
 export default function Constraints() {
-    const head = ['id', 'p1', 'p2', 'len', 'ori'];
+    const [head, updateHead] = React.useState({
+        id: true,
+        p1: true,
+        p2: true,
+        len: true,
+        ori: true,
+    });
     const dispatch = useDispatch();
 
     function SanitizedCell({ elm, idx, property }) {
@@ -65,10 +73,13 @@ export default function Constraints() {
     return <Accordion>
         <AccordionSummary> constraints </AccordionSummary>
         <AccordionDetails>
-            <MecTable
-                SanitizedCell={SanitizedCell}
-                head={head}
-                list={mecElement._model.constraints} />
+            <Grid container direction="row">
+                <MultiSelect options={head} updateOptions={updateHead} />
+                <MecTable
+                    SanitizedCell={SanitizedCell}
+                    head={Object.entries(head).filter(h => h[1]).map(h => h[0])}
+                    list={mecElement._model.constraints} />
+            </Grid>
         </AccordionDetails>
     </Accordion>
 

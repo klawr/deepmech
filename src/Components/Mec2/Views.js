@@ -3,13 +3,19 @@ import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
+    Grid,
 } from '@material-ui/core';
 import { MecTable, RadioSelect, handleMecUpdate } from '..';
 import { useDispatch } from 'react-redux';
 import { mecAction } from '../../Features';
+import MultiSelect from '../Utils/MultiSelect';
 
 export default function Views() {
-    const head = ['show', 'of', 'as'];
+    const [head, updateHead] = React.useState({
+        show: true,
+        of: true,
+        as: true,
+    });
     const dispatch = useDispatch();
 
     function SanitizedCell({ elm, idx, property }) {
@@ -51,10 +57,13 @@ export default function Views() {
     return <Accordion>
         <AccordionSummary> views </AccordionSummary>
         <AccordionDetails>
-            <MecTable
-                SanitizedCell={SanitizedCell}
-                head={head}
-                list={mecElement._model.views} />
+            <Grid container direction="row">
+                <MultiSelect options={head} updateOptions={updateHead} />
+                <MecTable
+                    SanitizedCell={SanitizedCell}
+                    head={Object.entries(head).filter(h => h[1]).map(h => h[0])}
+                    list={mecElement._model.views} />
+            </Grid>
         </AccordionDetails>
     </Accordion>
 }
