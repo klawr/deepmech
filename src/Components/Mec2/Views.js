@@ -1,4 +1,9 @@
 import React from 'react';
+import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+} from '@material-ui/core';
 import { MecTable, RadioSelect, handleMecUpdate } from '..';
 import { useDispatch } from 'react-redux';
 import { mecAction } from '../../Features';
@@ -43,8 +48,13 @@ export default function Views() {
         }
     }
 
-    return <MecTable
-        SanitizedCell={SanitizedCell}
-        head={head}
-        list={mecElement._model.views} />
+    return <Accordion>
+        <AccordionSummary> views </AccordionSummary>
+        <AccordionDetails>
+            <MecTable
+                SanitizedCell={SanitizedCell}
+                head={head}
+                list={mecElement._model.views} />
+        </AccordionDetails>
+    </Accordion>
 }

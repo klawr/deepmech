@@ -1,5 +1,10 @@
 import React from 'react';
-import { Checkbox } from '@material-ui/core';
+import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    Checkbox,
+} from '@material-ui/core';
 import { MecTable, UpdateText } from '..';
 import { useDispatch } from 'react-redux';
 import { mecAction } from '../../Features';
@@ -81,8 +86,13 @@ export default function Nodes() {
         }
     }
 
-    return <MecTable
-        SanitizedCell={SanitizedCell}
-        head={head}
-        list={mecElement._model.nodes} />
+    return <Accordion>
+        <AccordionSummary> nodes </AccordionSummary>
+        <AccordionDetails>
+            <MecTable
+                SanitizedCell={SanitizedCell}
+                head={head}
+                list={mecElement._model.nodes} />
+        </AccordionDetails>
+    </Accordion>
 }

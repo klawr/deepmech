@@ -1,4 +1,9 @@
 import React from 'react';
+import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+} from '@material-ui/core';
 import { MecTable, RadioSelect, UpdateText, ObjectMenu } from '..';
 import { useDispatch } from 'react-redux';
 import { mecAction } from '../../Features';
@@ -57,8 +62,14 @@ export default function Constraints() {
         }
     }
 
-    return <MecTable
-        SanitizedCell={SanitizedCell}
-        head={head}
-        list={mecElement._model.constraints} />
+    return <Accordion>
+        <AccordionSummary> constraints </AccordionSummary>
+        <AccordionDetails>
+            <MecTable
+                SanitizedCell={SanitizedCell}
+                head={head}
+                list={mecElement._model.constraints} />
+        </AccordionDetails>
+    </Accordion>
+
 }
