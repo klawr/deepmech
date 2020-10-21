@@ -7,16 +7,18 @@ import {
     Grid,
 } from '@material-ui/core';
 import { MecTable, UpdateText, MultiSelect } from '..';
-import { useDispatch } from 'react-redux';
-import { mecAction } from '../../Features';
+import { useDispatch, useSelector } from 'react-redux';
+import { mecAction, UiAction, UiSelect } from '../../Features';
 
 export default function Nodes() {
-    const [head, updateHead] = React.useState({
-        id: true,
-        x: true,
-        y: true,
-        base: true,
-    });
+    const head = useSelector(UiSelect).properties.nodes;
+    function updateHead(e, arg) {
+        dispatch(UiAction.updateProperty({
+            property: 'nodes',
+            label: arg,
+            value: e.target.checked,
+        }));
+    }
     const dispatch = useDispatch();
 
     React.useEffect(() => {

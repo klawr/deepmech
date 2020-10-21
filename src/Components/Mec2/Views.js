@@ -6,15 +6,18 @@ import {
     Grid,
 } from '@material-ui/core';
 import { MecTable, RadioSelect, MultiSelect } from '..';
-import { useDispatch } from 'react-redux';
-import { mecAction } from '../../Features';
+import { useDispatch, useSelector } from 'react-redux';
+import { mecAction, UiAction, UiSelect } from '../../Features';
 
 export default function Views() {
-    const [head, updateHead] = React.useState({
-        show: true,
-        of: true,
-        as: true,
-    });
+    const head = useSelector(UiSelect).properties.views;
+    function updateHead(e, arg) {
+        dispatch(UiAction.updateProperty({
+            property: 'views',
+            label: arg,
+            value: e.target.checked,
+        }));
+    }
     const dispatch = useDispatch();
 
     function SanitizedCell({ elm, idx, property }) {

@@ -6,17 +6,18 @@ import {
     Grid,
 } from '@material-ui/core';
 import { MecTable, RadioSelect, UpdateText, ObjectMenu, MultiSelect } from '..';
-import { useDispatch } from 'react-redux';
-import { mecAction } from '../../Features';
+import { useDispatch, useSelector } from 'react-redux';
+import { mecAction, UiAction, UiSelect } from '../../Features';
 
 export default function Constraints() {
-    const [head, updateHead] = React.useState({
-        id: true,
-        p1: true,
-        p2: true,
-        len: true,
-        ori: true,
-    });
+    const head = useSelector(UiSelect).properties.constraints;
+    function updateHead(e, arg) {
+        dispatch(UiAction.updateProperty({
+            property: 'constraints',
+            label: arg,
+            value: e.target.checked,
+        }));
+    }
     const dispatch = useDispatch();
 
     function SanitizedCell({ elm, idx, property }) {

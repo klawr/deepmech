@@ -21,10 +21,6 @@ export default function MultiSelect({ options, updateOptions }) {
         setAnchorEl(event.currentTarget);
     };
 
-    const handleChange = (event, label) => {
-        updateOptions({ ...options, [label]: event.target.checked });
-    };
-
     return <div>
         <Button
             size='small'
@@ -41,7 +37,7 @@ export default function MultiSelect({ options, updateOptions }) {
                         <FormControlLabel key={i} style={{ padding: 10 }} label={o[0]}
                             control={<Checkbox
                                 style={{ paddingLeft: 10, paddingRight: 10 }}
-                                onChange={(e) => handleChange(e, o[0])}
+                                onChange={(e) => updateOptions(e, o[0])}
                                 checked={o[1]} label={o[0]} />}
                         />)}
                 </FormGroup>
