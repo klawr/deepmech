@@ -11,15 +11,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { mecAction, UiAction, UiSelect } from '../../Features';
 
 export default function Nodes() {
-    const head = useSelector(UiSelect).properties.nodes;
+    const name = 'nodes';
+    const dispatch = useDispatch();
+    const head = useSelector(UiSelect).properties[name];
     function updateHead(e, arg) {
         dispatch(UiAction.updateProperty({
-            property: 'nodes',
+            property: name,
             label: arg,
             value: e.target.checked,
         }));
     }
-    const dispatch = useDispatch();
 
     React.useEffect(() => {
         let previous;
@@ -43,7 +44,7 @@ export default function Nodes() {
                 return;
             }
             dispatch(add({
-                list: 'nodes', idx: mecElement._model.nodes.indexOf(selection),
+                list: name, idx: mecElement._model[name].indexOf(selection),
                 value: { ...value }, previous: { ...previous }
             }));
         }
@@ -64,7 +65,7 @@ export default function Nodes() {
     function SanitizedCell({ property, idx, elm }) {
         function update(value, previous = elm[property]) {
             dispatch(mecAction.add({
-                list: 'nodes', idx,
+                list: name, idx,
                 value: { [property]: value },
                 previous: { [property]: previous }
             }));
@@ -95,14 +96,14 @@ export default function Nodes() {
     }
 
     return <Accordion>
-        <AccordionSummary> nodes </AccordionSummary>
+        <AccordionSummary> {name} </AccordionSummary>
         <AccordionDetails>
             <Grid container direction="row">
                 <MultiSelect options={head} updateOptions={updateHead}/>
                 <MecTable
                     SanitizedCell={SanitizedCell}
                     head={Object.entries(head).filter(h => h[1]).map(h => h[0])}
-                    list={mecElement._model.nodes} />
+                    list={mecElement._model[name]} />
             </Grid>
         </AccordionDetails>
     </Accordion>

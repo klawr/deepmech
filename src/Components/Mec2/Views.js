@@ -10,21 +10,22 @@ import { useDispatch, useSelector } from 'react-redux';
 import { mecAction, UiAction, UiSelect } from '../../Features';
 
 export default function Views() {
-    const head = useSelector(UiSelect).properties.views;
+    const name = 'views';
+    const dispatch = useDispatch();
+    const head = useSelector(UiSelect).properties[name];
     function updateHead(e, arg) {
         dispatch(UiAction.updateProperty({
-            property: 'views',
+            property: name,
             label: arg,
             value: e.target.checked,
         }));
     }
-    const dispatch = useDispatch();
 
     function SanitizedCell({ elm, idx, property }) {
 
         function update(value, previous = elm[property]) {
             dispatch(mecAction.add({
-                list: 'views', idx,
+                list: name, idx,
                 value: { [property]: value },
                 previous: { [property]: previous }
             }));
@@ -57,14 +58,14 @@ export default function Views() {
     }
 
     return <Accordion>
-        <AccordionSummary> views </AccordionSummary>
+        <AccordionSummary> {name} </AccordionSummary>
         <AccordionDetails>
             <Grid container direction="row">
                 <MultiSelect options={head} updateOptions={updateHead} />
                 <MecTable
                     SanitizedCell={SanitizedCell}
                     head={Object.entries(head).filter(h => h[1]).map(h => h[0])}
-                    list={mecElement._model.views} />
+                    list={mecElement._model[name]} />
             </Grid>
         </AccordionDetails>
     </Accordion>
