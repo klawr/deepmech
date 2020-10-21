@@ -5,10 +5,9 @@ import {
     AccordionSummary,
     Grid,
 } from '@material-ui/core';
-import { MecTable, RadioSelect, UpdateText, ObjectMenu } from '..';
+import { MecTable, RadioSelect, UpdateText, ObjectMenu, MultiSelect } from '..';
 import { useDispatch } from 'react-redux';
 import { mecAction } from '../../Features';
-import MultiSelect from '../Utils/MultiSelect';
 
 export default function Constraints() {
     const [head, updateHead] = React.useState({

@@ -5,10 +5,9 @@ import {
     AccordionSummary,
     Grid,
 } from '@material-ui/core';
-import { MecTable, RadioSelect, handleMecUpdate } from '..';
+import { MecTable, RadioSelect, MultiSelect } from '..';
 import { useDispatch } from 'react-redux';
 import { mecAction } from '../../Features';
-import MultiSelect from '../Utils/MultiSelect';
 
 export default function Views() {
     const [head, updateHead] = React.useState({

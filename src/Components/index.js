@@ -6,6 +6,7 @@ export { default as DeepmechControl } from './Deepmech/DeepmechControl';
 
 export { default as ListButton } from './Utils/ListButton';
 export { default as RadioSelect } from './Utils/RadioSelect';
+export { default as MultiSelect } from './Utils/MultiSelect';
 export { default as UpdateText } from './Utils/UpdateText';
 export { default as ObjectMenu } from './Utils/ObjectMenu';
 

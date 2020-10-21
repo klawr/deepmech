@@ -6,10 +6,9 @@ import {
     Checkbox,
     Grid,
 } from '@material-ui/core';
-import { MecTable, UpdateText } from '..';
+import { MecTable, UpdateText, MultiSelect } from '..';
 import { useDispatch } from 'react-redux';
 import { mecAction } from '../../Features';
-import MultiSelect from '../Utils/MultiSelect';
 
 export default function Nodes() {
     const [head, updateHead] = React.useState({
