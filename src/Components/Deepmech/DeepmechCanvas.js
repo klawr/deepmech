@@ -36,7 +36,10 @@ function handleInteractor(ctx, mode, placeholder) {
     function render() {
         g2().clr().exe(ctx);
         Object.values(placeholder).forEach(q => { q.exe(ctx); });
-    };
+        if (mode === 'camera') {
+            ctx.drawImage(_video, 0, 0, ctx.canvas.width, ctx.canvas.height);
+        };
+    }
 
     function pointerdown(e) {
         switch (mode) {
@@ -80,30 +83,19 @@ function handleInteractor(ctx, mode, placeholder) {
     }
 
     let _video = undefined;
+    const selectCamera = document.createElement('select');
     function startCamera() {
         _video = document.createElement('video');
-        _video.width = element._ctx.canvas.width;
-        _video.height = element._ctx.canvas.height;
+        _video.width = ctx.canvas.width;
+        _video.height = ctx.canvas.height;
         _video.autoplay = true;
 
         navigator.mediaDevices.getUserMedia({
-            video: { deviceId: selectCam.value ? { exact: selectCam.value } : undefined }
+            video: { deviceId: selectCamera.value ? { exact: selectCamera.value } : undefined }
         }).then(s => {
             _video.srcObject = s;
             return navigator.mediaDevices.enumerateDevices();
-        }).then(gotCamera);
-
-        function gotCamera() {
-            let image = tf.browser.fromPixels(_video, 1);
-            image = tf.cast(tf.greater(image, 128), 'float32');
-            const sum = tf.sum(image);
-            const threshold = tf.div(tf.prod(image.shape), 2);
-            if (tf.greater(sum, threshold).arraySync()) {
-                image = tf.abs(tf.sub(image, 1));
-            }
-            tf.browser.toPixels(image, element._ctx.canvas);
-            image = tf.expandDims(image);
-        }
+        });
     }
 
     function tick() {
