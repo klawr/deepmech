@@ -33,6 +33,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@reduxjs/toolkit": "^1.4.0",
+    "@tensorflow/tfjs": "^2.6.0",
     "babel-loader": "^8.1.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
