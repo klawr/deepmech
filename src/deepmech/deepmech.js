@@ -1,11 +1,11 @@
 
 import * as tf from '@tensorflow/tfjs';
-import { NodeModel, ConstraintModel } from '.';
+import NodeModel from './NodeModel';
+import ConstraintModel from './ConstraintsModel';
 
 export const deepmech = {
     detector: {
         nodeDetector: (async () => {
-            console.log('hi')
             /**
              * Transform a network into a fully convolutional network.
              * @method
@@ -99,7 +99,7 @@ export const deepmech = {
                 return mostAccurate;
             }
 
-            const nodeDetector = await this.nodeDetector;
+            const nodeDetector = await deepmech.detector.nodeDetector;
             const prediction = nodeDetector.predict(image, { batch_size: 1 }).arraySync()[0];
             const nodes = removeOverlaps(prediction
                 .flatMap(extractInterestingInfo)
@@ -194,18 +194,20 @@ export const deepmech = {
          * @returns {object} Predicted constraints on crops.
          *                   Constraints are only predicted if they point from upper left to bottom right
          */
-        async detectConstraints(crops) {
-            const constraintDetector = await this.constraintDetector;
-            return constraintDetector.predict(crops, { batch_size: crops.shape[0] })
+        detectConstraints: async (crops) => {
+            const constraintDetector = await deepmech.detector.constraintDetector;
+            return constraintDetector
+                .predict(crops, { batch_size: crops.shape[0] })
                 .arraySync()
                 .map(c => c.indexOf(Math.max(...c)));
         }
     },
 
-    async predict (element, canvas) {
+    predict: async () => {
+        const element = mecElement;
         const model = element._model;
 
-        let tensor = tf.browser.fromPixels(canvas, 1);
+        let tensor = tf.browser.fromPixels(document.getElementById('deepmechCanvas'), 1);
         tensor = tensor.div(255).expandDims();
 
         const nodes = await deepmech.detector.detectNodes(tensor);

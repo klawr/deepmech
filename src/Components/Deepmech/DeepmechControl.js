@@ -18,7 +18,7 @@ export default function DeepmechControl() {
     const dispatch = useDispatch();
 
     const UI = useSelector(UiSelect);
-    const deepmech = useSelector(deepmechSelect);
+    const active = useSelector(deepmechSelect);
 
     function Toggle(elm, value, tooltip) {
         return <ToggleButton value={value}>
@@ -35,10 +35,6 @@ export default function DeepmechControl() {
         }
     }
 
-    function predict() {
-        console.log('hi');
-    }
-
     return <List>
         {UI.deepmech &&
             <div>
@@ -46,7 +42,7 @@ export default function DeepmechControl() {
                     <ToggleButtonGroup
                         exclusive
                         orientation="vertical"
-                        value={deepmech.mode}
+                        value={active.mode}
                         onChange={(e, val) => val && dispatch(deepmechAction.changeMode(val))}>
                         {Toggle(<Create />, "draw", "Draw")}
                         {Toggle(<PanTool />, "drag", "Drag")}
@@ -55,7 +51,8 @@ export default function DeepmechControl() {
                     </ToggleButtonGroup>
                 </ListItem>
                 <Divider />
-                <ListButton onClick={predict} tooltip="predict" >
+                <ListButton
+                    onClick={deepmech.predict} tooltip="predict" >
                     <Done />
                 </ListButton>
             </div>}

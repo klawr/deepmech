@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { deepmechSelect, UiAction } from '../../Features';
+import { deepmechSelect, deepmechAction, UiAction } from '../../Features';
 
 export default function DeepmechCanvas({ classes, placeholder }) {
     const deepmech = useSelector(deepmechSelect);
@@ -15,6 +15,7 @@ export default function DeepmechCanvas({ classes, placeholder }) {
     });
 
     return <canvas
+        id="deepmechCanvas"
         className={classes.drawCanvas}
         width={globalThis.innerWidth} height={globalThis.innerHeight}
         ref={canvasRef} />
