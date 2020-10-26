@@ -12,7 +12,7 @@ import {
     mecAction
 } from '../../Features';
 import DeepmechIcon from './DeepmechIcon';
-import { deepmech } from '../../deepmech/index';
+import { deepmech } from '../../deepmech';
 
 export default function DeepmechControl() {
     const dispatch = useDispatch();
@@ -51,8 +51,7 @@ export default function DeepmechControl() {
                     </ToggleButtonGroup>
                 </ListItem>
                 <Divider />
-                <ListButton
-                    onClick={deepmech.predict} tooltip="predict" >
+                <ListButton onClick={deepmech.predict} tooltip="predict" >
                     <Done />
                 </ListButton>
             </div>}
