@@ -12,6 +12,7 @@ import {
     mecAction
 } from '../../Features';
 import DeepmechIcon from './DeepmechIcon';
+import { deepmech } from '../../deepmech';
 
 export default function DeepmechControl() {
     const dispatch = useDispatch();
