@@ -1,9 +1,11 @@
 
 import * as tf from '@tensorflow/tfjs';
+import { NodeModel, ConstraintModel } from '.';
 
 export const deepmech = {
     detector: {
         nodeDetector: (async () => {
+            console.log('hi')
             /**
              * Transform a network into a fully convolutional network.
              * @method
@@ -66,7 +68,6 @@ export const deepmech = {
             return toFullyConv(await tf.loadLayersModel(new NodeModel()))
         })(),
 
-
         constraintDetector: (async () => {
             return await tf.loadLayersModel(new ConstraintModel());
         })(),
@@ -76,7 +77,7 @@ export const deepmech = {
          * @param {object} image (tensor) which contains the image on the canvas. 
          * @returns {object} predicted nodes of the model.
          */
-        async detectNodes(image) {
+        detectNodes: async (image) => {
             function extractInterestingInfo(pred, idx) {
                 const y = idx * 4;
                 return pred.flatMap((inner, i) => {
@@ -201,7 +202,7 @@ export const deepmech = {
         }
     },
 
-    predict: async (element, canvas) => {
+    async predict (element, canvas) {
         const model = element._model;
 
         let tensor = tf.browser.fromPixels(canvas, 1);

@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Divider, List, ListItem, Tooltip } from '@material-ui/core';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab'
-import { CameraAlt, Create, Delete, PanTool, RotateLeft } from '@material-ui/icons';
+import { CameraAlt, Create, Delete, Done, PanTool, RotateLeft } from '@material-ui/icons';
 import { ListButton } from '..';
 import {
     UiSelect,
@@ -12,7 +12,7 @@ import {
     mecAction
 } from '../../Features';
 import DeepmechIcon from './DeepmechIcon';
-import { deepmech } from '../../deepmech';
+import { deepmech } from '../../deepmech/index';
 
 export default function DeepmechControl() {
     const dispatch = useDispatch();
@@ -35,6 +35,10 @@ export default function DeepmechControl() {
         }
     }
 
+    function predict() {
+        console.log('hi');
+    }
+
     return <List>
         {UI.deepmech &&
             <div>
@@ -51,6 +55,9 @@ export default function DeepmechControl() {
                     </ToggleButtonGroup>
                 </ListItem>
                 <Divider />
+                <ListButton onClick={predict} tooltip="predict" >
+                    <Done />
+                </ListButton>
             </div>}
         <ListButton
             onClick={toggleDeepmech}
