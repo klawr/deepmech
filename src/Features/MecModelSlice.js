@@ -1,6 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const ref = mecElement;
+function setRefDarkmode(bool) {
+    ref._show.darkmode = bool;
+    ref._ctx.canvas.style.backgroundColor = bool ? '#777' : '#eee';
+    return bool;
+}
+
 
 export const slice = createSlice({
     name: 'MecModel',
@@ -9,7 +15,9 @@ export const slice = createSlice({
         selected: 0,
         id: ref._model.id,
         pausing: ref.pausing,
-        darkmode: ref._show.darkmode,
+        darkmode: setRefDarkmode(window.matchMedia ?
+            window.matchMedia('(prefers-color-scheme: dark)').matches ?
+                true : false : false),
         gravity: ref.gravity,
     },
     reducers: {
@@ -47,10 +55,9 @@ export const slice = createSlice({
             ref.pausing = true;
             state.pausing = ref.pausing;
         },
-        toggleDarkmode: (state) => {
-            state.darkmode = !state.darkmode;
-            ref._show.darkmode = state.darkmode;
-            ref._ctx.canvas.style.backgroundColor = state.darkmode ? '#777' : '#eee';
+        darkmode: (state, action) => {
+            state.darkmode = action.payload;
+            setRefDarkmode(action.payload);
         },
         toggleGravity: (state) => {
             ref.gravity = !state.gravity;
