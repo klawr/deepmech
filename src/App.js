@@ -55,28 +55,31 @@ store.subscribe(handleMecModelUpdate);
 // Let g2 beg simulate view (beg does not respect cartesian)
 function begSimView({ x = 0, y = 0, scl = 1, cartesian = false }) {
     return {
-        matrix: (cartesian ?
-            [scl, 0, 0, -scl, x, ref._ctx.canvas.height - 1 - y] :
-            [scl, 0, 0, scl, x, y])
+        matrix() {
+            return (cartesian ?
+                [scl, 0, 0, -scl, x, ref._ctx.canvas.height - 1 - y] :
+                [scl, 0, 0, scl, x, y])
+        }
     };
 };
+
+
+const placeholder = {
+    ply: g2(),
+    mec: g2().beg(begSimView(ref._interactor.view))
+        .use({
+            grp: () => ({
+                commands: ref._g.commands.filter(c =>
+                    ref._model.nodes.includes(c.a) ||
+                    ref._model.constraints.includes(c.a))
+            })
+        }).end(),
+    img: g2(),
+}
 
 function App() {
     const dispatch = useDispatch();
     const UI = useSelector(UiSelect);
-
-    const placeholder = {
-        ply: g2(),
-        mec: g2().beg(begSimView(ref._interactor.view))
-            .use({
-                grp: () => ({
-                    commands: ref._g.commands.filter(c =>
-                        ref._model.nodes.includes(c.a) ||
-                        ref._model.constraints.includes(c.a))
-                })
-            }).end(),
-        img: g2(),
-    }
 
     const classes = useStyle();
 
