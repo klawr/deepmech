@@ -53,16 +53,15 @@ function handleMecModelUpdate() {
 store.subscribe(handleMecModelUpdate);
 
 // Let g2 beg simulate view (beg does not respect cartesian)
-function begSimView({ x = 0, y = 0, scl = 1, cartesian = false }) {
+function begSimView(v) {
     return {
         matrix() {
-            return (cartesian ?
-                [scl, 0, 0, -scl, x, ref._ctx.canvas.height - 1 - y] :
-                [scl, 0, 0, scl, x, y])
+            return (v.cartesian ?
+                [v.scl, 0, 0, -v.scl, v.x, ref._ctx.canvas.height - 1 - v.y] :
+                [v.scl, 0, 0, v.scl, v.x, v.y])
         }
     };
 };
-
 
 const placeholder = {
     ply: g2(),
