@@ -4,7 +4,7 @@ import { Provider, useSelector, useDispatch } from 'react-redux';
 import { Grid } from '@material-ui/core';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
-import { store, UiSelect, UiAction } from './Features';
+import { store, UiSelect, UiAction, mecAction } from './Features';
 import { lightTheme, darkTheme, useStyle } from './style';
 import {
     DeepmechCanvas,
@@ -78,6 +78,7 @@ const placeholder = {
 
 function App() {
     const dispatch = useDispatch();
+    dispatch(mecAction.initialize());
     const UI = useSelector(UiSelect);
 
     const classes = useStyle();
