@@ -1,10 +1,11 @@
 import React from 'react';
-import { Accordion, AccordionDetails, AccordionSummary, Grid } from '@material-ui/core';
-import { Id, Nodes, Constraints, Views, UndoRedo } from '..';
-import { store } from '../../Features';
+import { Grid } from '@material-ui/core';
+import { Id, Nodes, Constraints, Views, UndoRedo, ListButton } from '..';
+import { store, mecSelect } from '../../Features';
 
 export default function MecProperties({ classes }) {
     const [, updateState] = React.useState();
+
     // TODO Check if change is related to Model? ...
     React.useEffect(() => store.subscribe(() => updateState({})));
 

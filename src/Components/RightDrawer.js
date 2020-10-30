@@ -1,12 +1,13 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Grid, List, SwipeableDrawer } from '@material-ui/core';
-import { ChevronRight, Lock, LockOpen } from '@material-ui/icons';
+import { Grid, List, SwipeableDrawer, Typography } from '@material-ui/core';
+import { ChevronRight, Label, Lock, LockOpen } from '@material-ui/icons';
 import { ListButton, MecProperties } from '.';
-import { UiAction, UiSelect } from '../Features';
+import { UiAction, UiSelect, mecSelect, mecAction } from '../Features';
 
 export default function RightDrawer({ classes }) {
     const dispatch = useDispatch();
+    const mec = useSelector(mecSelect);
     const right = useSelector(UiSelect).right;
 
     const [locked, toggleLock] = React.useState(globalThis.innerWidth > 1200);
@@ -25,6 +26,14 @@ export default function RightDrawer({ classes }) {
                     onClick={() => dispatch(UiAction.right(false))}
                     tooltip="Close drawer">
                     <ChevronRight />
+                </ListButton>
+                <ListButton tooltip="toggle node labels" onClick={() => dispatch(
+                    mecAction.toggleNodelabels(!mec.nodeLabels))}>
+                    <Label /> <Typography size="small">node</Typography>
+                </ListButton>
+                <ListButton tooltip="toggle constraint labels" onClick={() => dispatch(
+                    mecAction.toggleConstraintlabels(!mec.constraintLabels))}>
+                    <Label /> <Typography size="small">constraint</Typography>
                 </ListButton>
                 <ListButton
                     tooltip={(locked ? "Unlock" : "Lock") + " drawer"}
