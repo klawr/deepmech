@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Divider, List, ListItem, Tooltip } from '@material-ui/core';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab'
-import { CameraAlt, Create, Delete, PanTool, RotateLeft } from '@material-ui/icons';
+import { CameraAlt, Create, Delete, Done, PanTool, RotateLeft } from '@material-ui/icons';
 import { ListButton } from '..';
 import {
     UiSelect,
@@ -12,12 +12,13 @@ import {
     mecAction
 } from '../../Features';
 import DeepmechIcon from './DeepmechIcon';
+import { deepmech } from '../../deepmech';
 
 export default function DeepmechControl() {
     const dispatch = useDispatch();
 
     const UI = useSelector(UiSelect);
-    const deepmech = useSelector(deepmechSelect);
+    const active = useSelector(deepmechSelect);
 
     function Toggle(elm, value, tooltip) {
         return <ToggleButton value={value}>
@@ -41,7 +42,7 @@ export default function DeepmechControl() {
                     <ToggleButtonGroup
                         exclusive
                         orientation="vertical"
-                        value={deepmech.mode}
+                        value={active.mode}
                         onChange={(e, val) => val && dispatch(deepmechAction.changeMode(val))}>
                         {Toggle(<Create />, "draw", "Draw")}
                         {Toggle(<PanTool />, "drag", "Drag")}
@@ -50,6 +51,9 @@ export default function DeepmechControl() {
                     </ToggleButtonGroup>
                 </ListItem>
                 <Divider />
+                <ListButton onClick={deepmech.predict} tooltip="predict" >
+                    <Done />
+                </ListButton>
             </div>}
         <ListButton
             onClick={toggleDeepmech}

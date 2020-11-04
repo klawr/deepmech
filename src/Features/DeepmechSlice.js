@@ -8,7 +8,7 @@ export const slice = createSlice({
     reducers: {
         changeMode: (state, action) => {
             state.mode = action.payload;
-        },
+        }
     },
 });
 

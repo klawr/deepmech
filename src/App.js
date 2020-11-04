@@ -4,7 +4,7 @@ import { Provider, useSelector, useDispatch } from 'react-redux';
 import { Grid } from '@material-ui/core';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
-import { store, UiSelect, UiAction } from './Features';
+import { store, UiSelect, UiAction, mecAction } from './Features';
 import { lightTheme, darkTheme, useStyle } from './style';
 import {
     DeepmechCanvas,
@@ -53,30 +53,33 @@ function handleMecModelUpdate() {
 store.subscribe(handleMecModelUpdate);
 
 // Let g2 beg simulate view (beg does not respect cartesian)
-function begSimView({ x = 0, y = 0, scl = 1, cartesian = false }) {
+function begSimView(v) {
     return {
-        matrix: (cartesian ?
-            [scl, 0, 0, -scl, x, ref._ctx.canvas.height - 1 - y] :
-            [scl, 0, 0, scl, x, y])
+        matrix() {
+            return (v.cartesian ?
+                [v.scl, 0, 0, -v.scl, v.x, ref._ctx.canvas.height - 1 - v.y] :
+                [v.scl, 0, 0, v.scl, v.x, v.y])
+        }
     };
 };
 
+const placeholder = {
+    ply: g2(),
+    mec: g2().beg(begSimView(ref._interactor.view))
+        .use({
+            grp: () => ({
+                commands: ref._g.commands.filter(c =>
+                    ref._model.nodes.includes(c.a) ||
+                    ref._model.constraints.includes(c.a))
+            })
+        }).end(),
+    img: g2(),
+}
+
 function App() {
     const dispatch = useDispatch();
+    dispatch(mecAction.initialize());
     const UI = useSelector(UiSelect);
-
-    const placeholder = {
-        ply: g2(),
-        mec: g2().beg(begSimView(ref._interactor.view))
-            .use({
-                grp: () => ({
-                    commands: ref._g.commands.filter(c =>
-                        ref._model.nodes.includes(c.a) ||
-                        ref._model.constraints.includes(c.a))
-                })
-            }).end(),
-        img: g2(),
-    }
 
     const classes = useStyle();
 

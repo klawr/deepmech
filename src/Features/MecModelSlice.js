@@ -9,8 +9,13 @@ export const slice = createSlice({
         selected: 0,
         id: ref._model.id,
         pausing: ref.pausing,
-        darkmode: ref._show.darkmode,
         gravity: ref.gravity,
+        darkmode: window.matchMedia ?
+            window.matchMedia('(prefers-color-scheme: dark)').matches ?
+                true : false : false,
+        nodeLabels: true,
+        constraintLabels: true,
+        grid: false,
     },
     reducers: {
         add: (state, action) => {
@@ -47,9 +52,9 @@ export const slice = createSlice({
             ref.pausing = true;
             state.pausing = ref.pausing;
         },
-        toggleDarkmode: (state) => {
-            state.darkmode = !state.darkmode;
-            ref._show.darkmode = state.darkmode;
+        darkmode: (state, action) => {
+            ref._show.darkmode = action.payload;
+            state.darkmode = ref._show.darkmode;
             ref._ctx.canvas.style.backgroundColor = state.darkmode ? '#777' : '#eee';
         },
         toggleGravity: (state) => {
@@ -59,6 +64,25 @@ export const slice = createSlice({
         updateId: (state, action) => {
             ref._model.id = action.payload;
             state.id = ref._model.id;
+        },
+        toggleNodelabels: (state, action) => {
+            ref._show.nodeLabels = action.payload;
+            state.nodeLabels = ref._show.nodeLabels;
+        },
+        toggleConstraintlabels: (state, action) => {
+            ref._show.constraintLabels = action.payload;
+            state.constraintLabels = ref._show.constraintLabels;
+        },
+        toggleGrid: (state, action) => {
+            ref.grid = action.payload;
+            state.grid = ref.grid;
+        },
+        initialize: (state) => {
+            ref._show.darkmode = state.darkmode;
+            ref._ctx.canvas.style.backgroundColor = state.darkmode ? '#777' : '#eee';
+            ref._show.nodeLabels = state.nodeLabels;
+            ref._show.constraintLabels = state.constraintLabels;
+            ref.grid = state.grid;
         }
     },
 });

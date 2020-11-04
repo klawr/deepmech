@@ -1,26 +1,34 @@
 import React from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { deepmechSelect, UiAction } from '../../Features';
+import { deepmechSelect, mecSelect, mecAction, UiAction } from '../../Features';
 
 export default function DeepmechCanvas({ classes, placeholder }) {
     const deepmech = useSelector(deepmechSelect);
+    const mec = useSelector(mecSelect);
 
     const dispatch = useDispatch();
     const canvasRef = React.useRef(null);
     React.useEffect(() => {
-        const ctx = canvasRef.current.getContext('2d');
+        const [nl, cl] = [mec.nodeLabels, mec.constraintLabels];
+        dispatch(mecAction.toggleNodelabels(false));
+        dispatch(mecAction.toggleConstraintlabels(false));
         dispatch(UiAction.right(false));
-        return handleInteractor(ctx, deepmech.mode, placeholder);
-    });
+        const ctx = canvasRef.current.getContext('2d');
+        return handleInteractor(ctx, deepmech.mode, placeholder, () => {
+            dispatch(mecAction.toggleNodelabels(nl));
+            dispatch(mecAction.toggleConstraintlabels(cl));
+        });
+    }, [deepmech.mode]);
 
     return <canvas
+        id="deepmechCanvas"
         className={classes.drawCanvas}
         width={globalThis.innerWidth} height={globalThis.innerHeight}
         ref={canvasRef} />
 }
 
-function handleInteractor(ctx, mode, placeholder) {
+function handleInteractor(ctx, mode, placeholder, fn) {
     const interactor = canvasInteractor.create(ctx, {});
     canvasInteractor.add(interactor);
     const selector = g2.selector(interactor.evt);
@@ -125,5 +133,7 @@ function handleInteractor(ctx, mode, placeholder) {
     return () => {
         Object.entries(o).forEach(e => interactor.remove(...e));
         canvasInteractor.remove(interactor);
+
+        fn();
     };
 }

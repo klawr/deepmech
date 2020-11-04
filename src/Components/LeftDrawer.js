@@ -33,7 +33,7 @@ export default function LeftDrawer({ classes, mecReset }) {
         <List className={classes.listBottom}>
             <ListButton
                 onClick={() => {
-                    dispatch(mecAction.toggleDarkmode(!selectedDarkmode));
+                    dispatch(mecAction.darkmode(!selectedDarkmode));
                     dispatch(UiAction.darkmode(!selectedDarkmode));
                 }}
                 tooltip="Toggle dark mode">
