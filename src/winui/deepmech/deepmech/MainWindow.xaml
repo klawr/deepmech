@@ -9,7 +9,6 @@
     xmlns:controls="using:Microsoft.UI.Xaml.Controls">
 
     <Grid>
-
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -19,9 +18,8 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <controls:WebView2 x:Name="MyWebView"  Grid.Row="1" Grid.ColumnSpan="2" 
-        Source="https://deepmech.klawr.de" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-
+        <controls:WebView2 x:Name="deepmechWebView"  Grid.Row="1" Grid.ColumnSpan="2" 
+            Source="http://localhost:8001" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
     </Grid>
 
 </Window>
