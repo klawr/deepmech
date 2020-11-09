@@ -29,6 +29,11 @@ export default function DeepmechControl() {
     }
 
     function toggleDeepmech() {
+        // If the application is run in the WinUI environment this will
+        // toggle the respective UI Elements
+        window.chrome?.webview?.postMessage(
+            JSON.stringify({ deepmech: !UI.deepmech }));
+
         dispatch(UiAction.deepmech(!UI.deepmech));
         if (UI.deepmech) {
             dispatch(mecAction.pause);
