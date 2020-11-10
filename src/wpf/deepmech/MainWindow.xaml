@@ -5,13 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:deepmech"
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        xmlns:controls="clr-namespace:Microsoft.Toolkit.Wpf.UI.Controls;assembly=Microsoft.Toolkit.Wpf.UI.Controls"
         mc:Ignorable="d"
-        Title="MainWindow"
-        Height="450"
-        Width="800"
->
-	<DockPanel>
-		<wv2:WebView2 Name="deepmechWebView" Source="http://localhost:8001"/>
-	</DockPanel>
-</Window>
+        Title="MainWindow">
 
+    <Grid>
+        <wv2:WebView2 Width="auto" Name="deepmechWebView" Source="http://localhost:8001"/>
+
+        <StackPanel>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+                <controls:InkToolbar InitialControls="PensOnly" TargetInkCanvas="{x:Reference Name=deepmechCanvas}" />
+                <Button Click="Exit_Deepmech" Content="Exit deepmech"/>
+            </StackPanel>
+            <controls:InkCanvas Height="1000" Width="auto" Name="deepmechCanvas" />
+        </StackPanel>
+    </Grid>
+</Window>
