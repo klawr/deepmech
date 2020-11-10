@@ -6,6 +6,7 @@
     <UseWPF>true</UseWPF>
     <Platforms>AnyCPU;x64</Platforms>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>deepmech.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
