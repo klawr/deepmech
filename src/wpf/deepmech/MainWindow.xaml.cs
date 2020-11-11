@@ -26,7 +26,6 @@ namespace deepmech
             InitializeComponent();
             deepmechWebView.Source = URL;
             InitializeAsync();
-            // Set supported inking device types.
             deepmechCanvas.InkPresenter.InputDeviceTypes = CoreInputDeviceTypes.Mouse | CoreInputDeviceTypes.Pen;
         }
 
@@ -43,11 +42,8 @@ namespace deepmech
 
         void ProcessWebMessage(object sender, CoreWebView2WebMessageReceivedEventArgs args)
         {
-            // Important to validate that the Uri is what we expect from that webview.
-            string uriAsString = deepmechWebView.Source.ToString(); //sender.Source.ToString();
-
             // If the source is not validated, don't process the message.
-            if (args.Source != uriAsString)
+            if (args.Source != deepmechWebView.Source.ToString()) //sender.Source.ToString()
             {
                 return;
             }
@@ -56,7 +52,6 @@ namespace deepmech
             {
                 var message = System.Text.Json.JsonSerializer.Deserialize<
                 System.Collections.Generic.Dictionary<string, string>>(args.TryGetWebMessageAsString());
-
 
                 // Toggle canvas if deepmech is active
                 deepmechActive = message?["deepmech"] == "true";
@@ -70,14 +65,11 @@ namespace deepmech
         // This is not as described in
         // https://docs.microsoft.com/en-us/microsoft-edge/webview2/gettingstarted/winforms#step-8---communication-between-host-and-web-content
         // But it does not work that way ¯\_(ツ)_/¯
-        private string webviewPlaceholder(string message) => "window.webviewEventListenerPlaceholder(" + message +")";
+        private string webviewPlaceholder(string message) => "window.webviewEventListenerPlaceholder(" + message + ")";
 
         private void Exit_Deepmech(object sender, RoutedEventArgs e)
         {
-            // Please note that false is no string here...
             deepmechWebView.ExecuteScriptAsync(webviewPlaceholder("{deepmech: false}"));
-
-            //deepmechWebView.ExecuteScriptAsync("window.webviewEventListenerPlaceholder('{\"deepmech\": false}')");
         }
     }
 }
