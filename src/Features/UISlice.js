@@ -39,6 +39,10 @@ export const slice = createSlice({
         },
         deepmech: (state, action) => {
             state.deepmech = action.payload;
+            // If the application is run in the WinUI environment this will
+            // toggle the respective UI Elements
+            window.chrome?.webview?.postMessage(
+                JSON.stringify({ deepmech: "" + state.deepmech }));
         },
         darkmode: (state, action) => {
             state.darkmode = action.payload;
