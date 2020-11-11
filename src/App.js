@@ -30,8 +30,8 @@ function handleMecModelUpdate() {
             ref._model[action.list][action.idx][e[0]] = e[1]
         });
     } else if (action.idx === 'add') {
-        if (counter < select) {
-            if (action.list === 'nodes') {
+        if (action.list === 'nodes') {
+            if (counter < select) {
                 const node = { ...step };
                 if (ref._model.nodeById(node.id)) {
                     console.warn(`Can not create node.\nid "${node.id}" is already taken.`);
@@ -40,11 +40,12 @@ function handleMecModelUpdate() {
                 mec.node.extend(node);
                 ref._model.addNode(node);
                 node.init(ref._model);
-            } else if (action.list === 'constraints') {
-                console.log('Not implemented');
             }
-        } else {
-            ref._model.removeNode(ref._model.nodeById(action.value.id));
+            else {
+                ref._model.removeNode(ref._model.nodeById(action.value.id));
+            }
+        } else if (action.list === 'constraints') {
+            console.log('Not implemented');
         }
         ref._model.draw(mecElement._g);
     }
