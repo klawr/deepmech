@@ -43,7 +43,7 @@ export default function Nodes() {
                 previous = undefined;
                 return;
             }
-            dispatch(add({
+            dispatch(mecAction.add({
                 list: name, idx: mecElement._model[name].indexOf(selection),
                 value: { ...value }, previous: { ...previous }
             }));
