@@ -1,14 +1,8 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
-import { Id, Nodes, Constraints, Views, UndoRedo, ListButton } from '..';
-import { store, mecSelect } from '../../Features';
+import { Id, Nodes, Constraints, Views, UndoRedo } from '..';
 
 export default function MecProperties({ classes }) {
-    const [, updateState] = React.useState();
-
-    // TODO Check if change is related to Model? ...
-    React.useEffect(() => store.subscribe(() => updateState({})));
-
     return <div>
         <Grid container direction="row">
             <Id />
