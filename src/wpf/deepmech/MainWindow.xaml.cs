@@ -18,9 +18,13 @@ namespace deepmech
             get { return _deepmechActive; }
         }
 
+        private Uri URL = new Uri(System.Diagnostics.Debugger.IsAttached ?
+            "http://localhost:8001" : "https://deepmech.klawr.de");
+
         public MainWindow()
         {
             InitializeComponent();
+            deepmechWebView.Source = URL;
             InitializeAsync();
             // Set supported inking device types.
             deepmechCanvas.InkPresenter.InputDeviceTypes = CoreInputDeviceTypes.Mouse | CoreInputDeviceTypes.Pen;
