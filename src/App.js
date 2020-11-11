@@ -17,14 +17,39 @@ const ref = mecElement;
 
 let counter = 0;
 function handleMecModelUpdate() {
-    const mec = store.getState().MecModel;
-    const select = mec.selected;
+    const mecModel = store.getState().MecModel;
+    const select = mecModel.selected;
     // selected is guaranteed to change on every action
     if (counter === select) return
     // if selected < s, the last action was an update, otherwise it was an undo
-    const action = counter < select ? mec.queue[select - 1] : mec.queue[select];
-    const step = counter < select ? action.value : action.previous
-    Object.entries(step).forEach(e => ref._model[action.list][action.idx][e[0]] = e[1]);
+    const action = counter < select ? mecModel.queue[select - 1] : mecModel.queue[select];
+    const step = counter < select ? action.value : action.previous;
+
+    if (typeof action.idx === 'number') {
+        Object.entries(step).forEach(e => {
+            ref._model[action.list][action.idx][e[0]] = e[1]
+        });
+    } else if (action.idx === 'add') {
+        if (counter < select) {
+            if (action.list === 'nodes') {
+                const node = { ...step };
+                if (ref._model.nodeById(node.id)) {
+                    console.warn(`Can not create node.\nid "${node.id}" is already taken.`);
+                    return;
+                }
+                mec.node.extend(node);
+                ref._model.addNode(node);
+                node.init(ref._model);
+            } else if (action.list === 'constraints') {
+                console.log('Not implemented');
+            }
+        } else {
+            // TODO
+            console.warn('Reversing creation of nodes is not implemented yet');
+            // ref._model.removeNode(ref._model.nodeById(action.value.id));
+        }
+        ref._model.draw(mecElement._g);
+    }
 
     // Replace nodes given as Id with respective objects.
     // The object itself can't be given to the payload, because of the
@@ -84,7 +109,7 @@ function App() {
     if (window.chrome?.webview) {
         window.webviewEventListenerPlaceholder = (o) => {
             if (!o) return;
-    
+
             if (Object.keys(o).includes('deepmech')) {
                 dispatch(UiAction.deepmech(o.deepmech));
             }

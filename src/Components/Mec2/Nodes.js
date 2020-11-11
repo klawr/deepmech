@@ -9,6 +9,7 @@ import {
 import { MecTable, UpdateText, MultiSelect } from '..';
 import { useDispatch, useSelector } from 'react-redux';
 import { mecAction, UiAction, UiSelect } from '../../Features';
+import AddNode from './AddNode';
 
 export default function Nodes() {
     const name = 'nodes';
@@ -99,11 +100,12 @@ export default function Nodes() {
         <AccordionSummary> {name} </AccordionSummary>
         <AccordionDetails>
             <Grid container direction="row">
-                <MultiSelect options={head} updateOptions={updateHead}/>
+                <MultiSelect options={head} updateOptions={updateHead} />
                 <MecTable
                     SanitizedCell={SanitizedCell}
                     head={Object.entries(head).filter(h => h[1]).map(h => h[0])}
                     list={mecElement._model[name]} />
+                <AddNode />
             </Grid>
         </AccordionDetails>
     </Accordion>

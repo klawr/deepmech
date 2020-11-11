@@ -8,7 +8,7 @@ import {
     TableRow,
 } from '@material-ui/core';
 
-export default function MecTable({head, list, SanitizedCell}) {
+export default function MecTable({ head, list, SanitizedCell }) {
     return <TableContainer style={{ maxWidth: globalThis.innerWidth - 30 }}>
         <Table>
             <TableHead>
