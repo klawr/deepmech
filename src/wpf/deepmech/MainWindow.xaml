@@ -10,7 +10,7 @@
         Title="MainWindow">
 
     <Grid>
-        <wv2:WebView2 Width="auto" Name="deepmechWebView" Source="http://localhost:8001"/>
+        <wv2:WebView2 Width="auto" Name="deepmechWebView"/>
 
         <StackPanel>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
