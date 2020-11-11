@@ -44,9 +44,7 @@ function handleMecModelUpdate() {
                 console.log('Not implemented');
             }
         } else {
-            // TODO
-            console.warn('Reversing creation of nodes is not implemented yet');
-            // ref._model.removeNode(ref._model.nodeById(action.value.id));
+            ref._model.removeNode(ref._model.nodeById(action.value.id));
         }
         ref._model.draw(mecElement._g);
     }
