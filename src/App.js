@@ -78,6 +78,15 @@ const placeholder = {
 
 function App() {
     const dispatch = useDispatch();
+
+    window.webviewEventListenerPlaceholder = (o) => {
+        if (!o) return;
+
+        if (Object.keys(o).includes('deepmech')) {
+            dispatch(UiAction.deepmech(o.deepmech));
+        }
+    }
+
     dispatch(mecAction.initialize());
     const UI = useSelector(UiSelect);
 
