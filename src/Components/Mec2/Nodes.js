@@ -5,11 +5,13 @@ import {
     AccordionSummary,
     Checkbox,
     Grid,
+    MenuItem,
 } from '@material-ui/core';
 import { MecTable, UpdateText, MultiSelect } from '..';
 import { useDispatch, useSelector } from 'react-redux';
 import { mecAction, UiAction, UiSelect } from '../../Features';
 import AddNode from './AddNode';
+import ContextMenu from '../Utils/ContextMenu';
 
 export default function Nodes() {
     const name = 'nodes';
@@ -72,28 +74,45 @@ export default function Nodes() {
             }));
         }
 
-        switch (property) {
-            case 'base':
-                const [checked, changeChecked] = React.useState(!!elm[property]);
-                return <Checkbox
-                    checked={checked}
-                    onChange={(e) => {
-                        changeChecked(e.target.checked)
-                        update(e.target.checked)
-                    }} />
-            case 'x':
-            case 'y':
-                return <UpdateText
-                    title={property}
-                    value={Math.round(elm[property])}
-                    onSubmit={v => update(+v)} />
-            case 'id':
-                return <UpdateText
-                    title={property}
-                    value={elm[property]}
-                    onSubmit={update} />
-            default: return <div>{elm[property]}</div>
+        function select() {
+            switch (property) {
+                case 'base':
+                    const [checked, changeChecked] = React.useState(!!elm[property]);
+                    return <Checkbox
+                        checked={checked}
+                        onChange={(e) => {
+                            changeChecked(e.target.checked)
+                            update(e.target.checked)
+                        }} />
+                case 'x':
+                case 'y':
+                    return <UpdateText
+                        title={property}
+                        value={Math.round(elm[property])}
+                        onSubmit={v => update(+v)} />
+                case 'id':
+                    return <UpdateText
+                        title={property}
+                        value={elm[property]}
+                        onSubmit={update} />
+                default: return <div>{elm[property]}</div>
+            }
         }
+
+        function removeNode() {
+            dispatch(mecAction.add({
+                list: 'nodes', idx: 'remove',
+                value: (({ id, x, y, base }) => ({ id, x, y, base }))(elm),
+                previous: {}
+            }))
+        }
+
+        return <ContextMenu key={idx}>
+            {select()}
+            <MenuItem onClick={removeNode}>
+                {`Remove node ${elm['id']}`}
+            </MenuItem>
+        </ContextMenu>
     }
 
     return <Accordion>

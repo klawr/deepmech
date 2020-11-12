@@ -29,9 +29,10 @@ function handleMecModelUpdate() {
         Object.entries(step).forEach(e => {
             ref._model[action.list][action.idx][e[0]] = e[1]
         });
-    } else if (action.idx === 'add') {
+    } else if (action.idx === 'add' || action.idx === 'remove') {
         if (action.list === 'nodes') {
-            if (counter < select) {
+            if (counter < select && action.idx === 'add' ||
+                counter >= select && action.idx === 'remove') {
                 const node = { ...step };
                 if (ref._model.nodeById(node.id)) {
                     console.warn(`Can not create node.\nid "${node.id}" is already taken.`);
@@ -45,7 +46,8 @@ function handleMecModelUpdate() {
                 ref._model.removeNode(ref._model.nodeById(action.value.id));
             }
         } else if (action.list === 'constraints') {
-            if (counter < select) {
+            if (counter < select && action.idx === 'add' ||
+                counter >= select && action.idx === 'remove') {
                 const constraint = { ...step };
                 if (ref._model.constraintById(constraint.id)) {
                     console.warn(`Can not create constraint\nid "${constraint.id}" is already taken.`);
