@@ -32,7 +32,8 @@ export default function AddNode() {
     function Accept() {
         dispatch(mecAction.add({
             list: 'nodes', idx: 'add',
-            value: { ...AN }, previous: {}
+            value: (({id, x, y, base}) => ({ id, x: +x, y: +y, base }))(AN),
+            previous: {}
         }));
         setOpen(false);
     }
