@@ -101,10 +101,10 @@ export default function Nodes() {
 
         function removeNode() {
             dispatch(mecAction.add({
-                list: 'nodes', idx: 'remove',
+                list: name, idx: 'remove',
                 value: (({ id, x, y, base }) => ({ id, x, y, base }))(elm),
                 previous: {}
-            }))
+            }));
         }
 
         return <ContextMenu key={idx}>

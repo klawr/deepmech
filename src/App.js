@@ -15,25 +15,28 @@ import {
 
 const ref = mecElement;
 
+let mecModel;
 let counter = 0;
 function handleMecModelUpdate() {
-    const mecModel = store.getState().MecModel;
-    const select = mecModel.selected;
-    // selected is guaranteed to change on every action
-    if (counter === select) return
-    // if selected < s, the last action was an update, otherwise it was an undo
-    const action = counter < select ? mecModel.queue[select - 1] : mecModel.queue[select];
-    const step = counter < select ? action.value : action.previous;
+    if (mecModel === store.getState().MecModel) return;
+    mecModel = store.getState().MecModel;
+    // if true the last action was an update, otherwise it was an undo
+    const up = counter < mecModel.selected;
+    const action = up ? mecModel.queue[mecModel.selected - 1] :
+        mecModel.queue[mecModel.selected];
+    if (!action) return;
 
     if (typeof action.idx === 'number') {
-        Object.entries(step).forEach(e => {
+        Object.entries(up ? action.value : action.previous).forEach(e => {
             ref._model[action.list][action.idx][e[0]] = e[1]
         });
-    } else if (action.idx === 'add' || action.idx === 'remove') {
+    }
+    else if (action.idx === 'add' || action.idx === 'remove') {
+        // Check if element is going to be added (or removed)
+        const add = (up && action.idx === 'add') || (!up && action.idx === 'remove');
         if (action.list === 'nodes') {
-            if (counter < select && action.idx === 'add' ||
-                counter >= select && action.idx === 'remove') {
-                const node = { ...step };
+            if (add) {
+                const node = { ...action.value };
                 if (ref._model.nodeById(node.id)) {
                     console.warn(`Can not create node.\nid "${node.id}" is already taken.`);
                     return;
@@ -45,10 +48,10 @@ function handleMecModelUpdate() {
             else {
                 ref._model.removeNode(ref._model.nodeById(action.value.id));
             }
-        } else if (action.list === 'constraints') {
-            if (counter < select && action.idx === 'add' ||
-                counter >= select && action.idx === 'remove') {
-                const constraint = { ...step };
+        }
+        else if (action.list === 'constraints') {
+            if (add) {
+                const constraint = { ...action.value };
                 if (ref._model.constraintById(constraint.id)) {
                     console.warn(`Can not create constraint\nid "${constraint.id}" is already taken.`);
                     return;
@@ -69,13 +72,18 @@ function handleMecModelUpdate() {
     // The object itself can't be given to the payload, because of the
     // altered prototype
     function checkForNode(list, idx, ...node) {
-        node.filter(p => typeof step[p] === 'string')
+        const t = up ? action.value : action.previous;
+        node.filter(p => typeof t[p] === 'string')
             .forEach(p => {
-                ref._model[list][idx][p] = ref._model.nodeById(step[p])
+                ref._model[list][idx][p] = ref._model.nodeById(t[p])
             });
     }
     if (action.list === 'constraints') {
-        const idx = action.idx === 'add' ?
+        // Skip updating nodes when the constraint is removed...
+        if (action.idx === 'remove' && up) {
+            return;
+        }
+        const idx = action.idx === 'add' || action.idx === 'remove' ?
             ref._model.constraints.length - 1 : action.idx;
         checkForNode('constraints', idx, 'p1', 'p2')
     }
@@ -87,7 +95,7 @@ function handleMecModelUpdate() {
     ref._model.pose();
     ref.render();
 
-    counter = select;
+    counter = mecModel.selected;
 }
 
 store.subscribe(handleMecModelUpdate);
