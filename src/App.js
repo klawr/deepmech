@@ -45,26 +45,40 @@ function handleMecModelUpdate() {
                 ref._model.removeNode(ref._model.nodeById(action.value.id));
             }
         } else if (action.list === 'constraints') {
-            console.log('Not implemented');
+            if (counter < select) {
+                const constraint = { ...step };
+                if (ref._model.constraintById(constraint.id)) {
+                    console.warn(`Can not create constraint\nid "${constraint.id}" is already taken.`);
+                    return;
+                }
+                mec.constraint.extend(constraint);
+                ref._model.addConstraint(constraint);
+                constraint.init(ref._model);
+            }
+            else {
+                ref._model.removeConstraint(ref._model.constraintById(action.value.id));
+            }
         }
+        // TODO this causes some issues...
         ref._model.draw(mecElement._g);
     }
 
     // Replace nodes given as Id with respective objects.
     // The object itself can't be given to the payload, because of the
     // altered prototype
-    function checkForNode(...node) {
+    function checkForNode(list, idx, ...node) {
         node.filter(p => typeof step[p] === 'string')
             .forEach(p => {
-                ref._model[action.list][action.idx][p] =
-                    ref._model.nodeById(step[p])
+                ref._model[list][idx][p] = ref._model.nodeById(step[p])
             });
     }
     if (action.list === 'constraints') {
-        checkForNode('p1', 'p2')
+        const idx = action.idx === 'add' ?
+            ref._model.constraints.length - 1 : action.idx;
+        checkForNode('constraints', idx, 'p1', 'p2')
     }
     if (action.list === 'views') {
-        checkForNode('of');
+        checkForNode('views', action.idx, 'of');
     }
 
     ref._model.preview();

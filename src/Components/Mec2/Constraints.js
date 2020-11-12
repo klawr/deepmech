@@ -8,6 +8,7 @@ import {
 import { MecTable, RadioSelect, UpdateText, ObjectMenu, MultiSelect } from '..';
 import { useDispatch, useSelector } from 'react-redux';
 import { mecAction, UiAction, UiSelect } from '../../Features';
+import AddConstraint from './AddConstraint';
 
 export default function Constraints() {
     const name = 'constraints';
@@ -30,7 +31,10 @@ export default function Constraints() {
             }));
         };
         switch (property) {
-            case 'id': return <UpdateText title={property} value={elm[property]} onSubmit={update} />
+            case 'id': return <UpdateText
+                title={property}
+                value={elm[property]}
+                onSubmit={update} />
             case 'p1':
             case 'p2':
                 return <RadioSelect
@@ -80,6 +84,7 @@ export default function Constraints() {
                     SanitizedCell={SanitizedCell}
                     head={Object.entries(head).filter(h => h[1]).map(h => h[0])}
                     list={mecElement._model[name]} />
+                <AddConstraint options={model.nodes.map(n => n.id)}/>
             </Grid>
         </AccordionDetails>
     </Accordion>
