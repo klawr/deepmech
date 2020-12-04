@@ -16,6 +16,7 @@
             <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
                 <controls:InkToolbar TargetInkCanvas="{x:Reference Name=deepmechCanvas}" />
                 <Button Click="Exit_Deepmech" Content="Exit deepmech"/>
+                <Button Click="Predict" Content="Predict" />
             </StackPanel>
             <!--Height should be enough for most screens-->
             <controls:InkCanvas Height="1920" Name="deepmechCanvas" />

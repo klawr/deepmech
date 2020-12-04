@@ -1,7 +1,10 @@
 ﻿using Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT;
 using Microsoft.Web.WebView2.Core;
 using System;
+using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
+using Windows.Storage.Streams;
 
 namespace deepmech
 {
@@ -67,9 +70,33 @@ namespace deepmech
         // But it does not work that way ¯\_(ツ)_/¯
         private string webviewPlaceholder(string message) => "window.webviewEventListenerPlaceholder(" + message + ")";
 
-        private void Exit_Deepmech(object sender, RoutedEventArgs e)
+        private void Exit_Deepmech(object sender, System.Windows.RoutedEventArgs e)
         {
             deepmechWebView.ExecuteScriptAsync(webviewPlaceholder("{deepmech: false}"));
         }
+
+        private async Task ReadDeepmechCanvas(string path)
+        {
+            var strokes = deepmechCanvas.InkPresenter.StrokeContainer.GetStrokes();
+            if (strokes.Count > 0)
+            {
+                using (IOutputStream outputStream = File.Open(path, FileMode.Create).AsOutputStream())
+                {
+                    await deepmechCanvas.InkPresenter.StrokeContainer.SaveAsync(outputStream);
+                    await outputStream.FlushAsync();
+                }
+            }
+        }
+
+        private async void Predict(object sender, RoutedEventArgs e)
+        {
+            // Get image
+            await ReadDeepmechCanvas("C:/Users/me/Downloads/test.jpg");
+
+            // Call python with image
+
+            // Return predictions on mec2
+        }
     }
 }
+
