@@ -213,17 +213,7 @@ export const deepmech = {
         const nodes = await deepmech.detector.detectNodes(tensor);
 
         const view = element._interactor.view;
-        nodes.forEach(e => {
-            const node = {
-                id: 'node' + model.nodes.length, // TODO Think of a better id here.
-                x: Math.round((e.x - view.x + 16) / view.scl),
-                y: Math.round((element.height - e.y - view.y - 16) / view.scl),
-                base: e.maxIndex > 1 ? true : false // 0 == n, 1 == o, 2 == x (0 is filtered...)
-            };
-            mec.node.extend(node);
-            model.addNode(node);
-            node.init(model);
-        });
+        updateNodes(model, nodes);
 
         const [crops, info] = deepmech.detector.getCrops(tensor, element, model.nodes, model.constraints);
         if (crops) {
@@ -249,5 +239,19 @@ export const deepmech = {
             })
         }
         element._model.draw(element._g);
+    },
+
+    updateNodes(nodes) {
+        nodes.forEach(e => {
+            const node = {
+                id: 'node' + model.nodes.length, // TODO Think of a better id here.
+                x: Math.round((e.x - view.x + 16) / view.scl),
+                y: Math.round((element.height - e.y - view.y - 16) / view.scl),
+                base: e.maxIndex > 1 ? true : false // 0 == n, 1 == o, 2 == x (0 is filtered...)
+            };
+            mec.node.extend(node);
+            model.addNode(node);
+            node.init(model);
+        });
     },
 }
