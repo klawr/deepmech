@@ -50,10 +50,10 @@ def get_bounding_boxes_nms(predictions):
 
 [nodes, bases] = get_bounding_boxes_nms(symbol_detector(image_tensor)[0])
 
-elements = []
+elements = {"nodes":[], "constraints":[]}
 
 def appendnode(node, base):
-    elements.append({
+    elements["nodes"].append({
         "x": int((node[0] + node[2]) / 2 * image_tensor.shape[1]),
         "y": int((node[1] + node[3]) / 2 * image_tensor.shape[2]),
         "base": base,

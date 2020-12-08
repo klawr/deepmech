@@ -14,7 +14,7 @@ namespace deepmech
     public partial class MainWindow : Window
     {
         private bool _deepmechActive;
-        public bool deepmechActive
+        public bool DeepmechActive
         {
             set
             {
@@ -24,8 +24,9 @@ namespace deepmech
             get { return _deepmechActive; }
         }
 
-        private Uri URL = new Uri(System.Diagnostics.Debugger.IsAttached ?
-            "http://localhost:8001" : "https://deepmech.klawr.de");
+        private readonly Uri URL = new Uri(Debugger.IsAttached ?
+                "http://localhost:8001" :
+                "https://deepmech.klawr.de");
 
         public MainWindow()
         {
@@ -40,7 +41,7 @@ namespace deepmech
             await deepmechWebView.EnsureCoreWebView2Async(null);
             deepmechWebView.CoreWebView2.WebMessageReceived += ProcessWebMessage;
 
-            if (System.Diagnostics.Debugger.IsAttached)
+            if (Debugger.IsAttached)
             {
                 deepmechWebView.CoreWebView2.OpenDevToolsWindow();
             }
@@ -60,9 +61,9 @@ namespace deepmech
                 System.Collections.Generic.Dictionary<string, string>>(args.TryGetWebMessageAsString());
 
                 // Toggle canvas if deepmech is active
-                deepmechActive = message?["deepmech"] == "true";
+                DeepmechActive = message?["deepmech"] == "true";
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // Can not deserialze message warning or something...
             }
@@ -71,11 +72,11 @@ namespace deepmech
         // This is not as described in
         // https://docs.microsoft.com/en-us/microsoft-edge/webview2/gettingstarted/winforms#step-8---communication-between-host-and-web-content
         // But it does not work that way ¯\_(ツ)_/¯
-        private string webviewPlaceholder(string message) => "window.webviewEventListenerPlaceholder(" + message + ")";
+        private string WebviewPlaceholder(string message) => "window.webviewEventListenerPlaceholder(" + message + ")";
 
-        private void Exit_Deepmech(object sender, System.Windows.RoutedEventArgs e)
+        private void ExitDeepmech(object sender, RoutedEventArgs e)
         {
-            deepmechWebView.ExecuteScriptAsync(webviewPlaceholder("{deepmech: false}"));
+            deepmechWebView.ExecuteScriptAsync(WebviewPlaceholder("{deepmech: false}"));
         }
 
         private async Task ReadDeepmechCanvas(string path)
@@ -84,13 +85,21 @@ namespace deepmech
             var tmp = Path.GetTempFileName();
             if (strokes.Count > 0)
             {
+                // Draw strokes into temporary file
                 using (IOutputStream outputStream = File.Open(tmp, FileMode.Create).AsOutputStream())
                 {
                     await deepmechCanvas.InkPresenter.StrokeContainer.SaveAsync(outputStream);
                     await outputStream.FlushAsync();
                 }
+                // Make image usable for opencv-python (cv2)
+                // It seems that the temporary file lags png encoding (?) So it is done here explictitly
                 Image.FromFile(tmp).Save(path, System.Drawing.Imaging.ImageFormat.Png);
             }
+        }
+
+        private void SendModelUpdate(string json)
+        {
+            deepmechWebView.ExecuteScriptAsync(WebviewPlaceholder("{update: " + json + "}"));
         }
 
         private async void Predict(object sender, RoutedEventArgs e)
@@ -100,9 +109,11 @@ namespace deepmech
             await ReadDeepmechCanvas(Path.Combine(Path.GetTempPath(), "deepmechCanvas.png"));
 
             // Call python with image
-            var pythonResponse = new Python(Path.Combine(sourcePath, "env", "Scripts", "python.exe"))
+            var Prediction = new Python(Path.Combine(sourcePath, "env", "Scripts", "python.exe"))
                 .Run(Path.Combine(sourcePath, "predict.py"));
-            // Return predictions on mec2
+
+            // Pass predictions to mec2
+            SendModelUpdate(Prediction);
         }
 
         private class Python
@@ -116,25 +127,23 @@ namespace deepmech
 
             public string Run(string scriptPath)
             {
-                using (Process process = new Process())
+                using var process = new Process();
+                process.StartInfo = new ProcessStartInfo(PythonPath)
                 {
-                    process.StartInfo = new ProcessStartInfo(PythonPath)
-                    {
-                        Arguments = scriptPath,
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        CreateNoWindow = true
-                    };
-                    process.Start();
-                    var output = process.StandardOutput
-                        .ReadToEnd();
-                        //.Replace(Environment.NewLine, string.Empty);
-                    var error = process.StandardError.ReadToEnd(); // Do something with error?
-                    process.WaitForExit();
+                    Arguments = scriptPath,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true
+                };
+                process.Start();
+                var output = process.StandardOutput
+                    .ReadToEnd();
+                //.Replace(Environment.NewLine, string.Empty);
+                var error = process.StandardError.ReadToEnd(); // Do something with error?
+                process.WaitForExit();
 
-                    return output;
-                }
+                return output;
             }
         }
     }
