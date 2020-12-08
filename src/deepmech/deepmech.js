@@ -210,10 +210,13 @@ export const deepmech = {
         let tensor = tf.browser.fromPixels(document.getElementById('deepmechCanvas'), 1);
         tensor = tensor.div(255).expandDims();
 
-        const nodes = await deepmech.detector.detectNodes(tensor);
+        const nodes = await deepmech.detector.detectNodes(tensor)
+            .map(e => {
+                e.base = e.maxIndex > 1 ? true : false;
+                return e;
+            });
 
-        const view = element._interactor.view;
-        updateNodes(model, nodes);
+        updateNodes(nodes);
 
         const [crops, info] = deepmech.detector.getCrops(tensor, element, model.nodes, model.constraints);
         if (crops) {
@@ -242,12 +245,17 @@ export const deepmech = {
     },
 
     updateNodes(nodes) {
+        if (!nodes) return;
+
+        const model = mecElement._model;
+        const view = mecElement._interactor.view;
         nodes.forEach(e => {
             const node = {
-                id: 'node' + model.nodes.length, // TODO Think of a better id here.
+                // TODO Think of a better id here.
+                id: e.node || 'node' + model.nodes.length,
                 x: Math.round((e.x - view.x + 16) / view.scl),
-                y: Math.round((element.height - e.y - view.y - 16) / view.scl),
-                base: e.maxIndex > 1 ? true : false // 0 == n, 1 == o, 2 == x (0 is filtered...)
+                y: Math.round((mecElement.height - e.y - view.y - 16) / view.scl),
+                base: e.base,
             };
             mec.node.extend(node);
             model.addNode(node);

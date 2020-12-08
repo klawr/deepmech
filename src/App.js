@@ -12,6 +12,7 @@ import {
     RightDrawer,
     ListButton
 } from './Components';
+import { deepmech } from './deepmech';
 
 const ref = mecElement;
 
@@ -132,9 +133,18 @@ function App() {
     if (window.chrome?.webview) {
         window.webviewEventListenerPlaceholder = (o) => {
             if (!o) return;
-
+            
             if (Object.keys(o).includes('deepmech')) {
                 dispatch(UiAction.deepmech(o.deepmech));
+            }
+
+            // The layout of 'update' is defined in the predict.py used by
+            // the webview provider
+            if (Object.keys(o).includes('update')) {
+                deepmech.updateNodes(o.update.nodes);
+                deepmech.updateConstraints(o.update.constraints);
+
+                mecElement._model.draw(mecElement._g);
             }
         }
     }
