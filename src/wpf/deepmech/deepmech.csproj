@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Toolkit.Wpf.UI.Controls" Version="6.1.2" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.674-prerelease" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
