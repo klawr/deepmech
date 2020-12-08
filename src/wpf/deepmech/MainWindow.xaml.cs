@@ -1,7 +1,10 @@
 ﻿using Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT;
 using Microsoft.Web.WebView2.Core;
 using System;
+using System.Diagnostics;
+using System.Drawing;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using Windows.Storage.Streams;
@@ -78,25 +81,61 @@ namespace deepmech
         private async Task ReadDeepmechCanvas(string path)
         {
             var strokes = deepmechCanvas.InkPresenter.StrokeContainer.GetStrokes();
+            var tmp = Path.GetTempFileName();
             if (strokes.Count > 0)
             {
-                using (IOutputStream outputStream = File.Open(path, FileMode.Create).AsOutputStream())
+                using (IOutputStream outputStream = File.Open(tmp, FileMode.Create).AsOutputStream())
                 {
                     await deepmechCanvas.InkPresenter.StrokeContainer.SaveAsync(outputStream);
                     await outputStream.FlushAsync();
                 }
+                Image.FromFile(tmp).Save(path, System.Drawing.Imaging.ImageFormat.Png);
             }
         }
 
         private async void Predict(object sender, RoutedEventArgs e)
         {
+            var sourcePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "Resources");
             // Get image
-            await ReadDeepmechCanvas("C:/Users/me/Downloads/test.jpg");
+            await ReadDeepmechCanvas(Path.Combine(Path.GetTempPath(), "deepmechCanvas.png"));
 
             // Call python with image
-
+            var pythonResponse = new Python(Path.Combine(sourcePath, "env", "Scripts", "python.exe"))
+                .Run(Path.Combine(sourcePath, "predict.py"));
             // Return predictions on mec2
+        }
+
+        private class Python
+        {
+            public readonly string PythonPath;
+
+            public Python(string pythonPath)
+            {
+                PythonPath = pythonPath;
+            }
+
+            public string Run(string scriptPath)
+            {
+                using (Process process = new Process())
+                {
+                    process.StartInfo = new ProcessStartInfo(PythonPath)
+                    {
+                        Arguments = scriptPath,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        CreateNoWindow = true
+                    };
+                    process.Start();
+                    var output = process.StandardOutput
+                        .ReadToEnd();
+                        //.Replace(Environment.NewLine, string.Empty);
+                    var error = process.StandardError.ReadToEnd(); // Do something with error?
+                    process.WaitForExit();
+
+                    return output;
+                }
+            }
         }
     }
 }
-
