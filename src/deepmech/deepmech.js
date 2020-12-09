@@ -220,26 +220,25 @@ export const deepmech = {
 
         const [crops, info] = deepmech.detector.getCrops(tensor, element, model.nodes, model.constraints);
         if (crops) {
-            const constraints = await deepmech.detector.detectConstraints(crops);
-
-            constraints.forEach((c, idx) => {
-                if (!c) return;
+            const constraints = await deepmech.detector.detectConstraints(crops)
+                .map((c, idx) => {
+                if (!c) return undefined;
                 const p1 = info[idx].p1;
                 const p2 = info[idx].p2;
                 if (!p1 || !p2) {
                     console.warn('Found no matching nodes for consraitns:', p1, p2, model.nodes);
+                    return undefined;
                 } else {
-                    const constraint = {
+                    return {
                         id: 'constraint' + model.constraints.length, // TODO Think of a better id here.
                         p1, p2,
                         len: { type: c == 1 ? 'const' : 'free' },
                         ori: { type: c == 2 ? 'const' : 'free' }
                     };
-                    mec.constraint.extend(constraint);
-                    model.addConstraint(constraint);
-                    constraint.init(model);
                 }
-            })
+            }).filter(e => e);
+
+            updateConstraints(constraints);
         }
         element._model.draw(element._g);
     },
@@ -252,7 +251,7 @@ export const deepmech = {
         nodes.forEach(e => {
             const node = {
                 // TODO Think of a better id here.
-                id: e.node || 'node' + model.nodes.length,
+                id: e.id || 'Nx' + model.nodes.length,
                 x: Math.round((e.x - view.x + 16) / view.scl),
                 y: Math.round((mecElement.height - e.y - view.y - 16) / view.scl),
                 base: e.base,
@@ -260,6 +259,20 @@ export const deepmech = {
             mec.node.extend(node);
             model.addNode(node);
             node.init(model);
+        });
+    },
+
+    updateConstraints(constraints) {
+        if (!constraints) return;
+
+        const model = mecElement._model;
+        constraints.forEach(e => {
+            const constraint = Object.assign({ 
+                id: 'cx' + model.constraints.length
+            }, e);
+            mec.constraint.extend(constraint);
+            model.addConstraint(constraint);
+            constraint.init(model);
         });
     },
 }
