@@ -210,18 +210,18 @@ export const deepmech = {
         let tensor = tf.browser.fromPixels(document.getElementById('deepmechCanvas'), 1);
         tensor = tensor.div(255).expandDims();
 
-        const nodes = await deepmech.detector.detectNodes(tensor)
-            .map(e => {
+        const nodes = (await deepmech.detector
+            .detectNodes(tensor)).map(e => {
                 e.base = e.maxIndex > 1 ? true : false;
                 return e;
             });
 
-        updateNodes(nodes);
+        deepmech.updateNodes(nodes);
 
         const [crops, info] = deepmech.detector.getCrops(tensor, element, model.nodes, model.constraints);
         if (crops) {
-            const constraints = await deepmech.detector.detectConstraints(crops)
-                .map((c, idx) => {
+            const constraints = (await deepmech.detector
+                .detectConstraints(crops)).map((c, idx) => {
                 if (!c) return undefined;
                 const p1 = info[idx].p1;
                 const p2 = info[idx].p2;
@@ -238,7 +238,7 @@ export const deepmech = {
                 }
             }).filter(e => e);
 
-            updateConstraints(constraints);
+            deepmech.updateConstraints(constraints);
         }
         element._model.draw(element._g);
     },
