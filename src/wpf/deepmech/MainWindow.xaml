@@ -10,16 +10,19 @@
         Title="deepmech">
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
         <wv2:WebView2 Width="auto" Name="deepmechWebView"/>
 
-        <StackPanel>
+        <StackPanel Height="Auto" Background="AliceBlue">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
                 <controls:InkToolbar TargetInkCanvas="{x:Reference Name=deepmechCanvas}" />
                 <Button Click="ExitDeepmech" Content="Exit deepmech"/>
                 <Button Click="Predict" Content="Predict" />
             </StackPanel>
             <!--Height should be enough for most screens-->
-            <controls:InkCanvas Height="1920" Name="deepmechCanvas" />
+            <controls:InkCanvas Height="2048" Name="deepmechCanvas" />
         </StackPanel>
     </Grid>
 </Window>
