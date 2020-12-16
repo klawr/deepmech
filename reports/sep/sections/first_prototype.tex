@@ -1,18 +1,19 @@
 \section{First prototype} \label{ch:first_prototype}
 
-To create a prototype capable of detecting hand-drawn mechanisms, the following necessities have to be considered:
-The application has to be able to detect and to localize \name{nodes} and \name{constraints}; whereas \name{constraints} are connecting pairs of \name{nodes} respectively.
+The prototype model has to be able to classify and to localize \name{nodes} and \name{constraints}; whereas \name{constraints} are connecting pairs of \name{nodes} respectively.
+Classification is the problem of detecting the correct type of \name{nodes} or \name{constraints}. % TODO citation
+Localization is the problem of determining the position of the respective detection inside of a given image. % TODO citation
 Subsequently, the gathered information has to be transformed into a usable format for further processing, e.g. into JSON to be usable by \name{mec2}. % TODO citation needed?
-
-At first, the detection and localization of \name{nodes} is examined.
 
 \subsection{The Fully Convolutional Network}\label{ch:fcn}
 
-The topic of prepending work was the recognition of hand-drawn mechanical symbols \cite{Lawrence2020}.
-Thereupon, the previous trained model is extended to be able to provide not only a classification, but also the location of an element in an image of arbitrary size.
-The respective model can be loaded using \name{Keras'}, % TODO citation should be in the introduction.
-\code{model.load\_model} and by issuing the \code{summary} method we get listing~\ref{lst:srp_model}, which is a summary of the final model for node detection.
-This model is trained to detect whether an image contains a \name{node}, a \name{base-node} or neither.
+The topic of prepending work was the classification of hand-drawn mechanical symbols \cite{Lawrence2020}.
+The resulting model can classify images with size 32 by 32 pixels as \name{nodes}, \name{base-nodes} or neither of both.
+It is only capable of classifying images with exactly these dimensions, which is insufficient for the task at hand.
+However, the model can be extended to be able to provide not only a classification, but also the location of an element in an image of arbitrary size.
+
+To examine the model it can be loaded using \name{Keras'}, % TODO citation should be in the introduction.
+\code{model.load\_model} function and by issuing the \code{summary} method we get listing~\ref{lst:srp_model}.
 
 \begin{lstlisting}[caption={Summary of Symbol Classifier.}, label={lst:srp_model}]
 _________________________________________________________________
@@ -36,18 +37,17 @@ Non-trainable params: 0
 _________________________________________________________________
 \end{lstlisting}
 
-This model has to be extended to be able to receive not only a preprocessed image, but a 
-One way to localize detections in an image is to scan each sector of an image and predicting the generated crops.
+The naive way to localize detected \name{nodes} and \name{constraints} in an image of arbitrary size is to scan sectors of size 32 by 32 pixels of an image and predicting them individually.
 Using a 360x360 sized image with strides of one in each direction, the number of images which are used in the prediction process are 108.241 images\footnote{$h + 1 - 32 * w + 1 - 32$, where $h$ and $w$ are the height and width of the input image and the size of the kernel used to predict is 32}.
-A Jupyter notebook testing the performance of this method can be reviewed at \url{https://aka.klawr.de/sep#1}. % TODO Set this URL.
+The respective Jupyter notebook testing the performance of this method can be reviewed at \url{https://aka.klawr.de/sep#1}. % TODO Set this URL.
 
 To test this amount of images is not necessary most of the time and can be reduced by increasing the stride of the respective scanning process.
-This would reduce the accuracy of the localization, but would increase the speed of the operation.
+This would most likely reduce the accuracy of localizations, but would certainly increase the speed of the operation.
 
-Another approach would be to use the properties of convolutional layers to restructure the model and thereby making the whole procedure much more efficient.
-
-By transforming a model into a so-called Fully Convolutional Network (FCN) all dense layers are replaced by convolutional layers\footnote{The layers affected here are the input and output layer.}.
-The input layer, which is also replaced by a two-dimensional convolutional layer is furthermore able to accept images of arbitrary size.
+Another approach is to use the properties of convolutional layers to restructure the model and thereby making the whole procedure much more efficient.
+To transform the model into a so-called Fully Convolutional Network (FCN) the input layer has to be prepended by a convolutional layer.
+The first layer accepts images of arbitrary size.
+The kernel of 32 by 32 determines the size of the segment given to the second layer, which was previously used as the input-layer.
 Because the input of the original model is only defined by the kernel size, each successive layer is agnostic to the size of the previous.
 Listing \ref{lst:to_fcn} transforms the \code{old\_model} by appending an \code{tf.keras.Input} layer without any specified size and replacing the output layer by a \code{tf.keras.Conv2D} layer\footnote{And thus removing the \code{tf.keras.flatten} layer.}.
 
@@ -108,18 +108,19 @@ Non-trainable params: 0
 _________________________________________________________________
 \end{lstlisting}
 
-Granted this model is satisfactory for the moment, the problem of detecting constraints can be addressed.
+Granted the performance of this model is satisfactory for the moment, the problem of detecting constraints can be addressed.
 
 \subsection{Constraint detection}
 
-Besides the model to detect nodes, it is now necessary to train a model that can detect and classify constraints.
-To create such a model fitting training data has to be generated first.
+Besides a model to detect nodes, it is now necessary to train a model that can detect and classify constraints.
+To create such a model suitable training data has to be generated first.
 
-The model should be able to distinguish between two types of constraints.
-One type of constraint prohibits nodes to change the range between each other, which allows only for rotational movement.
+The model should be able to distinguish between two types of constraints:
+Constraints to prevent nodes to change the range between each other, which allows only for rotational movement.
 It is represented by an arrow with an arc at the origin.
-The other type of constraint prohibits motion that would change the angle between two nodes, which only allows translational movement between two nodes.
+The other type of constraint prevents motion that would change the angle between two nodes, which only allows translational movement between two nodes.
 It is represented by an arrow with two gaps on the shaft and no arc at the origin.
+Examples for the generated data can be seen in figure \ref{fig:constraint_data}.
 
 Furthermore, the data is split for constraints of different lengths.
 This allows a better selection of a constraint when two nodes are to be connected when generating the training data.
@@ -148,7 +149,7 @@ These images can be used with existing images of nodes to create realistic image
 
 \subsubsection{Preparing nodes on images}
 
-Since constraints can occur at all possible angles, the data must be generated in such a way that it resembles reality the most.
+Since constraints can occur at all possible angles, the data must be generated in such a way that it resembles real mechanisms best.
 Because of this, multiple steps have to be taken to generate comprehensible training data.
 
 Metadata generated during the generation process is saved into a format that is readable by \name{pandas}. % TODO citation needed
