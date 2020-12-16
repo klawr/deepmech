@@ -22,7 +22,7 @@ This is a requirement the original \name{mec2} HTML-Component should be used wit
 
 \begin{figure}
     \centering
-    \fbox{\includegraphics[width=0.9\textwidth]{images/deepmech_klawr_de.png}}
+    \fbox{\includegraphics[width=0.8\textwidth]{images/deepmech_klawr_de.png}}
     \caption[Screenshot of the web application]{ Both drawers are expanded. On the left the \name{mec2} controls can be seen, on the right a summary of elements of the model are listed. The tab for \name{constraints} is expanded where some properties are shown }
     \label{fig:deepmech_klawr_de}
 \end{figure}
@@ -30,11 +30,11 @@ This is a requirement the original \name{mec2} HTML-Component should be used wit
 \subsubsection{Left drawer}
 
 The structure of the user interface aims to be simple and straight forward.
-The left drawer contains the \code{MecControl}, which is a custom \name{React} component to replace the default \name{mec2} controls by using the designated API. % TODO explain API?
-Furthermore, the left drawer contains functions
+To define individual components \name{Reacts} \name{jsx} syntax is used.
+\name{jsx} is a syntax very similar to \name{HTML} but with the ability to implement JavaScript into the elements\footnote{By using \name{jsx} it is now necessary to compile the project using \name{Babel.js}.}. % TODO citation neede
 
-Custom \name{React} components are designed using \name{Reacts'} \name{jsx}.
-\name{jsx} is a syntax which can be used by \name{React} to define components by a very comfortable syntax similar to \name{HTML}\footnote{By using \name{jsx} it is now necessary to compile the project using \name{Babel.js}.}. % TODO citation neede
+The left drawer contains \code{MecControl}, \code{DeepmechControl} and two other Buttons.
+\code{MecControl} is a custom \name{React} component to replace the default \name{mec2} controls by using the designated API.
 
 \begin{lstlisting}[label={lst:mec_control}, caption={Definition of the \name{MecControl component.}}]
 export default function MecControl({ mecReset, className }) {
@@ -58,8 +58,28 @@ export default function MecControl({ mecReset, className }) {
 \end{lstlisting}
 
 Listing \ref{lst:mec_control} shows the function which returns the component replacing the default \name{mec2} controls.
-It contains two variables: \code{dispatch} 
+It contains the definition of the variables \code{dispatch} and \code{mec}.
+\code{Selector} and \code{useDispatch} are used for state management of the user interface and are examined in chapter \ref{ch:state_manipulation}.
+The return value of a component is the contonent defined in \name{jsx} syntax.
+\code{List} is a \name{Material-UI} component.
+The list items inside the list are are implemented using \code{ListItems} containing a \code{Tooltip} and an \code{IconButton}.
+To reuse \name{Material-UI} components multiple times without having to call them every time a custom \code{ListButton} component is used.
+The code for \code{ListButton} can be reviewed at \aka{} % TODO include link here.
+
+The left drawer also contains the \code{DeepmechControl}\footnote{\name{deepmech} is the current project name.}.
+It is responsible for handling the draw mode.
+It shows the activation button if the draw mode is disabled.
+If the drawing mode is enabled the left drawer does not show the \code{MecControl} anymore.
+Furthermore, the \code{DeepmechControl} shows four different modes interacting with the drawing canvas.
+Drawing, dragging strokes, deleting strokes, and a camera mode.
+Details to the different modes and how they are implemented is explained in chapter \ref{ch:state_manipulation}.
+
+The two bottom-most buttons are responsible for toggling the dark mode\footnote{The app starts in dark mode if the browser is, and vice versa.} and to navigate to the project page: \url{https://github.com/klawr/deepmech}.
 
 \subsubsection{Right drawer}
 
-\subsection{State manipulation}
+\subsubsection{The canvas}
+
+\subsection{State manipulation} \label{ch:state_manipulation}
+
+The state of the elements of the user interface is controlled by the 
