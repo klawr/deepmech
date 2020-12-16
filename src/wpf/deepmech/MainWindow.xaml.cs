@@ -1,6 +1,7 @@
 ﻿using Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT;
 using Microsoft.Web.WebView2.Core;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -85,6 +86,15 @@ namespace deepmech
             var tmp = Path.GetTempFileName();
             if (strokes.Count > 0)
             {
+                // Make strokes white
+                var attributes = new List<Windows.UI.Input.Inking.InkDrawingAttributes>();
+                foreach (var stroke in strokes)
+                {
+                    attributes.Add(stroke.DrawingAttributes);
+                    var DA = stroke.Clone().DrawingAttributes;
+                    DA.Color = Windows.UI.Color.FromArgb(0, 255, 255, 255);
+                    stroke.DrawingAttributes = DA;
+                }
                 // Draw strokes into temporary file
                 using (IOutputStream outputStream = File.Open(tmp, FileMode.Create).AsOutputStream())
                 {
@@ -94,7 +104,31 @@ namespace deepmech
                 // Make image usable for opencv-python (cv2)
                 // It seems that the temporary file lags png encoding (?) So it is done here explictitly
                 Image.FromFile(tmp).Save(path, System.Drawing.Imaging.ImageFormat.Png);
+
+                for (var i = 0; i < strokes.Count; ++i)
+                {
+                    strokes[i].DrawingAttributes = attributes[i];
+                }
             }
+        }
+
+        public string RunPythonScript(string pythonPath, string scriptPath)
+        {
+            using var process = new Process();
+            process.StartInfo = new ProcessStartInfo(pythonPath)
+            {
+                Arguments = scriptPath,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true
+            };
+            process.Start();
+            var output = process.StandardOutput.ReadToEnd();
+            var error = process.StandardError.ReadToEnd(); // Do something with error?
+            process.WaitForExit();
+
+            return output;
         }
 
         private void SendModelUpdate(string json)
@@ -109,42 +143,12 @@ namespace deepmech
             await ReadDeepmechCanvas(Path.Combine(Path.GetTempPath(), "deepmechCanvas.png"));
 
             // Call python with image
-            var Prediction = new Python(Path.Combine(sourcePath, "env", "Scripts", "python.exe"))
-                .Run(Path.Combine(sourcePath, "predict.py"));
+            var Prediction = RunPythonScript(
+                Path.Combine(sourcePath, "env", "Scripts", "python.exe"),
+                Path.Combine(sourcePath, "predict.py"));
 
             // Pass predictions to mec2
             SendModelUpdate(Prediction);
-        }
-
-        private class Python
-        {
-            public readonly string PythonPath;
-
-            public Python(string pythonPath)
-            {
-                PythonPath = pythonPath;
-            }
-
-            public string Run(string scriptPath)
-            {
-                using var process = new Process();
-                process.StartInfo = new ProcessStartInfo(PythonPath)
-                {
-                    Arguments = scriptPath,
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    CreateNoWindow = true
-                };
-                process.Start();
-                var output = process.StandardOutput
-                    .ReadToEnd();
-                //.Replace(Environment.NewLine, string.Empty);
-                var error = process.StandardError.ReadToEnd(); // Do something with error?
-                process.WaitForExit();
-
-                return output;
-            }
         }
     }
 }
