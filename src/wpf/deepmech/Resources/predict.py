@@ -47,7 +47,6 @@ def get_bounding_boxes_nms(predictions):
     base_boxes = tf.gather(all_boxes, base_mask)
     return node_boxes, base_boxes
 
-
 [nodes, bases] = get_bounding_boxes_nms(symbol_detector(image_tensor)[0])
 
 elements = {"nodes":[], "constraints":[]}
@@ -63,7 +62,6 @@ def appendnode(node, base):
         "base": base,
     })
     counter += 1
-
 
 [appendnode(node, False) for node in nodes]
 [appendnode(base, True) for base in bases]
