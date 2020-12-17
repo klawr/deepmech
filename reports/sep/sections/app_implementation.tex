@@ -78,6 +78,21 @@ The two bottom-most buttons are responsible for toggling the dark mode\footnote{
 
 \subsubsection{Right drawer}
 
+The right drawer is intended to show all information about the mechanism which is represented by \name{mec2}.
+On the top, there are two buttons labeled \code{nodes} and \code{constraints} each with a \code{Label} icon.
+Those are used to toggle the labels of \code{nodes} and \code{constraints} respectively.
+The \code{Lock} Button is used to keep the drawer open when interacting with the model.
+This is enabled by default if the side is wide enough; i.e. wider than 1200 pixels.
+
+The model itself is contained within a \code{MecProperties} component.
+The \code{MecProperties} component contains a collection of other custom components, individually created for the different properties of a \name{mec2} model.
+The  first component is the \code{Id} component. It is showing the \code{id} property of the \name{mec2} model and updates it respectively on changes.
+
+Currently three of the modules provided by \name{mec2} are implemented into the app.
+\code{Nodes}, \code{Constraints} and \code{Views} show the associated properties.
+They all follow a similar structure.
+
+
 \subsubsection{The canvas}
 
 \subsection{State manipulation} \label{ch:state_manipulation}
