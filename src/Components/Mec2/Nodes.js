@@ -37,7 +37,7 @@ export default function Nodes() {
 
         function deepmechNodeDrag(e) {
             if (selection && selection.drag) {
-                value = { x: selection.x, y: selection.y }
+                value = { x: selection.x, y: selection.y };
             }
         }
 
@@ -55,10 +55,10 @@ export default function Nodes() {
         const o = {
             pointerdown: deepmechNodeDown,
             drag: deepmechNodeDrag,
-            pointerup: deepmechNodeUp,
+            pointerup: deepmechNodeUp
         }
 
-        Object.entries(o).forEach(e => mecElement._interactor.on(...e))
+        Object.entries(o).forEach(e => mecElement._interactor.on(...e));
 
         return () => {
             Object.entries(o).forEach(e => mecElement._interactor.remove(...e));
@@ -81,8 +81,8 @@ export default function Nodes() {
                     return <Checkbox
                         checked={checked}
                         onChange={(e) => {
-                            changeChecked(e.target.checked)
-                            update(e.target.checked)
+                            changeChecked(e.target.checked);
+                            update(e.target.checked);
                         }} />
                 case 'x':
                 case 'y':

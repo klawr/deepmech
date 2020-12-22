@@ -29,7 +29,7 @@ function handleMecModelUpdate() {
 
     if (typeof action.idx === 'number') {
         Object.entries(up ? action.value : action.previous).forEach(e => {
-            ref._model[action.list][action.idx][e[0]] = e[1]
+            ref._model[action.list][action.idx][e[0]] = e[1];
         });
     }
     else if (action.idx === 'add' || action.idx === 'remove') {
@@ -54,7 +54,7 @@ function handleMecModelUpdate() {
             if (add) {
                 const constraint = { ...action.value };
                 if (ref._model.constraintById(constraint.id)) {
-                    console.warn(`Can not create constraint\nid "${constraint.id}" is already taken.`);
+                    // console.warn(`Can not create constraint\nid "${constraint.id}" is already taken.`);
                     return;
                 }
                 mec.constraint.extend(constraint);
@@ -76,7 +76,7 @@ function handleMecModelUpdate() {
         const t = up ? action.value : action.previous;
         node.filter(p => typeof t[p] === 'string')
             .forEach(p => {
-                ref._model[list][idx][p] = ref._model.nodeById(t[p])
+                ref._model[list][idx][p] = ref._model.nodeById(t[p]);
             });
     }
     if (action.list === 'constraints') {
@@ -107,7 +107,7 @@ function begSimView(v) {
         matrix() {
             return (v.cartesian ?
                 [v.scl, 0, 0, -v.scl, v.x, ref._ctx.canvas.height - 1 - v.y] :
-                [v.scl, 0, 0, v.scl, v.x, v.y])
+                [v.scl, 0, 0, v.scl, v.x, v.y]);
         }
     };
 };

@@ -17,7 +17,7 @@ export default function AddConstraint({ options }) {
     const dispatch = useDispatch();
 
     const [open, setOpen] = React.useState(false);
-
+    // AC is for... addconstraint? might rename this
     const [CN, setCN] = React.useState({
         id: "", p1: options[0], p2: options[1],
         len: 'const', ori: 'free'

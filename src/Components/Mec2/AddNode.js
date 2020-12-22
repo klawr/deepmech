@@ -16,7 +16,7 @@ export default function AddNode() {
     const dispatch = useDispatch();
 
     const [open, setOpen] = React.useState(false);
-
+    // AN is for... addnode? might rename this
     const [AN, setAN] = React.useState({
         id: "", x: 0, y: 0, base: false
     });

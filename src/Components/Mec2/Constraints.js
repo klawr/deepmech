@@ -115,5 +115,4 @@ export default function Constraints() {
             </Grid>
         </AccordionDetails>
     </Accordion>
-
 }
