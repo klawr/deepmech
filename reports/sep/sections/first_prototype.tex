@@ -1,13 +1,13 @@
-\section{First prototype} \label{ch:first_prototype}
+\section{First prototype}\label{ch:first_prototype}
 
 The prototype model has to be able to classify and to localize \name{nodes} and \name{constraints}; whereas \name{constraints} are connecting pairs of \name{nodes} respectively.
 Classification is the problem of detecting the correct type of \name{nodes} or \name{constraints}. % TODO citation
 Localization is the problem of determining the position of the respective detection inside of a given image. % TODO citation
-Subsequently, the gathered information has to be transformed into a usable format for further processing, e.g. into JSON to be usable by \name{mec2}. % TODO citation needed?
+Subsequently, the gathered information has to be transformed into a usable format for further processing, e.g.\ into JSON to be usable by \name{mec2}. % TODO citation needed?
 
 \subsection{The Fully Convolutional Network}\label{ch:fcn}
 
-The topic of prepending work was the classification of hand-drawn mechanical symbols \cite{Lawrence2020}.
+The topic of prepending work was the classification of hand-drawn mechanical symbols~\cite{Lawrence2020}.
 The resulting model can classify images with size 32 by 32 pixels as \name{nodes}, \name{base-nodes} or neither of both.
 It is only capable of classifying images with exactly these dimensions, which is insufficient for the task at hand.
 However, the model can be extended to be able to provide not only a classification, but also the location of an element in an image of arbitrary size.
@@ -38,7 +38,7 @@ _________________________________________________________________
 \end{lstlisting}
 
 The naive way to localize detected \name{nodes} and \name{constraints} in an image of arbitrary size is to scan sectors of size 32 by 32 pixels of an image and predicting them individually.
-Using a 360x360 sized image with strides of one in each direction, the number of images which are used in the prediction process are 108.241 images\footnote{$h + 1 - 32 * w + 1 - 32$, where $h$ and $w$ are the height and width of the input image and the size of the kernel used to predict is 32}.
+Using a 360\times360 sized image with strides of one in each direction, the number of images which are used in the prediction process are 108.241 images\footnote{\(h + 1 - 32 * w + 1 - 32\), where \(h\) and \(w\) are the height and width of the input image and the size of the kernel used to predict is 32}.
 The respective Jupyter notebook testing the performance of this method can be reviewed at \url{https://aka.klawr.de/sep#1}. % TODO Set this URL.
 
 To test this amount of images is not necessary most of the time and can be reduced by increasing the stride of the respective scanning process.
@@ -49,7 +49,7 @@ To transform the model into a so-called Fully Convolutional Network (FCN) the in
 The first layer accepts images of arbitrary size.
 The kernel of 32 by 32 determines the size of the segment given to the second layer, which was previously used as the input-layer.
 Because the input of the original model is only defined by the kernel size, each successive layer is agnostic to the size of the previous.
-Listing \ref{lst:to_fcn} transforms the \code{old\_model} by appending an \code{tf.keras.Input} layer without any specified size and replacing the output layer by a \code{tf.keras.Conv2D} layer\footnote{And thus removing the \code{tf.keras.flatten} layer.}.
+Listing~\ref{lst:to_fcn} transforms the \code{old\_model} by appending an \code{tf.keras.Input} layer without any specified size and replacing the output layer by a \code{tf.keras.Conv2D} layer\footnote{And thus removing the \code{tf.keras.flatten} layer.}.
 
 \begin{lstlisting}[caption={Transformation of the Symbol Classifier into a FCN.}, label=lst:to_fcn]
 inputs = tf.keras.Input(shape=(None, None, 1))
@@ -83,7 +83,7 @@ An example of the usage of this code can be found at \url{https://aka.klawr.de/s
 , where the intricate differences between both approaches are examined.
 
 The FCN approach is roughly ten times faster than taking crops and predicting them individually. 
-The \code{model.summary} results in the output given as listing \ref{lst:fcn_summary}:
+The \code{model.summary} results in the output given as listing~\ref{lst:fcn_summary}:
 
 \begin{lstlisting}[label={lst:fcn_summary}, caption={Summary of Symbol Classifier transformed into a FCN.}]
 Model: "model"
@@ -120,28 +120,25 @@ Constraints to prevent nodes to change the range between each other, which allow
 It is represented by an arrow with an arc at the origin.
 The other type of constraint prevents motion that would change the angle between two nodes, which only allows translational movement between two nodes.
 It is represented by an arrow with two gaps on the shaft and no arc at the origin.
-Examples for the generated data can be seen in figure \ref{fig:constraint_data}.
+Examples for the generated data can be seen in figure~\ref{fig:constraint_data}.
 
 Furthermore, the data is split for constraints of different lengths.
 This allows a better selection of a constraint when two nodes are to be connected when generating the training data.
 
-Data generation for constraints is similar to data generation in \cite{Lawrence2020}.
-The drawing canvas has a width of fifty and the range can vary between 150-249, 250-349, or 350-449; depending on the selected range.
+Data generation for constraints is similar to data generation in~\cite{Lawrence2020}.
+The drawing canvas has a width of fifty and the range can vary between 15--249, 250--349, or 350--449; depending on the selected range.
 
 \begin{figure}
     \centering
     \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{images/rs.png}
-        \caption{Rotational Constraints}
-        \label{fig:rotational_constraints}
+        \caption{Rotational Constraints}\label{fig:rotational_constraints}
     \end{subfigure}
     \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{images/ts.png}
-        \caption{Translational Constraints}
-        \label{fig:translational_constraints}
+        \caption{Translational Constraints}\label{fig:translational_constraints}
     \end{subfigure}
-    \caption[Examples of constraint detector training data]{Some examples of the data created with the described method. Only these two classes were created for the first tests. The images are created horizontally, so their initial angle can be assumed to be zero to keep a record when labeling the data dynamically. }
-    \label{fig:constraint_data}
+    \caption[Examples of constraint detector training data]{Some examples of the data created with the described method. Only these two classes were created for the first tests. The images are created horizontally, so their initial angle can be assumed to be zero to keep a record when labeling the data dynamically. }\label{fig:constraint_data}
 \end{figure}
 
 For each type approximately 1200 images were drawn, 400 for each range, resulting in 2400 images. % TODO download link?
@@ -155,10 +152,10 @@ Because of this, multiple steps have to be taken to generate comprehensible trai
 Metadata generated during the generation process is saved into a format that is readable by \name{pandas}. % TODO citation needed
 \name{pandas} is an open-source data analysis and manipulation tool which helps to work and to visualize data.
 
-Each generated image begins with a black background of size 360x360.
+Each generated image begins with a black background of size 360\times360.
 Between 3 and 10 nodes are randomly placed on the image\footnote{In an intermediate step the node data from previous work is modified to consist of white symbols on black background, instead of random grayscale images.}.
 Each node has to have a minimum distance of 60 to every other node in the image.
-Examples for the resulting images are shown in figure \ref{fig:constraint_data_step1}.
+Examples for the resulting images are shown in figure~\ref{fig:constraint_data_step1}.
 The respective notebook containing the code for this process can be viewed at \url{https://aka.klawr.de/sep\#3}.
 Using this method 100.000 images are generated.
 
@@ -179,8 +176,7 @@ Using this method 100.000 images are generated.
     \begin{subfigure}[b]{0.19\textwidth}
         \fbox{\includegraphics[width=0.92\textwidth]{images/1_4.png}}
     \end{subfigure}
-    \caption[Randomly placed nodes on blank image]{Randomly placed nodes on a blank image. Please note that the colors of these samples are inverted. }
-    \label{fig:constraint_data_step1}
+    \caption[Randomly placed nodes on blank image]{Randomly placed nodes on a blank image. Please note that the colors of these samples are inverted. }\label{fig:constraint_data_step1}
 \end{figure}
 
 % TODO add more text... to many images for little text
@@ -191,32 +187,31 @@ The next step is to randomly connect pairs of nodes inside of the image using co
 It is important to note that this approach does not result in working mechanisms most of the time.
 But as it turns out this is not important, because the model will be classifying individual elements and not the mechanism as a whole.
 
-On an image with $n$ nodes the number of possible connections is $\frac{n \times (n-1)}{2}$.
-As a reasonable heuristic to keep the number of constraints in check $s = 1 - \frac{2}{n-1}$ is used; where $s$ is the chance of the connection being skipped and $n$ is the number of nodes.
-Table \ref{tab:relation_nodes_constraints} describes the expected number of constraints per image.
+On an image with \(n\) nodes the number of possible connections is \(\frac{n \times (n-1)}{2}\).
+As a reasonable heuristic to keep the number of constraints in check \(s = 1 - \frac{2}{n-1}\) is used; where \(s\) is the chance of the connection being skipped and \(n\) is the number of nodes.
+Table~\ref{tab:relation_nodes_constraints} describes the expected number of constraints per image.
 This approach tries to generate as many constraints as there are nodes in the image.
-The difference of the expected number of constraints and the mean of constraints per number of nodes in table \ref{tab:relation_nodes_constraints} occurs most likely due to constraints shorter than 50 or longer than 350 being skipped, too.
+The difference of the expected number of constraints and the mean of constraints per number of nodes in table~\ref{tab:relation_nodes_constraints} occurs most likely due to constraints shorter than 50 or longer than 350 being skipped, too.
 The mean of the number of constraints in relation to the number of nodes is calculated by issuing \code{[df[df.nodes.str.len() == i].constraints.str.len().mean() for i in range(3,10)]}, where \code{df} is the respective \code{pandas.DataFrame}.
 
 \begin{table}
-\caption{Relationship of the number of nodes to the resulting number of constraints.}
-\label{tab:relation_nodes_constraints}
+\caption{Relationship of the number of nodes to the resulting number of constraints.}\label{tab:relation_nodes_constraints}
 \begin{tabular}{lrrrrrrr}
     \toprule
-    Number of nodes: & $3$ & $4$ & $5$ & $6$ & $7$ & $8$ & $9$ \\
+    Number of nodes: & \(3\) & \(4\) & \(5\) & \(6\) & \(7\) & \(8\) & \(9\) \\
     \midrule
-    Possible connections: & $3$ & $6$ & $10$ & $15$ & $21$ & $28$ & $36$ \\
+    Possible connections: & \(3\) & \(6\) & \(10\) & \(15\) & \(21\) & \(28\) & \(36\) \\
     \midrule
-    Chance to skip node pair: & $0$ & $\frac{1}{3}$ & $\frac{1}{2}$ & $\frac{3}{5}$ & $\frac{2}{3}$ & $\frac{5}{7}$ & $\frac{3}{4}$ \\
+    Chance to skip node pair: & \(0\) & \(\frac{1}{3}\) & \(\frac{1}{2}\) & \(\frac{3}{5}\) & \(\frac{2}{3}\) & \(\frac{5}{7}\) & \(\frac{3}{4}\) \\
     \midrule
-    Expected number of constraints: & $3$ & $4$ & $5$ & $6$ & $7$ & $8$ & $9$ \\
+    Expected number of constraints: & \(3\) & \(4\) & \(5\) & \(6\) & \(7\) & \(8\) & \(9\) \\
     \midrule
-    Mean of constraints in the dataset: & $2.62$ & $3.48$ & $4.35$ & $5.21$ & $6.10$ & $6.91$ & $7.78$ \\
+    Mean of constraints in the dataset: & \(2.62\) & \(3.48\) & \(4.35\) & \(5.21\) & \(6.10\) & \(6.91\) & \(7.78\) \\
     \bottomrule
 \end{tabular}
 \end{table}
 
-The images which are generated in this step are shown in figure \ref{fig:constraint_data_step2}\footnote{In the initial dataset for constraints 3 different types were made for different length-intervals. After initial testing, the shorter constraints did not meet the visual expectations. Thus these images are generated with images from a range of 350-449 only.}.
+The images which are generated in this step are shown in figure~\ref{fig:constraint_data_step2}\footnote{In the initial dataset for constraints 3 different types were made for different length-intervals. After initial testing, the shorter constraints did not meet the visual expectations. Thus these images are generated with images from a range of 350--449 only.}.
 
 \begin{figure}
     \centering
@@ -235,20 +230,18 @@ The images which are generated in this step are shown in figure \ref{fig:constra
     \begin{subfigure}[b]{0.19\textwidth}
         \fbox{\includegraphics[width=0.92\textwidth]{images/2_4.png}}
     \end{subfigure}
-    \caption[Randomly connected nodes using constraint data]{Samples of images generated by connecting randomly selected pairs of nodes using the prepared constraint data. Please note that the colors of these samples are inverted.}
-    \label{fig:constraint_data_step2}
+    \caption[Randomly connected nodes using constraint data]{Samples of images generated by connecting randomly selected pairs of nodes using the prepared constraint data. Please note that the colors of these samples are inverted.}\label{fig:constraint_data_step2}
 \end{figure}
 
-\subsubsection{Cropping images to get the training data}
-\label{ch:cropping_images}
+\subsubsection{Cropping images to get the training data}\label{ch:cropping_images}
 
 At last, these images are cropped.
 By cropping and reshaping the models the images can be fed into the training process of a Keras model.
 The notebook doing this operation can be viewed at \url{https://aka.klawr.de/sep\#4}.
-As the number of possible connections is $34 = \frac{\sum_{i=3}^{9}i(i-1)}{(10-3)}$, the expected number of generated crop-images is 3.400.000.
+As the number of possible connections is \(34 = \frac{\sum_{i=3}^{9}i(i-1)}{(10-3)}\), the expected number of generated crop-images is 3.400.000.
 It is also important to check for reversed constraints between node pairs to classify them as a non-connection, to be able to correctly predict the direction of the constraint, too.
 As 100.000 images are already a good size to work with, another measure was taken to keep the number of expected crops in check.
-For this crops are only kept $\frac{1}{m(m-1)}$ of the time, which is about each 30th time in this case.
+For this crops are only kept \(\frac{1}{m(m-1)}\) of the time, which is about each 30th time in this case.
 
 The resulting dataset contains 119.189 images, which are subsequently transformed into a \name{tensorflow record}.
 
@@ -262,7 +255,7 @@ In this prototype, the design of the constraint detection model is a copy of the
 The input size is adapted to fit for the crops, which have a size of 96 by 96 instead of the 32 by 32 images used for the symbol detector.
 The model is created using the functional API of Keras, which has no real impact on the result, but is just another way of defining models.
 
-The output of \code{model.summary()} can be viewed in listing \ref{lst:crop_model}.
+The output of \code{model.summary()} can be viewed in listing~\ref{lst:crop_model}.
 \begin{lstlisting}[label={lst:crop_model}, caption={Summary of Constraint Detector.}]
 Model: "model"
 _________________________________________________________________
@@ -293,7 +286,7 @@ The training is done by decoding the record which was created in earlier steps a
 The training is then initiated by using the \code{model.fit} method, passing the training data as the arguments.
 \name{TensorBoard} % TODO citation needed
 is used to log the accuracy and the loss of the model during training.
-The respective graphs can be seen in figure \ref{fig:crop_detector_tensorboard}.
+The respective graphs can be seen in figure~\ref{fig:crop_detector_tensorboard}.
 
 \begin{figure}
     \centering
@@ -303,8 +296,7 @@ The respective graphs can be seen in figure \ref{fig:crop_detector_tensorboard}.
     \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{images/crop_detector_epoch_loss.png}
     \end{subfigure}
-    \caption[TensorBoard output for the crop detector]{The training accuracy and loss of the crop detector. These graphs were created using TensorBoard, which is used as the callback during training.}
-    \label{fig:crop_detector_tensorboard}
+    \caption[TensorBoard output for the crop detector]{The training accuracy and loss of the crop detector. These graphs were created using TensorBoard, which is used as the callback during training.}\label{fig:crop_detector_tensorboard}
 \end{figure}
 
 \subsubsection{Combining node and constraint detection}
@@ -336,11 +328,10 @@ A pipeline of this process can be reviewed at \url{https://aka.klawr.de\#5}.
     \begin{subfigure}[b]{0.19\textwidth}
         \fbox{\includegraphics[width=0.92\textwidth]{images/225_4rc.png}}
     \end{subfigure}
-    \caption[Predictions of the first prototype on the generated data]{The second step of the data generation processed created images with nodes and constraints that resemble nodes and constraints placed randomly into a canvas. These predictions are made on the images from figure \ref{fig:constraint_data_step2}. There is only one falsely predicted node in the second image from the left. The constraints are way less accurate, which is not surprising considering the composition of these images.}
-    \label{fig:constraint_data_step3}
+    \caption[Predictions of the first prototype on the generated data]{The second step of the data generation processed created images with nodes and constraints that resemble nodes and constraints placed randomly into a canvas. These predictions are made on the images from figure~\ref{fig:constraint_data_step2}. There is only one falsely predicted node in the second image from the left. The constraints are way less accurate, which is not surprising considering the composition of these images.}\label{fig:constraint_data_step3}
 \end{figure}
 
-\subsection{Conversion to the web context} \label{ch:conversion_to_web_context}
+\subsection{Conversion to the web context}\label{ch:conversion_to_web_context}
 
 So far all the code is written in Python.
 To make the data pipeline available in a web-based context, the models have to be converted into a format readable by JavaScript and the pipeline has to be adjusted accordingly.
@@ -351,8 +342,8 @@ is used.
 The trained weights and biases are contained in \name{group1-shard1of1.bin}\footnote{Instructions on how to import a Keras model into Tensorflow.js can be viewed at \url{https://aka.klawr.de/sep\#6}.}. % TODO https://www.tensorflow.org/js/tutorials/conversion/import_keras
 
 To include the weights and biases into an importable JavaScript file it is converted into a base64-formatted string.
-For this the \name{base64} \cite{Josefsson2018} module contained in \name{GNU Coreutils} is used.
-The resulting string is copied into a JavaScript file, containing one class, as can be seen in listing \ref{lst:js_model_class}.
+For this the \name{base64}~\cite{Josefsson2018} module contained in \name{GNU Coreutils} is used.
+The resulting string is copied into a JavaScript file, containing one class, as can be seen in listing~\ref{lst:js_model_class}.
 
 \begin{lstlisting}[label={lst:js_model_class}, caption={[JavaScript classes for Tensorflow.js.] Class definition of one of the models providing necessary functions to be used by \code{tf.loadLayersModel} to return a usable model in JavaScript. }]
 class ConstraintModel {
@@ -386,20 +377,20 @@ Furthermore, objects created by this class contain a \code{load} function, which
 A model can then be created by issuing \code{tf.loadLayersModel(new Crop())}.
 
 At the moment it is not possible to convert a model into a Tensorflow model after it is processed in any form.
-Therefore a function has to be written which takes the initially used node detector as input and converts it into an FCN.
+Therefore a function has to be written which takes the initially used node detector as input and converts it into an FCN.\@
 For this a generalized form of the conversion processed has been written, which can be reviewed at \url{https://aka.klawr.de/sep\#8}. % TODO
 
 The models are implemented into the JavaScript pipeline by embedding all necessary functions into an object, called \code{deepmech}.
 This object has 6 properties, which are used to use the previously defined classes to create models and predict images using them.
 
 \begin{enumerate}
-    \item \code{nodeDetector} - an immediately invoked function execution is used to call the \code{tf.loadLayersModel} function provided by Tensorflow.js by submitting a \code{new models.NodeModel()}.
+    \item \code{nodeDetector} --- an immediately invoked function execution is used to call the \code{tf.loadLayersModel} function provided by Tensorflow.js by submitting a \code{new models.NodeModel()}.
     The return of this function is immediately used as input for the \code{toFullyConv} function.
-    \item \code{constraintDetector} - a function similar to the \code{nodeDetector} property, but without the necessity to convert the model into a FCN.
-    \item \code{detectNodes} - this function takes an image and the previously defined nodeDetector as input and returns the detected nodes with some preprocessing steps in between.
-    \item \code{getCrops} - another function which uses an image and previously determined nodes to create crops. These crops are equivalent to those generated in chapter \ref{ch:cropping_images}.
-    \item \code{detectConstraints} - The generated crops are used in conjunction with the model returned by \code{constraintDetector} to predict constraints.
-    \item \code{predict} - This function is intended to be actually used by external processes.
+    \item \code{constraintDetector} --- a function similar to the \code{nodeDetector} property, but without the necessity to convert the model into a FCN.\@
+    \item \code{detectNodes} --- this function takes an image and the previously defined nodeDetector as input and returns the detected nodes with some preprocessing steps in between.
+    \item \code{getCrops} --- another function which uses an image and previously determined nodes to create crops. These crops are equivalent to those generated in Chapter~\ref{ch:cropping_images}.
+    \item \code{detectConstraints} --- The generated crops are used in conjunction with the model returned by \code{constraintDetector} to predict constraints.
+    \item \code{predict} --- This function is intended to be used by external processes.
     It combines all other functions by taking an image as input and returning the respective predictions of nodes and constraints in an image.
 \end{enumerate}
 
@@ -416,7 +407,7 @@ integrated into a Jupyter Notebook, which can be viewed at \url{https://aka.klaw
 mec2 is a 2D physics simulation engine written in JavaScript.
 It is designed to easily create 2D mechanisms for rapid sketching and rendering the resulting models in a 2D canvas using g2.
 
-Mechanisms are defined by using JSON formatting, as shown in listing \ref{lst:mec2_example}.
+Mechanisms are defined by using JSON formatting, as shown in listing~\ref{lst:mec2_example}.
 
 \begin{lstlisting}[label={lst:mec2_example}, caption={ Example for a mechanism defined in the syntax proposed by \name{mec2}. }]
 {
@@ -445,8 +436,7 @@ Mechanisms are defined by using JSON formatting, as shown in listing \ref{lst:me
 \begin{figure}
     \centering
     \includegraphics[width=0.8\textwidth]{images/mec2_chart.png}
-    \caption[Example of the mec2 HTML element]{ The mechanism defined in listing \ref{lst:mec2_example}. It is rendered using the mec2 custom HTML element. Defined are five nodes and 4 constraints. The chart and trace views are generated after one revolution of the leftmost constraint. }
-    \label{fig:generated_data_samples}
+    \caption[Example of the mec2 HTML element]{ The mechanism defined in listing~\ref{lst:mec2_example}. It is rendered using the mec2 custom HTML element. Defined are five nodes and 4 constraints. The chart and trace views are generated after one revolution of the leftmost constraint. }\label{fig:generated_data_samples}
 \end{figure}
 
 mec2 is divided into many sub-modules; some of which are optional, but some are necessary to simulate functioning mechanisms.
@@ -467,7 +457,7 @@ For this prototype only necessary modules have to be used; namely:
     This approach allows for easy extensibility of objects by adding modules to the core object.
 
     \name{mec2.model} also serves as a hub for all other modules to be implemented in.
-    By delegating certain functionality it suffices to issue e.g. the models \code{init} function to call \code{init} on all other objects handled by other modules as well.
+    By delegating certain functionality it suffices to issue e.g.\ the model's \code{init} function to call \code{init} on all other objects handled by other modules as well.
     
     \item \name{mec2.node} implements one of the two essential elements of mechanisms (the other being constraints). Nodes are to be seen as particles, which can have a degree of freedom of 2. They are implemented with a default mass of 1kg.
     
@@ -494,8 +484,7 @@ The default handler of \name{g2} issues commands to a canvas handler, which in t
 \begin{wrapfigure}{r}{0.35\textwidth}
     \centering
     \includegraphics[width=0.35\textwidth]{images/truss.png}
-    \caption{Image generated by listing \ref{lst:truss}.}
-    \label{fig:truss}
+    \caption{Image generated by listing~\ref{lst:truss}.}\label{fig:truss}
 \end{wrapfigure}
 
 \begin{lstlisting}[label={lst:truss}, caption={Example code of a truss defined with g2.}]
@@ -528,7 +517,7 @@ At the time of writing six other modules exist for \name{g2}\footnote{Namely \na
 
 \name{g2.ext} provides the necessary functionality for other modules to use, such as positioning capability for labels.
 Modules like \name{g2.chart} provide only one new (but extensive) command, which can be subsequently used by other libraries, like \name{mec2}.
-\name{g2.mec} provides definitions to draw shapes and symbols that are often used in engineering, as can be seen in figure \ref{fig:truss}.
+\name{g2.mec} provides definitions to draw shapes and symbols that are often used in engineering, as can be seen in figure~\ref{fig:truss}.
 \name{g2.selector} is an extension used in interactive environments to be able to select certain geometries and interact with them.
 For this purpose \name{g2.selector} enables the introduction of a new context which can be used to find elements whose coordinates match those of a corresponding mouse pointer.
 
@@ -554,33 +543,29 @@ This is done by \code{document.getElementsByTagName('mec-2')} and then iterating
 The target of the written script is to create the possibility inside the \name{mec2} HTML element to create images, predict nodes and constraints and return the respective \name{mec2} representation.
 
 For the activation of the additions described here a button has been added to the navigation bar.
-The respective button in the form of a pencil can bee seen in figure \ref{fig:prototype_before}.
-The activation of the button initiates few changes to the navigation bar, which changes the context the user interacts with, which can be seen in the navigation bar in figure \ref{fig:prototype_drawing}.
+The respective button in the form of a pencil can bee seen in figure~\ref{fig:prototype_before}.
+The activation of the button initiates a few changes to the navigation bar, which changes the context the user interacts with, which can be seen in the navigation bar in figure~\ref{fig:prototype_drawing}.
 
 \begin{figure}
     \centering
     \begin{subfigure}[b]{0.32\textwidth}
         \includegraphics[width=\textwidth]{images/prototype_before.png}
-        \caption{}
-        \label{fig:prototype_before}
+        \caption{}\label{fig:prototype_before}
     \end{subfigure}
     \begin{subfigure}[b]{0.32\textwidth}
         \includegraphics[width=\textwidth]{images/prototype_drawing_inverted.png}
-        \caption{}
-        \label{fig:prototype_drawing}
+        \caption{}\label{fig:prototype_drawing}
     \end{subfigure}
     \begin{subfigure}[b]{0.32\textwidth}
         \includegraphics[width=\textwidth]{images/prototype_after.png}
-        \caption{}
-        \label{fig:prototype_after}
+        \caption{}\label{fig:prototype_after}
     \end{subfigure}
     \caption[deepmech prototype.]{The first image depicts \name{mec2} in its default state. The only thing visible due to the additions is the pencil symbol in the navigation bar.
     The second image depicts a drawing of a four-bar. Please note that the actual image is inverted, but that does not make any real difference.
-    The third image shows the predicted mechanism.}
-    \label{fig:prototype}
+    The third image shows the predicted mechanism.}\label{fig:prototype}
 \end{figure}
 
-Changes in the canvas are managed by only one \name{g2} command queue, which inherits multiple other command queues for each different case, as can be seen in listing \ref{lst:prototype_command_queue}.
+Changes in the canvas are managed by only one \name{g2} command queue, which inherits multiple other command queues for each different case, as can be seen in listing~\ref{lst:prototype_command_queue}.
 
 \begin{lstlisting}[caption={Command queue for the drawing context in the prototype.}, label={lst:prototype_command_queue}]
 const command_queue = g2().rec({
@@ -599,13 +584,13 @@ const command_queue = g2().rec({
 
 Herein \code{view} is taken from \code{element.\_interactor.view} of the respectve \name{mec2} \code{element}.
 
-The background of the drawing canvas is colored black (\code{\#000}) by issuing the \code{rec} command of \name{g2} for the active viewport\footnote{Please note that figure \ref{fig:prototype_drawing} contains an inverted image for contrast reasons.}.
+The background of the drawing canvas is colored black (\code{\#000}) by issuing the \code{rec} command of \name{g2} for the active viewport\footnote{Please note that figure~\ref{fig:prototype_drawing} contains an inverted image for contrast reasons.}.
 
 The \code{img\_placeholder} is used to draw images loaded by issuing \code{uploadImage}, which loads an image and saves the respective image inside this command queue.
 
 The \code{mec\_placeholder} is used to be able to show already determined nodes and constraints of the mechanism inside the drawing context.
 This makes it possible to extend existing mechanisms.
-A \name{mec2} model is usually defined by more than just nodes and costraints, so all elements which are not part of code{element.\_model.nodes} or \code{element.\_model.constraints} are filtered first; e.g. the chart which can be seen in figure \ref{fig:generated_data_samples}.
+A \name{mec2} model is usually defined by more than just nodes and costraints, so all elements which are not part of code{element.\_model.nodes} or \code{element.\_model.constraints} are filtered first; e.g.\ the chart which can be seen in figure~\ref{fig:generated_data_samples}.
 
 The \code{ply\_placeholder} is responsible for rendering user-generated drawing.
 The default behavior of the \name{canvasInteractor} when pressing the pointer-button in combination with movement of the pointer is to drag the viewport, or, when an element is selected by the \name{g2.selector}, to drag an element.
@@ -613,7 +598,7 @@ When the drawing mode is active this behavior has to be replaced.
 When the draw mode is active and \code{pointerdown} is issued an array is created which is then filled by the coordinates of the pointer on each \code{tick}\footnote{A \code{tick} is issued by the \name{canvasInteractor} on each requestAnimationFrame}.
 This approach creates one \code{ply} element for each consecutive line, which can be dragged or deleted by changing the respective mode using the  \name{g2.selector}.
 
-By starting a prediction the content of the canvas is fed into the trained models, as discussed in chapter \ref{ch:conversion_to_web_context}.
+By starting a prediction the content of the canvas is fed into the trained models, as discussed in Chapter~\ref{ch:conversion_to_web_context}.
 The resulting prediction updates the \name{mec2} model.
 This is similar to the generation of bounding boxes, but instead of drawing them onto the canvas to show the results, the respective coordinates are added to the \name{mec2} model.
 The assembled \name{mec2} model can then be rendered and interacted with.
