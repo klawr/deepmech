@@ -4,11 +4,15 @@ export const slice = createSlice({
     name: 'Deepmech',
     initialState: {
         mode: 'draw',
+        canvas: undefined,
     },
     reducers: {
         changeMode: (state, action) => {
             state.mode = action.payload;
-        }
+        },
+        updateCanvas: (state, action) => {
+            state.canvas = action.payload;
+        },
     },
 });
 

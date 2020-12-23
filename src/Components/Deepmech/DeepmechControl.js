@@ -51,7 +51,9 @@ export default function DeepmechControl() {
                     </ToggleButtonGroup>
                 </ListItem>
                 <Divider />
-                <ListButton onClick={deepmech.predict} tooltip="predict" >
+                <ListButton
+                    onClick={() => deepmech.predict(document.getElementById(active.canvas))}
+                    tooltip="predict" >
                     <Done />
                 </ListButton>
             </div>}

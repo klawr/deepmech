@@ -1,13 +1,21 @@
 import React from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { deepmechSelect, mecSelect, mecAction, UiAction } from '../../Features';
+import {
+    deepmechAction,
+    deepmechSelect,
+    mecSelect,
+    mecAction,
+    UiAction
+} from '../../Features';
 
 export default function DeepmechCanvas({ classes, placeholder }) {
     const deepmech = useSelector(deepmechSelect);
     const mec = useSelector(mecSelect);
+    const id = "deepmechCanvas";
 
     const dispatch = useDispatch();
+    dispatch(deepmechAction.updateCanvas(id));
     const canvasRef = React.useRef(null);
     React.useEffect(() => {
         const [nl, cl] = [mec.nodeLabels, mec.constraintLabels];
@@ -22,7 +30,7 @@ export default function DeepmechCanvas({ classes, placeholder }) {
     }, [deepmech.mode]);
 
     return <canvas
-        id="deepmechCanvas"
+        id={id}
         className={classes.drawCanvas}
         width={globalThis.innerWidth} height={globalThis.innerHeight}
         ref={canvasRef} />

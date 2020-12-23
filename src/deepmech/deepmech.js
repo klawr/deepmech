@@ -203,11 +203,13 @@ export const deepmech = {
         }
     },
 
-    predict: async () => {
+    predict: async (canvas) => {
+        if (!canvas) return; // TODO throw something
+
         const element = mecElement;
         const model = element._model;
 
-        let tensor = tf.browser.fromPixels(document.getElementById('deepmechCanvas'), 1);
+        let tensor = tf.browser.fromPixels(canvas, 1);
         tensor = tensor.div(255).expandDims();
 
         const nodes = (await deepmech.detector
