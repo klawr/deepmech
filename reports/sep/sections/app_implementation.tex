@@ -25,6 +25,10 @@ By using \name{materialUI}\cite{MaterialUI2020} a consistent and modern layout i
     \caption[Screenshot of the web application]{ Both drawers are expanded. On the left the \name{mec2} controls can be seen, on the right a summary of elements of the model are listed. The tab for \name{constraints} is expanded where some properties are shown }\label{fig:deepmech_klawr_de}
 \end{figure}
 
+The main part of the application is occupied by the \name{mec2} Custom HTML element.
+It is stretched across the whole viewport.
+On both sides are \name{Material-UI} \code{Drawer} elements, enabling the user to interact with different parts of the application.
+
 \subsubsection{Left drawer}
 
 The structure of the user interface aims to be simple and straight forward.
@@ -76,7 +80,7 @@ The two bottom-most buttons are responsible for toggling the dark mode\footnote{
 
 \subsubsection{Right drawer}
 
-The right drawer is intended to show all information about the mechanism which is represented by \name{mec2}.
+The right drawer is intended to show all relevant information contained by the \name{mec2} model.
 On the top, there are two buttons labeled \code{nodes} and \code{constraints} each with a \code{Label} icon.
 Those are used to toggle the labels of \code{nodes} and \code{constraints} respectively.
 The \code{Lock} Button is used to keep the drawer open when interacting with the model.
@@ -84,12 +88,88 @@ This is enabled by default if the side is wide enough; i.e.\ wider than 1200 pix
 
 The last component in the \code{RightDrawer} is the \code{MecProperties} component.
 The \code{MecProperties} component contains a collection of other custom components, individually created for the different properties of a \name{mec2} model.
-The  first component is the \code{Id} component. It is showing the \code{id} property of the \name{mec2} model and updates it respectively on changes.
+The  first component is the \code{Id} component.
+It is showing the \code{id} property of the \name{mec2} model and updates it respectively on changes.
 
-Currently three of the modules provided by \name{mec2} are implemented into the app.
-\code{Nodes}, \code{Constraints} and \code{Views} show the associated properties.
-They all follow a similar structure.
+Currently, three of the modules provided by \name{mec2} are implemented into the app:
+\code{Nodes}, \code{Constraints} and \code{Views}.
+They are all structured in a very similar fashion to be able to have a somewhat unified interface for the user.
+To achieve that the return value of these components is very similar and can be seen in Listing~\ref{lst:mec_component_return}.
 
+\begin{lstlisting}[label={lst:mec_component_return}, caption={Return value of a custom \name{mec2} component.}]
+return <Accordion>
+    <AccordionSummary> {name} </AccordionSummary>
+    <AccordionDetails>
+        <Grid container direction="row">
+            <MultiSelect options={head} updateOptions={updateHead} />
+            <MecTable
+                SanitizedCell={SanitizedCell}
+                head={Object.entries(head).filter(h => h[1]).map(h => h[0])}
+                list={mecElement._model[name]} />
+        </Grid>
+    </AccordionDetails>
+</Accordion>
+\end{lstlisting}
+
+The \code{Accordion} in this listing is a \name{Material-UI} component\footnote{\aka{https://material-ui.com/components/accordion/}}.
+This component accepts the \code{AccordionSummary} and \code{AccordionDetails}, which are defined inside the \code{Accordion}.
+In Listing~\ref{lst:mec_component_return} the \code{AccordionSummary} encapsulates the \code{name} property of the respective component, which is the name of the component in lower case; e.g. \code{const name = 'nodes'} for the \code{Nodes} component.
+\code{AccordionDetails} contains elements that are shown when the \code{Accordion} is expanded.
+
+The \code{AccordionDetails} component shows details of the respective property of the \name{mec2} model.
+The \code{Grid} in the \code{AccordionDetails} in~\ref{lst:mec_component_return} contains two custom components.
+\code{MultiSelect} is a dropdown menu which shows a list of the available properties of the module; e.g.\ for nodes these properties are \code{id}, \code{x}, \code{y}, \code{base}.
+These properties are provided by the variable \code{head}, which is given inside the definition of the component.
+This enables the possibility to show and modify other properties later on, without the necessity to show them from the start\footnote{To show all possible properties directly would also result in a very unclear user interface.}.
+The \code{head} variable is a list of properties which is further discussed in Chapter~\ref{ch:state_mec2_model}.
+
+The \code{MecTable} component is responsible for rendering the table where the properties are shown.
+\code{MecTable} returns a predefined layout of a regular \code{Table} element of \name{Material-UI}, which can be reviewed at \aka{https://material-ui.com/components/tables/}.
+The \code{TableHead} in \code{MecTable} contains a mapping of the different properties which are provided by \code{head} to show the properties which are shown by each column.
+The rows of the table are filled using yet another custom component which is injected into the \code{MecTable}, called \code{SanitizedCell}.
+\code{SanitizedCell} itself is provided by the encompassing component.
+It provides information on how the individual properties are to be rendered.
+The respective return value of the \code{SanitizedCell} function can be seen in Listing~\ref{lst:sanitized_cell}.
+
+\begin{lstlisting}[label={lst:sanitized_cell}, caption={Return value of the \code{Node} components \code{SanitizedCell} function.}]
+return <ContextMenu key={idx}>
+    {select()}
+    <MenuItem onClick={removeNode}>
+        {`Remove node ${elm['id']}`}
+    </MenuItem>
+\end{lstlisting}
+
+\code{select} returns the respective function based on a switch statement, which can be seen in~\ref{lst:sanitized_cell_select}.
+
+\begin{lstlisting}[label={lst:sanitized_cell_select}, caption={Shortened version of \code{select} function inside of the \code{SanitizedCell} function of the \code{Node} component.}]
+function select() {
+    switch (property) {
+        case 'base':
+            const [checked, changeChecked] = React.useState(!!elm[property]);
+            return <Checkbox checked={checked} onChange={(e) => {
+                    changeChecked(e.target.checked);
+                    update(e.target.checked);}} />
+        case 'x':
+        case 'y':
+            return <UpdateText
+                title={property}
+                value={Math.round(elm[property])}
+                onSubmit={v => update(+v)} />
+        case 'id': /*...*/
+        default: return <div>{elm[property]}</div>
+}
+\end{lstlisting}
+
+\code{SanitizedCell} is called with an argument object containing \code{property}, \code{idx} and \code{elm}.
+The \code{property} corresponds to the current value of \code{head}, which is mapped in the \code{MecTable} to fill the \code{TableRow}\footnote{Yet another property of \code{Table} which is responsible for the design of the table-rows.}.
+Based on the \code{property} value the \code{select} function returns the component designed for the specific property.
+If the property is equal to \code{'base'} the return value is \name{Material-UI}s \code{Checkbox}.
+For textual inputs the custom component \code{UpdateText} is created, which handles updates reliably to be translated to the \name{mec2} model and back.
+It is therefore used by number value like \code{'x'} and \code{'y'} or textual value like \code{'id'}.
+
+Another custom component, which is used inside a \code{SanitizedCell} component is \code{RadioSelect}.
+This custom component is used to get a selection of items and hold one as the selected item; e.g.\ constraints inside a \name{mec2} model reference two nodes, which are selected via their respective \code{id} property.
+This component allows to list all nodes by their \code{id} property and select one respectively.
 
 \subsubsection{The canvas}
 

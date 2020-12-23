@@ -3,6 +3,9 @@
 reports/*/meta
 auth.json
 
+# Latex aka
+**/document.aka
+
 # NOTE: node
 # Logs
 logs
