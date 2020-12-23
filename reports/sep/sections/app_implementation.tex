@@ -173,6 +173,56 @@ This component allows to list all nodes by their \code{id} property and select o
 
 \subsubsection{The canvas}
 
-\subsection{State manipulation} \label{ch:state_manipulation}
+As mentioned above, the viewport is occupied by the \name{mec2} Custom HTML element.
+The prototype used the canvas of this HTML element to be able to draw.
+This approach is cumbersome because the corresponding event handlers had to be activated and deactivated manually, which gives a lot of room for error and is not a very flexible approach.
+
+In unison with the rest of the application, this canvas is now remodeled into a custom component.
+This \code{DeepmechCanvas} component does not return a \name{React} component, but a HTML canvas, as demonstrated in Listing~\ref{lst:deepmech_canvas}.
+
+\begin{lstlisting}[label={lst:deepmech_canvas}, caption={Return of the \code{DeepmechCanvas} component.}]
+return <canvas
+    id="{id}" className={classes.drawCanvas}
+    width={globalThis.innerWidth} height={globalThis.innerHeight}
+    ref={canvasRef} />
+\end{lstlisting}
+
+The \code{id} property is set to be able to refer to this canvas from other components.
+The \code{DeepmechControl} component uses this \code{id} to be able to get access to the HTML element and forward it to the \code{predict} function.
+
+\code{width} and \code{height} are taken from the \code{globalThis}\footnote{\aka{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/globalThis}} property.
+
+The \code{DeepmechCanvas} component has a \code{canvasRef} component which is initially set to \code{const canvasRef = React.useRef(null)}.
+On rendering the canvas, this is updated to the HTML element which is returned by this component.
+See \aka{https://reactjs.org/docs/hooks-reference.html\#useref} for more information about \code{React.useRef}.
+
+% Because the reference is created after initialization, \name{Reacts} \code{useEffect}\footnote{\aka{https://reactjs.org/docs/hooks-reference.html\#useeffect}} has to be used.
+\code{DeepmechCanvas}' \code{useEffect} is shown in Listing~\ref{lst:deepmech_canvas_use_effect}.
+
+\begin{lstlisting}[label={lst:deepmech_canvas_use_effect}, caption={The \code{useEffect} function in the \code{DeepmechCanvas} component.}]
+React.useEffect(() => {
+    const [nl, cl] = [mec.nodeLabels, mec.constraintLabels];
+    dispatch(mecAction.toggleNodelabels(false));
+    dispatch(mecAction.toggleConstraintlabels(false));
+    dispatch(UiAction.right(false));
+    const ctx = canvasRef.current.getContext('2d');
+    return handleInteractor(ctx, deepmech.mode, placeholder, () => {
+        dispatch(mecAction.toggleNodelabels(nl));
+        dispatch(mecAction.toggleConstraintlabels(cl));
+    });
+}, [deepmech.mode]);
+\end{lstlisting}
+
+The first argument given to this function is called after the component is rendered the first time.
+This behavior is necessary because the canvas has to be initialized for the context of the canvas element to be set via \code{canvasRef.current.getContext('2d')}.
+\code{dispatch} sets certain values which will be further examined in Chapter~\ref{ch:state_manipulation}.
+
+% TODO add some text about the first function (return value etc.) Maybe put the second argument first? because the text for the first is going to be big...
+
+The second argument is an array of dependency properties.
+Every time one of the properties in this array changes, the function given as the first argument is issued again.
+
+\subsection{State manipulation}\label{ch:state_manipulation}
+\subsection{State of the \name{mec2} model}\label{ch:state_mec2_model}
 
 The state of the elements of the user interface is controlled by the 
