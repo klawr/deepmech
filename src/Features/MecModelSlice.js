@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const ref = mecElement;
 
-export const slice = createSlice({
+const slice = createSlice({
     name: 'MecModel',
     initialState: {
         queue: [],
