@@ -237,7 +237,7 @@ The event listeners have respective functions that handle the event based on the
 
 For example the \code{pointerdown} function, as described in Listing~\ref{lst:handle_interactor_pointerdown} contains a switch-statement handling events when the \code{mode} is set to \code{'draw'} or \code{'delete'}.
 
-\begin{lstlisting}[label={lst:handle_interactor_pointer_down}, caption={\code{pointerdown} function in \code{handleInteractor}.}]
+\begin{lstlisting}[label={lst:handle_interactor_pointerdown}, caption={\code{pointerdown} function in \code{handleInteractor}.}]
 function pointerdown(e) {
     switch (mode) {
         case 'draw':
@@ -278,6 +278,60 @@ It reverts the changes made to the \code{canvasInteractor} and also calls \code{
 \code{fn} is injected because it needs access to the scope in which the \code{dispatch} and \code{mecAction} resides, as seen in Listing~\ref{lst:deepmech_canvas_use_effect}.
 
 \subsection{State manipulation}\label{ch:state_manipulation}
+
+To track changes between the components \name{React-Redux}\cite{Abramov2021} is used.
+This approach is different to \name{mec2}'s because changes are not made onto an object itself, but a new object is created on each change which replaces the old one.
+
+The upside of this approach is that properties do not have to be tracked.
+A change will always render the whole application using the new state without the necessity of event listeners on every variable and property which may change.
+To dispatch changes the \code{dispatch} function is issued\footnote{As already seen in Listings~\ref{lst:mec_control} and~\ref{lst:deepmech_canvas_use_effect}}.
+Those functions update a store that holds the state of the application.
+The store is defined by different slices.
+The \code{DeepmechSlice} is shown in Listing~\ref{lst:deepmech_slice}.
+
+\begin{lstlisting}[label={lst:deepmech_slice}, caption={Definition of the \code{DeepmechSlice}}.]
+const slice = createSlice({
+    name: 'Deepmech',
+    initialState: {
+        mode: 'draw',
+        canvas: undefined,
+    },
+    reducers: {
+        changeMode: (state, action) => {
+            state.mode = action.payload;
+        },
+        updateCanvas: (state, action) => {
+            state.canvas = action.payload;
+        },
+    },
+});
+export const deepmechAction = slice.actions;
+export const deepmechSelect = state => state.Deepmech;
+export default slice.reducer;
+\end{lstlisting}
+
+\code{createSlice} is imported from the \code{recuxjs} toolkit.
+Every slice contains three properties: A \code{name} for identification, an \code{initialState} which defines the properties that may change including their initial state and \code{reducers}.
+
+\code{reducers} contain functions that take two arguments.
+The first argument is the \code{state} itself.
+The second argument is an \code{action} which contains information about the respective change in a \code{payload} property.
+
+Every slice definition has three export statements.
+They are used to import the actions, select the slice, and to implement this slice into the store respectively\footnote{The store is defined in the \code{store.js} which definition can be seen here \aka{TODO}.}. % TODO
+
+To dispatch an \code{action}, the returned function of \name{React-Redux}' \code{useDispatch} is used.
+This returned function is commonly called \code{dispatch}.
+
+For example to update the \code{mode} of \code{DeepmechSlice} the \code{DeepmechControl} component issues \code{dispatch(deepmechAction.changeMode(val))} when changed.
+Where the \code{val} is set to the respective string of the mode; e.g. \code{"draw"}.
+
+Another upside of this approach is that the corresponding properties do not have to be injected through the whole application.
+The parent of \code{DeepmechControl} is the \code{LeftDrawer} component which resides in the \code{App} component.
+The \code{mode} is used by the \code{DeepmechCanvas} component which is used in the \code{App} component.
+Without a global state, the \code{mode} would have to reside in the \code{App} component and has to be injected through all children to be able to be used where necessary.
+By using \name{React-Redux}' store, this can be avoided by importing the necessary properties where they are needed, agnostic to the application structure.
+
 \subsection{State of the \name{mec2} model}\label{ch:state_mec2_model}
 
 The state of the elements of the user interface is controlled by the 
