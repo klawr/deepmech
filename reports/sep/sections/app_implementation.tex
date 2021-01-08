@@ -192,11 +192,11 @@ The \code{DeepmechControl} component uses this \code{id} to be able to get acces
 
 \code{width} and \code{height} are taken from the \code{globalThis}\footnote{\aka{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/globalThis}} property.
 
-The \code{DeepmechCanvas} component has a \code{canvasRef} component which is initially set to \code{const canvasRef = React.useRef(null)}.
-On rendering the canvas, this is updated to the HTML element which is returned by this component.
+The \code{DeepmechCanvas} component has a \code{canvasRef} variable which is initially set to \code{const canvasRef = React.useRef(null)}.
+Every time the \code{DeepmechCanvas} component is rendered the \code{canvasRef} is updated by the \code{ref} property of the returned HTML element.
 See \aka{https://reactjs.org/docs/hooks-reference.html\#useref} for more information about \code{React.useRef}.
 
-% Because the reference is created after initialization, \name{Reacts} \code{useEffect}\footnote{\aka{https://reactjs.org/docs/hooks-reference.html\#useeffect}} has to be used.
+% TODO Because the reference is created after initialization, \name{Reacts} \code{useEffect}\footnote{\aka{https://reactjs.org/docs/hooks-reference.html\#useeffect}} has to be used.
 \code{DeepmechCanvas}' \code{useEffect} is shown in Listing~\ref{lst:deepmech_canvas_use_effect}.
 
 \begin{lstlisting}[label={lst:deepmech_canvas_use_effect}, caption={The \code{useEffect} function in the \code{DeepmechCanvas} component.}]
@@ -213,14 +213,69 @@ React.useEffect(() => {
 }, [deepmech.mode]);
 \end{lstlisting}
 
-The first argument given to this function is called after the component is rendered the first time.
+The second argument (\code{[deepmech.model]}) is an array that defines the properties on which changes are monitored.
+Every time a change is registered, the function which is given as the first argument is issued.
+
+The first argument given to this function is also called after the component is rendered the first time.
 This behavior is necessary because the canvas has to be initialized for the context of the canvas element to be set via \code{canvasRef.current.getContext('2d')}.
-\code{dispatch} sets certain values which will be further examined in Chapter~\ref{ch:state_manipulation}.
+The \code{dispatch} calls set certain values which will be further examined in Chapter~\ref{ch:state_manipulation}.
+Returned is a \code{handleInteractor} function.
 
-% TODO add some text about the first function (return value etc.) Maybe put the second argument first? because the text for the first is going to be big...
+The \code{handleInteractor} function handles the interaction of the user with the canvas.
+It creates a new instance on the \code{canvasInteractor}\footnote{The \code{canvasInteractor} is discussed in Chapter~\ref{ch:canvas_interactor}} for the given \code{ctx}.
+As with \code{mec2}, the global \code{canvasInteractor} is used here.
 
-The second argument is an array of dependency properties.
-Every time one of the properties in this array changes, the function given as the first argument is issued again.
+For the selection of individual \name{g2}-elements a \code{selector} variable is set to \code{g2.selector(interactor.evt)}.
+The respective event listeners are defined for five different events as described in Listing~\ref{lst:handle_interactor_event_listeners}.
+
+\begin{lstlisting}[label={lst:handle_interactor_event_listeners}, caption={Definition of event listeners on the \code{canvasInteractor}.}]
+const o = { tick, pointerdown, pointerup, drag, click: pointerup }
+Object.entries(o).forEach(e => interactor.on(...e));
+\end{lstlisting}
+
+The event listeners have respective functions that handle the event based on the current \code{mode} which is inserted by the function call\footnote{Every time the mode changes the function is called again, as described in the array which is given as the second argument to the \code{React.useEffect} function.}.
+
+For example the \code{pointerdown} function, as described in Listing~\ref{lst:handle_interactor_pointerdown} contains a switch-statement handling events when the \code{mode} is set to \code{'draw'} or \code{'delete'}.
+
+\begin{lstlisting}[label={lst:handle_interactor_pointer_down}, caption={\code{pointerdown} function in \code{handleInteractor}.}]
+function pointerdown(e) {
+    switch (mode) {
+        case 'draw':
+            // Set ply and add to command queue
+            ply = {
+                pts: [{ x: e.x, y: e.y }],
+                lw: '2', ls: '#fff', lc: 'round', lj: 'round',
+                get sh() { return this.state & g2.OVER ? plyShadow : false; }
+            };
+            placeholder.ply.ply(ply);
+            break;
+        case 'delete':
+            // Filter selected node from commands array
+            placeholder.ply.commands = placeholder.ply.commands.filter(
+                cmd => cmd.a !== selector.selection);
+            selector.evt.hit = false; // selector gets confused
+            selector.selection = false; // overwrite selection
+            break;
+    }
+}
+\end{lstlisting}
+
+The \code{ply} variable is a placeholder which is filled by the various event handlers to represent the currently drawn \code{g2.ply} element.
+
+The \code{handleInteractor} function returns a function shown in Listing~\ref{lst:handle_interactor_return}.
+
+\begin{lstlisting}[label={lst:handle_interactor_return}, caption={Return value of \code{handleInteractor}.}]
+return () => {
+    Object.entries(o).forEach(e => interactor.remove(...e));
+    canvasInteractor.remove(interactor);
+
+    fn();
+}
+\end{lstlisting}
+
+This function is called by \code{useEffect} when the respective \code{DeepmechCanvas} is deleted\footnote{Which is also done if it is rerendered.}.
+It reverts the changes made to the \code{canvasInteractor} and also calls \code{fn} which is a function given as argument.
+\code{fn} is injected because it needs access to the scope in which the \code{dispatch} and \code{mecAction} resides, as seen in Listing~\ref{lst:deepmech_canvas_use_effect}.
 
 \subsection{State manipulation}\label{ch:state_manipulation}
 \subsection{State of the \name{mec2} model}\label{ch:state_mec2_model}
