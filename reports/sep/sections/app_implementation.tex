@@ -334,4 +334,69 @@ By using \name{React-Redux}' store, this can be avoided by importing the necessa
 
 \subsection{State of the \name{mec2} model}\label{ch:state_mec2_model}
 
-The state of the elements of the user interface is controlled by the 
+The store contains three reducers which are defined in their respective slices.
+
+\code{Deepmech} is already discussed in Chapter~\ref{ch:state_manipulation}. It handles the state of the canvas.
+
+\code{UI} contains information about the state of the drawers (expanded or not), whether the application is in \code{deepmech} mode or not, if the dark-mode is activated or not, and about all properties of the \code{mecElement} which are shown in the right drawer.
+
+The third reducer is the \code{MecModel}.
+It holds information about the state of the model and induces functionality to change properties of the \code{mecElement}.
+
+\subsubsection{MecModelSlice}
+
+The \code{mecElement} references the global \code{mec2} HTML Element.
+The \code{\_model} property refers to the \code{mec2} model rendered to the canvas of \code{mecElement}.
+
+The initial state of the \code{MecModel} property is shown in Listing~\ref{lst:mec_element_initial_state}.
+
+\begin{lstlisting}[label={lst:mec_element_initial_state}, caption={\code{initialState} property of \code{MecModel}.}]
+initialState: {
+    queue: [],
+    selected: 0,
+    id: ref._model.id,
+    pausing: ref.pausing,
+    gravity: ref.gravity,
+    darkmode: window.matchMedia ?
+        window.matchMedia('(prefers-color-scheme: dark)').matches ?
+            true : false : false,
+    nodeLabels: true,
+    constraintLabels: true,
+    grid: false,
+}
+\end{lstlisting}
+
+Most of the properties handled by the state refer to properties of the \code{mecElement}.
+The respective actions are accordingly simple; e.g. \code{toggleGravity} in Listing~\ref{lst:mec_model_slice_toggle_gravity}.
+
+\begin{lstlisting}[label={lst:mec_model_slice_toggle_gravity}, caption={\code{toggleGravity} property in \code{MecModel}s \code{reducer}}]
+toggleGravity: (state) => {
+    ref.gravity = !state.gravity;
+    state.gravity = ref.gravity;
+}
+\end{lstlisting}
+
+Where \code{ref} is defined as \code{mecElement}.
+
+The \code{queue} on the other hand is an array of objects.
+These objects must have four properies:
+
+\begin{enumerate}
+    \item \code{list} --- The list should refer to the property name of \code{mecElement.\_model}; e.g. \code{list="nodes"} refers to \code{mecElement.\_model.nodes}.
+    \item \code{idx} --- Refers to the index of the respective element in said \code{list}.
+    \item \code{value} --- This property is an object that contains all the changes made to the element; e.g. \code{\{x: 20\}} to changes the x-coordinate of a node to 20.
+    \item \code{previous} --- This object saves the value of properties before they are changed. It is used to revert actions.
+\end{enumerate}
+
+These objects are given to \code{MecModel}s \code{add} reducer, which appends it to the \code{queue}.
+
+\subsubsection{Updating the mecElement}
+
+Because \code{mecElement} does not follow the same logic as \name{React-Redux} it can not be updated the same way the app components do.
+
+The \code{App.js} contains the \code{handleMecModelUpdate} function.
+This function is handed to the \code{store.subscribe} function.
+This ensures, that this function is called every time the store receives an update\footnote{Which is every time a \code{dispatch} function is issued.}.
+
+The first thing the \code{handleMecModelUpdate} function checks is if the \code{MecModel} state has changed.
+If it has not, the \code{dispatch} call was not issued to a \code{MecModel} reducer and the function returns.
