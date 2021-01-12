@@ -462,3 +462,51 @@ Because the \code{value} and \code{previous} properties of \code{actions} have t
 The element replaces those referencing properties during initialization.
 If a constraint is changing its \code{p1} or \code{p2} property\footnote{The \code{p1} and \code{p2} properties of a constraint refer to the respectives nodes that are used as first and second anchor point.} this does not happen and subsequently results in an error.
 Because of this, the respective references have to be created again.
+
+\subsubsection{Implement bidirectionality}
+
+To ensure that if the user changes something in the \name{mec2} HTML the corresponding change is also made to the user interface, certain listeners are installed.
+The \name{mec2} HTML element allows the user to drag nodes.
+This behavior is mirrored by the \code{Nodes} component by adding certain functions to the \code{mecElement.\_interactor}.
+
+For the respecitve \code{pointerdown}, \code{drag} and \code{pointerup} events that are already implemented to ensure proper editing of the model in the \name{mec2} HTML element, additional functions are implemented.
+
+\begin{lstlisting}[label={lst:bidirectional_node_update}, caption={Adding functions to \code{mecElement.\_interactor} to work bidirectional.}]
+let previous;
+let value;
+let selection;
+function deepmechNodeDown(e) {
+    selection = mecElement._selector.selection;
+    previous = { x: selection.x, y: selection.y };
+}
+function deepmechNodeDrag(e) {
+    if (selection && selection.drag) {
+        value = { x: selection.x, y: selection.y };
+    }
+}
+function deepmechNodeUp() {
+    if (!value) {
+        previous = undefined;
+        return;
+    }
+    dispatch(mecAction.add({
+        list: name, idx: mecElement._model[name].indexOf(selection),
+        value: { ...value }, previous: { ...previous }
+    }));
+}
+const o = {
+    pointerdown: deepmechNodeDown,
+    drag: deepmechNodeDrag,
+    pointerup: deepmechNodeUp
+}
+Object.entries(o).forEach(e => mecElement._interactor.on(...e));
+\end{lstlisting}
+
+The \code{previous}, \code{value}, \code{selection} variables are used to keep references consistend through the different events.
+The \code{deepmechNodeDown} function is used to determine the \code{previous} variable, which is later used to set the respective property for the action.
+The \code{deepmechNodeDrag} function updates the \code{value} property if necessary.
+The \code{deepmechNodeUp} function is used to dispatch the action.
+This is similar to the behavior expected when a node is edited through the user interface.
+
+The whole operation is wrapped in a \code{React.useEffect} and returns a function which remove these function from the \code{mecElement.\_interactor} again.
+This ensures that these events are only present for the current \code{Nodes} component as already seen in Listing~\ref{lst:handle_interactor_return} for the \code{DeepmechCanvas} component.
