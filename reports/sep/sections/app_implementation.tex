@@ -510,3 +510,27 @@ This is similar to the behavior expected when a node is edited through the user 
 
 The whole operation is wrapped in a \code{React.useEffect} and returns a function which remove these function from the \code{mecElement.\_interactor} again.
 This ensures that these events are only present for the current \code{Nodes} component as already seen in Listing~\ref{lst:handle_interactor_return} for the \code{DeepmechCanvas} component.
+
+\subsubsection{Undo and redo}\label{ch:undo_redo}
+
+The approach of using an array containing objects with respective changes as \code{value} property and their value before the change as \code{previous} has the advantage of making movement in the list possible.
+This movement is either executed by adding an action, which extends the list as discussed in previous chapters, or by two actions on the \code{MecModelSlice} that are named \code{undo} and \code{redo}.
+The \code{undo} action just decreases the value of \code{selected} by one\footnote{If \code{selected} is greater than 0.}.
+The \code{redo} action increases the value of \code{selected} respectively\footnote{If \code{selected} is smaller than the lenght of the queue.}.
+
+This action results in \code{handleMecModelUpdate} being triggered.
+As discussed in Chapter~\ref{ch:updating_the_mecelement} the \code{up} in \code{handleMecModelUpdate} variable is determined by whether the value of \code{selected} went up or down since the last call of \code{handleMecModelUpdate}.
+When \code{undo} is triggered, this value will be gone down, so \code{up} is set to false.
+Therefore the update described in Listing~\ref{lst:update_list_element} will use the \code{action.previous} to update the \code{mecElement.\_model}.
+This will result in an undoing of the last submitted action and can be repeated as often as the queue of actions is long.
+
+Likewise, the redo is an imitation of the action being issued the first time.
+The only difference is, that the value of \code{selected} does not correspond to the length of the queue.
+
+If the current \code{selected} value does not correspond to the length of the queue\footnote{So the current state of the \code{mecElement.\_model} does not represent the newest state.}, any change that is made by a new action will cut the queue at that point and then adding the newly added action to the queue.
+This ensures that after adding a new action to the queue it is also the latest change in the queue, but resulting in the possibility of going back to respective changes.
+This corresponds to the behavior of other programs that offer this functionality.
+
+% TODO implement images?
+
+\subsection{Implementation into other environments}
