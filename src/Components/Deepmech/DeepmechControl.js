@@ -20,8 +20,8 @@ export default function DeepmechControl() {
     const UI = useSelector(UiSelect);
     const active = useSelector(deepmechSelect);
 
-    function Toggle(elm, value, tooltip) {
-        return <ToggleButton value={value}>
+    function Toggle(elm, value, tooltip, disabled) {
+        return <ToggleButton value={value} disabled={disabled}>
             <Tooltip title={tooltip}>
                 {elm}
             </Tooltip>
@@ -47,7 +47,7 @@ export default function DeepmechControl() {
                         {Toggle(<Create />, "draw", "Draw")}
                         {Toggle(<PanTool />, "drag", "Drag")}
                         {Toggle(<Delete />, "delete", "Delete")}
-                        {Toggle(<CameraAlt />, "camera", "Camera")}
+                        {Toggle(<CameraAlt />, "camera", "Camera", true)}
                     </ToggleButtonGroup>
                 </ListItem>
                 <Divider />
