@@ -35,61 +35,39 @@ function handleMecModelUpdate() {
     else if (action.idx === 'add' || action.idx === 'remove') {
         // Check if element is going to be added (or removed)
         const add = (up && action.idx === 'add') || (!up && action.idx === 'remove');
-        if (action.list === 'nodes') {
+        if (action.list === 'nodes' ||
+            action.list === 'constraints' ||
+            action.lists === 'views')
+        {
+            const element  = { ...action.value };
             if (add) {
-                const node = { ...action.value };
-                if (ref._model.nodeById(node.id)) {
-                    console.warn(`Can not create node.\nid "${node.id}" is already taken.`);
+                if (ref._model[action.list].find(e => e.id === element.id)) {
+                    // console.warn(`Can not add element to ${action.list}. Id ${element.id} is already taken`)
                     return;
                 }
-                mec.node.extend(node);
-                ref._model.addNode(node);
-                node.init(ref._model);
+                ref._model.plugIns[action.list].extend(element);
+                ref._model.add(action.list, element);
+                element.init(ref._model);
             }
             else {
-                ref._model.removeNode(ref._model.nodeById(action.value.id));
-            }
-        }
-        else if (action.list === 'constraints') {
-            if (add) {
-                const constraint = { ...action.value };
-                if (ref._model.constraintById(constraint.id)) {
-                    // console.warn(`Can not create constraint\nid "${constraint.id}" is already taken.`);
-                    return;
-                }
-                mec.constraint.extend(constraint);
-                ref._model.addConstraint(constraint);
-                constraint.init(ref._model);
-            }
-            else {
-                ref._model.removeConstraint(ref._model.constraintById(action.value.id));
+                // TODO why is this ? necessary?
+                const o = ref._model[action.list].find(e => e.id === element.id);
+                if (o) o.remove;
+                else console.log(o);
             }
         }
         // TODO this causes some issues...
         ref._model.draw(mecElement._g);
     }
 
-    // Replace nodes given as Id with respective objects.
-    // The object itself can't be given to the payload, because of the
-    // altered prototype
-    function checkForNode(list, idx, ...node) {
-        const t = up ? action.value : action.previous;
-        node.filter(p => typeof t[p] === 'string')
-            .forEach(p => {
-                ref._model[list][idx][p] = ref._model.nodeById(t[p]);
-            });
-    }
     if (action.list === 'constraints') {
         // Skip updating nodes when the constraint is removed...
-        if (action.idx === 'remove' && up) {
-            return;
-        }
-        const idx = action.idx === 'add' || action.idx === 'remove' ?
-            ref._model.constraints.length - 1 : action.idx;
-        checkForNode('constraints', idx, 'p1', 'p2')
+        if (action.idx === 'remove' && up) return
+
+        ref._model.constraints.forEach(e => e.assignRefs());
     }
     if (action.list === 'views') {
-        checkForNode('views', action.idx, 'of');
+        ref._model.views.forEach(e => e.assignRefs());
     }
 
     ref._model.preview();
