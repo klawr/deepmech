@@ -259,7 +259,7 @@ export const deepmech = {
                 base: e.base,
             };
             mec.node.extend(node);
-            model.addNode(node);
+            model.add("nodes", node);
             node.init(model);
         });
     },
@@ -273,7 +273,7 @@ export const deepmech = {
                 id: 'cx' + model.constraints.length
             }, e);
             mec.constraint.extend(constraint);
-            model.addConstraint(constraint);
+            model.add("constraints", constraint);
             constraint.init(model);
         });
     },
