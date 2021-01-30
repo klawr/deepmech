@@ -1,0 +1,5 @@
+vcpkg/
+out/
+build/
+.vs/
+.vscode/
