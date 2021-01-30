@@ -8,8 +8,7 @@ import { UiAction, UiSelect, mecAction } from '../Features';
 export default function LeftDrawer({ classes, mecReset }) {
     const dispatch = useDispatch();
     const open = useSelector(UiSelect).left;
-    const selectedDarkmode = useSelector(UiSelect).darkmode;
-    const selectedDeepmech = useSelector(UiSelect).deepmech;
+    const UI = useSelector(UiSelect);
 
     return <Drawer
         open={open}
@@ -23,7 +22,7 @@ export default function LeftDrawer({ classes, mecReset }) {
             </ListButton>
         </List>
         <Divider />
-        {selectedDeepmech ? <div /> :
+        {UI.deepmech ? <div /> :
             <div>
                 <MecControl mecReset={mecReset} />
                 <Divider />
@@ -33,8 +32,8 @@ export default function LeftDrawer({ classes, mecReset }) {
         <List className={classes.listBottom}>
             <ListButton
                 onClick={() => {
-                    dispatch(mecAction.darkmode(!selectedDarkmode));
-                    dispatch(UiAction.darkmode(!selectedDarkmode));
+                    dispatch(mecAction.darkmode(!UI.darkmode));
+                    dispatch(UiAction.darkmode(!UI.darkmode));
                 }}
                 tooltip="Toggle dark mode">
                 <Brightness4 />
