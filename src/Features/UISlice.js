@@ -25,7 +25,6 @@ const slice = createSlice({
                 as: true,
             },
         },
-        deepmech: false,
         darkmode: window.matchMedia ?
             window.matchMedia('(prefers-color-scheme: dark)').matches ?
                 true : false : false,
@@ -36,13 +35,6 @@ const slice = createSlice({
         },
         right: (state, action) => {
             state.right = action.payload;
-        },
-        deepmech: (state, action) => {
-            state.deepmech = action.payload;
-            // If the application is run in the WinUI environment this will
-            // toggle the respective UI Elements
-            window.chrome?.webview?.postMessage(
-                JSON.stringify({ deepmech: "" + state.deepmech }));
         },
         darkmode: (state, action) => {
             state.darkmode = action.payload;

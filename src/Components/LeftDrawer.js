@@ -7,11 +7,10 @@ import { UiAction, UiSelect, mecAction } from '../Features';
 
 export default function LeftDrawer({ classes, mecReset }) {
     const dispatch = useDispatch();
-    const open = useSelector(UiSelect).left;
     const UI = useSelector(UiSelect);
 
     return <Drawer
-        open={open}
+        open={UI.left}
         anchor="left"
         variant="persistent">
         <List>

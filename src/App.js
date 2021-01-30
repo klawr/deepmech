@@ -4,15 +4,9 @@ import { Provider, useSelector, useDispatch } from 'react-redux';
 import { Grid } from '@material-ui/core';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
-import { store, UiSelect, UiAction, mecAction } from './Features';
 import { lightTheme, darkTheme, useStyle } from './style';
-import {
-    DeepmechCanvas,
-    LeftDrawer,
-    RightDrawer,
-    ListButton
-} from './Components';
-import { deepmech } from './deepmech';
+import { store, deepmechSelect, deepmechAction, UiSelect, UiAction, mecAction } from './Features';
+import { DeepmechCanvas, LeftDrawer, RightDrawer, ListButton } from './Components';
 
 const ref = mecElement;
 
@@ -106,39 +100,35 @@ const placeholder = {
 function App() {
     const dispatch = useDispatch();
 
-    // If webview component in App is used, enable communication via this
-    // temporary solution:
-    if (window.chrome?.webview) {
-        window.webviewEventListenerPlaceholder = (o) => {
-            if (!o) return;
-            
-            if (Object.keys(o).includes('deepmech')) {
-                dispatch(UiAction.deepmech(o.deepmech));
+    if (globalThis.chrome?.webview) {
+        globalThis.webviewEventListenerPlaceholder = (o) => {
+            if (o.register) {
+                dispatch(deepmechAction.register({
+                    canvas: o.register.canvas,
+                    prediction: o.register.prediction
+                }));
             }
-
-            // The layout of 'update' is defined in the predict.py used by
-            // the webview provider
-            if (Object.keys(o).includes('update')) {
-                deepmech.updateNodes(o.update.nodes);
-                deepmech.updateConstraints(o.update.constraints);
+            if (o.prediction) {
+                deepmech.updateNodes(o.prediction.nodes);
+                deepmech.updateConstraints(o.prediction.constraints);
 
                 mecElement._model.draw(mecElement._g);
             }
         }
     }
-
     dispatch(mecAction.initialize());
     const UI = useSelector(UiSelect);
+    const deepmech = useSelector(deepmechSelect);
 
     const classes = useStyle();
 
     return <MuiThemeProvider theme={UI.darkmode ? darkTheme : lightTheme}>
         <div className={classes.root}>
-            {UI.deepmech &&
+            {deepmech.active &&
                 <DeepmechCanvas placeholder={placeholder} classes={classes} />}
             <LeftDrawer classes={classes} mecReset={() => ref.reset()} />
             <RightDrawer classes={classes} />
-            <MuiThemeProvider theme={UI.deepmech || UI.darkmode ?
+            <MuiThemeProvider theme={deepmech.active || UI.darkmode ?
                 darkTheme : lightTheme}>
                 <Grid container direction="row"
                     className={classes.buttonGrid}>
@@ -149,7 +139,7 @@ function App() {
                     </ListButton>
                     <h3>&nbsp; 🚧 WIP 🚧 </h3>
                     <ListButton
-                        enabled={!UI.deepmech}
+                        enabled={!deepmech.active}
                         onClick={() => dispatch(UiAction.right(true))}
                         tooltip="Open right drawer"
                         className={classes.right} >

@@ -4,21 +4,13 @@ import { Divider, List, ListItem, Tooltip } from '@material-ui/core';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab'
 import { CameraAlt, Create, Delete, Done, PanTool, RotateLeft } from '@material-ui/icons';
 import { ListButton } from '..';
-import {
-    UiSelect,
-    UiAction,
-    deepmechAction,
-    deepmechSelect,
-    mecAction
-} from '../../Features';
+import { deepmechSelect, deepmechAction, mecAction } from '../../Features';
 import DeepmechIcon from './DeepmechIcon';
-import { deepmech } from '../../deepmech';
 
 export default function DeepmechControl() {
     const dispatch = useDispatch();
 
-    const UI = useSelector(UiSelect);
-    const active = useSelector(deepmechSelect);
+    const deepmech = useSelector(deepmechSelect);
 
     function Toggle(elm, value, tooltip, disabled) {
         return <ToggleButton value={value} disabled={disabled}>
@@ -29,21 +21,21 @@ export default function DeepmechControl() {
     }
 
     function toggleDeepmech() {
-        dispatch(UiAction.deepmech(!UI.deepmech));
-        if (UI.deepmech) {
+        dispatch(deepmechAction.active(!deepmech.active));
+        if (deepmech.active) {
             dispatch(mecAction.pause);
         }
     }
 
     return <List>
-        {UI.deepmech &&
+        {deepmech.active &&
             <div>
                 <ListItem>
                     <ToggleButtonGroup
                         exclusive
                         orientation="vertical"
-                        value={active.mode}
-                        onChange={(e, val) => val && dispatch(deepmechAction.changeMode(val))}>
+                        value={deepmech.mode}
+                        onChange={(e, val) => val && dispatch(actions.changeMode(val))}>
                         {Toggle(<Create />, "draw", "Draw")}
                         {Toggle(<PanTool />, "drag", "Drag")}
                         {Toggle(<Delete />, "delete", "Delete")}
@@ -52,15 +44,15 @@ export default function DeepmechControl() {
                 </ListItem>
                 <Divider />
                 <ListButton
-                    onClick={() => deepmech.predict(document.getElementById(active.canvas))}
+                    onClick={() => dispatch(deepmechAction.predict())}
                     tooltip="predict" >
                     <Done />
                 </ListButton>
             </div>}
         <ListButton
             onClick={toggleDeepmech}
-            tooltip={(UI.deepmech ? "Exit" : "Activate") + " deepmech"}>
-            {UI.deepmech ? <RotateLeft /> : <DeepmechIcon />}
+            tooltip={(deepmech.active ? "Exit" : "Activate") + " deepmech"}>
+            {deepmech.active ? <RotateLeft /> : <DeepmechIcon />}
         </ListButton>
     </List>
 }
