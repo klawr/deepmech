@@ -90,7 +90,6 @@ function handleInteractor(ctx, mode, placeholder, fn) {
     function drag(e) {
         switch (mode) {
             case 'drag':
-                // console.log(interactor.evt)
                 if (selector.selection?.drag) {
                     selector.selection.drag({ dx: e.dxusr, dy: e.dyusr });
                 }

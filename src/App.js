@@ -47,7 +47,6 @@ function handleMecModelUpdate() {
                 // TODO why is this ? necessary?
                 const o = ref._model[action.list].find(e => e.id === element.id);
                 if (o) o.remove;
-                else console.log(o);
             }
         }
         // TODO this causes some issues...

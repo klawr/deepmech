@@ -27,7 +27,6 @@ const slice = createSlice({
             state.extern.initiated = true;
         },
         register: (state, action) => {
-            console.log(action.payload);
             state.webViewPrediction = action.payload;
 
             if (!action.payload) {
