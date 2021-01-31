@@ -13,16 +13,16 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <wv2:WebView2 Width="auto" Name="deepmechWebView"/>
+        <wv2:WebView2 Height="1000" Width="auto" Name="deepmechWebView"/>
 
-        <StackPanel Height="Auto" Background="AliceBlue">
+        <!--Uncomment if InkCanvas, or InfinityCanvas is ready-->
+        <!--<StackPanel Height="Auto" Background="AliceBlue">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
                 <controls:InkToolbar TargetInkCanvas="{x:Reference Name=deepmechCanvas}" />
                 <Button Click="ExitDeepmech" Content="Exit deepmech"/>
                 <Button Click="Predict" Content="Predict" />
             </StackPanel>
-            <!--Height should be enough for most screens-->
-            <controls:InkCanvas Height="2048" Name="deepmechCanvas" />
-        </StackPanel>
+            <controls:InkCanvas Name="deepmechCanvas" />
+        </StackPanel>-->
     </Grid>
 </Window>
