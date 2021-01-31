@@ -99,8 +99,10 @@ const placeholder = {
 
 function App() {
     const dispatch = useDispatch();
-
+    // Webview event handling:
     if (globalThis.chrome?.webview) {
+        dispatch(deepmechAction.initiate());
+
         globalThis.webviewEventListenerPlaceholder = (o) => {
             if (o.register) {
                 dispatch(deepmechAction.register({
@@ -109,10 +111,7 @@ function App() {
                 }));
             }
             if (o.prediction) {
-                deepmech.updateNodes(o.prediction.nodes);
-                deepmech.updateConstraints(o.prediction.constraints);
-
-                mecElement._model.draw(mecElement._g);
+                dispatch(deepmechAction.updateModel(o.prediction));
             }
         }
     }
