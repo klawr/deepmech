@@ -63,7 +63,7 @@ namespace deepmech
         {
             public string image { get; set; }
             public bool ready { get; set; }
-            public uint[] nodes { get; set; }
+            public string nodes { get; set; }
         }
 
 

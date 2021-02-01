@@ -27,10 +27,11 @@ struct Node
         return json;
     }
 
-    Node(int X, int Y)
+    Node(int X, int Y, std::string Id)
         : confidence{2}
         , x{X}
-        , y{Y} {};
+        , y{Y}
+        , id{Id} {};
 
     Node(float c, bool b, int X, int Y, std::string Id)
         : id{Id}
@@ -47,16 +48,16 @@ struct Crop
     cv::Mat image;
     bool const_length;
     bool const_angle;
-    Node const *p1;
-    Node const *p2;
+    std::string p1;
+    std::string p2;
     std::string id;
 
     auto toJson() const
     {
         nlohmann::json json;
         json["id"] = id;
-        json["p1"] = p1->id;
-        json["p2"] = p2->id;
+        json["p1"] = p1;
+        json["p2"] = p2;
         nlohmann::json ori;
         ori["type"] = const_angle ? "const" : "free";
         json["ori"] = ori;
@@ -146,10 +147,11 @@ auto getConstraints(fdeep::model const &crop_detector,
             {
                 cv::flip(crop.image, crop.image, 0);
             }
+
             cv::bitwise_not(crop.image, crop.image);
 
-            crop.p1 = &node1;
-            crop.p2 = &node2;
+            crop.p1 = node1.id;
+            crop.p2 = node2.id;
             crop.id = node1.id + node2.id;
 
             crops.push_back(std::move(crop));
@@ -184,6 +186,7 @@ auto getConstraints(fdeep::model const &crop_detector,
                 max_idx = j;
             };
         }
+
         crops[i].const_angle = max_idx == 2;
         crops[i].const_length = max_idx == 1;
     }
@@ -253,31 +256,38 @@ struct Deepmech_ctx
     {
     }
 
+    Deepmech_ctx(std::string symbolModel_path, std::string cropModel_path)
+        : symbol_detector(fdeep::load_model(symbolModel_path, false))
+        , crop_detector(fdeep::load_model(cropModel_path, false))
+    {
+    }
+
     auto predict(std::uint8_t *ptr,
                  std::uint32_t width,
                  std::uint32_t height,
-                 std::uint32_t *coordinates,
-                 std::uint32_t length) const -> char *
+                 char const *nodes_str) const -> char *
     {
         cv::Mat image(height, width, CV_8UC1, ptr);
 
+        auto json = nlohmann::json::parse(nodes_str);
+        std::vector<Node> known_nodes;
+        known_nodes.reserve(json.size());
+        for (auto &o : json)
+        {
+            known_nodes.push_back(Node(o["x"], o["y"], o["id"]));
+        }
+
         auto predicted_nodes = getNodes(symbol_detector, image);
 
-        std::vector<Node> known_nodes;
-        known_nodes.reserve(length / 2);
-        for (int i = 0; i < length; i += 2)
-        {
-            known_nodes.push_back(Node(coordinates[i], coordinates[i + 1]));
-        }
         auto nodes = filteredNodes(predicted_nodes, known_nodes);
+
+        const auto constraints = getConstraints(crop_detector, image, nodes);
 
         // previously known_nodes are 200% confident that they exist already.
         nodes.erase(nodes.begin(),
                     std::ranges::find_if(nodes, [](auto const &v) {
                         return v.confidence <= 1.f;
                     }));
-
-        const auto constraints = getConstraints(crop_detector, image, nodes);
 
         auto serialized = getMec2Json(nodes, constraints).dump();
 
@@ -288,8 +298,6 @@ struct Deepmech_ctx
     }
 };
 
-// Take 2 strings for the models and return a pointer to an object which
-// offers to predict images on demand
 extern "C" DEEPMECH_CXX_EXPORT auto create_deepmech_ctx(char *symbolModel,
                                                         char *cropModel)
         -> Deepmech_ctx *
@@ -301,10 +309,9 @@ extern "C" DEEPMECH_CXX_EXPORT auto predict(Deepmech_ctx *ctx,
                                             std::uint8_t *ptr,
                                             std::uint32_t width,
                                             std::uint32_t height,
-                                            std::uint32_t *nodes,
-                                            std::uint32_t length) -> char *
+                                            const char *nodes) -> char *
 {
-    return ctx->predict(ptr, width, height, nodes, length);
+    return ctx->predict(ptr, width, height, nodes);
 }
 
 extern "C" DEEPMECH_CXX_EXPORT void deepmech_cxx_free(char *ctx)
@@ -314,16 +321,18 @@ extern "C" DEEPMECH_CXX_EXPORT void deepmech_cxx_free(char *ctx)
 
 // int main()
 //{
-//    auto image = cv::imread("assets/0_0_2.png", 0);
-//    //cv::bitwise_not(image, image);
-//    cv::imwrite("assets/r.png", image);
-//    auto crop =
-//            fdeep::tensor_from_bytes(image.ptr(),
-//                                     static_cast<std::size_t>(image.rows),
-//                                     static_cast<std::size_t>(image.cols),
-//                                     static_cast<std::size_t>(image.channels()),
-//                                     0.0f,
-//                                     1.0f);
-//    auto a = crop_detector.model.predict({crop})[0];
+//    // auto image = cv::imread("assets/0_0_2.png", 0);
+//    std::string str = R"([
+//        {"id": "A0", "x": 100, "y": 900},
+//        {"id": "B0", "x": 300, "y": 900},
+//        {"id": "A", "x": 100, "y": 850},
+//        {"id": "B", "x": 350, "y": 780},
+//        {"id": "C", "x": 225, "y": 750},
+//        {"id": "C0", "x": 450, "y": 900}
+//    ])";
+//    Deepmech_ctx ctx("assets/fcn_sym_det.json", "assets/crop_detector.json");
+//
+//    ctx.predict(nullptr, 0, 0, str.c_str());
+//
 //    return 0;
 //}

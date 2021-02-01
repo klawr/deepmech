@@ -11,10 +11,10 @@ namespace deepmech
 {
     static class Deepmech_cxx
     {
-        public static string Predict(IntPtr deepmech_ctx, string base64, uint[] nodes = default(uint[]))
+        public static string Predict(IntPtr deepmech_ctx, string base64, string nodes = null)
             => Predict(deepmech_ctx, Image.Load<A8>(Convert.FromBase64String(base64)), nodes);
 
-        public static string Predict(IntPtr deepmech_ctx, Image<A8> bitmap, uint[] nodes = default(uint[]))
+        public static string Predict(IntPtr deepmech_ctx, Image<A8> bitmap, string nodes = null)
         {
             int width = bitmap.Width;
             int height = bitmap.Height;
@@ -30,7 +30,7 @@ namespace deepmech
             }
             var bytes = MemoryMarshal.AsBytes(pixels).ToArray();
 
-            var resultNativeString = predict(deepmech_ctx, bytes, (uint)width, (uint)height, nodes, (uint)nodes.Length);
+            var resultNativeString = predict(deepmech_ctx, bytes, (uint)width, (uint)height, nodes);
 
             try
             {
@@ -51,7 +51,7 @@ namespace deepmech
         public static extern IntPtr create_deepmech_ctx([MarshalAs(UnmanagedType.LPStr)] string symbolModel, [MarshalAs(UnmanagedType.LPStr)] string cropModel);
 
         [DllImport("deepmech_cxx")]
-        private extern static IntPtr predict(IntPtr deepmech_ctx, byte[] imageData, uint width, uint height, uint[] nodes, uint length);
+        private extern static IntPtr predict(IntPtr deepmech_ctx, byte[] imageData, uint width, uint height, [MarshalAs(UnmanagedType.LPStr)] string nodes);
 
         [DllImport("deepmech_cxx")]
         private extern static void deepmech_cxx_free(IntPtr str);

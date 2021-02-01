@@ -25,7 +25,6 @@ namespace deepmech
 
         public MainWindow()
         {
-
             InitializeComponent();
             deepmechWebView.Source = URL;
             Communicator = new DeepmechWebView(deepmechWebView);
