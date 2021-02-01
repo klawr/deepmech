@@ -17,19 +17,7 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        
-        <!--<StackPanel Name="deepmechPanel" Grid.Row="1" Grid.ColumnSpan="2" Background="Red">
-            <Button Click="ExitDeepmech" Content="Exit deepmech"/>
-            <Button Click="Predict" Content="Predict" />
-        </StackPanel>-->
-        <controls:InfiniteCanvas
-            Grid.ColumnSpan="2"
-            Grid.Row="1"
-            Visibility="Collapsed"
-            BorderThickness="2"
-            IsToolbarVisible="True"
-            Name="deepmechCanvas"/>
-        <WebView2 Grid.Row="1" Grid.ColumnSpan="2" Name="deepmechWebView"/>
 
+        <WebView2 Grid.Row="1" Grid.ColumnSpan="2" Name="deepmechWebView"/>
     </Grid>
 </Window>
