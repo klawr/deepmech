@@ -74,7 +74,17 @@ const slice = createSlice({
                 deepmech.predict(canvas);
                 return;
             }
-            tryChromeMessage({ image: canvas.toDataURL().replace(/^data:image.+;base64,/, '') });
+            // nodes are submitted as a list of coordiantes [n1.x, n1.y, n2.x ...];
+            // The coordinates have to be changed accordingly
+            const view = ref._interactor.view;
+            const height = ref.height;
+            const nodes = ref._model.nodes.flatMap(n => {
+                return [n.x + view.x, height - n.y - view.y]
+            });
+            tryChromeMessage({
+                image: canvas.toDataURL().replace(/^data:image.+;base64,/, ''),
+                nodes
+            });
         },
     },
 });
