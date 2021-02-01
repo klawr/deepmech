@@ -1,6 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { deepmech } from '../deepmech';
 
+const ref = mecElement;
+
 function tryChromeMessage(message) {
     if (!globalThis?.chrome?.webview) return;
 
@@ -23,7 +25,7 @@ const slice = createSlice({
     reducers: {
         initiate: (state) => {
             if (state.extern.initiated) return;
-            tryChromeMessage({ready: "true"});
+            tryChromeMessage({ ready: true });
             state.extern.initiated = true;
         },
         register: (state, action) => {
@@ -78,12 +80,14 @@ const slice = createSlice({
             // The coordinates have to be changed accordingly
             const view = ref._interactor.view;
             const height = ref.height;
-            const nodes = ref._model.nodes.flatMap(n => {
-                return [n.x + view.x, height - n.y - view.y]
-            });
+            const nodes = ref._model.nodes.map(n => ({
+                id: n.id,
+                x: n.x + view.x - 16,
+                y: height - n.y - view.y - 16,
+            }));
             tryChromeMessage({
                 image: canvas.toDataURL().replace(/^data:image.+;base64,/, ''),
-                nodes
+                nodes: JSON.stringify(nodes)
             });
         },
     },

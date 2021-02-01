@@ -224,21 +224,21 @@ export const deepmech = {
         if (crops) {
             const constraints = (await deepmech.detector
                 .detectConstraints(crops)).map((c, idx) => {
-                if (!c) return undefined;
-                const p1 = info[idx].p1;
-                const p2 = info[idx].p2;
-                if (!p1 || !p2) {
-                    console.warn('Found no matching nodes for consraitns:', p1, p2, model.nodes);
-                    return undefined;
-                } else {
-                    return {
-                        id: 'constraint' + model.constraints.length, // TODO Think of a better id here.
-                        p1, p2,
-                        len: { type: c == 1 ? 'const' : 'free' },
-                        ori: { type: c == 2 ? 'const' : 'free' }
-                    };
-                }
-            }).filter(e => e);
+                    if (!c) return undefined;
+                    const p1 = info[idx].p1;
+                    const p2 = info[idx].p2;
+                    if (!p1 || !p2) {
+                        console.warn('Found no matching nodes for consraitns:', p1, p2, model.nodes);
+                        return undefined;
+                    } else {
+                        return {
+                            id: 'constraint' + model.constraints.length, // TODO Think of a better id here.
+                            p1, p2,
+                            len: { type: c == 1 ? 'const' : 'free' },
+                            ori: { type: c == 2 ? 'const' : 'free' }
+                        };
+                    }
+                }).filter(e => e);
 
             deepmech.updateConstraints(constraints);
         }
@@ -251,6 +251,12 @@ export const deepmech = {
         const model = mecElement._model;
         const view = mecElement._interactor.view;
         nodes.forEach(e => {
+            function makeUnique(id) {
+                return model.nodes.find(n => n.id === id) ?
+                    makeUnique(id + "x") : id;
+            }
+            e.id = makeUnique(e.id);
+
             const node = {
                 // TODO Think of a better id here.
                 id: e.id || 'Nx' + model.nodes.length,
@@ -269,7 +275,13 @@ export const deepmech = {
 
         const model = mecElement._model;
         constraints.forEach(e => {
-            const constraint = Object.assign({ 
+            if (model.constraints.find(c =>
+                (c.p1 === e.p1 && c.p2 === e.p2) ||
+                (c.p2 === e.p2 && c.p2 === e.p1)
+            )) {
+                return;
+            };
+            const constraint = Object.assign({
                 id: 'cx' + model.constraints.length
             }, e);
             mec.constraint.extend(constraint);
