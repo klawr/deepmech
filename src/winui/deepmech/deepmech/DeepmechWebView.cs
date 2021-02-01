@@ -1,68 +1,87 @@
-﻿using Microsoft.Toolkit.Uwp.UI.Controls;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.Web.WebView2.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Web.WebView2.Core;
+using Microsoft.UI.Xaml.Controls;
+using System.Text.Json;
 
 namespace deepmech
 {
-    public class DeepmechWebView
+    class DeepmechWebView
     {
         WebView2 WebView;
-        InfiniteCanvas Panel;
+        IntPtr Deepmech_ctx;
 
         private bool _deepmechActive;
         public bool DeepmechActive
         {
             set
             {
-                WebView.Visibility = value ? Visibility.Collapsed : Visibility.Visible;
-                Panel.Visibility = !value ? Visibility.Collapsed : Visibility.Visible;
+                WebView.Width = value ? 0 : double.NaN;
                 _deepmechActive = value;
             }
             get { return _deepmechActive; }
         }
 
-        public DeepmechWebView(WebView2 webview, InfiniteCanvas panel)
+        public DeepmechWebView(WebView2 webview)
         {
             WebView = webview;
-            Panel = panel;
+            var a = Properties.Resources.fcn_sym_det;
+            var symbolModel = Encoding.UTF8.GetString(a, 0, a.Length);
+            var b = Properties.Resources.crop_detector;
+            var cropModel = Encoding.UTF8.GetString(b, 0, b.Length);
+            Deepmech_ctx = Deepmech_cxx.create_deepmech_ctx(symbolModel, cropModel);
         }
 
-        private string WebviewPlaceholder(string message) => "window.webviewEventListenerPlaceholder(" + message + ")";
+        private string WebviewPlaceholder(string message) => "globalThis.webviewEventListenerPlaceholder(" + message + ")";
 
-        public async void ExitDeepmech()
+        public void ExitDeepmech()
         {
-            await WebView.ExecuteScriptAsync(WebviewPlaceholder("{deepmech: false}"));
+            WebView.ExecuteScriptAsync(WebviewPlaceholder("{deepmech: false}"));
         }
 
-        public async void SendModelUpdate(string json)
+        public void SendModelUpdate(string json)
         {
-            await WebView.ExecuteScriptAsync(WebviewPlaceholder("{update: " + json + "}"));
+            WebView.ExecuteScriptAsync(WebviewPlaceholder("{prediction: " + json + "}"));
         }
-        public void ProcessWebMessage(CoreWebView2 sender, CoreWebView2WebMessageReceivedEventArgs args)
+
+        public void Register(bool canvas, bool prediction)
+        {
+            WebView.ExecuteScriptAsync(WebviewPlaceholder("{register:{canvas: false, prediction: true}}"));
+        }
+
+        private void Predict(string prediction)
+        {
+            WebView.ExecuteScriptAsync(WebviewPlaceholder($"{{prediction: {prediction}}}"));
+        }
+
+        private class DeepmechMessage
+        {
+            public string image { get; set; }
+            public bool ready { get; set; }
+            public string nodes { get; set; }
+        }
+
+        public void ProcessWebMessage(object sender, CoreWebView2WebMessageReceivedEventArgs e)
         {
             // If the source is not validated, don't process the message.
-            if (args.Source != WebView.Source.ToString()) //sender.Source.ToString()
+            if (e.Source != WebView.Source.ToString()) //sender.Source.ToString()
             {
                 return;
             }
 
-            try
-            {
-                var message = System.Text.Json.JsonSerializer.Deserialize<
-                System.Collections.Generic.Dictionary<string, string>>(args.TryGetWebMessageAsString());
+            var message = JsonSerializer.Deserialize<DeepmechMessage>(e.TryGetWebMessageAsString());
 
-                // Toggle canvas if deepmech is active
-                DeepmechActive = message?["deepmech"] == "true";
-            }
-            catch (Exception)
+            if (message == null) return;
+            if (message.ready)
             {
-                // Can not deserialze message warning or something...
+                Register(canvas: false, prediction: true);
+            }
+            if (message.image != null)
+            {
+                Predict(Deepmech_cxx.Predict(Deepmech_ctx, message.image, message.nodes));
             }
         }
     }

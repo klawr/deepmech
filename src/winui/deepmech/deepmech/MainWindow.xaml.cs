@@ -17,17 +17,14 @@ using Windows.UI.Core;
 
 namespace deepmech
 {
-    /// <summary>
-    /// An empty window that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class MainWindow : Window
     {
-        // private DeepmechPredictionServer DeepmechServer { get; }
         private DeepmechWebView Communicator { get; }
 
         private readonly Uri URL = new Uri(Debugger.IsAttached ?
                 "http://localhost:8001" :
                 "https://deepmech.klawr.de");
+
 
         public MainWindow()
         {
@@ -35,10 +32,9 @@ namespace deepmech
 
             deepmechWebView.Source = URL;
             InitializeAsync();
-            deepmechCanvas.RequiresPointer = RequiresPointer.WhenEngaged;
             //deepmechCanvas.InkPresenter.InputDeviceTypes = CoreInputDeviceTypes.Mouse | CoreInputDeviceTypes.Pen;
 
-            Communicator = new DeepmechWebView(deepmechWebView, deepmechCanvas);
+            Communicator = new DeepmechWebView(deepmechWebView);
         }
 
         async void InitializeAsync()
@@ -52,58 +48,14 @@ namespace deepmech
             }
         }
 
-        public void ExitDeepmech(object sender, RoutedEventArgs e)
-        {
-            Communicator.ExitDeepmech();
-        }
+        //private void ExitDeepmech(object sender, RoutedEventArgs e)
+        //{
+        //    Communicator.ExitDeepmech();
+        //}
 
-        private async void Predict(object sender, RoutedEventArgs e)
-        {
-            var image = await ReadDeepmechCanvas();
-            if (image == null)
-            {
-                throw new Exception("Canvas contains no image.");
-            };
-            var prediction = HelloTf.Predict(image);
-            Communicator.SendModelUpdate(prediction);
-        }
-
-
-        private async Task<Image<A8>> ReadDeepmechCanvas()
-        {
-            var strokes = deepmechCanvas.ExportInkStrokes();
-            if (strokes.Count == 0) return null;
-
-            // Make strokes white
-            var attributes = new List<Windows.UI.Input.Inking.InkDrawingAttributes>();
-            foreach (var stroke in strokes)
-            {
-                attributes.Add(stroke.DrawingAttributes);
-                // Make all strokes black
-                var DA = stroke.Clone().DrawingAttributes;
-                DA.Color = Windows.UI.Color.FromArgb(0, 255, 255, 255);
-                stroke.DrawingAttributes = DA;
-            }
-
-
-
-            Image<A8> image;
-            // Draw strokes and encode image into base64 string
-            using (var stream = new InMemoryRandomAccessStream())
-            {
-                await deepmechCanvas.SaveBitmapAsync(stream, 0);
-                image = SixLabors.ImageSharp.Image.Load<A8>(stream.AsStream());
-            }
-
-
-            // Revert color of strokes.
-            for (var i = 0; i < strokes.Count; ++i)
-            {
-                strokes[i].DrawingAttributes = attributes[i];
-            }
-
-            return image;
-        }
-
+        //private void Predict(object sender, RoutedEventArgs e)
+        //{
+        //    Communicator.Predict()
+        //}
     }
 }
