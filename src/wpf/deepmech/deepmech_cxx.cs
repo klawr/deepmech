@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace deepmech
 {
-    static class Deepmech_cc
+    static class Deepmech_cxx
     {
-        public static string Predict(string base64)
-            => Predict(Image.Load<A8>(Convert.FromBase64String(base64)));
+        public static string Predict(IntPtr deepmech_ctx, string base64, uint[] nodes = default(uint[]))
+            => Predict(deepmech_ctx, Image.Load<A8>(Convert.FromBase64String(base64)), nodes);
 
-        public static string Predict(Image<A8> bitmap)
+        public static string Predict(IntPtr deepmech_ctx, Image<A8> bitmap, uint[] nodes = default(uint[]))
         {
             int width = bitmap.Width;
             int height = bitmap.Height;
@@ -30,7 +30,7 @@ namespace deepmech
             }
             var bytes = MemoryMarshal.AsBytes(pixels).ToArray();
 
-            var resultNativeString = predict(bytes, (uint)width, (uint)height);
+            var resultNativeString = predict(deepmech_ctx, bytes, (uint)width, (uint)height, nodes, (uint)nodes.Length);
 
             try
             {
@@ -43,14 +43,17 @@ namespace deepmech
             }
             finally
             {
-                deepmech_cc_free(resultNativeString);
+                deepmech_cxx_free(resultNativeString);
             }
         }
 
-        [DllImport("deepmech_cc")]
-        private extern static IntPtr predict(byte[] imageData, uint width, uint height);
+        [DllImport("deepmech_cxx")]
+        public static extern IntPtr create_deepmech_ctx([MarshalAs(UnmanagedType.LPStr)] string symbolModel, [MarshalAs(UnmanagedType.LPStr)] string cropModel);
 
-        [DllImport("deepmech_cc")]
-        private extern static void deepmech_cc_free(IntPtr str);
+        [DllImport("deepmech_cxx")]
+        private extern static IntPtr predict(IntPtr deepmech_ctx, byte[] imageData, uint width, uint height, uint[] nodes, uint length);
+
+        [DllImport("deepmech_cxx")]
+        private extern static void deepmech_cxx_free(IntPtr str);
     }
 }

@@ -6,7 +6,7 @@
 #include <nlohmann/json.hpp>
 #include <opencv2/opencv.hpp>
 
-#include <deepmech_cc_export.h>
+#include <deepmech_cxx_export.h>
 
 struct Node
 {
@@ -26,6 +26,11 @@ struct Node
 
         return json;
     }
+
+    Node(int X, int Y)
+        : confidence{2}
+        , x{X}
+        , y{Y} {};
 
     Node(float c, bool b, int X, int Y, std::string Id)
         : id{Id}
@@ -102,34 +107,18 @@ auto getNodes(fdeep::model const &symbol_detector, cv::Mat const &image)
         }
     }
 
-    std::ranges::sort(proposalList, [](auto const &l, auto const &r) {
-        return l.confidence > r.confidence;
-    });
-
-    for (auto idx = 0; idx < proposalList.size(); ++idx)
-    {
-        for (auto jdx = idx + 1; jdx < proposalList.size(); ++jdx)
-        {
-            if (std::abs(proposalList[idx].x - proposalList[jdx].x) < 16 &&
-                std::abs(proposalList[idx].y - proposalList[jdx].y) < 16)
-            {
-                proposalList.erase(proposalList.begin() + jdx--);
-            }
-        }
-    }
-
     return proposalList;
 }
 
 auto getConstraints(fdeep::model const &crop_detector,
                     cv::Mat const &image,
-                    std::vector<Node> const &filtered)
+                    std::vector<Node> const &nodes) -> std::vector<Crop>
 {
     std::vector<Crop> crops;
 
-    for (auto &node1 : filtered)
+    for (auto &node1 : nodes)
     {
-        for (auto &node2 : filtered)
+        for (auto &node2 : nodes)
         {
             if (&node1 == &node2)
                 continue;
@@ -202,7 +191,35 @@ auto getConstraints(fdeep::model const &crop_detector,
     return crops;
 }
 
+// Predicted nodes gets sorted here -> Evil in place changes may occur
+auto filteredNodes(std::vector<Node> const &predicted_nodes,
+                   std::vector<Node> const &known_nodes) -> std::vector<Node>
+{
+    std::vector<Node> nodes;
+    nodes.reserve(known_nodes.size() + predicted_nodes.size());
+    nodes.insert(nodes.end(), known_nodes.begin(), known_nodes.end());
+    auto predictionBegin = nodes.insert(
+            nodes.end(), predicted_nodes.begin(), predicted_nodes.end());
+    std::ranges::sort(
+            predictionBegin, nodes.end(), [](auto const &l, auto const &r) {
+                return l.confidence > r.confidence;
+            });
+
+    auto end = nodes.end();
+    for (auto it = nodes.begin(); it != end; ++it)
+    {
+        end = std::remove_if(std::next(it), end, [&it](auto const &other) {
+            return std::abs(it->x - other.x) < 16 &&
+                   std::abs(it->y - other.y) < 16;
+        });
+    }
+    nodes.erase(end, nodes.end());
+
+    return nodes;
+}
+
 auto getMec2Json(std::vector<Node> const &n, std::vector<Crop> const &c)
+        -> nlohmann::json
 {
     nlohmann::json nodes;
     for (auto &node : n)
@@ -225,46 +242,77 @@ auto getMec2Json(std::vector<Node> const &n, std::vector<Crop> const &c)
     return json;
 }
 
-struct DeepmechModel
+struct Deepmech_ctx
 {
-    fdeep::model model;
+    fdeep::model symbol_detector;
+    fdeep::model crop_detector;
 
-    DeepmechModel(std::string path)
-    try : model(fdeep::load_model(path, false, fdeep::dev_null_logger))
+    Deepmech_ctx(char *symbolModel, char *cropModel)
+        : symbol_detector(fdeep::read_model_from_string(symbolModel))
+        , crop_detector(fdeep::read_model_from_string(cropModel))
     {
     }
-    catch (...)
+
+    auto predict(std::uint8_t *ptr,
+                 std::uint32_t width,
+                 std::uint32_t height,
+                 std::uint32_t *coordinates,
+                 std::uint32_t length) const -> char *
     {
-        throw std::invalid_argument(
-                fmt::format("Path {} contains no model.", path));
+        cv::Mat image(height, width, CV_8UC1, ptr);
+
+        auto predicted_nodes = getNodes(symbol_detector, image);
+
+        std::vector<Node> known_nodes;
+        known_nodes.reserve(length / 2);
+        for (int i = 0; i < length; i += 2)
+        {
+            known_nodes.push_back(Node(coordinates[i], coordinates[i + 1]));
+        }
+        auto nodes = filteredNodes(predicted_nodes, known_nodes);
+
+        // previously known_nodes are 200% confident that they exist already.
+        nodes.erase(nodes.begin(),
+                    std::ranges::find_if(nodes, [](auto const &v) {
+                        return v.confidence <= 1.f;
+                    }));
+
+        const auto constraints = getConstraints(crop_detector, image, nodes);
+
+        auto serialized = getMec2Json(nodes, constraints).dump();
+
+        auto allocation = new char[serialized.size() + 1];
+        std::memcpy(allocation, serialized.data(), serialized.size() + 1);
+
+        return allocation;
     }
 };
 
-const DeepmechModel symbol_detector("assets/fcn_sym_det.json");
-const DeepmechModel crop_detector("assets/crop_detector.json");
-
-extern "C" DEEPMECH_CC_EXPORT auto
-predict(std::uint8_t *ptr, std::uint32_t width, std::uint32_t height) -> char *
+// Take 2 strings for the models and return a pointer to an object which
+// offers to predict images on demand
+extern "C" DEEPMECH_CXX_EXPORT auto create_deepmech_ctx(char *symbolModel,
+                                                        char *cropModel)
+        -> Deepmech_ctx *
 {
-    cv::Mat image(height, width, CV_8UC1, ptr);
-
-    const auto nodes = getNodes(symbol_detector.model, image);
-    const auto constraints = getConstraints(crop_detector.model, image, nodes);
-
-    auto serialized = getMec2Json(nodes, constraints).dump();
-
-    auto allocation = new char[serialized.size() + 1];
-    std::memcpy(allocation, serialized.data(), serialized.size() + 1);
-
-    return allocation;
+    return new Deepmech_ctx(symbolModel, cropModel);
 }
 
-extern "C" DEEPMECH_CC_EXPORT void deepmech_cc_free(char *str)
+extern "C" DEEPMECH_CXX_EXPORT auto predict(Deepmech_ctx *ctx,
+                                            std::uint8_t *ptr,
+                                            std::uint32_t width,
+                                            std::uint32_t height,
+                                            std::uint32_t *nodes,
+                                            std::uint32_t length) -> char *
 {
-    delete[] str;
+    return ctx->predict(ptr, width, height, nodes, length);
 }
 
-//int main()
+extern "C" DEEPMECH_CXX_EXPORT void deepmech_cxx_free(char *ctx)
+{
+    delete ctx;
+}
+
+// int main()
 //{
 //    auto image = cv::imread("assets/0_0_2.png", 0);
 //    //cv::bitwise_not(image, image);
