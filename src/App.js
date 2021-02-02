@@ -31,9 +31,8 @@ function handleMecModelUpdate() {
         const add = (up && action.idx === 'add') || (!up && action.idx === 'remove');
         if (action.list === 'nodes' ||
             action.list === 'constraints' ||
-            action.lists === 'views')
-        {
-            const element  = { ...action.value };
+            action.lists === 'views') {
+            const element = { ...action.value };
             if (add) {
                 if (ref._model[action.list].find(e => e.id === element.id)) {
                     // console.warn(`Can not add element to ${action.list}. Id ${element.id} is already taken`)

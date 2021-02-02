@@ -1,9 +1,9 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Divider, Drawer, List } from '@material-ui/core';
-import { Brightness4, ChevronLeft, GitHub } from '@material-ui/icons';
+import { Brightness4, ChevronLeft, GitHub, Storage } from '@material-ui/icons';
 import { MecControl, DeepmechControl, ListButton } from '.';
-import { UiAction, UiSelect, mecAction } from '../Features';
+import { UiAction, UiSelect, mecAction, deepmechAction } from '../Features';
 
 export default function LeftDrawer({ classes, mecReset }) {
     const dispatch = useDispatch();
@@ -29,6 +29,13 @@ export default function LeftDrawer({ classes, mecReset }) {
         <DeepmechControl classes={classes} />
         <Divider />
         <List className={classes.listBottom}>
+            <ListButton
+                onClick={() => {
+                    dispatch(deepmechAction.register({prediction: true, serverport: 8337}))
+                }}
+                tooltip="Activate server prediction">
+                <Storage/>
+            </ListButton>
             <ListButton
                 onClick={() => {
                     dispatch(mecAction.darkmode(!UI.darkmode));

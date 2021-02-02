@@ -4,10 +4,40 @@ import { deepmech } from '../deepmech';
 const ref = mecElement;
 
 function tryChromeMessage(message) {
-    if (!globalThis?.chrome?.webview) return;
+    if (!globalThis?.chrome?.webview) {
+        return false;
+    }
 
     globalThis.chrome.webview.postMessage(
         JSON.stringify(message));
+
+    return true;
+}
+
+function tryWebServerMessage(message, port) {
+    if (!port) {
+        return false;
+    }
+
+    fetch('http://localhost:' + port, {
+        method: 'POST',
+        body: JSON.stringify(message),
+        headers: new Headers({
+            'Content-Type': 'application/json',
+        })
+    }).then(r => {
+        const reader = r.body.getReader();
+        reader.read().then(({ done, value }) => {
+            updateModel(JSON.parse(String.fromCharCode(...value)))
+        });
+    });
+}
+
+function updateModel(payload) {
+    deepmech.updateNodes(payload.nodes);
+    deepmech.updateConstraints(payload.constraints);
+
+    ref._model.draw(mecElement._g)
 }
 
 const slice = createSlice({
@@ -20,6 +50,7 @@ const slice = createSlice({
             initiated: false,
             prediction: false,
             canvas: false,
+            serverport: 0,
         }
     },
     reducers: {
@@ -29,14 +60,16 @@ const slice = createSlice({
             state.extern.initiated = true;
         },
         register: (state, action) => {
-            state.webViewPrediction = action.payload;
-
             if (!action.payload) {
                 globalThis.webviewEventListenerPlaceholder = undefined;
                 return;
             }
 
-            if (globalThis.chrome?.webview) {
+            if (action.payload.serverport) {
+                state.extern.prediction = true;
+                state.extern.serverport = 8337;
+            }
+            else if (globalThis.chrome?.webview) {
                 if (action.payload.canvas) {
                     state.extern.canvas = true;
                 }
@@ -63,10 +96,7 @@ const slice = createSlice({
             tryChromeMessage({ canvas: true });
         },
         updateModel: (state, action) => {
-            deepmech.updateNodes(action.payload.nodes);
-            deepmech.updateConstraints(action.payload.constraints);
-
-            mecElement._model.draw(mecElement._g);
+            updateModel(action.payload);
         },
         // This function is only called if externCanvas is false.
         // TODO Implement eventHandler if base64 comes from webview to predict here.
@@ -85,10 +115,12 @@ const slice = createSlice({
                 x: n.x + view.x - 16,
                 y: height - n.y - view.y - 16,
             }));
-            tryChromeMessage({
+            const message = {
                 image: canvas.toDataURL().replace(/^data:image.+;base64,/, ''),
                 nodes: JSON.stringify(nodes)
-            });
+            };
+            if (tryChromeMessage(message)) return;
+            if (tryWebServerMessage(message, state.extern.serverport)) return;
         },
     },
 });
