@@ -1,32 +1,44 @@
 ﻿import os
+import base64
 import json
 import cv2
+import numpy as np
 import tensorflow as tf
 
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from io import BytesIO
 
 class DeepmechPredictionServer(BaseHTTPRequestHandler):
-    # For usage from source directory when testing:
-    srcPath = os.path.join(os.path.abspath('.'), "src", "wpf", "deepmech", "Resources")
-    # srcPath = os.path.join(os.getcwd(), "..", "..", "..", "Resources")
+    srcPath = os.path.join(os.getcwd())
+
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.send_header('Access-Control-Allow-Origin', '*')  
+        self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.end_headers()
 
     def do_GET(self):
         self.send_response(200)
         self.send_header("Content-type", "text/html")
         self.end_headers()
-        self.wfile.write(bytes("Hello world22.", "utf-8"))
+        self.wfile.write(bytes("<html><head><title>Deepmech WebServer</title></head>", "utf-8"))
+        self.wfile.write(bytes("<body>", "utf-8"))
+        self.wfile.write(bytes("<p>This is the deepmech webserver.</p>", "utf-8"))
+        self.wfile.write(bytes("<p>Instructions to use:</p>", "utf-8"))
+        self.wfile.write(bytes("</body></html>", "utf-8"))
 
     def do_POST(self):
-        print(self.srcPath)
-        content_length = int(self.headers['Content-Length'])
-        body = self.rfile.read(content_length)
         self.send_response(200)
+        self.send_header('Access-Control-Allow-Origin', '*')  
+        self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.end_headers()
+        content_length = int(self.headers.get('Content-Length'))
+        body = self.rfile.read(content_length)
+        print(body)
         response = BytesIO()
-        response.write(b'Hello from the other side.')
-        # TODO give an image to predict
-        response.write(self.predict(body).encode('utf-8'))
+        response.write(b'Hello world!')
         self.wfile.write(response.getvalue())
 
     def predict(self, base64image):
@@ -35,13 +47,9 @@ class DeepmechPredictionServer(BaseHTTPRequestHandler):
         crop_detector = tf.keras.models.load_model(
             os.path.join(self.srcPath, 'crop_detector.h5'))
 
-        image = cv2.imread(os.path.join(os.environ["TEMP"], 'deepmechCanvas.png'),
-            cv2.IMREAD_GRAYSCALE)
-
-        # TODO remove this again...
-        image = tf.io.decode_base64(base64image)
-        print(image)
-
+        np_data = np.fromstring(base64.b64decode(base64image), np.uint8)
+        image = cv2.imdecode(np_data, cv2.IMREAD_GRAYSCALE)
+        
         image_tensor = tf.convert_to_tensor(image)
         image_tensor = tf.cast(image_tensor / 255, tf.float32)
         image_tensor = tf.expand_dims(image_tensor, -1)
@@ -134,10 +142,9 @@ class DeepmechPredictionServer(BaseHTTPRequestHandler):
         # print(json.dumps(elements))
         return json.dumps(elements)
 
-predict()
-
 if __name__ == "__main__":        
     webServer = HTTPServer(("localhost", 8337), DeepmechPredictionServer)
+    print("Starting webserver on port 8337")
 
     try:
         webServer.serve_forever()
