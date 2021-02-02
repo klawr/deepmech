@@ -36,12 +36,13 @@ class DeepmechPredictionServer(BaseHTTPRequestHandler):
         self.end_headers()
         content_length = int(self.headers.get('Content-Length'))
         body = self.rfile.read(content_length)
-        print(body)
+        j = json.loads(body)
+        prediction = self.predict(j["image"], j["nodes"])
         response = BytesIO()
-        response.write(b'Hello world!')
+        response.write(bytes(prediction, "UTF-8"))
         self.wfile.write(response.getvalue())
 
-    def predict(self, base64image):
+    def predict(self, base64image, known_nodes):
         symbol_detector = tf.keras.models.load_model(
             os.path.join(self.srcPath, 'fcn_sym_det.h5'))
         crop_detector = tf.keras.models.load_model(
@@ -64,12 +65,18 @@ class DeepmechPredictionServer(BaseHTTPRequestHandler):
             max_val = tf.math.reduce_max(tf.squeeze(predictions), -1)
 
             y, x = tf.split(all_idx * 4, 2, -1)
+            coords = tf.squeeze(tf.stack([y - 16, x - 16, y + 16, x + 16], -1))
 
-            coords = tf.squeeze(tf.stack([y, x, y + 32, x + 32], -1))
+            image_scale = [
+                image_tensor.shape[2],
+                image_tensor.shape[1],
+                image_tensor.shape[2],
+                image_tensor.shape[1]]
 
-            all_boxes = tf.cast(coords / 360, tf.float32)
+            all_boxes = tf.cast(tf.divide(coords, image_scale), tf.float32)
 
-            scores = tf.gather_nd(max_val, all_idx)
+            scores  = tf.gather_nd(max_val, all_idx)
+
             nms_idx = tf.image.non_max_suppression(
                 all_boxes, scores, 99, tf.keras.backend.epsilon(), 0.8)
 
@@ -83,22 +90,30 @@ class DeepmechPredictionServer(BaseHTTPRequestHandler):
             return node_boxes, base_boxes
 
         [nodes, bases] = get_bounding_boxes_nms(symbol_detector(image_tensor)[0])
+        
+        elements = {"constraints":[]}
+        elements["nodes"] = json.loads(known_nodes);
+        known_length = len(elements["nodes"])
 
-        elements = {"nodes":[], "constraints":[]}
+        def appendnode(node, base):
+            x = int((node[1] + node[3]) / 2 * image_tensor.shape[1])
+            y = int((node[0] + node[2]) / 2 * image_tensor.shape[2])
+            for n in elements["nodes"]:
+                if abs(n["x"] - x) < 16 and abs(n["y"] - y) < 16:
+                    return
 
-        counter = 1
-
-        def appendnode(node, base, counter):
             elements["nodes"].append({
-                "id": "DM" + str(counter),
-                "x": int((node[1] + node[3]) / 2 * image_tensor.shape[1]),
-                "y": int((node[0] + node[2]) / 2 * image_tensor.shape[2]),
+                "id": "DM" + str(appendnode.counter),
+                "x": x,
+                "y": y,
                 "base": base,
             })
-            counter += 1
+            appendnode.counter +=1
 
-        [appendnode(node, False, counter) for node in nodes]
-        [appendnode(base, True, counter) for base in bases]
+        appendnode.counter = 1
+
+        [appendnode(node, False) for node in nodes]
+        [appendnode(base, True) for base in bases]
 
         crops = []
         crops_info = []
@@ -113,7 +128,7 @@ class DeepmechPredictionServer(BaseHTTPRequestHandler):
                 if x1 == x2 or y1 == y2:
                     continue
 
-                crop = image[y1:y2, x1:x2]
+                crop = image[y1+16:y2+16, x1+16:x2+16]
                 crop = cv2.resize(crop, (96, 96))
 
                 if x1 == node2["x"]:
@@ -131,15 +146,16 @@ class DeepmechPredictionServer(BaseHTTPRequestHandler):
                     "p2": n2,
                     "id": n1 + n2})
 
-        for idx, pred in enumerate(crop_detector(tf.convert_to_tensor(crops))):
-            argmax = tf.math.argmax(pred, -1)
-            if (argmax):
-                constraint = crops_info[idx]
-                constraint["len"] = { "type": "const" if argmax == 1 else "free" }
-                constraint["ori"] = { "type": "const" if argmax == 2 else "free" }
-                elements["constraints"].append(constraint)
+        if (len(crops) > 0):
+            for idx, pred in enumerate(crop_detector(tf.convert_to_tensor(crops))):
+                argmax = tf.math.argmax(pred, -1)
+                if (argmax):
+                    constraint = crops_info[idx]
+                    constraint["len"] = { "type": "const" if argmax == 1 else "free" }
+                    constraint["ori"] = { "type": "const" if argmax == 2 else "free" }
+                    elements["constraints"].append(constraint)
 
-        # print(json.dumps(elements))
+        elements["nodes"] = elements["nodes"][known_length:]
         return json.dumps(elements)
 
 if __name__ == "__main__":        
