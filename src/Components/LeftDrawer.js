@@ -3,11 +3,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Divider, Drawer, List } from '@material-ui/core';
 import { Brightness4, ChevronLeft, GitHub, Storage } from '@material-ui/icons';
 import { MecControl, DeepmechControl, ListButton } from '.';
-import { UiAction, UiSelect, mecAction, deepmechAction } from '../Features';
+import { UiAction, UiSelect, mecAction, deepmechSelect, deepmechAction } from '../Features';
 
 export default function LeftDrawer({ classes, mecReset }) {
     const dispatch = useDispatch();
     const UI = useSelector(UiSelect);
+    const deepmech = useSelector(deepmechSelect)
 
     return <Drawer
         open={UI.left}
@@ -21,7 +22,7 @@ export default function LeftDrawer({ classes, mecReset }) {
             </ListButton>
         </List>
         <Divider />
-        {UI.deepmech ? <div /> :
+        {deepmech.active ? <div /> :
             <div>
                 <MecControl mecReset={mecReset} />
                 <Divider />
