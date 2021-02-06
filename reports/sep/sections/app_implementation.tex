@@ -5,17 +5,18 @@ However, the model lacks a suitable environment to be used.
 The prototype applies the model and its implementation into each instance of \name{mec-2} and patches a canvas on top of the element to be able to draw.
 This is not optimal, because this approach is neither flexible nor extensible.
 So instead of using just the \name{mec2} HTML-element, a web application is built around it.
-This web application may be used as a progressive web app to be accessed via a browser or even embedded into other third-party apps.
+This web application may be used as a progressive web app to be accessed via a browser or even embedded into other third-party frameworks.
 
 \subsection{Creation of a Progressive Web App}
 
-The goal of the application is to provide a user interface where the user can work with \name{mec2} interactively, especially using hand-drawings.
+The goal of the application is to provide a user interface for the user to work with \name{mec2} interactively.
+The application should be designed to be extensible to allow other means of interacting with \name{mec2}; for example using hand-drawings.
 This is achieved by using \name{mec2} as the base and creating an environment around this HTML-element.
 
 Components used to create the user interface are mostly written using \name{React}. % TODO citation needed.
 React is a JavaScript framework, which allows for the usage of single components, allowing standard HTML and JavaScript besides it.
 This is a requirement the original \name{mec2} HTML-Component should be used without any modifications.
-By using \name{materialUI}\cite{MaterialUI2020} a consistent and modern layout is created.
+By using the \name{materialUI}\cite{MaterialUI2020} a consistent and modern layout is created.
 
 \subsection{Structure of the application}
 
@@ -29,11 +30,11 @@ The main part of the application is occupied by the \name{mec2} Custom HTML elem
 It is stretched across the whole viewport.
 On both sides are \name{Material-UI} \code{Drawer} elements, enabling the user to interact with different parts of the application.
 
-\subsubsection{Left drawer}
-
 The structure of the user interface aims to be simple and straight forward.
 To define individual components \name{Reacts} \name{jsx} syntax is used.
 \name{jsx} is a syntax very similar to \name{HTML} but with the ability to implement JavaScript into the elements\footnote{By using \name{jsx} it is now necessary to compile the project using \name{Babel.js}.}. % TODO citation neede
+
+\subsubsection{Left drawer}
 
 The left drawer contains \code{MecControl}, \code{DeepmechControl} and two other Buttons.
 \code{MecControl} is a custom \name{React} component to replace the default \name{mec2} controls by using the designated API.\@
@@ -65,36 +66,42 @@ It contains the definition of the variables \code{dispatch} and \code{mec}.
 The return value of a component is the contonent defined in \name{jsx} syntax.
 \code{List} is a \name{Material-UI} component.
 The list items inside the list are are implemented using \code{ListItems} containing a \code{Tooltip} and an \code{IconButton}.
-To reuse \name{Material-UI} components multiple times without having to call them every time a custom \code{ListButton} component is used.
-The code for \code{ListButton} can be reviewed at \aka{} % TODO include link here.
+To reuse \name{Material-UI} components multiple times without calling them every time a custom \code{ListButton} component is created.
+The \code{ListButton} is a combination of the \code{ListItem}, \code{Tooltip} and \code{IconButton} components and can be reviewed at \aka{https://github.com/klawr/deepmech/blob/gh-pages/src/Components/Utils/ListButton.js}.
 
 The left drawer also contains the \code{DeepmechControl}\footnote{\name{deepmech} is the current project name.}.
 It is responsible for handling the draw mode.
-It shows the activation button if the draw mode is disabled.
+It only shows the activation button if the draw mode is disabled.
 If the drawing mode is enabled the left drawer does not show the \code{MecControl} anymore.
-Furthermore, the \code{DeepmechControl} shows four different modes interacting with the drawing canvas.
-Drawing, dragging strokes, deleting strokes, and a camera mode.
-Details to the different modes and how they are implemented is explained in Chapter~\ref{ch:state_manipulation}.
+Furthermore, the \code{DeepmechControl} shows four different modes interacting with the drawing canvas:
+\begin{enumerate*}
+    \item Drawing.
+    \item Line panning.
+    \item Line deletion.
+    \item Camera mode.
+\end{enumerate*}
+Details of the different modes and how they are implemented are explained in Chapter~\ref{ch:state_manipulation}.
 
-The two bottom-most buttons are responsible for toggling the dark mode\footnote{The app starts in dark mode if the browser is, and vice versa.} and to navigate to the project page: \url{https://github.com/klawr/deepmech}.
+The two bottom-most buttons are responsible for toggling the dark-mode\footnote{The app starts in dark mode if the executing browser is in dark-mode, and vice versa.} and to navigate to the project page: \url{https://github.com/klawr/deepmech}.
 
 \subsubsection{Right drawer}
 
-The right drawer is intended to show all relevant information contained by the \name{mec2} model.
+The drawer on the right side intends to show all relevant information of the \name{mec2} model.
 On the top, there are two buttons labeled \code{nodes} and \code{constraints} each with a \code{Label} icon.
 Those are used to toggle the labels of \code{nodes} and \code{constraints} respectively.
-The \code{Lock} Button is used to keep the drawer open when interacting with the model.
-This is enabled by default if the side is wide enough; i.e.\ wider than 1200 pixels.
+The \code{Lock}-button is used to keep the drawer open when interacting with the model.
+The right drawer is locked by default if the side is wide enough; i.e.\ wider than 1200 pixels.
 
 The last component in the \code{RightDrawer} is the \code{MecProperties} component.
-The \code{MecProperties} component contains a collection of other custom components, individually created for the different properties of a \name{mec2} model.
-The  first component is the \code{Id} component.
+The \code{MecProperties} component contains a collection of other custom components.
+Four properties of a \name{mec2} model have designated components.
+The first component is the \code{Id} component.
 It is showing the \code{id} property of the \name{mec2} model and updates it respectively on changes.
 
 Currently, three of the modules provided by \name{mec2} are implemented into the app:
 \code{Nodes}, \code{Constraints} and \code{Views}.
-They are all structured in a very similar fashion to be able to have a somewhat unified interface for the user.
-To achieve that the return value of these components is very similar and can be seen in Listing~\ref{lst:mec_component_return}.
+They are all structured in a very similar way to have a somewhat unified interface for the user.
+To achieve this the return value of these components is very similar and can be seen in Listing~\ref{lst:mec_component_return}.
 
 \begin{lstlisting}[label={lst:mec_component_return}, caption={Return value of a custom \name{mec2} component.}]
 return <Accordion>
@@ -126,8 +133,8 @@ The \code{head} variable is a list of properties which is further discussed in C
 The \code{MecTable} component is responsible for rendering the table where the properties are shown.
 \code{MecTable} returns a predefined layout of a regular \code{Table} element of \name{Material-UI}, which can be reviewed at \aka{https://material-ui.com/components/tables/}.
 The \code{TableHead} in \code{MecTable} contains a mapping of the different properties which are provided by \code{head} to show the properties which are shown by each column.
-The rows of the table are filled using yet another custom component which is injected into the \code{MecTable}, called \code{SanitizedCell}.
-\code{SanitizedCell} itself is provided by the encompassing component.
+The rows of the table are filled using yet another custom component: \code{SanitizedCell}.
+The \code{SanitizedCell} component is injected into the \code{MecTable}, wheras the definition of the component itself is provided by the encompassing component.
 It provides information on how the individual properties are to be rendered.
 The respective return value of the \code{SanitizedCell} function can be seen in Listing~\ref{lst:sanitized_cell}.
 
@@ -168,8 +175,8 @@ For textual inputs the custom component \code{UpdateText} is created, which hand
 It is therefore used by number value like \code{'x'} and \code{'y'} or textual value like \code{'id'}.
 
 Another custom component, which is used inside a \code{SanitizedCell} component is \code{RadioSelect}.
-This custom component is used to get a selection of items and hold one as the selected item; e.g.\ constraints inside a \name{mec2} model reference two nodes, which are selected via their respective \code{id} property.
-This component allows to list all nodes by their \code{id} property and select one respectively.
+This custom component contains a selection of items and hold one as the selected item; e.g.\ constraints inside a \name{mec2} model reference two nodes, which are selected via their respective \code{id} property.
+This component can list all nodes by their \code{id} property and select one respectively.
 
 \subsubsection{The canvas}
 
@@ -177,8 +184,8 @@ As mentioned above, the viewport is occupied by the \name{mec2} Custom HTML elem
 The prototype used the canvas of this HTML element to be able to draw.
 This approach is cumbersome because the corresponding event handlers had to be activated and deactivated manually, which gives a lot of room for error and is not a very flexible approach.
 
-In unison with the rest of the application, this canvas is now remodeled into a custom component.
-This \code{DeepmechCanvas} component does not return a \name{React} component, but a HTML canvas, as demonstrated in Listing~\ref{lst:deepmech_canvas}.
+In unison with the rest of the application, this canvas element modeled into a custom component.
+The \code{DeepmechCanvas} component does not return a \name{React} component, but a HTML canvas, as demonstrated in Listing~\ref{lst:deepmech_canvas}.
 
 \begin{lstlisting}[label={lst:deepmech_canvas}, caption={Return of the \code{DeepmechCanvas} component.}]
 return <canvas
@@ -187,8 +194,8 @@ return <canvas
     ref={canvasRef} />
 \end{lstlisting}
 
-The \code{id} property is set to be able to refer to this canvas from other components.
-The \code{DeepmechControl} component uses this \code{id} to be able to get access to the HTML element and forward it to the \code{predict} function.
+The \code{id} property is used to refer to this canvas from other components.
+The \code{DeepmechControl} component uses this \code{id} to be able to get access to the canvas-HTML element and forwards it to the \code{predict} function.
 
 \code{width} and \code{height} are taken from the \code{globalThis}\footnote{\aka{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/globalThis}} property.
 
@@ -196,7 +203,7 @@ The \code{DeepmechCanvas} component has a \code{canvasRef} variable which is ini
 Every time the \code{DeepmechCanvas} component is rendered the \code{canvasRef} is updated by the \code{ref} property of the returned HTML element.
 See \aka{https://reactjs.org/docs/hooks-reference.html\#useref} for more information about \code{React.useRef}.
 
-% TODO Because the reference is created after initialization, \name{Reacts} \code{useEffect}\footnote{\aka{https://reactjs.org/docs/hooks-reference.html\#useeffect}} has to be used.
+Because the reference is created after initialization, \name{Reacts} \code{useEffect}\footnote{\aka{https://reactjs.org/docs/hooks-reference.html\#useeffect}} has to be used.
 \code{DeepmechCanvas}' \code{useEffect} is shown in Listing~\ref{lst:deepmech_canvas_use_effect}.
 
 \begin{lstlisting}[label={lst:deepmech_canvas_use_effect}, caption={The \code{useEffect} function in the \code{DeepmechCanvas} component.}]
@@ -213,8 +220,8 @@ React.useEffect(() => {
 }, [deepmech.mode]);
 \end{lstlisting}
 
-The second argument (\code{[deepmech.model]}) is an array that defines the properties on which changes are monitored.
-Every time a change is registered, the function which is given as the first argument is issued.
+The second argument (\code{[deepmech.model]}) is an array that defines properties on which changes are monitored.
+Every time a change is registered, the function given as the first argument is issued.
 
 The first argument given to this function is also called after the component is rendered the first time.
 This behavior is necessary because the canvas has to be initialized for the context of the canvas element to be set via \code{canvasRef.current.getContext('2d')}.
@@ -233,7 +240,7 @@ const o = { tick, pointerdown, pointerup, drag, click: pointerup }
 Object.entries(o).forEach(e => interactor.on(...e));
 \end{lstlisting}
 
-The event listeners have respective functions that handle the event based on the current \code{mode} which is inserted by the function call\footnote{Every time the mode changes the function is called again, as described in the array which is given as the second argument to the \code{React.useEffect} function.}.
+The event listeners have functions to handle events based on the current \code{mode} which is inserted by the function call\footnote{Every time the mode changes the function is called again, as described in the array which is given as the second argument to the \code{React.useEffect} function.}.
 
 For example the \code{pointerdown} function, as described in Listing~\ref{lst:handle_interactor_pointerdown} contains a switch-statement handling events when the \code{mode} is set to \code{'draw'} or \code{'delete'}.
 
@@ -260,8 +267,9 @@ function pointerdown(e) {
 }
 \end{lstlisting}
 
-The \code{ply} variable is a placeholder which is filled by the various event handlers to represent the currently drawn \code{g2.ply} element.
+% TODO have I talked about the placeholder to fill the mec element? 
 
+The \code{ply} variable is a placeholder filled by the various event handlers to represent the currently drawn \code{g2.ply} element.
 The \code{handleInteractor} function returns a function shown in Listing~\ref{lst:handle_interactor_return}.
 
 \begin{lstlisting}[label={lst:handle_interactor_return}, caption={Return value of \code{handleInteractor}.}]
@@ -279,8 +287,10 @@ It reverts the changes made to the \code{canvasInteractor} and also calls \code{
 
 \subsection{State manipulation}\label{ch:state_manipulation}
 
-To track changes between the components \name{React-Redux}\cite{Abramov2021} is used.
-This approach is different to \name{mec2}'s because changes are not made onto an object itself, but a new object is created on each change which replaces the old one.
+To track changes inside components \name{React-Redux}\cite{Abramov2021} is used.
+This approach is different to \name{mec2}'s because changes are not made on the object itself, but a new object is created on each change which replaces the old one.
+
+% TODO talk a bit about performance here?
 
 The upside of this approach is that properties do not have to be tracked.
 A change will always render the whole application using the new state without the necessity of event listeners on every variable and property which may change.
@@ -329,21 +339,25 @@ Where the \code{val} is set to the respective string of the mode; e.g. \code{"dr
 Another upside of this approach is that the corresponding properties do not have to be injected through the whole application.
 The parent of \code{DeepmechControl} is the \code{LeftDrawer} component which resides in the \code{App} component.
 The \code{mode} is used by the \code{DeepmechCanvas} component which is used in the \code{App} component.
-Without a global state, the \code{mode} would have to reside in the \code{App} component and has to be injected through all children to be able to be used where necessary.
-By using \name{React-Redux}' store, this can be avoided by importing the necessary properties where they are needed, agnostic to the application structure.
+Without a global state, the \code{mode} would have to reside in the \code{App} component and has to be injected through all children to be accessible where necessary.
+By using \name{React-Redux}' store, this is avoided by importing the necessary properties where they are needed, agnostic to the application structure.
 
 \subsection{State of the \name{mec2} model}\label{ch:state_mec2_model}
 
-The store contains three reducers which are defined in their respective slices.
+The store contains three reducers.
+These are objects defined in their respective slices.
 
-\code{Deepmech} is already discussed in Chapter~\ref{ch:state_manipulation}. It handles the state of the canvas.
+\code{Deepmech} is already discussed in Chapter~\ref{ch:state_manipulation}.
+It handles the state of the canvas.
 
 \code{UI} contains information about the state of the drawers (expanded or not), whether the application is in \code{deepmech} mode or not, if the dark-mode is activated or not, and about all properties of the \code{mecElement} which are shown in the right drawer.
 
 The third reducer is the \code{MecModel}.
-It holds information about the state of the model and induces functionality to change properties of the \code{mecElement}.
+It holds information about the state of the \name{mec}-model and induces functionality to change properties of the \code{mecElement}.
 
 \subsubsection{MecModelSlice}
+
+% TODO Where is mecElement even considered? Shouldn't be ref explained here?
 
 The \code{mecElement} references the global \code{mec2} HTML Element.
 The \code{\_model} property refers to the \code{mec2} model rendered to the canvas of \code{mecElement}.
@@ -377,9 +391,7 @@ toggleGravity: (state) => {
 \end{lstlisting}
 
 Where \code{ref} is defined as \code{mecElement}.
-
-The \code{queue} on the other hand is an array of objects.
-These objects must have four properies:
+The \code{queue} is an array of objects which have to define an interface of four properties:
 
 \begin{enumerate}
     \item \code{list} --- The list should refer to the property name of \code{mecElement.\_model}; e.g. \code{list="nodes"} refers to \code{mecElement.\_model.nodes}.
@@ -401,7 +413,7 @@ Therefore another approach has to be used to propagate changes between the user 
 
 The \code{App.js} contains the \code{handleMecModelUpdate} function.
 This function is handed to the \code{store.subscribe} function.
-This ensures, that this function is called every time the store receives an update\footnote{Which is every time a \code{dispatch} function is issued.}.
+By subscribing to the store this function is called every time the store receives an update\footnote{Which is every time the \code{useDispatch} function is issued.}.
 
 The first thing the \code{handleMecModelUpdate} function checks is if the \code{MecModel} state has changed.
 If it has not, the \code{dispatch} call was not issued to a \code{MecModel} reducer and the function returns.
@@ -410,7 +422,7 @@ Then the \code{mecModel.selected} is compared to a \code{counter} variable.
 The \code{counter} is holding the value of the \code{mecModel.selected} when \code{handleMecModelUpdate} was last issued.
 By being able to differentiate between the \code{mecModel.selected} value increased or decreased after the last call, the object in the \code{mecModel.queue} is using its \code{value} or \code{previous} property.
 If the \code{selected} value went up is hold in the \code{up} variable respectively.
-The usefulness of this will be examined in in Chapter~\ref{ch:undo_redo}.
+The usefulness of this will be examined in Chapter~\ref{ch:undo_redo}.
 
 The \code{list} element that is currently selected will be used as \code{action} variable.
 
@@ -427,41 +439,47 @@ In this snippet every value that is referenced by either \code{action.value} or 
 
 If the \code{idx} property is \code{"add"} or \code{"remove"} the approach is not as generalizable.
 
-
-\begin{lstlisting}[label={lst:add_remove_list_element}, caption={Adding or removing a node in \code{mecElement}.}]
+\begin{lstlisting}[label={lst:add_remove_list_element}, caption={Adding or removing an element in \code{mecElement}.}]
 const add = (up && action.idx === 'add') || (!up && action.idx === 'remove');
-if (action.list === 'nodes') {
+if (action.list === 'nodes' ||
+    action.list === 'constraints' ||
+    action.lists === 'views') {
+    const element = { ...action.value };
     if (add) {
-        const node = { ...action.value };
-        if (ref._model.nodeById(node.id)) return;
-        mec.node.extend(node);
-        ref._model.addNode(node);
-        node.init(ref._model);
+        if (ref._model[action.list].find(e =>
+            e.id === element.id)) {
+            return
+        }
+        ref._model.plugIns[action.list].extend(element);
+        ref._model.add(action.list, element);
+        element.init(ref._model);
     }
     else {
-        ref._model.removeNode(ref._model.nodeById(action.value.id));
+        const o = ref._model[action.list].find(e =>
+            e.id === element.id);
+        if (o) o.remove;
     }
+    ref._model.draw(mecElement._g);
 }
-else if (action.list === 'constraints') {
-    ...
 \end{lstlisting}
 
 At first, it has to be determined if the current action is to add, or to remove an element.
 This is necessary, because if \code{action.idx === 'add'}, but the current value of \code{up} is false\footnote{So the selection went a step backwards in the list}, then the actual action to pursue is to remove an element.
 
-The excerpt in Listing~\ref{lst:add_remove_list_element} shows the current implementation to add a node element to \code{mecElement}\footnote{The \code{mecElement} is referenced by \code{ref}.}.
-Three functions have to be called to register an element.
-The \code{mec.node.extend} function is used to apply the respective prorotype to the \code{node} variable\footnote{This makes the object also unserializable by \name{React-Redux}.}.
-The next step is to add the node to the \code{mecElement.\_model}.
-The third function initializes the node. % TODO and this does exactly what?
+The excerpt in Listing~\ref{lst:add_remove_list_element} shows the current implementation to add an element to \code{mecElement}\footnote{The \code{mecElement} is referenced by \code{ref}.}.
+If the \code{id} is already taken by an element of the same \code{list} the function is aborted to avoid further problems with ambiguities.
+Three functions have to be called to register an element to the \name{mec2} model.
+The \code{extend} function\footnote{The \code{extend} function is expected to be provided by every \name{mec2} plugin.} is used to apply the respective prorotype to the \code{element}\footnote{This makes the object also unserializable by \name{React-Redux}.}.
+The next step is to add the element to the respective \code{list} in the \code{mecElement.\_model}.
+The third function initializes the element. % TODO and this does exactly what?
 
-To remove a node the \code{mecElement.\_model.removeNode} is called.
+To remove an element the \code{remove} function on the element is called, which is provided by the given prototype.
 
-Before the model can be rendered, another thing has to be issued.
+Before the model can be rendered, another function has to be issued first.
 Because the \code{value} and \code{previous} properties of \code{actions} have to be serializable, properties that refer to other elements inside the model are addressed by their respective \code{id}.
 The element replaces those referencing properties during initialization.
 If a constraint is changing its \code{p1} or \code{p2} property\footnote{The \code{p1} and \code{p2} properties of a constraint refer to the respectives nodes that are used as first and second anchor point.} this does not happen and subsequently results in an error.
-Because of this, the respective references have to be created again.
+Because of this, the respective references have to be reassigned by a function given through the prototype: \code{reassignRefs}.
 
 \subsubsection{Implement bidirectionality}
 
@@ -534,3 +552,18 @@ This corresponds to the behavior of other programs that offer this functionality
 % TODO implement images?
 
 \subsection{Implementation into other environments}
+
+The web application has many advantages.
+First and foremost it is operating system agnostic since it is available in every modern internet browser and available as a progressive web app. % TODO link to PWA? 
+
+A major disadvantage is that it is not as performant as other environments.
+% TODO do some benchmarks
+
+The Windows Presentation Foundation is a subsystem that can be used to create user interfaces for windows applications.
+It offers a \name{WebView} which can be used to embed the web application fully into an offline application. % TODO some context about WebView.
+
+% Write some text about WebView. How it uses chrome (inside the new edge and stuff.)
+
+% Write something about the Python bindings. But maybe it is necessary to write Python as a server to avoid the startup lag.
+
+Furthermore, the WinUI Canvas Component can be used, which is much more sophisticated than the canvas used in the web application.
