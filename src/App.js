@@ -8,7 +8,7 @@ import { lightTheme, darkTheme, useStyle } from './style';
 import { store, deepmechSelect, deepmechAction, UiSelect, UiAction, mecAction } from './Features';
 import { DeepmechCanvas, LeftDrawer, RightDrawer, ListButton } from './Components';
 
-const ref = mecElement;
+const ref = globalThis.mecElement;
 
 let mecModel;
 let counter = 0;

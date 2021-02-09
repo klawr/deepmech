@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const ref = mecElement;
+const ref = globalThis.mecElement;
 
 const slice = createSlice({
     name: 'MecModel',

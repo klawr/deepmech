@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { deepmech } from '../deepmech';
+import { deepmech } from '../deepmech/deepmech';
 
-const ref = mecElement;
+const ref = globalThis.mecElement;
 
 function tryChromeMessage(message) {
     if (!globalThis?.chrome?.webview) {
