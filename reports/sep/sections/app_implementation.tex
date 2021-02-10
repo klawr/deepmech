@@ -73,13 +73,7 @@ The left drawer also contains the \code{DeepmechControl}\footnote{\name{deepmech
 It is responsible for handling the draw mode.
 It only shows the activation button if the draw mode is disabled.
 If the drawing mode is enabled the left drawer does not show the \code{MecControl} anymore.
-Furthermore, the \code{DeepmechControl} shows four different modes interacting with the drawing canvas:
-\begin{enumerate*}
-    \item Drawing.
-    \item Line panning.
-    \item Line deletion.
-    \item Camera mode.
-\end{enumerate*}
+Furthermore, the \code{DeepmechControl} shows four different modes interacting with the drawing canvas: drawing, panning and deletion of line strokes and a camera mode, which is not implemented yet.
 Details of the different modes and how they are implemented are explained in Chapter~\ref{ch:state_manipulation}.
 
 The two bottom-most buttons are responsible for toggling the dark-mode\footnote{The app starts in dark mode if the executing browser is in dark-mode, and vice versa.} and to navigate to the project page: \url{https://github.com/klawr/deepmech}.
@@ -303,8 +297,15 @@ The \code{DeepmechSlice} is shown in Listing~\ref{lst:deepmech_slice}.
 const slice = createSlice({
     name: 'Deepmech',
     initialState: {
+        active: false,
         mode: 'draw',
         canvas: undefined,
+        extern: {
+            initiated: false,
+            prediction: false,
+            canvas: false,
+            serverport: 0,
+        }
     },
     reducers: {
         changeMode: (state, action) => {
@@ -557,10 +558,22 @@ The web application has many advantages.
 First and foremost it is operating system agnostic since it is available in every modern internet browser and available as a progressive web app. % TODO link to PWA? 
 
 A major disadvantage is that it is not as performant as other environments.
+Especially the cropping of images for the preparation to the second model is taking a long time.
+% TODO implement code here.
 % TODO do some benchmarks
 
-The Windows Presentation Foundation is a subsystem that can be used to create user interfaces for windows applications.
-It offers a \name{WebView} which can be used to embed the web application fully into an offline application. % TODO some context about WebView.
+Other applications can take on tasks by registering themself to the web app.
+If an app is registered is captured in the \code{extern} property in the state of the \code{deepmech} slice, as shown in Listing~\ref{lst:deepmech_slice}.
+The \code{extern} property has four properties\footnote{Which is subject to change if the application is growing.}.
+To register a third application function itself it is necessary to call the \code{register} action.
+The \code{action.payload} depends on the respective third-party application.
+At the moment there are three different third-party approaches are implemented.
+
+\subsubsection{WPF and WinUI}
+
+The Windows Presentation Foundation is a subsystem that can create user interfaces for windows applications.
+It offers a \name{WebView2}\footnote{There is a WebView component, too, but it uses the now deprecated Microsoft Edge rendering engine.} control which embeds the web application into a native windows application. % TODO some context about WebView.
+% TODO check if this works offline.
 
 % Write some text about WebView. How it uses chrome (inside the new edge and stuff.)
 
