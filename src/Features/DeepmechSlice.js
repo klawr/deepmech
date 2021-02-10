@@ -67,7 +67,7 @@ const slice = createSlice({
 
             if (action.payload.serverport) {
                 state.extern.prediction = true;
-                state.extern.serverport = 8337;
+                state.extern.serverport = action.payload.serverport;
             }
             else if (globalThis.chrome?.webview) {
                 if (action.payload.canvas) {
