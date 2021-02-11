@@ -3,10 +3,7 @@ module.exports = {
    output: {
       filename: './dist/deepmech_bundle.js',
    },
-   devServer: {
-      inline: true,
-      port: 8001
-   },
+   devtool: 'source-map',
    module: {
       rules: [
          {
@@ -21,7 +18,8 @@ module.exports = {
                plugins: [
                   '@babel/transform-runtime',
                   '@babel/plugin-proposal-class-properties',
-              ],
+                  '@babel/plugin-syntax-dynamic-import'
+               ],
             }
          }
       ]
