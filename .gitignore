@@ -2,6 +2,7 @@
 *logs/
 reports/*/meta
 auth.json
+.vim
 
 # Latex aka
 **/document.aka
