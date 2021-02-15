@@ -11,16 +11,17 @@ namespace deepmech
         WebView2 WebView;
         IntPtr Deepmech_ctx;
 
-        private bool _deepmechActive;
-        public bool DeepmechActive
-        {
-            set
-            {
-                WebView.Width = value ? 0 : double.NaN;
-                _deepmechActive = value;
-            }
-            get { return _deepmechActive; }
-        }
+        // Not used when canvas is not supported.
+        //private bool _deepmechActive;
+        //public bool DeepmechActive
+        //{
+        //    set
+        //    {
+        //        WebView.Width = value ? 0 : double.NaN;
+        //        _deepmechActive = value;
+        //    }
+        //    get { return _deepmechActive; }
+        //}
 
         public DeepmechWebView(WebView2 webview)
         {
@@ -34,10 +35,10 @@ namespace deepmech
 
         private string WebviewPlaceholder(string message) => "globalThis.webviewEventListenerPlaceholder(" + message + ")";
 
-        public void ExitDeepmech()
-        {
-            WebView.ExecuteScriptAsync(WebviewPlaceholder("{deepmech: false}"));
-        }
+        //public void ExitDeepmech()
+        //{
+        //    WebView.ExecuteScriptAsync(WebviewPlaceholder("{deepmech: false}"));
+        //}
 
         public void SendModelUpdate(string json)
         {
