@@ -1,19 +1,18 @@
-\section{First prototype}\label{ch:first_prototype}
+\section{First prototype} \label{ch:first_prototype}
 
-The prototype model has to be able to classify and to localize \name{nodes} and \name{constraints}; whereas \name{constraints} are connecting pairs of \name{nodes} respectively.
-Classification is the problem of detecting the correct type of \name{nodes} or \name{constraints}. % TODO citation
-Localization is the problem of determining the position of the respective detection inside of a given image. % TODO citation
-Subsequently, the gathered information has to be transformed into a usable format for further processing, e.g.\ into JSON to be usable by \name{mec2}. % TODO citation needed?
+To create a prototype capable of detecting hand-drawn mechanism, the capabilities necessary are have to be considered first.
+The application has to be able to detect and to localize \name{nodes} and to detect \name{constraints}, which are connecting pairs of \name{nodes}.
+Subsequently, the gathered information has to be transformed into a usable format for further processing.
+
+At first, the detection and localization of \name{nodes} is examined.
 
 \subsection{The Fully Convolutional Network}\label{ch:fcn}
 
-The topic of prepending work was the classification of hand-drawn mechanical symbols~\cite{Lawrence2020}.
-The resulting model can classify images with size 32 by 32 pixels as \name{nodes}, \name{base-nodes} or neither of both.
-It is only capable of classifying images with exactly these dimensions, which is insufficient for the task at hand.
-However, the model can be extended to be able to provide not only a classification, but also the location of an element in an image of arbitrary size.
+The topic of previous work was the recognition of hand-drawn mechanical symbols \cite{Lawrence2020}.
+Building on this, the trained model is improved to provide not only the class, but the location of the classification in an image of arbitrary size.
 
-To examine the model it can be loaded using \name{Keras'}, % TODO citation should be in the introduction.
-\code{model.load\_model} function and by issuing the \code{summary} method we get Listing~\ref{lst:srp_model}.
+The respective model can be loaded using \name{Keras'}, % TODO citation should be in the introduction.
+\code{model.load\_model} and by issuing the \code{summary} method we get listing~\ref{lst:srp_model}.
 
 \begin{lstlisting}[caption={Summary of Symbol Classifier.}, label={lst:srp_model}]
 _________________________________________________________________
@@ -37,19 +36,18 @@ Non-trainable params: 0
 _________________________________________________________________
 \end{lstlisting}
 
-The naive way to localize detected \name{nodes} and \name{constraints} in an image of arbitrary size is to scan sectors of size 32 by 32 pixels of an image and predicting them individually.
-Using a 360\times360 sized image with strides of one in each direction, the number of images which are used in the prediction process are 108.241 images\footnote{\(h + 1 - 32 * w + 1 - 32\), where \(h\) and \(w\) are the height and width of the input image and the size of the kernel used to predict is 32}.
-The respective Jupyter notebook testing the performance of this method can be reviewed at \url{https://aka.klawr.de/sep#1}. % TODO Set this URL.
+One way to localize images in a bigger image is to scan each sector of an image and predicting the generated crops.
+Using a 360x360 sized image, a stride of one in each direction, the number of images which are used in the prediction process are 108.241 images\footnote{$h + 1 - 32 * w + 1 - 32$, where $h$ and $w$ are the height and width of the input image and the size of the kernel used to predict is 32}.
+A Jupyter notebook testing the performance of this method can be viewed at \url{https://aka.klawr.de/sep#1}. % TODO Set this URL.
 
-To test this amount of images is not necessary most of the time and can be reduced by increasing the stride of the respective scanning process.
-This would most likely reduce the accuracy of localizations, but would certainly increase the speed of the operation.
+To test this amount of images is often not necessary and can be reduced by increasing the stride of the respective scanning process.
+This would reduce the accuracy of the localization, but would increase the speed.
 
-Another approach is to use the properties of convolutional layers to restructure the model and thereby making the whole procedure much more efficient.
-To transform the model into a so-called Fully Convolutional Network (FCN) the input layer has to be prepended by a convolutional layer.
-The first layer accepts images of arbitrary size.
-The kernel of 32 by 32 determines the size of the segment given to the second layer, which was previously used as the input-layer.
-Because the input of the original model is only defined by the kernel size, each successive layer is agnostic to the size of the previous.
-Listing~\ref{lst:to_fcn} transforms the \code{old\_model} by appending an \code{tf.keras.Input} layer without any specified size and replacing the output layer by a \code{tf.keras.Conv2D} layer\footnote{And thus removing the \code{tf.keras.flatten} layer.}.
+Another approach is to use the properties of convolutional layer to restructure the model and thereby making the whole procedure much more efficient.
+
+By transforming a model into a Fully Convolutional Network (FCN) all dense layers are replaced by convolutional layers, and the input layer is also a two dimensional layer but allows for an input image of arbitrary size.
+Because the input of the original model is only defined by the kernel size, it is agnostic to the size of a previous layer.
+Listing \ref{lst:to_fcn} transforms the \code{old\_model} by appending an \code{tf.keras.Input} layer without any specified size and replacing the output layer by a \code{tf.keras.Conv2D} layer\footnote{And thus removing the \code{tf.keras.flatten} layer.}.
 
 \begin{lstlisting}[caption={Transformation of the Symbol Classifier into a FCN.}, label=lst:to_fcn]
 inputs = tf.keras.Input(shape=(None, None, 1))
@@ -599,7 +597,11 @@ When the draw mode is active and \code{pointerdown} is issued an array is create
 This approach creates one \code{ply} element for each consecutive line, which can be dragged or deleted by changing the respective mode using the  \name{g2.selector}.
 
 By starting a prediction the content of the canvas is fed into the trained models, as discussed in Chapter~\ref{ch:conversion_to_web_context}.
+When the draw mode is active and \code{pointerdown} is issued an array is created which is then filled by the coordinates of the pointer on each \code{tick}\footnote{A \code{tick} is issued by the \name{canvasInteractor} on each requestAnimationFrame}.
+This approach creates one \code{ply} element for each consecutive line, which can be dragged or deleted by changing the respective mode using the  \name{g2.selector}.
+
+By starting a prediction the content of the canvas is fed into the trained models, as discussed in chapter \ref{ch:conversion_to_web_context}.
 The resulting prediction updates the \name{mec2} model.
-This is similar to the generation of bounding boxes, but instead of drawing them onto the canvas to show the results, the respective coordinates are added to the \name{mec2} model.
-The assembled \name{mec2} model can then be rendered and interacted with.
+This is similar to the generation of bounding boxes, but instead of drawing them onto the canvas to show the results the respective coordinates are added to the \name{mec2} model.
+The assembled \name{mec2} model can than be rendered and interacted with.
 
