@@ -6,7 +6,7 @@ using Microsoft.Web.WebView2.Core;
 
 namespace deepmech
 {
-    class DeepmechWebView : IDisposable
+    public sealed class DeepmechWebView : IDisposable
     {
         WebView2 WebView;
         IntPtr Deepmech_ctx;
@@ -84,9 +84,19 @@ namespace deepmech
             }
         }
 
+        private bool isDisposed;
         public void Dispose()
         {
+            if (isDisposed) return;
+
             Deepmech_cxx.destroy_deepmech_ctx(Deepmech_ctx);
+            Deepmech_ctx = IntPtr.Zero;
+            isDisposed = true;
+        }
+
+        ~DeepmechWebView()
+        {
+            Dispose();
         }
     }
 }
