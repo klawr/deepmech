@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Web.WebView2.Core;
-using Microsoft.UI.Xaml.Controls;
 using System.Text.Json;
+using Microsoft.UI.Xaml.Controls;
 
 namespace deepmech
 {
@@ -14,6 +11,7 @@ namespace deepmech
         WebView2 WebView;
         IntPtr Deepmech_ctx;
 
+        // Not used when canvas is not supported.
         //private bool _deepmechActive;
         //public bool DeepmechActive
         //{

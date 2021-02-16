@@ -62,7 +62,6 @@ namespace deepmech
             public string nodes { get; set; }
         }
 
-
         public void ProcessWebMessage(object sender, CoreWebView2WebMessageReceivedEventArgs e)
         {
             // If the source is not validated, don't process the message.
