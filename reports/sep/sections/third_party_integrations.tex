@@ -184,6 +184,23 @@ With the exception of some namespaces the source code is the same, which can be 
 
 \subsection{Webserver implementation}
 
+Another way of improving the performance of the prediction is to use a webserver.
+To register a local webserver, the \code{register} action of the \code{DeepmechSlice} in the PWA has to be issued.
+It sets the \code{serverport} of the \code{state.extern} and turns the \code{extern.prediction} to true.
+
+As a webserver the standard Python implementation and starting a local webserver to do the prediction\footnote{The corresponding script can be seen at \aka{https://github.com/klawr/deepmech/blob/master/src/webserver/predict.py}.}.
+
+% Explain how the webserver is activated
+% Code to send image and nodes is the same
+
+For the prediction the code discussed in Chapter~\ref{ch:combine_node_constraint_detection} is reused.
+The inference models are also the same.
+The predict function is slightly modified to be able to handle the base64 encoded images provided by the PWA.
+The function also expects a JSON string containing information about the known nodes.
+
+The webserver is implemented as a \code{DeepmechPredictionServer} class, which inherits from the \code{BaseHTTPRequestHandler} imported from the \code{http.server} package.
+This class provides functions like \code{do\_OPTIONS}, \code{do\_GET} and \code{do\_PUSH}, corresponding to the standard HTTP requests \code{OPTIONS}, \code{GET} and \code{PUSH}.
+
 % TODO check if this works offline.
 
 % Write some text about WebView. How it uses chrome (inside the new edge and stuff.)
