@@ -8,7 +8,7 @@ At first, the detection and localization of \name{nodes} is examined.
 
 \subsection{The Fully Convolutional Network}\label{ch:fcn}
 
-The topic of previous work was the recognition of hand-drawn mechanical symbols \cite{Lawrence2020}.
+The topic of previous work was the recognition of hand-drawn mechanical symbols~\cite{Lawrence2020}.
 Building on this, the trained model is improved to provide not only the class, but the location of the classification in an image of arbitrary size.
 
 The respective model can be loaded using \name{Keras'}, % TODO citation should be in the introduction.
@@ -47,7 +47,7 @@ Another approach is to use the properties of convolutional layer to restructure 
 
 By transforming a model into a Fully Convolutional Network (FCN) all dense layers are replaced by convolutional layers, and the input layer is also a two dimensional layer but allows for an input image of arbitrary size.
 Because the input of the original model is only defined by the kernel size, it is agnostic to the size of a previous layer.
-Listing \ref{lst:to_fcn} transforms the \code{old\_model} by appending an \code{tf.keras.Input} layer without any specified size and replacing the output layer by a \code{tf.keras.Conv2D} layer\footnote{And thus removing the \code{tf.keras.flatten} layer.}.
+Listing~\ref{lst:to_fcn} transforms the \code{old\_model} by appending an \code{tf.keras.Input} layer without any specified size and replacing the output layer by a \code{tf.keras.Conv2D} layer\footnote{And thus removing the \code{tf.keras.flatten} layer.}.
 
 \begin{lstlisting}[caption={Transformation of the Symbol Classifier into a FCN.}, label=lst:to_fcn]
 inputs = tf.keras.Input(shape=(None, None, 1))
@@ -296,7 +296,7 @@ The respective graphs can be seen in figure~\ref{fig:crop_detector_tensorboard}.
     \caption[TensorBoard output for the crop detector]{The training accuracy and loss of the crop detector. These graphs were created using TensorBoard, which is used as the callback during training.}\label{fig:crop_detector_tensorboard}
 \end{figure}
 
-\subsubsection{Combining node and constraint detection} \label={ch:combine_node_constraint_detection}
+\subsubsection{Combining node and constraint detection} \label{ch:combine_node_constraint_detection}
 
 To be able to predict constraints in production the generation of crops has to be implemented as an intermediate step between the node and constraint detection.
 The images must be cropped according to the generation of the training data, which means the coordinates of the nodes have to be detected first, and the area between them is resized to 96 by 96 images.
