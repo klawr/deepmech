@@ -55,5 +55,8 @@ namespace deepmech
 
         [DllImport("deepmech_cxx")]
         private extern static void deepmech_cxx_free(IntPtr str);
+
+        [DllImport("deepmech_cxx")]
+        public extern static void destroy_deepmech_ctx(IntPtr ctx);
     }
 }

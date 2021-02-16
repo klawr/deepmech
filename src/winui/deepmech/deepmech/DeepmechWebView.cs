@@ -9,21 +9,21 @@ using System.Text.Json;
 
 namespace deepmech
 {
-    class DeepmechWebView
+    class DeepmechWebView : IDisposable
     {
         WebView2 WebView;
         IntPtr Deepmech_ctx;
 
-        private bool _deepmechActive;
-        public bool DeepmechActive
-        {
-            set
-            {
-                WebView.Width = value ? 0 : double.NaN;
-                _deepmechActive = value;
-            }
-            get { return _deepmechActive; }
-        }
+        //private bool _deepmechActive;
+        //public bool DeepmechActive
+        //{
+        //    set
+        //    {
+        //        WebView.Width = value ? 0 : double.NaN;
+        //        _deepmechActive = value;
+        //    }
+        //    get { return _deepmechActive; }
+        //}
 
         public DeepmechWebView(WebView2 webview)
         {
@@ -37,10 +37,10 @@ namespace deepmech
 
         private string WebviewPlaceholder(string message) => "globalThis.webviewEventListenerPlaceholder(" + message + ")";
 
-        public void ExitDeepmech()
-        {
-            WebView.ExecuteScriptAsync(WebviewPlaceholder("{deepmech: false}"));
-        }
+        //public void ExitDeepmech()
+        //{
+        //    WebView.ExecuteScriptAsync(WebviewPlaceholder("{deepmech: false}"));
+        //}
 
         public void SendModelUpdate(string json)
         {
@@ -83,6 +83,11 @@ namespace deepmech
             {
                 Predict(Deepmech_cxx.Predict(Deepmech_ctx, message.image, message.nodes));
             }
+        }
+
+        public void Dispose()
+        {
+            Deepmech_cxx.destroy_deepmech_ctx(Deepmech_ctx);
         }
     }
 }
