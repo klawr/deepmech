@@ -314,9 +314,9 @@ extern "C" DEEPMECH_CXX_EXPORT auto predict(Deepmech_ctx *ctx,
     return ctx->predict(ptr, width, height, nodes);
 }
 
-extern "C" DEEPMECH_CXX_EXPORT void deepmech_cxx_free(char *ctx)
+extern "C" DEEPMECH_CXX_EXPORT void deepmech_cxx_free(char *str)
 {
-    delete ctx;
+    delete[] str;
 }
 
 // int main()
