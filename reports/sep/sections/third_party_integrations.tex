@@ -5,7 +5,7 @@ First and foremost it is operating system agnostic since it is available in ever
 
 A major disadvantage is that it is not as performant as other environments.
 Especially the cropping of images for the preparation to the second model is taking a long time.
-% TODO implement code here.
+This part of the process is avoidable, by moving the workload to a better performing environment as the browser\footnote{The browser implementation can and should be optimized, too, but local implementations should outperform browser implementations. }. % TODO back this up by evidence?
 % TODO do some benchmarks
 
 Other applications can take on tasks by registering themself to the web app.
@@ -94,7 +94,7 @@ public void ProcessWebMessage(
     }
     if (message.image != null)
     {
-   Predict(Deepmech_cxx.Predict(Deepmech_ctx, message.image, message.nodes));
+        Predict(Deepmech_cxx.Predict(Deepmech_ctx, message.image, message.nodes));
     }
 }
 \end{lstlisting}
@@ -106,8 +106,85 @@ If the \code{message} contains an \code{image} property\footnote{Which is the ca
 \code{DeepmechWebView}'s \code{Predict} function is very similar to the \code{Register} function, with the difference of having a \code{prediction} property in the message, instead of \code{register}.
 The content of the \code{prediction} property is defined by the return value of \code{Deepmech\_cxx}'s \code{Predict} function.
 
-% TODO check if this works offline.
+\subsection{Predictions in C++}
 
+There are implementations for TensorFlow for .NET\footnote{Examples being \aka{https://github.com/SciSharp/TensorFlow.NET} and  \aka{https://github.com/migueldeicaza/TensorFlowSharp}},
+but for the purpose of this implementation I decided to use a implementation in C++\footnote{The respective code can be reviewed at \aka{https://github.com/klawr/deepmech/blob/master/src/cxx/src/deepmech.cpp}.}.
+Unfortunately, at the time of writing, the official TensorFlow API can not be used under the Windows operating System\footnote{The discussion regarding the issue can be read here \aka{https://github.com/tensorflow/tensorflow/issues/41904}.}.
+% TODO does github need a citation?
+% TODO describe why Windows in necessary? Since I use WPF and WinUI...
+As a substitution for this the \name{frugally-deep} library is used. % TODO citation needed
+
+The created library exposes three functions:
+\begin{enumerate}
+    \item \code{create\_deepmech\_ctx} expects two c-style strings.
+        The PWA uses \name{tensorflow.js} to load the model, as described in Chapter~\ref{ch:conversion_to_web_context}.
+        For the implementation using \name{frugally-deep} a similar conversion is used, which is described at \aka{https://github.com/Dobiasd/frugally-deep\#usage}.
+        After the conversion into a usable JSON file the contents can be passed to \code{create\_deepmech\_model} as c-style strings.
+    \item \code{predict} expects a pointer to a \code{Deepmech\_ctx} instance, an image and its dimensions and a c-style string containing the known nodes in JSON format.
+        The first parameter can be obtained by calling \code{create\_deepmech\_ctx}.
+        The \code{image} is an integer array containing normalized values between 0 and 255 for the gray-scale information.
+        Subsequentially \code{width} by \code{height} have to be equal to the length of this integer array and are used by \name{OpenCV} to load the image.
+    \item The application has no way of knowing if the return value of the \code{predict} function is longer needed.
+        To compensate \code{deepmech\_cxx\_free} can be called to free the occupied memory.
+    \item \code{destroy\_deepmech\_ctx} has the same function as \code{deepmech\_cxx\_free}, but refers to the \code{Deepmech\_ctx} object itself, which is called automatically when an \code{DeepmechWebView} is disposed.
+\end{enumerate}
+
+The compiled \name{deepmech\_cxx.dll} is placed into the respective directory for the functions to be usable by the WPF-application.
+
+The WPf-application has a static class dedicated to communicate with this library using imports as can be seen in Listing~\ref{lst:wpf_dll_imports}.
+
+\begin{lstlisting}[label={lst:wpf_dll_imports}, caption={DllImports in the static Deepmech\_cxx class}]
+[DllImport("deepmech_cxx")]
+public static extern IntPtr create_deepmech_ctx(
+    [MarshalAs(UnmanagedType.LPStr)] string symbolModel,
+    [MarshalAs(UnmanagedType.LPStr)] string cropModel);
+
+[DllImport("deepmech_cxx")]
+private extern static IntPtr predict(
+    IntPtr deepmech_ctx, byte[] imageData, uint width, uint height,
+    [MarshalAs(UnmanagedType.LPStr)] string nodes);
+
+[DllImport("deepmech_cxx")]
+private extern static void deepmech_cxx_free(IntPtr str);
+
+[DllImport("deepmech_cxx")]
+public extern static void destroy_deepmech_ctx(IntPtr ctx);
+\end{lstlisting}
+
+These functions are called from the \code{DeepmechWebView} object, which creates the \code{Deepmech\_ctx} on construction.
+The respective JSON strings containing the inference models are imported and read from the \code{Properties.Resources} namespace, used by WPF-applications to import external resources.
+
+When the \code{Deepmech\_cxx.Predict} function is called as in Listing~\ref{lst:wpf_event_handler}, the pointer to the \code{Deepmech\_ctx} and the image and nodes are submitted.
+
+The base64 string is converted to an image using the \name{SixLabors.ImageSharp} library, as seen in Listing~\ref{lst:deepmech_cxx_image_conversion}.% TODO citation needed
+
+\begin{lstlisting}[label={lst:deepmech_cxx_image_conversion}, caption={Deepmech\_cxx overload for image conversion.}]
+public static string Predict(IntPtr deepmech_ctx, string base64, string nodes = null)
+    => Predict(deepmech_ctx, Image.Load<A8>(Convert.FromBase64String(base64)), nodes);
+\end{lstlisting}
+
+The overloaded \code{Predict} function in \code{Deepmech\_cxx} calls the imported \code{predict} function and returns the resulting c-style string in JSON format using \code{Marshal.PtrToStringUTF8(resultNativeString);}.
+This is subsequentially returned and then sent to the PWA, as seen in Listing~\ref{lst:wpf_event_handler}.
+
+The known nodes are included in the inference, by transferring the known nodes as an integer array through this pipeline.
+This is done to use them when creating the crops for the constraint detection.
+
+The C++ implementation itself is a rewrite of the Python implementation similar to the conversion in Chapter~\ref{ch:conversion_to_web_context}.
+
+\subsection{Implementation in WinUI}
+
+The WPF-application is working, but the referenced \name{Microsoft.Toolkit.Wpf.UI.Controls}\footnote{See the repository here: \aka{https://github.com/windows-toolkit/WindowsCommunityToolkit}.} extension is no longer supported in \name{.NET 5}\footnote{The respective discussion on the issue can be reviewed here \aka{https://github.com/windows-toolkit/Microsoft.Toolkit.Win32/issues/296}.}.
+Because of this an older version of the extension is used.
+
+Fortunately Microsoft offers other frameworks to publish applications.
+The development of \name{WinUI 3} applications is very similar to WPF\footnote{I am sure more sophisticated developers knowing the intricate differences may disagree, but as most of the code can be reused they seem to be similar from my perspective}.
+
+With the exception of some namespaces the source code is the same, which can be seen here \aka{https://github.com/klawr/deepmech/tree/master/src/winui}
+
+\subsection{Webserver implementation}
+
+% TODO check if this works offline.
 
 % Write some text about WebView. How it uses chrome (inside the new edge and stuff.)
 
