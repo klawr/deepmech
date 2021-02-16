@@ -6,7 +6,7 @@ using Microsoft.Web.WebView2.Core;
 
 namespace deepmech
 {
-    class DeepmechWebView
+    class DeepmechWebView : IDisposable
     {
         WebView2 WebView;
         IntPtr Deepmech_ctx;
@@ -82,6 +82,11 @@ namespace deepmech
             {
                 Predict(Deepmech_cxx.Predict(Deepmech_ctx, message.image, message.nodes));
             }
+        }
+
+        public void Dispose()
+        {
+            Deepmech_cxx.destroy_deepmech_ctx(Deepmech_ctx);
         }
     }
 }
