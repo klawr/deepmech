@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30621.155
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "deepmech", "deepmech\deepmech.csproj", "{7DD519E4-A579-4A0D-B059-568BD51FDFA2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7DD519E4-A579-4A0D-B059-568BD51FDFA2}.Debug|x64.ActiveCfg = Debug|x64
+		{7DD519E4-A579-4A0D-B059-568BD51FDFA2}.Debug|x64.Build.0 = Debug|x64
+		{7DD519E4-A579-4A0D-B059-568BD51FDFA2}.Release|x64.ActiveCfg = Release|x64
+		{7DD519E4-A579-4A0D-B059-568BD51FDFA2}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B589DE77-CBEE-4890-86DF-91A72EA610D0}
+	EndGlobalSection
+EndGlobal

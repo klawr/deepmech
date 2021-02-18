@@ -1,0 +1,28 @@
+﻿<Window x:Class="deepmech.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:deepmech"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        xmlns:controls="clr-namespace:Microsoft.Toolkit.Wpf.UI.Controls;assembly=Microsoft.Toolkit.Wpf.UI.Controls"
+        mc:Ignorable="d"
+        Title="deepmech">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <wv2:WebView2 Height="1000" Width="auto" Name="deepmechWebView"/>
+
+        <!--Uncomment if InkCanvas, or InfinityCanvas is ready-->
+        <!--<StackPanel Height="Auto" Background="AliceBlue">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+                <controls:InkToolbar TargetInkCanvas="{x:Reference Name=deepmechCanvas}" />
+                <Button Click="ExitDeepmech" Content="Exit deepmech"/>
+                <Button Click="Predict" Content="Predict" />
+            </StackPanel>
+            <controls:InkCanvas Name="deepmechCanvas" />
+        </StackPanel>-->
+    </Grid>
+</Window>
