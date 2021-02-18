@@ -46,11 +46,9 @@
 
 \newcommand\name[1]{\texttt{#1}}
 
-\newcommand{\listlinkname}{List of Links}
+\newcommand{\akaAbb}{sep}
+\newcommand{\listlinkname}{Link Index - \url{https://aka.klawr.de/\akaAbb}}
 \newlistof{links}{aka}{\listlinkname}
-\cftpagenumbersoff{links}
-\newcommand{\theaka}{\url{https://aka.klawr.de/sep\#\thelinks}}
+\newcommand{\theaka}{\url{https://aka.klawr.de/\akaAbb\#\thelinks}}
 \newcommand{\aka}[1]{\refstepcounter{links}\theaka%
-\addcontentsline{aka}{links}{%
-\theaka\dotfill\hbox{}\newline%
-\makebox[\textwidth][s]{\dotfill\url{#1}}}}
+\addcontentsline{aka}{links}{\url{\#\thelinks}: \tiny{\url{#1}}}}
