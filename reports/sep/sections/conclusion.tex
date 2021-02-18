@@ -1,1 +1,21 @@
 \section{Conclusion}
+
+The process of handling constraints and their respective detection using the proposed approach needs a lot more processing than the detection of symbols.
+Where symbols are still limited to be 32x32 pixel images crops be of any size.
+Furthermore constraints are not just a classification problem, but the direction of the constraint has to be identified, too.
+
+For inference other approaches exist % TODO link to yolo
+and may be investigated, but for the scope of this project this would go to far.
+
+The implementation of \name{mec2} into an application which is able to run on any platform that can render web content and can be extended is investigated in this project.
+The system agnostic frontend enables developers to implement backends for the various different needs he may have.
+In this project the implementation into desktop frameworks via WPF and WinUI are examined.
+The possibility to outsource the inference to a webserver is also introduced, providing yet another way of distributing the wordloads.
+
+The overhead created by implementations into other environments is little, if the PWA can be implemented using web-view components.
+These are available in most modern frameworks.
+This also makes it possible to bring this functionality to mobile applications; e.g. using the Qt-Framework of Windows Xamarin.
+
+The flexibility of the PWA enables to include various inference models into various environments with very little overhead, making this approach very promising.
+The PWA can be accessed via \url{https://deepmech.klawr.de}.
+
