@@ -224,6 +224,9 @@ The function also expects a JSON string containing information about the known n
 
 The webserver is implemented as a \code{DeepmechPredictionServer} class, which inherits from the \code{BaseHTTPRequestHandler} imported from the \code{http.server} package.
 This class provides functions like \code{do\_OPTIONS}, \code{do\_GET} and \code{do\_PUSH}, corresponding to the standard HTTP requests \code{OPTIONS}, \code{GET} and \code{PUSH}.
+\code{do\_Get} is used to show some text about this server to a user which is using the browser to get some information about the server.
+\code{do\_Options} and \code{do\_Post} provide the necessary headers to allow cross origin communcation\footnote{For more information about \name{CORS} see here: \aka{https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS}.}.
 
-% TODO check if this works offline.
+When the prediction is done, the server converts the results into JSON-format and returns the response to the PWA.
+It can be seen in Listing~\ref{lst:predict_http_request} that the result will be used to update the mec-model.
 
