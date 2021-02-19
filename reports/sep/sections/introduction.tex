@@ -1,26 +1,25 @@
-
 \section{Introduction}
 
-This project builds upon work previously done to learn the fundamentals of machine learning, which can be found at \url{aka.klawr.de/srp}.
-The target was to introduce machine learning in to the field of kinematics mainly undertaken in web environment by creating a statistical model to classify handwritten mechanical symbols.
+This project builds upon work previously done to learn the fundamentals of machine learning~\cite{Lawrence2020}.
+The target of the project was to introduce machine learning in to the field of kinematics.
+This is should be done mainly in the web environment by creating a inference model to classify handwritten mechanical symbols.
 
-In this project this idea is taken further to detect whole mechanisms by determining the position of the symbols in unspecialized pictures\footnote{The data used to train the symbol classifier assumes symbols which are centered and fill the whole picture}.
+In this project this idea is taken a step further to detect whole mechanisms by determining the location of possibly multiple symbols in pictures of various size\footnote{The data used to train the symbol classifier assumes symbols which are centered and fill the whole picture}.
 
-After localization is done, the next problem is to detect the connections between nodes.
+After localization is done, the next step is to detect the connections between nodes.
 For this the images between nodes have to be cropped and processed to be able to get a reasonable prediction.
-A new inference model is trained to classify these processed images to their respective constraint counterpart.
+A new inference model is trained to classify these processed images to their respective class of connection\footnote{A connection between two nodes can be either limiting the rotational or lateral movement}.
 
 The resulting coordinates and labels are converted into \name{mec2} nodes and constraints as JSON-string.
 This conversion makes it possible to convert the gathered information and make them processable for physic engines like \name{mec2}.
-The creation of these JSON-strings is then tested in various environments.
+The creation of these JSON-strings via this method is then tested in various environments.
 
-A \name{Progressive Web App}(PWA) is created to nest this new functionality into an application.
+A Progressive Web App (PWA)\footnote{See \aka{https://developer.mozilla.org/en-US/docs/Web/Progressive\_web\_apps}.} is created to nest this new functionality into an application.
 For this the inference models are transformed to work in JavaScript to be able to make predictions from within other environments.
 
 The \name{mec2} HTML element is embedded into this app to be able to apply detected nodes and constraints to a mechanical linkage.
 This PWA is able to edit the mechanical linkage itself and implements the \name{mec2} API to offer all features the \name{mec2} HTML element does.
 
-The PWA is then used as frontend for different implementations using WPF and WinUI.
+The PWA is then used as frontend for different implementations using the Windows Presentation Foundation (WPF)~\cite{Microsoft2021} and the Windows User Interface Library (WinUI)~\cite{Microsoft2021a}.
 These applications explore the possibility of linking the model to other programming languages, like C++, to improve performance.
 Other ideas like communication between the PWA and a webserver to get better performance are also explored.
-
