@@ -1,18 +1,17 @@
 \section{First prototype} \label{ch:first_prototype}
 
-To create a prototype capable of detecting hand-drawn mechanism, the capabilities necessary are have to be considered first.
-The application has to be able to detect and to localize \name{nodes} and to detect \name{constraints}, which are connecting pairs of \name{nodes}.
+A prototype for the inference model has to be able to detect and to localize \name{nodes} and to detect \name{constraints}, which are connecting pairs of \name{nodes}.
 Subsequently, the gathered information has to be transformed into a usable format for further processing.
+Constraints limit the \code{nodes} in their degree of freedom, resulting in a mechanical linkage if they are arranged accordingly.
 
 At first, the detection and localization of \name{nodes} is examined.
 
 \subsection{The Fully Convolutional Network}\label{ch:fcn}
 
-The topic of previous work was the recognition of hand-drawn mechanical symbols~\cite{Lawrence2020}.
-Building on this, the trained model is improved to provide not only the class, but the location of the classification in an image of arbitrary size.
+In this section the trained inference model~\cite{Lawrence2020} is improved to provide not only the class of the detected symbol, but the location in an image of arbitrary size.
 
-The respective model can be loaded using \name{Keras'}, % TODO citation should be in the introduction.
-\code{model.load\_model} and by issuing the \code{summary} method we get listing~\ref{lst:srp_model}.
+The respective model can be loaded using \name{Keras}~\cite{Chollet2019}.
+\name{Keras}' \code{model.load\_model} loads the inference model and by issuing the \code{summary} method of the resulting object we get listing~\ref{lst:srp_model}.
 
 \begin{lstlisting}[caption={Summary of Symbol Classifier.}, label={lst:srp_model}]
 _________________________________________________________________
@@ -36,17 +35,18 @@ Non-trainable params: 0
 _________________________________________________________________
 \end{lstlisting}
 
-One way to localize images in a bigger image is to scan each sector of an image and predicting the generated crops.
+A naive way to localize images in a bigger image is to scan each sector of an image and predicting the generated crops.
 Using a 360x360 sized image, a stride of one in each direction, the number of images which are used in the prediction process are 108.241 images\footnote{$h + 1 - 32 * w + 1 - 32$, where $h$ and $w$ are the height and width of the input image and the size of the kernel used to predict is 32}.
 A Jupyter notebook testing the performance of this method can be viewed at \aka{https://github.com/klawr/deepmech/blob/master/reports/sep/notebooks/2.1.1-scanning\_an\_image.ipynb}.
 
 To test this amount of images is often not necessary and can be reduced by increasing the stride of the respective scanning process.
-This would reduce the accuracy of the localization, but would increase the speed.
+This tradeoff reduces the accuracy of the localization, but would increase the speed.
 
 Another approach is to use the properties of convolutional layer to restructure the model and thereby making the whole procedure much more efficient.
 
-By transforming a model into a Fully Convolutional Network (FCN) all dense layers are replaced by convolutional layers, and the input layer is also a two dimensional layer but allows for an input image of arbitrary size.
-Because the input of the original model is only defined by the kernel size, it is agnostic to the size of a previous layer.
+By transforming a model into a Fully Convolutional Network (FCN)~\cite{Long2014} all dense layers are replaced by convolutional layers.
+The input layer is converted to a two dimensional layer which allows for input images of arbitrary size.
+Because the input of the original model is only defined by the kernel size (32x32), it is agnostic to the size of a previous layer.
 Listing~\ref{lst:to_fcn} transforms the \code{old\_model} by appending an \code{tf.keras.Input} layer without any specified size and replacing the output layer by a \code{tf.keras.Conv2D} layer\footnote{And thus removing the \code{tf.keras.flatten} layer.}.
 
 \begin{lstlisting}[caption={Transformation of the Symbol Classifier into a FCN.}, label=lst:to_fcn]
@@ -79,7 +79,7 @@ model.summary()
 
 An example of the usage of this code can be found at \aka{https://github.com/klawr/deepmech/blob/master/reports/sep/notebooks/2.1.2-fcn.ipynb}, where the intricate differences between both approaches are examined.
 
-The FCN approach is roughly ten times faster than taking crops and predicting them individually. 
+A measure of the time has shown that the approach using an FCN is roughly ten times faster than by taking crops and predicting them individually. 
 The \code{model.summary} results in the output given as Listing~\ref{lst:fcn_summary}:
 
 \begin{lstlisting}[label={lst:fcn_summary}, caption={Summary of Symbol Classifier transformed into a FCN.}]
@@ -109,10 +109,10 @@ Granted the performance of this model is satisfactory for the moment, the proble
 
 \subsection{Constraint detection}
 
-Besides a model to detect nodes, it is now necessary to train a model that can detect and classify constraints.
+To classify constraints an inference model is trained.
 To create such a model suitable training data has to be generated first.
 
-The model should be able to distinguish between two types of constraints:
+The target is to be able to distinguish between two types of constraints:
 Constraints to prevent nodes to change the range between each other, which allows only for rotational movement.
 It is represented by an arrow with an arc at the origin.
 The other type of constraint prevents motion that would change the angle between two nodes, which only allows translational movement between two nodes.
@@ -120,10 +120,10 @@ It is represented by an arrow with two gaps on the shaft and no arc at the origi
 Examples for the generated data can be seen in figure~\ref{fig:constraint_data}.
 
 Furthermore, the data is split for constraints of different lengths.
-This allows a better selection of a constraint when two nodes are to be connected when generating the training data.
+This allows for a better selection of constraints when two nodes are to be connected when generating the training data lateron.
 
 Data generation for constraints is similar to data generation in~\cite{Lawrence2020}.
-The drawing canvas has a width of fifty and the range can vary between 15--249, 250--349, or 350--449; depending on the selected range.
+The drawing canvas has a width of fifty pixels and the range can vary between 15--249, 250--349, or 350--449 pixels; depending on the selected range.
 
 \begin{figure}
     \centering
@@ -138,20 +138,20 @@ The drawing canvas has a width of fifty and the range can vary between 15--249, 
     \caption[Examples of constraint detector training data]{Some examples of the data created with the described method. Only these two classes were created for the first tests. The images are created horizontally, so their initial angle can be assumed to be zero to keep a record when labeling the data dynamically. }\label{fig:constraint_data}
 \end{figure}
 
-For each type approximately 1200 images were drawn, 400 for each range, resulting in 2400 images. % TODO download link?
-These images can be used with existing images of nodes to create realistic images of hand-drawn mechanisms.
+For each type approximately 1200 images were drawn, 400 for each range, resulting in 2400 images\footnote{The raw data can be downloaded at \aka{https://drive.google.com/file/d/1Xff-qFCLYnNqsBIPKw7WiMMz3qa8VIfy/view}.
+These images can be used in conjuction of existing images of nodes to create pseudo-realistic images of hand-drawn mechanisms.
 
 \subsubsection{Preparing nodes on images}
 
 Since constraints can occur at all possible angles, the data must be generated in such a way that it resembles real mechanisms best.
 Because of this, multiple steps have to be taken to generate comprehensible training data.
 
-Metadata generated during the generation process is saved into a format that is readable by \name{pandas}. % TODO citation needed
+Metadata generated during the generation process is saved into a format that is readable by \name{pandas}~\cite{pandas2021}.
 \name{pandas} is an open-source data analysis and manipulation tool which helps to work and to visualize data.
 
-Each generated image begins with a black background of size 360\times360.
-Between 3 and 10 nodes are randomly placed on the image\footnote{In an intermediate step the node data from previous work is modified to consist of white symbols on black background, instead of random grayscale images.}.
-Each node has to have a minimum distance of 60 to every other node in the image.
+Each generated image begins with a black background of size 360x360.
+Between 3 and 10 nodes are randomly placed on the image\footnote{In an intermediate step the node data from previous work is modified to consist of white symbols on black background, instead of random grayscale images. It can be accessed at \aka{https://drive.google.com/file/d/18uzwfqM4fhfdAQDBd5dvT6k-a-pUWvHR}.}.
+It is prescribed that each node has to have a minimum distance of 60 to every other node in the image to improve the quality of the training data.
 Examples for the resulting images are shown in figure~\ref{fig:constraint_data_step1}.
 The respective notebook containing the code for this process can be viewed at \aka{https://github.com/klawr/deepmech/blob/wip/sep/reports/sep/notebooks/2.2.1-constraint\_data\_gen.ipynb}.
 Using this method 100.000 images are generated.
@@ -176,11 +176,10 @@ Using this method 100.000 images are generated.
     \caption[Randomly placed nodes on blank image]{Randomly placed nodes on a blank image. Please note that the colors of these samples are inverted. }\label{fig:constraint_data_step1}
 \end{figure}
 
-% TODO add more text... to many images for little text
-
 \subsubsection{Connecting nodes using constraints}
 
-The next step is to randomly connect pairs of nodes inside of the image using constraints, whereas the number of constraints should be random, too.
+The next step is to randomly connect pairs of nodes inside of the image using constraints.
+The number of constraints is considered be random.
 It is important to note that this approach does not result in working mechanisms most of the time.
 But as it turns out this is not important, because the model will be classifying individual elements and not the mechanism as a whole.
 
@@ -233,10 +232,10 @@ The images which are generated in this step are shown in figure~\ref{fig:constra
 \subsubsection{Cropping images to get the training data}\label{ch:cropping_images}
 
 At last, these images are cropped.
-By cropping and reshaping the models the images can be fed into the training process of a Keras model.
-The notebook doing this operation can be viewed at \aka{https://github.com/klawr/deepmech/blob/wip/sep/reports/sep/notebooks/2.2.2-connecting_nodes.ipynb}.
+After cropping and reshaping the training data the images can be inserted into a training process of a \name{Keras} model.
+The notebook doing this operation can be viewed at \aka{https://github.com/klawr/deepmech/blob/wip/sep/reports/sep/notebooks/2.2.2-connecting\_nodes.ipynb}.
 As the number of possible connections is \(34 = \frac{\sum_{i=3}^{9}i(i-1)}{(10-3)}\), the expected number of generated crop-images is 3.400.000.
-It is also important to check for reversed constraints between node pairs to classify them as a non-connection, to be able to correctly predict the direction of the constraint, too.
+It is also important to check for reversed constraints between node pairs to classify them as a non-connection, to be able to correctly predict the direction of the constraint.
 As 100.000 images are already a good size to work with, another measure was taken to keep the number of expected crops in check.
 For this crops are only kept \(\frac{1}{m(m-1)}\) of the time, which is about each 30th time in this case.
 
@@ -244,13 +243,13 @@ The resulting dataset contains 119.189 images, which are subsequently transforme
 
 % TODO image of the crops here...
 
-With the data prepared the next step is to train the constraint detecting model.
+The next task is to train the inference model for constraint detection.
 
 \subsubsection{Training of the constraint detection model}
 
 In this prototype, the design of the constraint detection model is a copy of the results of the previously trained symbol detector.
-The input size is adapted to fit for the crops, which have a size of 96 by 96 instead of the 32 by 32 images used for the symbol detector.
-The model is created using the functional API of Keras, which has no real impact on the result, but is just another way of defining models.
+The input size is adapted to fit the cropped images, which have a size of 96 by 96 instead of the 32 by 32 images used for the symbol detector.
+The model is created using the functional API of \name{Keras}, which has no real impact on the result, but is just another way of defining models\footnote{See \aka{https://keras.io/guides/functional\_api/}.}.
 
 The output of \code{model.summary()} can be viewed in Listing~\ref{lst:crop_model}.
 \begin{lstlisting}[label={lst:crop_model}, caption={Summary of Constraint Detector.}]
@@ -281,9 +280,8 @@ _________________________________________________________________
 The training is done by decoding the record which was created in earlier steps and then splitting the data into 80.000 images for training, 20.000 images for validation, and the remaining 19.189 images are used for testing the model.
 
 The training is then initiated by using the \code{model.fit} method, passing the training data as the arguments.
-\name{TensorBoard} % TODO citation needed
-is used to log the accuracy and the loss of the model during training.
-The respective graphs can be seen in figure~\ref{fig:crop_detector_tensorboard}.
+\name{TensorBoard}~\cite{Google2021} is used to log the accuracy and the loss of the model during training.
+The generated graphs can be seen in figure~\ref{fig:crop_detector_tensorboard}.
 
 \begin{figure}
     \centering
@@ -298,15 +296,15 @@ The respective graphs can be seen in figure~\ref{fig:crop_detector_tensorboard}.
 
 \subsubsection{Combining node and constraint detection} \label{ch:combine_node_constraint_detection}
 
-To be able to predict constraints in production the generation of crops has to be implemented as an intermediate step between the node and constraint detection.
-The images must be cropped according to the generation of the training data, which means the coordinates of the nodes have to be detected first, and the area between them is resized to 96 by 96 images.
+To be able to predict constraints in production, the generation of crops has to be implemented as an intermediate step between the node and constraint detection.
+The images must be cropped according to the generation of the training data, which means the coordinates of the nodes have to be detected first, and the area between them is reshaped to represent 96 by 96 images.
 Previously the nodes are placed on the image using (randomly) given coordinates.
 This process is now revered, getting the coordinates using the Fully Connected Network on the training data and processing the data.
 
 The constraint detection relies heavily on the performance of the node detection because nodes that are not detected are not taken into account when creating the data for the constraint detector.
-Falsely predicted nodes are most likely not going to result in a pair of nodes connected by constraints, since the resulting crop would most likely not look like a constraint, but they are slowing the process down significantly since the number of crops grows exponentially to the number of nodes.
+Falsely predicted nodes on the other hand can not be connected by a constraint, slowing the process down significantly since the number of crops grows exponentially to the number of nodes.
 
-A pipeline of this process can be reviewed at \aka{https://github.com/klawr/deepmech/blob/wip/sep/reports/sep/notebooks/2.2.5-combining_node_constraints.ipynb}.
+A pipeline of this operation can be reviewed at \aka{https://github.com/klawr/deepmech/blob/wip/sep/reports/sep/notebooks/2.2.5-combining\_node\_constraints.ipynb}.
 
 \begin{figure}
     \centering
@@ -332,13 +330,13 @@ A pipeline of this process can be reviewed at \aka{https://github.com/klawr/deep
 
 So far all the code is written in Python.
 To make the data pipeline available in a web-based context, the models have to be converted into a format readable by JavaScript and the pipeline has to be adjusted accordingly.
+For this \name{TensorFlow} has an implementation in JavaScript~\cite{Google2021a}.
 
-For the conversion of the models, the library \name{Tensorflow.js} % TODO citation needed
-is used.
-\name{Tensorflow.js} takes the model file as input and outputs a description of the model in \name{JSON} format.
+For the conversion of the models, the \name{tensorflowjs\_converter} is used.
+This program takes the model file as input and outputs a description of the model in \name{JSON} format.
 The trained weights and biases are contained in \name{group1-shard1of1.bin}\footnote{Instructions on how to import a Keras model into Tensorflow.js can be viewed at \aka{https://www.tensorflow.org/js/tutorials/conversion/import\_keras}.}.
 
-To include the weights and biases into an importable JavaScript file it is converted into a base64-formatted string.
+To include the weights and biases into an usable JavaScript file it is converted into a base64-formatted string.
 For this the \name{base64}~\cite{Josefsson2018} module contained in \name{GNU Coreutils} is used.
 The resulting string is copied into a JavaScript file, containing one class, as can be seen in Listing~\ref{lst:js_model_class}.
 
