@@ -362,44 +362,47 @@ class ConstraintModel {
 }
 \end{lstlisting}
 
-The contents of some properties are commented out, to keep this listing concise.
+The contents of some properties are commented out to keep the listing more concise.
 The full file can be reviewed at \aka{https://raw.githubusercontent.com/klawr/deepmech/master/reports/sep/code/old/crop.js}.
 
-For the conversion, each model is assigned to one class, which has three properties.
-\code{model} contains the content of the JSON and \code{bin} the base64-string without any further modifications.
-Furthermore, objects created by this class contain a \code{load} function, which returns the respective model by parsing the JSON into an object, where the \code{weightData} of the model is added by decoding the content of \code{bin}.
-
-A model can then be created by issuing \code{tf.loadLayersModel(new Crop())}.
+For the conversion each model is assigned to a class with three members.
+\code{model} contains the content of the JSON file and \code{bin} the base64-string without any further modifications.
+Furthermore, objects created by this class contain a \code{load} function.
+\code{load} returns the respective model by parsing the JSON into an object.
+The \code{weightData} of the inference model is added by decoding the content of \code{bin}.
+The inference model can be loaded by issuing \code{tf.loadLayersModel(new Crop())}, provided by the \name{Tensorflow.js} library.
 
 At the moment it is not possible to convert a model into a Tensorflow model after it is processed in any form.
-Therefore a function has to be written which takes the initially used node detector as input and converts it into an FCN.\@
-For this a generalized form of the conversion processed has been written.
+Therefore the previously discussed Fully Convolutional Network can not be loaded directly.
+A function has to be written which takes the unmodified node detector as input and converts it into an FCN.\@
+For this a generalized form of the conversion processed has been implemented in JavaScript.
 
-The models are implemented into the JavaScript pipeline by embedding all necessary functions into an object, called \code{deepmech}.
+Functions loading the inference models are implemented into the JavaScript pipeline by embedding all necessary functions into an object called \code{deepmech}.
 This object has 6 properties, which are used to use the previously defined classes to create models and predict images using them.
 
 \begin{enumerate}
-    \item \code{nodeDetector} --- an immediately invoked function execution is used to call the \code{tf.loadLayersModel} function provided by Tensorflow.js by submitting a \code{new models.NodeModel()}.
-    The return of this function is immediately used as input for the \code{toFullyConv} function.
-    \item \code{constraintDetector} --- a function similar to the \code{nodeDetector} property, but without the necessity to convert the model into a FCN.\@
-    \item \code{detectNodes} --- this function takes an image and the previously defined nodeDetector as input and returns the detected nodes with some preprocessing steps in between.
-    \item \code{getCrops} --- another function which uses an image and previously determined nodes to create crops. These crops are equivalent to those generated in Chapter~\ref{ch:cropping_images}.
+    \item \code{nodeDetector} --- An immediately invoked function execution is used to call the \code{tf.loadLayersModel} function provided by Tensorflow.js by submitting a \code{new models.NodeModel()}.
+    The returned value of this function is immediately used as input for the \code{toFullyConv} function.
+    \item \code{constraintDetector} --- This function is similar to \code{nodeDetector}, but without the necessity to convert the model into a FCN.\@
+    \item \code{detectNodes} --- This function takes an image and the previously defined nodeDetector as input and returns the detected nodes with some preprocessing steps in between.
+    \item \code{getCrops} --- A function which uses an image and previously determined nodes to create crops. These crops are equivalent to those generated in Chapter~\ref{ch:cropping_images}.
     \item \code{detectConstraints} --- The generated crops are used in conjunction with the model returned by \code{constraintDetector} to predict constraints.
     \item \code{predict} --- This function is intended to be used by external processes.
-    It combines all other functions by taking an image as input and returning the respective predictions of nodes and constraints in an image.
+    It combines all other functions by taking an image as input and returning the respective predictions of nodes and constraints.
 \end{enumerate}
 
-By converting all the necessary steps into a JavaScript pipeline, the \code{deepmech} object may be implemented into a library to be used in any combination.
-For demonstration purposes, it is implemented into Node.js. % TODO
-By using \name{ijavascript} and the \name{conda} package of Node.js integrated into a Jupyter Notebook, the result can be viewed at \aka{https://github.com/klawr/deepmech/blob/master/reports/sep/notebooks/2.3.1-nodejs\_implementation.ipynb}.
+By converting all the necessary steps into a JavaScript pipeline, the \code{deepmech} object may be implemented into other libraries or applications.
+For demonstration purposes, it is implemented using the Node.js~\cite{Joyent2021} runtime environment, by using \name{ijavascript} and the \name{conda} package.
+A Jupyter Notebook is created to show the results.
+It can be viewed at \aka{https://github.com/klawr/deepmech/blob/master/reports/sep/notebooks/2.3.1-nodejs\_implementation.ipynb}.
 
 \subsection{Implementation into mec2}
 
 \subsubsection{mec2}
 
-% TODO this is a 1 on 1 copy from the wiki:
-mec2 is a 2D physics simulation engine written in JavaScript.
-It is designed to easily create 2D mechanisms for rapid sketching and rendering the resulting models in a 2D canvas using g2.
+\name{mec2} is a physics simulation engine written in JavaScript~\cite{goessner2021a}\cite{goessner2019a}\cite{goessner2019b}.
+It is designed to easily create 2D mechanical linkages.
+The results can be rendered on a 2D canvas using the \name{g2} graphics library\cite{goessner2021}.
 
 Mechanisms are defined by using JSON formatting, as shown in Listing~\ref{lst:mec2_example}.
 
@@ -430,13 +433,12 @@ Mechanisms are defined by using JSON formatting, as shown in Listing~\ref{lst:me
 \begin{figure}
     \centering
     \includegraphics[width=0.8\textwidth]{images/mec2_chart.png}
-    \caption[Example of the mec2 HTML element]{ The mechanism defined in Listing~\ref{lst:mec2_example}. It is rendered using the mec2 custom HTML element. Defined are five nodes and 4 constraints. The chart and trace views are generated after one revolution of the leftmost constraint. }\label{fig:generated_data_samples}
+    \caption[Example of the mec2 HTML element]{The mechanism defined in Listing~\ref{lst:mec2_example}. It is rendered using the mec2 custom HTML element. Defined are five nodes and 4 constraints. The chart and trace views are generated after one revolution of the leftmost constraint. }\label{fig:generated_data_samples}
 \end{figure}
 
-mec2 is divided into many sub-modules; some of which are optional, but some are necessary to simulate functioning mechanisms.
+\name{mec2}s functionality is divided into multiple plugins; some of which are optional, but some are necessary to simulate functioning mechanisms.
 
-For this prototype only necessary modules have to be used; namely:
-% TODO fill this a bit more:
+For this prototype only necessary modules have to be used:
 \begin{enumerate}
     \item \name{mec2.core}, which defines the central JavaScript object other modules are built upon.
     The core \code{mec} object defines central properties, which make it easy to change certain parameters for the whole simulation.
@@ -462,16 +464,14 @@ For this prototype only necessary modules have to be used; namely:
     Usually a constraint is used to reduce the degree of freedom of a node by one, but it is also possible to take all two degrees of freedom of a node, or none.
 \end{enumerate}
 
-At the time of writing five other modules\footnote{The other modules being \name{mec2.load}, \name{mec2.drive}, \name{mec2.view}, \name{mec2.msg.en} and \name{mec2.shape}} % TODO is this footnote relevant?
-exist to extend the functionality of \name{mec2}, but they do not concern the implementation of \name{deepmech} and are not further discussed here.
+At the time of writing five other modules\footnote{The other modules being \name{mec2.load}, \name{mec2.drive}, \name{mec2.view}, \name{mec2.msg.en} and \name{mec2.shape}} exist to extend the functionality of \name{mec2}, but they do not concern the implementation of \name{deepmech} yet and are not further discussed here.
 
-Additionally \name{mec2} provides a custom HTML element, which allows for an easy implementation into web pages.
-The object defining the model is given as JSON inside the \code{innerHTML} of the respective custom HTML to define the input, which is respectively parsed using the built-in function \code{JSON.parse()}. % TODO
-The custom HTML element adds other functionality besides the appropriate implementation of \name{mec2} with all modules.
+Additionally, \name{mec2} provides a custom HTML element, which allows for an easy implementation into web pages\footnote{For more information about custom HTML elements see \aka{https://developer.mozilla.org/en-US/docs/Web/Web\_Components/Using\_custom\_elements}.}.
+The object defining the model is given as JSON inside the \code{innerHTML} of the respective custom HTML to define the input, which is respectively parsed using the built-in function \code{JSON.parse()}.
 
 \subsubsection{g2}
 
-For rendering models \name{g2} is used. % TODO cite
+For rendering models \name{g2} is used.
 \name{g2} is a JavaScript library that constructs an array of commands which can then be handed over into a drawing context via a dedicated \code{exe} method.
 The default handler of \name{g2} issues commands to a canvas handler, which in turn uses the standard built-in canvas API to draw images on an HTML canvas element.
 
@@ -517,18 +517,17 @@ For this purpose \name{g2.selector} enables the introduction of a new context wh
 
 \subsubsection{canvasInteractor}\label{ch:canvas_interactor}
 
-The \name{canvasInteractor.js} % TODO
-is an interaction manager for the HTML canvas element.
-It is used to centralize all interactions and animation requests.
-\code{canvasInteractor} manages one \code{requestAnimationFrame}, which minimizes overhead as if each component would issue a new request.
-Additionally, this approach parallelizes all requests, because they are all handled in one function call.
+The \name{canvasInteractor.js} is a JavaScript object and acts as an event manager for the HTML canvas element.
+It is used to centralize all interactions and animation requests; e.g. the \code{canvasInteractor} raises one \code{requestAnimationFrame}.
+Other components may register their events to the \code{canvasInteractor} instead of raising the respective events on their own.
+This approach parallelizes all requests, because they are all handled in one function call.
 
-New \code{instances} can be added to the \code{canvasInteractor} object by calling its \code{add} function, but to create a new interactor the \code{create} function has to be issued, which applies the prototype of the \code{canvasInteractor} object onto the variable.
+New \code{instances} can be added to the \code{canvasInteractor} object by calling its \code{add} function.
+To create a new instance of the \code{canvasInteractor} the \code{create} function has to be issued.
+It applies the prototype of the \code{canvasInteractor} object onto a given variable.
 The created objects get all event listeners necessary to provide the full capability for interactions.
 
 \subsubsection{Putting it together}
-
-% TODO add some subsubsections.
 
 The next step is to implement \name{deepmech} into this set of libraries.
 At first a script is written, which adds the necessary functionality into all \name{mec2} HTML elements.
@@ -578,26 +577,24 @@ const command_queue = g2().rec({
 
 Herein \code{view} is taken from \code{element.\_interactor.view} of the respectve \name{mec2} \code{element}.
 
-The background of the drawing canvas is colored black (\code{\#000}) by issuing the \code{rec} command of \name{g2} for the active viewport\footnote{Please note that figure~\ref{fig:prototype_drawing} contains an inverted image for contrast reasons.}.
+The background of the drawing canvas is colored black (\code{\#000}) by issuing the \code{rec} command of \name{g2} for the active viewport\footnote{Please note that figure~\ref{fig:prototype_drawing} contains an inverted image for aesthetic reasons.}.
 
 The \code{img\_placeholder} is used to draw images loaded by issuing \code{uploadImage}, which loads an image and saves the respective image inside this command queue.
 
 The \code{mec\_placeholder} is used to be able to show already determined nodes and constraints of the mechanism inside the drawing context.
 This makes it possible to extend existing mechanisms.
-A \name{mec2} model is usually defined by more than just nodes and costraints, so all elements which are not part of code{element.\_model.nodes} or \code{element.\_model.constraints} are filtered first; e.g.\ the chart which can be seen in figure~\ref{fig:generated_data_samples}.
+A \name{mec2} model is usually defined by more than just nodes and costraints.
+Therefore all elements which are not part of \code{element.\_model.nodes} or \code{element.\_model.constraints} are filtered first; e.g.\ the chart which can be seen in figure~\ref{fig:generated_data_samples} is removed.
 
 The \code{ply\_placeholder} is responsible for rendering user-generated drawing.
-The default behavior of the \name{canvasInteractor} when pressing the pointer-button in combination with movement of the pointer is to drag the viewport, or, when an element is selected by the \name{g2.selector}, to drag an element.
+The default behavior of the \name{canvasInteractor} when pressing the pointer-button in combination with movement of the pointer is to drag the viewport.
+When an element is selected by the \name{g2.selector} the selected element is dragged instead.
 When the drawing mode is active this behavior has to be replaced.
-When the draw mode is active and \code{pointerdown} is issued an array is created which is then filled by the coordinates of the pointer on each \code{tick}\footnote{A \code{tick} is issued by the \name{canvasInteractor} on each requestAnimationFrame}.
-This approach creates one \code{ply} element for each consecutive line, which can be dragged or deleted by changing the respective mode using the  \name{g2.selector}.
-
-By starting a prediction the content of the canvas is fed into the trained models, as discussed in Chapter~\ref{ch:conversion_to_web_context}.
-When the draw mode is active and \code{pointerdown} is issued an array is created which is then filled by the coordinates of the pointer on each \code{tick}\footnote{A \code{tick} is issued by the \name{canvasInteractor} on each requestAnimationFrame}.
+If the \code{pointerdown} is issued while in drawing mode, an array is created which is then filled by the coordinates of the pointer on each \code{tick}\footnote{A \code{tick} is issued by the \name{canvasInteractor} on each \code{requestAnimationFrame}.}.
 This approach creates one \code{ply} element for each consecutive line, which can be dragged or deleted by changing the respective mode using the  \name{g2.selector}.
 
 By starting a prediction the content of the canvas is fed into the trained models, as discussed in chapter \ref{ch:conversion_to_web_context}.
-The resulting prediction updates the \name{mec2} model.
-This is similar to the generation of bounding boxes, but instead of drawing them onto the canvas to show the results the respective coordinates are added to the \name{mec2} model.
-The assembled \name{mec2} model can than be rendered and interacted with.
+The resulting prediction is the used to update the \name{mec2} model.
+This is similar to the generation of bounding boxes, but instead of drawing them onto the canvas to show the results, the respective coordinates are added to the \name{mec2} model.
+The assembled \name{mec2} model can than be rendered, simulated and interacted with.
 
