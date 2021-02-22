@@ -23,9 +23,9 @@ It offers a \name{WebView2}\footnote{There is a WebView component, too, but it u
 The application is created by the template \name{WPF Application} of the \name{Visual Studio Community Edition 2019} with the official \name{.NET desktop development} workload installed.
 This application template already impements everything necessary to compile an application.
 The \code{MainWindow.xaml} will be the main page of the application.
-The only window present in this application is the \code{WebView2} component\footnote{The content of the main window can be reviewed at \aka{https://github.com/klawr/deepmech/blob/master/sep/src/wpf/deepmech/MainWindow.xaml}.}
+The only window present in this application is the \code{WebView2} component\footnote{The content of the main window can be reviewed at \aka{https://github.com/klawr/deepmech/blob/master/src/wpf/deepmech/MainWindow.xaml}.}
 
-The \code{WebView2} component itself is controlled by the \code{DeepmechHandler} property which is a \code{DeepmechWebView} object\footnote{\aka{https://github.com/klawr/deepmech/tree/blob/master/src/wpf/deepmech/MainWindow.xaml}.}.
+The \code{WebView2} component itself is controlled by the \code{DeepmechHandler} property which is a \code{DeepmechWebView} object.
 To register the \code{DeepmechHandler} a \code{Register} function is defined, which can be seen in Listing~\ref{lst:deepmech_webview_register}.
 
 \begin{lstlisting}[label={lst:deepmech_webview_register}, caption={DeepmechWebView Register function}]
@@ -79,7 +79,9 @@ The object is stringified by \code{JSON.stringify} and sent via the \code{postMe
 
 \subsection{Interface of the WPF}
 
-The WPF-application has a respective event-handler to process messages sent via \code{chrome.webview.postMessage}, which can be seen in Listing~\ref{lst:wpf_event_handler}.
+The \code{WebView2} has an event-handler implemented to process messages that are sent via \code{chrome.webview.postMessage}.
+This event handler is defined as \code{ProcessWebMessage} and can be used to implement a listener for messages sent via the website embdedded in \code{WebView2}.
+The implementation of this event handler in the WPF can be seen in Listing~\ref{lst:wpf_event_handler}.
 
 \begin{lstlisting}[label={lst:wpf_event_handler}, caption={Event handler of the WPF-application}]
 public void ProcessWebMessage(
@@ -100,7 +102,8 @@ public void ProcessWebMessage(
     }
     if (message.image != null)
     {
-        Predict(Deepmech_cxx.Predict(Deepmech_ctx, message.image, message.nodes));
+        Predict(Deepmech_cxx.Predict(
+            Deepmech_ctx, message.image, message.nodes));
     }
 }
 \end{lstlisting}
@@ -108,8 +111,8 @@ public void ProcessWebMessage(
 Here it can be seen that \code{Register} from Listing~\ref{lst:deepmech_webview_register} is called when the PWA sends a message declaring it being ready for third-party applications to register.
 The PWA sends this message by calling \code{deepmechAction.initate} which can be seen in Listing~\ref{lst:chrome_webview_eventlistener}.
 
-If the \code{message} contains an \code{image} property\footnote{Which is the case when a prediction is requested}, the \code{Predict} function is called.
-\code{DeepmechWebView}'s \code{Predict} function is very similar to the \code{Register} function, with the difference of having a \code{prediction} property in the message, instead of \code{register}.
+If the \code{message} contains an \code{image} property\footnote{Which is the case when a prediction is requested} the \code{Predict} function is called.
+The \code{Predict} function is very similar to the \code{Register} function, with the difference of having a \code{prediction} property in the message, instead of \code{register}.
 The content of the \code{prediction} property is defined by the return value of \code{Deepmech\_cxx}'s \code{Predict} function.
 
 \subsection{Predictions in C++}
@@ -130,7 +133,7 @@ The created library exposes three functions:
         Subsequentially \code{width} multiplied by \code{height} have to be equal to the length of this integer array. These variables are used by \name{OpenCV} to load the image.
     \item The application has no way of knowing if the return value of the \code{predict} function is longer needed.
         To compensate \code{deepmech\_cxx\_free} can be called to free the occupied memory.
-    \item \code{destroy\_deepmech\_ctx} has the same function as \code{deepmech\_cxx\_free}, but refers to the \code{Deepmech\_ctx} object itself, which is called automatically when an \code{DeepmechWebView} is disposed.
+    \item \code{destroy\_deepmech\_ctx} has the same function as \code{deepmech\_cxx\_free}, but refers to the \code{Deepmech\_ctx} object itself, which is called when an \code{DeepmechWebView} is disposed.
 \end{enumerate}
 
 The compiled \name{deepmech\_cxx.dll} is placed into the respective directory for the functions to be usable by the WPF-application.
@@ -154,7 +157,7 @@ private extern static void deepmech_cxx_free(IntPtr str);
 public extern static void destroy_deepmech_ctx(IntPtr ctx);
 \end{lstlisting}
 
-These functions are called from the \code{DeepmechWebView} object, which creates the \code{Deepmech\_ctx} on construction.
+These functions are called exclusively by the \code{DeepmechWebView} object; e.g. it creates the \code{Deepmech\_ctx} on construction.
 The respective JSON-strings containing the inference models are imported and read from the \code{Properties.Resources} namespace, used by WPF-applications to import external resources.
 
 When the \code{Deepmech\_cxx.Predict} function is called as in Listing~\ref{lst:wpf_event_handler} the pointer to the \code{Deepmech\_ctx}, the image and known nodes are submitted.
@@ -162,11 +165,15 @@ When the \code{Deepmech\_cxx.Predict} function is called as in Listing~\ref{lst:
 The base64 string is converted to an image using the \name{SixLabors.ImageSharp} library~\cite{SixLabors2021}, as seen in Listing~\ref{lst:deepmech_cxx_image_conversion}.
 
 \begin{lstlisting}[label={lst:deepmech_cxx_image_conversion}, caption={Deepmech\_cxx overload for image conversion.}]
-public static string Predict(IntPtr deepmech_ctx, string base64, string nodes = null)
-    => Predict(deepmech_ctx, Image.Load<A8>(Convert.FromBase64String(base64)), nodes);
+public static string Predict(
+    IntPtr deepmech_ctx, string base64, string nodes = null)
+    => Predict(deepmech_ctx,
+               Image.Load<A8>(Convert.FromBase64String(base64)),
+               nodes);
 \end{lstlisting}
 
-The overloaded \code{Predict} function in \code{Deepmech\_cxx} calls the imported \code{predict} function and returns the resulting c-style string in JSON-format using \code{Marshal.PtrToStringUTF8(resultNativeString);}.
+The overloaded \code{Predict} function in \code{Deepmech\_cxx} calls the imported \code{predict} function and returns the resulting c-style string.
+The return value is already in JSON-format and converted to a C\# string by \code{Marshal.PtrToStringUTF8(resultNativeString)}.
 This is subsequentially returned and then sent to the PWA, as seen in Listing~\ref{lst:wpf_event_handler}.
 
 The known nodes are included in the inference, by transferring the known nodes as an integer array through this pipeline.
@@ -177,13 +184,13 @@ It can be reviewed at \aka{https://github.com/klawr/deepmech/blob/master/src/cxx
 
 \subsection{Implementation in WinUI}
 
-The WPF-application is working, but the referenced \name{Microsoft.Toolkit.Wpf.UI.Controls}\footnote{See the repository here: \aka{https://github.com/windows-toolkit/WindowsCommunityToolkit}.} extension is no longer supported in \name{.NET 5}\footnote{The respective discussion on the issue can be reviewed here \aka{https://github.com/windows-toolkit/Microsoft.Toolkit.Win32/issues/296}.}.
+The WPF-application is working as a functional prototype, but unfortunately the referenced \name{Microsoft.Toolkit.Wpf.UI.Controls}\footnote{See the repository here: \aka{https://github.com/windows-toolkit/WindowsCommunityToolkit}.} extension is no longer supported in \name{.NET 5}\footnote{The respective discussion on the issue can be reviewed here \aka{https://github.com/windows-toolkit/Microsoft.Toolkit.Win32/issues/296}.}.
 Because of this an older version of the extension is used already\footnote{The changes occured while working on the project.}.
 
 Fortunately Microsoft offers other frameworks to publish applications.
 The development of \name{WinUI 3} applications is very similar to WPF\footnote{I am sure more sophisticated developers knowing the intricate differences may disagree, but as most of the code can be reused they seem to be similar from my perspective}.
 
-With the exception of some namespaces the source code is the same, which can be seen here \aka{https://github.com/klawr/deepmech/tree/master/src/winui}
+With the exception of some namespaces the source code of the WinUI implementation is the same, which can be seen here \aka{https://github.com/klawr/deepmech/tree/master/src/winui}
 
 \subsection{Webserver implementation}
 
@@ -222,6 +229,5 @@ This class provides functions like \code{do\_OPTIONS}, \code{do\_GET} and \code{
 \code{do\_Get} is used to show some text about this server to a user which is using the browser to get information about the server.
 \code{do\_Options} and \code{do\_Post} provide the necessary headers to allow cross origin communcation\footnote{For more information about \name{CORS} see \aka{https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS}.}.
 
-When the prediction is done, the server converts the results into JSON-format and returns the response to the PWA.
-It can be seen in Listing~\ref{lst:predict_http_request} that the result will be used to update the mec-model.
+The server converts the results of the prediction into JSON-format and returns the response to the PWA, which updates the model accordingly as seen in Listing~\ref{lst:predict_http_request}.
 

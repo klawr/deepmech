@@ -37,7 +37,7 @@ _________________________________________________________________
 
 A naive way to localize images in a bigger image is to scan each sector of an image and predicting the generated crops.
 Using a 360x360 sized image, a stride of one in each direction, the number of images which are used in the prediction process are 108.241 images\footnote{$h + 1 - 32 * w + 1 - 32$, where $h$ and $w$ are the height and width of the input image and the size of the kernel used to predict is 32}.
-A Jupyter notebook testing the performance of this method can be viewed at \aka{https://github.com/klawr/deepmech/blob/master/reports/sep/notebooks/2.1.1-scanning\_an\_image.ipynb}.
+A Jupyter notebook testing the performance of this method can be viewed at \aka{https://github.com/klawr/deepmech/blob/master/reports/sep/notebooks/2.1.1-scanning_an_image.ipynb}.
 
 To test this amount of images is often not necessary and can be reduced by increasing the stride of the respective scanning process.
 This tradeoff reduces the accuracy of the localization, but would increase the speed.
@@ -153,7 +153,7 @@ Each generated image begins with a black background of size 360x360.
 Between 3 and 10 nodes are randomly placed on the image\footnote{In an intermediate step the node data from previous work is modified to consist of white symbols on black background, instead of random grayscale images. It can be accessed at \aka{https://drive.google.com/file/d/18uzwfqM4fhfdAQDBd5dvT6k-a-pUWvHR}.}.
 It is prescribed that each node has to have a minimum distance of 60 to every other node in the image to improve the quality of the training data.
 Examples for the resulting images are shown in figure~\ref{fig:constraint_data_step1}.
-The respective notebook containing the code for this process can be viewed at \aka{https://github.com/klawr/deepmech/blob/wip/sep/reports/sep/notebooks/2.2.1-constraint\_data\_gen.ipynb}.
+The respective notebook containing the code for this process can be viewed at \aka{https://github.com/klawr/deepmech/blob/master/reports/sep/notebooks/2.2.1-constraint_data_gen.ipynb}.
 Using this method 100.000 images are generated.
 
 \begin{figure}
@@ -233,15 +233,13 @@ The images which are generated in this step are shown in figure~\ref{fig:constra
 
 At last, these images are cropped.
 After cropping and reshaping the training data the images can be inserted into a training process of a \name{Keras} model.
-The notebook doing this operation can be viewed at \aka{https://github.com/klawr/deepmech/blob/wip/sep/reports/sep/notebooks/2.2.2-connecting\_nodes.ipynb}.
+The notebook demonstrating this operation can be viewed at \aka{https://github.com/klawr/deepmech/blob/master/reports/sep/notebooks/2.2.2-connecting_nodes.ipynb}.
 As the number of possible connections is \(34 = \frac{\sum_{i=3}^{9}i(i-1)}{(10-3)}\), the expected number of generated crop-images is 3.400.000.
 It is also important to check for reversed constraints between node pairs to classify them as a non-connection, to be able to correctly predict the direction of the constraint.
 As 100.000 images are already a good size to work with, another measure was taken to keep the number of expected crops in check.
 For this crops are only kept \(\frac{1}{m(m-1)}\) of the time, which is about each 30th time in this case.
 
-The resulting dataset contains 119.189 images, which are subsequently transformed into a \name{tensorflow record}.
-
-% TODO image of the crops here...
+The resulting dataset contains 119.189 images, which are subsequently transformed into a \name{tensorflow record}\footnote{The data can be downloaded from \aka{https://drive.google.com/file/d/1GkEI71ogtMRSQKdO30J1DVNmVJrSVZRN/view}.}.
 
 The next task is to train the inference model for constraint detection.
 
@@ -249,7 +247,7 @@ The next task is to train the inference model for constraint detection.
 
 In this prototype, the design of the constraint detection model is a copy of the results of the previously trained symbol detector.
 The input size is adapted to fit the cropped images, which have a size of 96 by 96 instead of the 32 by 32 images used for the symbol detector.
-The model is created using the functional API of \name{Keras}, which has no real impact on the result, but is just another way of defining models\footnote{See \aka{https://keras.io/guides/functional\_api/}.}.
+The model is created using the functional API of \name{Keras}, which has no real impact on the result, but is just another way of defining models\footnote{See \aka{https://keras.io/guides/functional_api/}.}.
 
 The output of \code{model.summary()} can be viewed in Listing~\ref{lst:crop_model}.
 \begin{lstlisting}[label={lst:crop_model}, caption={Summary of Constraint Detector.}]
@@ -304,7 +302,7 @@ This process is now revered, getting the coordinates using the Fully Connected N
 The constraint detection relies heavily on the performance of the node detection because nodes that are not detected are not taken into account when creating the data for the constraint detector.
 Falsely predicted nodes on the other hand can not be connected by a constraint, slowing the process down significantly since the number of crops grows exponentially to the number of nodes.
 
-A pipeline of this operation can be reviewed at \aka{https://github.com/klawr/deepmech/blob/wip/sep/reports/sep/notebooks/2.2.5-combining\_node\_constraints.ipynb}.
+A pipeline of this operation can be reviewed at \aka{https://github.com/klawr/deepmech/blob/master/reports/sep/notebooks/2.2.5-combining_node_constraints.ipynb}.
 
 \begin{figure}
     \centering
@@ -334,7 +332,7 @@ For this \name{TensorFlow} has an implementation in JavaScript~\cite{Google2021a
 
 For the conversion of the models, the \name{tensorflowjs\_converter} is used.
 This program takes the model file as input and outputs a description of the model in \name{JSON} format.
-The trained weights and biases are contained in \name{group1-shard1of1.bin}\footnote{Instructions on how to import a Keras model into Tensorflow.js can be viewed at \aka{https://www.tensorflow.org/js/tutorials/conversion/import\_keras}.}.
+The trained weights and biases are contained in \name{group1-shard1of1.bin}\footnote{Instructions on how to import a Keras model into Tensorflow.js can be viewed at \aka{https://www.tensorflow.org/js/tutorials/conversion/import_keras}.}.
 
 To include the weights and biases into an usable JavaScript file it is converted into a base64-formatted string.
 For this the \name{base64}~\cite{Josefsson2018} module contained in \name{GNU Coreutils} is used.
@@ -363,7 +361,7 @@ class ConstraintModel {
 \end{lstlisting}
 
 The contents of some properties are commented out to keep the listing more concise.
-The full file can be reviewed at \aka{https://raw.githubusercontent.com/klawr/deepmech/master/reports/sep/code/old/crop.js}.
+The full file can be reviewed at \aka{https://raw.githubusercontent.com/klawr/deepmech/master/reports/sep/code/crop.js}.
 
 For the conversion each model is assigned to a class with three members.
 \code{model} contains the content of the JSON file and \code{bin} the base64-string without any further modifications.
@@ -394,17 +392,22 @@ This object has 6 properties, which are used to use the previously defined class
 By converting all the necessary steps into a JavaScript pipeline, the \code{deepmech} object may be implemented into other libraries or applications.
 For demonstration purposes, it is implemented using the Node.js~\cite{Joyent2021} runtime environment, by using \name{ijavascript} and the \name{conda} package.
 A Jupyter Notebook is created to show the results.
-It can be viewed at \aka{https://github.com/klawr/deepmech/blob/master/reports/sep/notebooks/2.3.1-nodejs\_implementation.ipynb}.
+It can be viewed at \aka{https://github.com/klawr/deepmech/blob/master/reports/sep/notebooks/2.3.1-nodejs_implementation.ipynb}.
 
 \subsection{Implementation into mec2}
 
 \subsubsection{mec2}
 
-\name{mec2} is a physics simulation engine written in JavaScript~\cite{goessner2021a}\cite{goessner2019a}\cite{goessner2019b}.
-It is designed to easily create 2D mechanical linkages.
-The results can be rendered on a 2D canvas using the \name{g2} graphics library\cite{goessner2021}.
+\name{mec2} is a physics simulation engine written in JavaScript~\cite{Goessner2021a}\cite{Goessner2019a}\cite{Goessner2019b}.
+It is designed to easily create planar mechanical linkages.
+The models can be rendered on a canvas HTML element using the \name{g2} graphics library\cite{Goessner2021}.
+\name{mec2} models provide respective native functionality for \name{g2}.
 
-Mechanisms are defined by using JSON formatting, as shown in Listing~\ref{lst:mec2_example}.
+\name{mec2} models are defined using the JSON-format, as shown in Listing~\ref{lst:mec2_example}.
+Therein \code{nodes} are described by a unique \code{id}, their location in respect to the bottom left of the view using the properties \code{x} and \code{y} and if they are considered a \code{base}\footnote{Bases are simulating the ground and are treated as being unmovable}.
+Constraints have an \code{id} too.
+Furthermore \code{p1} and \code{p2} have to be defined, which refer to nodes by their \code{id}.
+The \code{len} and \code{ori} property have a \code{type} which, for the scope of this project, can be either \code{const} or \code{free}, defining the constrained behaviour of the respective nodes \code{p1} and \code{p2} either lateral or rotational (or both).
 
 \begin{lstlisting}[label={lst:mec2_example}, caption={ Example for a mechanism defined in the syntax proposed by \name{mec2}. }]
 {
@@ -466,7 +469,7 @@ For this prototype only necessary modules have to be used:
 
 At the time of writing five other modules\footnote{The other modules being \name{mec2.load}, \name{mec2.drive}, \name{mec2.view}, \name{mec2.msg.en} and \name{mec2.shape}.} exist to extend the functionality of \name{mec2}, but they do not concern the implementation of \name{deepmech} yet and are not further discussed here.
 
-Additionally, \name{mec2} provides a custom HTML element, which allows for an easy implementation into web pages\footnote{For more information about custom HTML elements see \aka{https://developer.mozilla.org/en-US/docs/Web/Web\_Components/Using\_custom\_elements}.}.
+Additionally, \name{mec2} provides a custom HTML element, which allows for an easy implementation into web pages\footnote{For more information about custom HTML elements see \aka{https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements}.}.
 The object defining the model is given as JSON inside the \code{innerHTML} of the respective custom HTML to define the input, which is respectively parsed using the built-in function \code{JSON.parse()}.
 
 \subsubsection{g2}
@@ -566,10 +569,8 @@ const command_queue = g2().rec({
         y: () => -view.y / view.scl,
         b: () => element.width / view.scl + 1,
         h: () => element.height / view.scl + 1,
-        fs: '#000',
-        isSolid: false
-    })
-    .view(view)
+        fs: '#000', isSolid: false
+    }).view(view)
     .use({ grp: () => img_placeholder })
     .use({ grp: () => mec_placeholder })
     .use({ grp: () => ply_placeholder });

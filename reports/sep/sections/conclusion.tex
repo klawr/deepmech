@@ -1,18 +1,16 @@
 \section{Conclusion}
 
-The process of handling constraints and their respective detection using the proposed approach needs a lot more processing than the detection of symbols.
-Where symbols are still limited to be 32x32 pixel images crops be of any size.
-Furthermore constraints are not just a classification problem, but the direction of the constraint has to be identified, too.
+The process of predicting constraints using the proposed approach needs a lot more processing than the detection of symbols.
+Where symbols are still limited to be 32x32 sized images the span of crops can not be limited without losing their intended use.
+Furthermore constraints are not just a classification problem, but the direction of the constraint has to be identified, too, which doubles the effort.
 
-For inference other approaches exist; e.g. \name{YOLO}~\cite{Bochkovskiy2020}.
-For the scope of this project this would go to far.
+For inference other approaches exist; e.g. \name{YOLO}~\cite{Bochkovskiy2020}, but their exploration would be outside of the scope of this project.
 
-The implementation of \name{mec2} into an application which is able to run on various platforms that can render web content and can be extended is investigated in this project.
-The system agnostic frontend enables developers to implement backends for the various different needs they may have.
+The implementation of \name{mec2} into an application which is able to run on various platforms that can render web content and can be extended was investigated thoroughly during this project.
+The system agnostic frontend using the \code{mec2} HTML element extended by \name{React} are flexible enough to implement backends fitting for various needs different platforms may have.
 In this project the implementation into desktop frameworks via \name{WPF} and \name{WinUI} are examined.
 The possibility to outsource the inference to a webserver is also introduced, providing yet another way of distributing the wordloads.
-
-Table~\ref{tab:benchmarks} shows that delegating the inference to a different backend may be worth it, considering other tasks as video processing may be desired in the future.
+Table~\ref{tab:benchmarks} shows that delegating the inference to a different backend seems to be worth it, considering other tasks as video processing may be desired in the future, making performance a bigger issue.
 
 \begin{table}
     \label{tab:benchmarks}
@@ -32,8 +30,8 @@ Table~\ref{tab:benchmarks} shows that delegating the inference to a different ba
 
 The overhead created by implementations into other environments is little, if the PWA can be implemented using web-view components.
 These are available in most modern frameworks.
-This also makes it possible to bring this functionality to mobile applications; e.g.\ using the Qt-Framework of Windows Xamarin.
+This also makes it possible to bring this functionality to mobile applications; e.g.\ using the Qt-Framework of Windows Xamarin, but as this project focusses on desktop applications this is not examined further.
 
-The flexibility of the PWA enables to include various inference models into various environments with very little overhead, making this approach very promising.
-The PWA can be accessed via \url{https://deepmech.klawr.de}.
+The results of this case study are promising, as extending the PWA itself and implementing it seems to be feasible without an overhead to big.
+The PWA can be accessed via \url{https://deepmech.klawr.de}, the other implementations are open source and licensed unter the MIT license, so they can be built without a permission.
 

@@ -5,7 +5,7 @@ However, the model is not implemented in a very usable environment.
 The prototypical implementation in Chapter~\ref{ch:first_prototype} applies the model and its implementation into each instance of \name{mec-2} and patches a canvas on top of the element to be able to draw.
 This is not optimal, because this approach is neither flexible nor extensible.
 So instead of using just the \name{mec2} HTML-element, a web application is built around it.
-This web application may be used as a progressive web app (PWA) to be accessed via a browser or even embedded into other third-party frameworks\footnote{For more information about progessive web apps see \aka{https://developer.mozilla.org/en-US/docs/Web/Progressive\_web\_apps}.}.
+This web application may be used as a progressive web app (PWA) to be accessed via a browser or even embedded into other third-party frameworks.
 
 \subsection{Creation of a Progressive Web App}
 
@@ -193,7 +193,7 @@ return <canvas
 The \code{id} property is used to refer to this canvas from other components.
 The \code{DeepmechControl} component uses this \code{id} to be able to get access to the canvas-HTML element and forwards it to the \code{predict} function.
 
-\code{width} and \code{height} are taken from the \code{globalThis}\footnote{\aka{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global\_Objects/globalThis}} property.
+\code{width} and \code{height} are taken from the \code{globalThis}\footnote{\aka{https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/globalThis}} property.
 
 The \code{DeepmechCanvas} component has a \code{canvasRef} variable which is initially set to \code{const canvasRef = React.useRef(null)}.
 Every time the \code{DeepmechCanvas} component is rendered the \code{canvasRef} is updated by the \code{ref} property of the returned HTML element.
@@ -228,7 +228,8 @@ The \code{handleInteractor} function handles the interaction of the user with th
 It creates a new instance on the \code{canvasInteractor}\footnote{The \code{canvasInteractor} is discussed in Chapter~\ref{ch:canvas_interactor}} for the given \code{ctx}.
 As with \code{mec2}, the global \code{canvasInteractor} is used here.
 
-For the selection of individual \name{g2}-elements a \code{selector} variable is set to \code{g2.selector(interactor.evt)}.
+For the selection of individual \name{g2}-elements a \code{selector} variable is.
+This is done via \code{g2.selector(interactor.evt)}.
 The respective event listeners are defined for five different events as described in Listing~\ref{lst:handle_interactor_event_listeners}.
 
 \begin{lstlisting}[label={lst:handle_interactor_event_listeners}, caption={Definition of event listeners on the \code{canvasInteractor}.}]
@@ -377,8 +378,10 @@ initialState: {
 }
 \end{lstlisting}
 
-Most of the properties handled by the state refer to properties of the \code{mecElement}.
-The respective actions are accordingly simple; e.g. \code{toggleGravity} in Listing~\ref{lst:mec_model_slice_toggle_gravity}.
+Most of the properties handled by this state mirror the properties of the \code{mecElement}.
+They are changed using \code{actions}, which update the element and the corresponding property of the \code{state} accordingly.
+The implementation of respective \code{actions} is relatively straightforward.
+To change the value of \code{gravity}, the respective \code{action} \code{toggleGravity} is implemented as shown in Listing~\ref{lst:mec_model_slice_toggle_gravity}.
 
 \begin{lstlisting}[label={lst:mec_model_slice_toggle_gravity}, caption={\code{toggleGravity} property in \code{MecModel}s \code{reducer}}]
 toggleGravity: (state) => {
@@ -388,10 +391,11 @@ toggleGravity: (state) => {
 \end{lstlisting}
 
 Where \code{ref} is a reference to \code{mecElement}.
-The \code{queue} is an array of objects, where each object implements an interface of four properties:
+
+The \code{queue} in Listing~\ref{lst:mec_element_initial_state} is an array of objects, where each object implements an interface of four properties:
 
 \begin{enumerate}
-    \item \code{list} --- The list refers to the property name of \code{mecElement.\_model}; e.g. \code{list="nodes"} refers to \code{mecElement.\_model.nodes}.
+    \item \code{list} --- The list refers to the property in \code{mecElement.\_model}; e.g. \code{list="nodes"} refers to \code{mecElement.\_model.nodes}.
     \item \code{idx} --- Refers to the index of the respective element in said \code{list}. This value can also be either "add" or "remove", indicating that an element was added or removed to the respective \code{list}.
     \item \code{value} --- This property is an object that contains all the changes made to the element; e.g. \code{\{x: 20\}} to changes the x-coordinate of a node to 20.
     \item \code{previous} --- This object saves the value of properties before they are changed. It is used to revert actions.
@@ -432,7 +436,7 @@ Object.entries(up ? action.value : action.previous).forEach(e => {
 });
 \end{lstlisting}
 
-In this snippet every value that is referenced by either \code{action.value} or \code{action.previous}\footnote{Which is selected by either going up or down the \code{list}.} is replacing the current value of the element which resides in the respective \code{list} at the respective \code{idx}.
+In this piece of code every value inside \code{ref.\_model} that is referenced by \code{action.value} or \code{action.previous}\footnote{Which is selected by either going up or down the \code{list}.} is replacing the current value of the element which resides in the respective \code{list} at the respective \code{idx}.
 
 If the \code{idx} property is \code{"add"} or \code{"remove"} the approach is not as generalizable.
 
@@ -443,10 +447,7 @@ if (action.list === 'nodes' ||
     action.lists === 'views') {
     const element = { ...action.value };
     if (add) {
-        if (ref._model[action.list].find(e =>
-            e.id === element.id)) {
-            return
-        }
+        if (ref._model[action.list].find(e => e.id === element.id)) return
         ref._model.plugIns[action.list].extend(element);
         ref._model.add(action.list, element);
         element.init(ref._model);
@@ -480,11 +481,13 @@ Because of this, the respective references have to be reassigned by a function g
 
 \subsubsection{Implement bidirectionality}
 
-To ensure that if the user changes something in the \name{mec2} HTML the corresponding change is also made to the user interface, certain listeners are implemented.
-The \name{mec2} HTML element allows the user to drag nodes.
-This behavior is mirrored by the \code{Nodes} component by adding certain functions to the \code{mecElement.\_interactor}.
+To ensure that if the user changes the location of nodes in the \name{mec2} HTML element by dragging, the corresponding change is also made to the respective value in the \code{Nodes} component.
+Herein dragging is defined by having a pointerdown event while the pointer is hovering over a node, then moving the pointer before a pointerup event is registered.
+The selected node follows the pointer respectively.
+To achieve this certain listeners are implemented.
 
-For the respecitve \code{pointerdown}, \code{drag} and \code{pointerup} events that are already implemented to ensure proper editing of the model in the \name{mec2} HTML element, additional functions are implemented.
+The functionality to drag nodes is mirrored by the \code{Nodes} component by adding certain functions to the \code{mecElement.\_interactor}.
+For the respective \code{pointerdown}, \code{drag} and \code{pointerup} are added to the \code{Nodes} component.
 
 \begin{lstlisting}[label={lst:bidirectional_node_update}, caption={Adding functions to \code{mecElement.\_interactor} to work bidirectional.}]
 let previous;
