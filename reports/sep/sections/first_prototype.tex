@@ -1,4 +1,4 @@
-\section{First prototype} \label{ch:first_prototype}
+\section{First prototype}\label{ch:first_prototype}
 
 A prototype for the inference model has to be able to detect and to localize \name{nodes} and to detect \name{constraints}, which are connecting pairs of \name{nodes}.
 Subsequently, the gathered information has to be transformed into a usable format for further processing.
@@ -138,7 +138,7 @@ The drawing canvas has a width of fifty pixels and the range can vary between 15
     \caption[Examples of constraint detector training data]{Some examples of the data created with the described method. Only these two classes were created for the first tests. The images are created horizontally, so their initial angle can be assumed to be zero to keep a record when labeling the data dynamically. }\label{fig:constraint_data}
 \end{figure}
 
-For each type approximately 1200 images were drawn, 400 for each range, resulting in 2400 images\footnote{The raw data can be downloaded at \aka{https://drive.google.com/file/d/1Xff-qFCLYnNqsBIPKw7WiMMz3qa8VIfy/view}.
+For each type approximately 1200 images were drawn, 400 for each range, resulting in 2400 images\footnote{The raw data can be downloaded at \aka{https://drive.google.com/file/d/1Xff-qFCLYnNqsBIPKw7WiMMz3qa8VIfy/view}.}.
 These images can be used in conjuction of existing images of nodes to create pseudo-realistic images of hand-drawn mechanisms.
 
 \subsubsection{Preparing nodes on images}
@@ -464,7 +464,7 @@ For this prototype only necessary modules have to be used:
     Usually a constraint is used to reduce the degree of freedom of a node by one, but it is also possible to take all two degrees of freedom of a node, or none.
 \end{enumerate}
 
-At the time of writing five other modules\footnote{The other modules being \name{mec2.load}, \name{mec2.drive}, \name{mec2.view}, \name{mec2.msg.en} and \name{mec2.shape}} exist to extend the functionality of \name{mec2}, but they do not concern the implementation of \name{deepmech} yet and are not further discussed here.
+At the time of writing five other modules\footnote{The other modules being \name{mec2.load}, \name{mec2.drive}, \name{mec2.view}, \name{mec2.msg.en} and \name{mec2.shape}.} exist to extend the functionality of \name{mec2}, but they do not concern the implementation of \name{deepmech} yet and are not further discussed here.
 
 Additionally, \name{mec2} provides a custom HTML element, which allows for an easy implementation into web pages\footnote{For more information about custom HTML elements see \aka{https://developer.mozilla.org/en-US/docs/Web/Web\_Components/Using\_custom\_elements}.}.
 The object defining the model is given as JSON inside the \code{innerHTML} of the respective custom HTML to define the input, which is respectively parsed using the built-in function \code{JSON.parse()}.
