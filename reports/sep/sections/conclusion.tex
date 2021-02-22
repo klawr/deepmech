@@ -13,10 +13,7 @@ The possibility to outsource the inference to a webserver is also introduced, pr
 Table~\ref{tab:benchmarks} shows that delegating the inference to a different backend seems to be worth it, considering other tasks as video processing may be desired in the future, making performance a bigger issue.
 
 \begin{table}
-    \label{tab:benchmarks}
-    \caption{
-        Time before and after calling the \code{predict} action in \code{DeepmechSlice}.
-        Two predictions are made, because some implementations need extra time for initialization; e.g. JavaScript implementation compiles the code just in time, increasing performance in subsequent runs.}
+    \caption{Time before and after calling the \code{predict} action in \code{DeepmechSlice}. Two predictions are made, because some implementations need extra time for initialization; e.g. JavaScript implementation compiles the code just in time, increasing performance in subsequent runs.}\label{tab:benchmarks}
 \begin{tabular}{lrrr}
     \toprule
     Implementation: & tf.js (PWA) & frugally-deep (WPF) & tf (Python-Webserver) \\
