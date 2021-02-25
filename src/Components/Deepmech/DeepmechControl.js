@@ -35,7 +35,7 @@ export default function DeepmechControl() {
                         exclusive
                         orientation="vertical"
                         value={deepmech.mode}
-                        onChange={(e, val) => val && dispatch(actions.changeMode(val))}>
+                        onChange={(e, val) => val && dispatch(deepmechAction.changeMode(val))}>
                         {Toggle(<Create />, "draw", "Draw")}
                         {Toggle(<PanTool />, "drag", "Drag")}
                         {Toggle(<Delete />, "delete", "Delete")}

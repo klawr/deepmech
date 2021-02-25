@@ -1,6 +1,7 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from io import BytesIO
 
+
 class ServeIndex(BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
@@ -40,11 +41,12 @@ class ServeIndex(BaseHTTPRequestHandler):
                     response.write(bytes(content, "utf-8"))
                     self.wfile.write(response.getvalue())
         except IOError:
-            self.send_error(404,'File Not Found: %s' % source)
+            self.send_error(404, 'File Not Found: %s' % source)
 
-if __name__ == "__main__":        
-    webServer = HTTPServer(("localhost", 8002), ServeIndex)
-    print("Starting webserver on port 8002")
+
+if __name__ == "__main__":
+    webServer = HTTPServer(("localhost", 8337), ServeIndex)
+    print("Starting webserver on port 8337")
 
     try:
         webServer.serve_forever()
