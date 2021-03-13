@@ -6,9 +6,9 @@ class ServeIndex(BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
 
-        source = '.' + self.path
+        source = './build/' + self.path
         if (self.path == "/"):
-            source = "./index.html"
+            source = "./build/index.html"
 
         binary = False
 
