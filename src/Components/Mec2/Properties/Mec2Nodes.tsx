@@ -6,7 +6,7 @@ import { UIAction, UISelect } from "../../../Features/UISlice";
 import ContextMenu from "../../Utils/ContextMenu";
 import MultiSelect from "../../Utils/MultiSelect";
 import UpdateText from "../../Utils/UpdateText";
-import Mec2Table from "../Mec2Table";
+import Mec2Table from "../Utils/Mec2Table";
 
 export default function Mec2Nodes() {
     const ref = (globalThis as any).mecElement as any;
