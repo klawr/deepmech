@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { IStore } from './store';
 
-export interface MecModelAction { }
-
+export interface MecModelAction {
+}
 export interface IMecModelState {
     queue: Array<MecModelAction>,
     selected: number,
@@ -29,6 +29,22 @@ const slice = createSlice({
         grid: false,
     } as IMecModelState,
     reducers: {
+        add: (state, action) => {
+            // TODO this can be done sleeker...
+            if (JSON.stringify(action.payload.value) ===
+                JSON.stringify(action.payload.previous)) {
+                return;
+            }
+            const selected = state.queue.push(action.payload);
+            if (state.selected > selected) { // Regular update
+                state.selected = selected
+            }
+            else { // Change after undo
+                // Remove queue after the respective selected index
+                state.queue = [...state.queue.slice(0, state.selected), state.queue.pop()] as any;
+                state.selected = state.queue.length;
+            }
+        },
         toggleGravity: (state) => {
             state.gravity = !state.gravity;
         },
@@ -46,6 +62,16 @@ const slice = createSlice({
         },
         setDarkmode: (state, action) => {
             state.darkmode = action.payload;
+        },
+        undo: (state) => {
+            if (state.selected > 0) {
+                state.selected -= 1;
+            }
+        },
+        redo: (state) => {
+            if (state.selected < state.queue.length) {
+                state.selected += 1;
+            }
         },
     }
 });
