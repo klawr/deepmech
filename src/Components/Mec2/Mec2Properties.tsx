@@ -1,8 +1,8 @@
 import { Grid } from '@material-ui/core';
-import Mec2Id from './Mec2Id';
-import Mec2Nodes from './Mec2Nodes';
-import Mec2Constraints from './Mec2Constraints';
-import Mec2Views from './Mec2Views';
+import Mec2Id from './Properties/Mec2Id';
+import Mec2Nodes from './Properties/Mec2Nodes';
+import Mec2Constraints from './Properties/Mec2Constraints';
+import Mec2Views from './Properties/Mec2Views';
 import Mec2UndoRedo from './Mec2UndoRedo';
 
 export default function Mec2Properties() {
