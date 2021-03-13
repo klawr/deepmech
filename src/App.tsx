@@ -89,16 +89,20 @@ export default function App() {
   const dispatch = useDispatch();
 
   return (
-    <div>
+    <div className="root">
       <LeftDrawer />
       <RightDrawer />
-      <Grid container direction="row">
+      <Grid
+        className="buttonGrid"
+        container
+        direction="row">
         <ListButton
           onClick={() => dispatch(UIAction.left(true))}
           tooltip="Open drawer">
           <ChevronRight />
         </ListButton>
         <ListButton
+          className="rightDrawerButton"
           onClick={() => dispatch(UIAction.right(true))}
           tooltip="Open right drawer">
           <ChevronLeft />
