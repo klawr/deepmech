@@ -5,7 +5,7 @@ import Mec2Constraints from './Properties/Mec2Constraints';
 import Mec2Views from './Properties/Mec2Views';
 import Mec2UndoRedo from './Utils/Mec2UndoRedo';
 
-export default function Mec2Properties() {
+export default function Mec2Model() {
     return <div>
         <Grid container direction="row">
             <Mec2Id />

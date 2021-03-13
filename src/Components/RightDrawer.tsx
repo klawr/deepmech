@@ -4,7 +4,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { mecModelAction, mecModelSelect } from "../Features/MecModelSlice";
 import { UIAction, UISelect } from "../Features/UISlice";
-import Mec2Properties from "./Mec2/Mec2Properties";
+import Mec2Model from "./Mec2/Mec2Model";
 import ListButton from "./Utils/ListButton";
 
 export default function RightDrawer() {
@@ -44,7 +44,7 @@ export default function RightDrawer() {
                     {locked ? <Lock /> : <LockOpen />}
                 </ListButton>
             </Grid>
-            <Mec2Properties />
+            <Mec2Model />
         </List>
     </SwipeableDrawer>
 }
