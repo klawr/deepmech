@@ -7,10 +7,13 @@ import { useDispatch } from 'react-redux';
 import { UIAction } from './Features/UISlice';
 import store from './Features/store';
 import RightDrawer from './Components/RightDrawer';
+import mecElementSingleton from './Utils/mecElement';
+import { IMecModelState } from './Features/MecModelSlice';
+import { IMecProperty } from './Utils/mecModel';
 
-const ref = (globalThis as any).mecElement as any;
+const ref = mecElementSingleton();
 
-let mecModel: any;
+let mecModel: IMecModelState | undefined;
 let counter = 0;
 
 function handleMecModelUpdate() {
@@ -23,22 +26,23 @@ function handleMecModelUpdate() {
     : mecModel.queue[mecModel.selected];
   if (!action) return;
 
+  const list = ref._model[action.list];
+
   if (typeof action.idx === "number") {
-    Object.entries(up ? action.value : action.previous).forEach((e) => {
-      ref._model[action.list][action.idx][e[0]] = e[1];
+    Object.entries(up ? action.value : action.previous).forEach((e: [string, IMecProperty]) => {
+      const element = list[action.idx as number];
+      (element as any)[e[0]] = e[1]; // sigh...
     });
   } else if (action.idx === "add" || action.idx === "remove") {
     // Check if element is going to be added (or removed)
     const add =
       (up && action.idx === "add") || (!up && action.idx === "remove");
-    if (
-      action.list === "nodes" ||
+    if (action.list === "nodes" ||
       action.list === "constraints" ||
-      action.lists === "views"
-    ) {
-      const element = { ...action.value };
+      action.list === "views") {
+      const element = { ...action.value } as IMecProperty;
       if (add) {
-        if (ref._model[action.list].find((e: any) => e.id === element.id)) {
+        if ((list as IMecProperty[]).find((e) => e.id === element.id)) {
           // console.warn(`Can not add element to ${action.list}. Id ${element.id} is already taken`)
           return;
         }
@@ -47,7 +51,7 @@ function handleMecModelUpdate() {
         element.init(ref._model);
       } else {
         // TODO why is this ? necessary?
-        const o = ref._model[action.list].find((e: any) => e.id === element.id);
+        const o = (list as IMecProperty[]).find((e) => e.id === element.id);
         if (o) o.remove();
       }
     }
@@ -111,20 +115,3 @@ export default function App() {
     </div>
   );
 }
-
-    // <div className="App">
-    //   <header className="App-header">
-    //     <img src={logo} className="App-logo" alt="logo" />
-    //     <p>
-    //       Edit <code>src/App.tsx</code> and save to reload.
-    //     </p>
-    //     <a
-    //       className="App-link"
-    //       href="https://reactjs.org"
-    //       target="_blank"
-    //       rel="noopener noreferrer"
-    //     >
-    //       Learn React
-    //     </a>
-    //   </header>
-    // </div>

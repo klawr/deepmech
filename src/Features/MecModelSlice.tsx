@@ -1,10 +1,23 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { IMecModel, IMecModelPlugIns } from '../Utils/mecModel';
 import { IStore } from './store';
 
-export interface MecModelAction {
+export class MecModelAction<K extends keyof IMecModel, T = Partial<IMecModel[K][number]>> {
+    list: K;
+    idx: number | string; // idx can be "add" or "remove"
+    value: T;
+    previous: T;
+
+    constructor(list: K, idx: number | string, value: T, previous: T) {
+        this.list = list;
+        this.idx = idx;
+        this.value = value;
+        this.previous = previous;
+    }
 }
+
 export interface IMecModelState {
-    queue: Array<MecModelAction>,
+    queue: MecModelAction<keyof IMecModelPlugIns>[],
     selected: number,
     id: string,
     pausing: boolean,
