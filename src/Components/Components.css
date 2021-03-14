@@ -1,6 +1,5 @@
 
 .bottomButtons {
-    position: relative;
-    margin-bottom: 0;
-    margin-top: auto;
+    position: absolute;
+    bottom: 0;
 }

@@ -41,27 +41,29 @@ export default function LeftDrawer() {
             {deepmech.active ? <RotateLeft /> : <img width={24} height={24} src={logo} />}
         </ListButton>
         <Divider />
-        <List className="bottomButtons">
-            {/* TODO <ListButton
+        <div className="bottomButtons">
+            <List>
+                {/* TODO <ListButton
                 onClick={() => {
                     dispatch(deepmechAction.register({ prediction: true, serverport: 8337 }))
                 }}
                 tooltip="Activate server prediction">
                 <Storage />
             </ListButton> */}
-            <ListButton
-                onClick={() => {
-                    dispatch(mecModelAction.setDarkmode(!UI.darkmode));
-                    dispatch(UIAction.darkmode(!UI.darkmode));
-                }}
-                tooltip="Toggle dark mode">
-                <Brightness4 />
-            </ListButton>
-            <ListButton tooltip="Project page">
-                <a href="https://github.com/klawr/deepmech" target="_blank">
-                    <GitHub />
-                </a>
-            </ListButton>
-        </List>
+                <ListButton
+                    onClick={() => {
+                        dispatch(mecModelAction.setDarkmode(!UI.darkmode));
+                        dispatch(UIAction.darkmode(!UI.darkmode));
+                    }}
+                    tooltip="Toggle dark mode">
+                    <Brightness4 />
+                </ListButton>
+                <ListButton tooltip="Project page">
+                    <a href="https://github.com/klawr/deepmech" target="_blank">
+                        <GitHub />
+                    </a>
+                </ListButton>
+            </List>
+        </div>
     </Drawer>
 }
