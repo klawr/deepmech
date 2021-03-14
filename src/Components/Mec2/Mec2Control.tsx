@@ -1,7 +1,7 @@
 import { List } from "@material-ui/core";
 import { ArrowDownward, Clear, Pause, PlayArrow, RotateLeft } from "@material-ui/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { mecModelAction, mecModelSelect } from "../../Features/MecModelSlice";
+import { mecModelAction, mecModelSelect } from "../../Redux/MecModelSlice";
 import ListButton from "../Utils/ListButton";
 
 export default function MecControl() {

@@ -7,8 +7,8 @@ import {
     MenuItem,
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { UIAction, UISelect } from '../../../Features/UISlice';
-import { mecModelAction } from '../../../Features/MecModelSlice';
+import { UIAction, UISelect } from '../../../Redux/UISlice';
+import { mecModelAction } from '../../../Redux/MecModelSlice';
 import ContextMenu from '../../Utils/ContextMenu';
 import UpdateText from '../../Utils/UpdateText';
 import MultiSelect from '../../Utils/MultiSelect';

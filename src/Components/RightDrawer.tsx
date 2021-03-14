@@ -2,8 +2,8 @@ import { Grid, List, SwipeableDrawer, Typography } from "@material-ui/core";
 import { ChevronRight, Label, Lock, LockOpen } from "@material-ui/icons";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { mecModelAction, mecModelSelect } from "../Features/MecModelSlice";
-import { UIAction, UISelect } from "../Features/UISlice";
+import { mecModelAction, mecModelSelect } from "../Redux/MecModelSlice";
+import { UIAction, UISelect } from "../Redux/UISlice";
 import Mec2Model from "./Mec2/Mec2Model";
 import ListButton from "./Utils/ListButton";
 

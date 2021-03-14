@@ -1,8 +1,8 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deepmechSelect } from "../../Features/DeepmechSlice";
-import { mecModelAction, mecModelSelect } from "../../Features/MecModelSlice";
-import { UIAction } from "../../Features/UISlice";
+import { deepmechSelect } from "../../Redux/DeepmechSlice";
+import { mecModelAction, mecModelSelect } from "../../Redux/MecModelSlice";
+import { UIAction } from "../../Redux/UISlice";
 
 export default function DeepmechCanvas() {
     const deepmech = useSelector(deepmechSelect);

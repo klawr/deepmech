@@ -3,7 +3,7 @@ import { CameraAlt, Create, Delete, Done, List, PanTool } from "@material-ui/ico
 import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deepmechAction, deepmechSelect } from "../../Features/DeepmechSlice";
+import { deepmechAction, deepmechSelect } from "../../Redux/DeepmechSlice";
 import ListButton from "../Utils/ListButton";
 
 export default function DeepmechControl() {

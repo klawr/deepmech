@@ -4,11 +4,11 @@ import { Grid } from '@material-ui/core';
 import ListButton from './Components/Utils/ListButton';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import { useDispatch } from 'react-redux';
-import { UIAction } from './Features/UISlice';
-import store from './Features/store';
+import { UIAction } from './Redux/UISlice';
+import store from './Redux/store';
 import RightDrawer from './Components/RightDrawer';
 import mecElementSingleton from './Services/mecElement';
-import { IMecModelState } from './Features/MecModelSlice';
+import { IMecModelState } from './Redux/MecModelSlice';
 import { IMecProperty } from './Services/mecModel';
 
 const ref = mecElementSingleton();

@@ -1,8 +1,8 @@
 import { Accordion, AccordionDetails, AccordionSummary, Checkbox, Grid, MenuItem } from "@material-ui/core";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { mecModelAction } from "../../../Features/MecModelSlice";
-import { UIAction, UISelect } from "../../../Features/UISlice";
+import { mecModelAction } from "../../../Redux/MecModelSlice";
+import { UIAction, UISelect } from "../../../Redux/UISlice";
 import ContextMenu from "../../Utils/ContextMenu";
 import MultiSelect from "../../Utils/MultiSelect";
 import UpdateText from "../../Utils/UpdateText";

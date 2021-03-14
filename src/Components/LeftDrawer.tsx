@@ -1,9 +1,9 @@
 import { Divider, Drawer, List } from "@material-ui/core";
 import { Brightness4, ChevronLeft, GitHub, RotateLeft, Storage } from "@material-ui/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { deepmechAction, deepmechSelect } from "../Features/DeepmechSlice";
-import { mecModelAction } from "../Features/MecModelSlice";
-import { UIAction, UISelect } from "../Features/UISlice";
+import { deepmechAction, deepmechSelect } from "../Redux/DeepmechSlice";
+import { mecModelAction } from "../Redux/MecModelSlice";
+import { UIAction, UISelect } from "../Redux/UISlice";
 import DeepmechControl from "./Deepmech/DeepmechControl";
 import logo from "../logo.svg";
 import MecControl from "./Mec2/Mec2Control";

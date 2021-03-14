@@ -1,7 +1,7 @@
   
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { mecModelAction, mecModelSelect } from '../../../Features/MecModelSlice';
+import { mecModelAction, mecModelSelect } from '../../../Redux/MecModelSlice';
 import ListButton from '../../Utils/ListButton';
 import { Redo, Undo } from '@material-ui/icons';
 import { Grid } from '@material-ui/core';
