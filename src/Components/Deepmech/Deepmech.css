@@ -3,3 +3,7 @@
     pointer-events: all;
     background-color: #000; /* NOTE #000c may be cool too */
 }
+
+.deepmechControl {
+    margin: 8px;
+}

@@ -20,6 +20,7 @@ export default function DeepmechControl() {
 
     return <div>
         <ToggleButtonGroup
+            className="deepmechControl"
             exclusive
             orientation="vertical"
             value={deepmech.mode}

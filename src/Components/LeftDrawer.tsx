@@ -8,6 +8,7 @@ import DeepmechControl from "./Deepmech/DeepmechControl";
 import logo from "../logo.svg";
 import MecControl from "./Mec2/Mec2Control";
 import ListButton from "./Utils/ListButton";
+import "./Components.css";
 
 export default function LeftDrawer() {
     const dispatch = useDispatch();
@@ -40,7 +41,7 @@ export default function LeftDrawer() {
             {deepmech.active ? <RotateLeft /> : <img width={24} height={24} src={logo} />}
         </ListButton>
         <Divider />
-        <List>
+        <List className="bottomButtons">
             {/* TODO <ListButton
                 onClick={() => {
                     dispatch(deepmechAction.register({ prediction: true, serverport: 8337 }))
