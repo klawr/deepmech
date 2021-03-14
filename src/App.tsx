@@ -14,17 +14,6 @@ const ref = mecElementSingleton();
 
 store.subscribe(() => handleMecModelUpdate(store, ref));
 
-// Let g2 beg simulate view (beg does not respect cartesian)
-function begSimView(v: any) {
-  return {
-    matrix() {
-      return v.cartesian
-        ? [v.scl, 0, 0, -v.scl, v.x, ref._ctx.canvas.height - 1 - v.y]
-        : [v.scl, 0, 0, v.scl, v.x, v.y];
-    },
-  };
-}
-
 export default function App() {
   const dispatch = useDispatch();
 
