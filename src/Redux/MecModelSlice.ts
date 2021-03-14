@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { IMecModel, IMecModelPlugIns } from '../Services/mecModel';
+import { IMecModel, IMecModelPlugIns } from '../Services/Singletons/mecModel';
 import { IStore } from './store';
 
 export class MecModelAction<K extends keyof IMecModel, T = Partial<IMecModel[K][number]>> {

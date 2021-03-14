@@ -7,9 +7,9 @@ import { useDispatch } from 'react-redux';
 import { UIAction } from './Redux/UISlice';
 import store from './Redux/store';
 import RightDrawer from './Components/RightDrawer';
-import mecElementSingleton from './Services/mecElement';
+import mecElementSingleton from './Services/Singletons/mecElement';
 import { IMecModelState } from './Redux/MecModelSlice';
-import { IMecProperty } from './Services/mecModel';
+import { IMecProperty } from './Services/Singletons/mecModel';
 
 const ref = mecElementSingleton();
 
