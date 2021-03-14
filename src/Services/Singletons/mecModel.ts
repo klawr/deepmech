@@ -33,6 +33,7 @@ export interface IMecModelPlugIns {
 }
 
 export interface IMecModel extends IMecModelPlugIns {
+    id: string,
     plugIns: any,
     draw: (g2: IG2) => void,
     add: (list: keyof IMecModelPlugIns, o: any) => any,

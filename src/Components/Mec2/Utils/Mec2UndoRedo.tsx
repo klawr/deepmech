@@ -1,5 +1,5 @@
   
-import React from 'react';
+import '../Mec2.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { mecModelAction, mecModelSelect } from '../../../Redux/MecModelSlice';
 import ListButton from '../../Utils/ListButton';
@@ -10,10 +10,7 @@ export default function Mec2UndoRedo() {
     const dispatch = useDispatch();
     const mecModel = useSelector(mecModelSelect);
 
-    return <Grid
-        style={{ position: 'absolute', pointerEvents: 'none' }}
-        container
-        direction="row">
+    return <div className="undoRedoGrid">
         <ListButton
             tooltip="Undo"
             enabled={mecModel.selected > 0}
@@ -26,6 +23,6 @@ export default function Mec2UndoRedo() {
             onClick={() => dispatch(mecModelAction.redo())}>
             <Redo />
         </ListButton>
-    </Grid>
+    </div>
 
 }

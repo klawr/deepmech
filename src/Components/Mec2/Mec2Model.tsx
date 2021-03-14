@@ -7,7 +7,7 @@ import Mec2UndoRedo from './Utils/Mec2UndoRedo';
 
 export default function Mec2Model() {
     return <div>
-        <Grid container direction="row">
+        <Grid container direction="row" className="idRow">
             <Mec2Id />
             <Mec2UndoRedo />
         </Grid>

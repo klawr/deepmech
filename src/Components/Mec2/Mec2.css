@@ -1,0 +1,12 @@
+
+.idRow {
+    justify-content: space-between;
+}
+
+.undoRedoGrid {
+    display: flex;
+}
+
+.id {
+    left: 8px;
+}
