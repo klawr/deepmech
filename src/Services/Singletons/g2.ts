@@ -10,8 +10,9 @@ export interface IG2 {
     commands: { a: any, c: string }[];
     (): IG2;
     beg(arg: {
-        x: number, y: number, scl: number
-    } | (() => number[])): IG2;
+        x?: number, y?: number, scl?: number,
+        matrix?(): number[]
+    }): IG2;
     end(): IG2;
     clr(): IG2;
     del(arg?: number): IG2;
