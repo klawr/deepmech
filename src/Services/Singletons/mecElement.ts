@@ -6,6 +6,12 @@ export interface IMecElement {
     _interactor: ICanvasInteractorInstance;
     _model: IMecModel;
     _selector: IG2Selector;
+    _show: {
+        darkmode: boolean;
+        nodeLabels: boolean;
+        constraintLabels: boolean;
+    }
+    grid: boolean;
     _g: IG2;
     render: () => void;
     _ctx: CanvasRenderingContext2D;

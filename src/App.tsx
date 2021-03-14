@@ -11,6 +11,7 @@ import mecElementSingleton from './Services/Singletons/mecElement';
 import handleMecModelUpdate from './Services/handleMecModelUpdate';
 import { deepmechSelect } from './Redux/DeepmechSlice';
 import DeepmechCanvas from './Components/Deepmech/DeepmechCanvas';
+import { mecModelAction } from './Redux/MecModelSlice';
 
 const ref = mecElementSingleton();
 
@@ -19,6 +20,8 @@ store.subscribe(() => handleMecModelUpdate(store, ref));
 export default function App() {
   const dispatch = useDispatch();
   const deepmech = useSelector(deepmechSelect);
+
+  dispatch(mecModelAction.initialize());
 
   return (
     <div className="root">

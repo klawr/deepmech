@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import mecElementSingleton from '../Services/Singletons/mecElement';
 import mecModelSingleton, { IMecModel, IMecModelPlugIns } from '../Services/Singletons/mecModel';
 import { IStore } from './store';
 
@@ -90,6 +91,15 @@ const slice = createSlice({
             mecModelSingleton().id = action.payload;
             state.id = mecModelSingleton().id;
         },
+        initialize: (state) => {
+            const ref = mecElementSingleton();
+            ref._show.darkmode = state.darkmode;
+            ref._ctx.canvas.style.backgroundColor = state.darkmode ? '#777' : '#eee';
+            ref._show.nodeLabels = state.nodeLabels;
+            ref._show.constraintLabels = state.constraintLabels;
+            ref.grid = state.grid;
+            state.id = mecModelSingleton().id;
+        }
     }
 });
 
