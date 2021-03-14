@@ -282,7 +282,7 @@ g2.selector.prototype = {
  */
 /* jshint -W014 */
 
-const canvasInteractor = {
+globalThis.canvasInteractor = {
     create() {
         const o = Object.create(this.prototype);
         o.constructor.apply(o, arguments);

@@ -1,9 +1,9 @@
-import { CanvasInteractor } from "./canvasInteractor";
+import { ICanvasInteractorInstance } from "./canvasInteractor";
 import { IG2 } from "./g2";
 import { IMecModel } from "./mecModel";
 
 export interface IMecElement {
-    _interactor: CanvasInteractor;
+    _interactor: ICanvasInteractorInstance;
     _model: IMecModel;
     _g: IG2;
     render: () => void;
