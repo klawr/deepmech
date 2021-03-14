@@ -1,9 +1,11 @@
 
 export interface IG2Selector {
+    drag: any,
     evt: {
         hit: any;
     },
     selection: any;
+    x: number, y: number,
 }
 
 export interface IG2 {

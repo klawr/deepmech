@@ -3,6 +3,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { mecModelAction } from "../../../Redux/MecModelSlice";
 import { UIAction, UISelect } from "../../../Redux/UISlice";
+import handleMec2NodeEvents from "../../../Services/handleMec2NodeEvents";
 import ContextMenu from "../../Utils/ContextMenu";
 import MultiSelect from "../../Utils/MultiSelect";
 import UpdateText from "../../Utils/UpdateText";
@@ -21,6 +22,8 @@ export default function Mec2Nodes() {
             value: e.target.checked,
         }));
     }
+
+    React.useEffect(() => handleMec2NodeEvents(dispatch));
 
     function SanitizedCell({ property, idx, elm }: any) {
         function update(value: any, previous = elm[property]) {

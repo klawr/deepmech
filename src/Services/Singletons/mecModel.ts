@@ -11,6 +11,7 @@ export interface INode extends IMecProperty {
     x: number,
     y: number,
     base: boolean,
+    drag(): void; 
 }
 
 export enum ConstraintMode { "free", "const" }
