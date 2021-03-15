@@ -15,6 +15,7 @@ import MultiSelect from '../../Utils/MultiSelect';
 import Mec2Table from '../Utils/Mec2Table';
 import RadioSelect from '../../Utils/RadioSelect';
 import ObjectMenu from '../../Utils/ObjectMenu';
+import AddMec2Constraint from './AddElement/AddMec2Constraints';
 
 export default function Constraints() {
     const name = 'constraints';
@@ -117,7 +118,7 @@ export default function Constraints() {
                     SanitizedCell={SanitizedCell}
                     head={Object.entries(head).filter(h => h[1]).map(h => h[0])}
                     list={ref._model[name]} />
-                {/* TODO <AddConstraint options={model.nodes.map(n => n.id)} /> */}
+                <AddMec2Constraint />
             </Grid>
         </AccordionDetails>
     </Accordion>
