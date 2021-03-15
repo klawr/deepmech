@@ -1,12 +1,12 @@
-import { configureStore, Reducer } from "@reduxjs/toolkit";
-import DeepmechSlice, { IDeepmechState } from "./DeepmechSlice";
-import MecModelSlice, { IMecModelState } from "./MecModelSlice";
-import UISlice, { IUIState } from "./UISlice";
+import { configureStore } from "@reduxjs/toolkit";
+import DeepmechSlice, { DeepmechState } from "./DeepmechSlice";
+import MecModelSlice, { MecModelState } from "./MecModelSlice";
+import UISlice, { UIState } from "./UISlice";
 
 export interface IStore {
-    UI: IUIState,
-    Deepmech: IDeepmechState,
-    MecModel: IMecModelState,
+    UI: UIState,
+    Deepmech: DeepmechState,
+    MecModel: MecModelState,
 }
 
 export default configureStore({

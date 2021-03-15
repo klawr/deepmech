@@ -1,25 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { IStore } from "./store";
 
-export interface IDeepmechState {
-    active: boolean,
+export type DeepmechState = typeof initialState;
+const initialState = {
+    active: false,
     extern: {
-        canvas: boolean,
-        predict: boolean,
+        canvas: false,
+        predict: false,
     },
-    mode: string, // TODO make enum
-}
+    mode: "draw", // TODO make this an enum
+};
 
 const slice = createSlice({
     name: "Deepmech",
-    initialState: {
-        active: false,
-        extern: {
-            canvas: false,
-            predict: false,
-        },
-        mode: "draw"
-    } as IDeepmechState,
+    initialState,
     reducers: {
         active: (state, action) => {
             if (!state.extern.canvas) {

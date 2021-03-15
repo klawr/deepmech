@@ -17,31 +17,22 @@ export class MecModelAction<K extends keyof IMecModel, T = Partial<IMecModel[K][
     }
 }
 
-export interface IMecModelState {
-    queue: MecModelAction<keyof IMecModelPlugIns>[],
-    selected: number,
-    id: string,
-    pausing: boolean,
-    gravity: boolean,
-    darkmode: boolean,
-    nodeLabels: boolean,
-    constraintLabels: boolean,
-    grid: boolean,
-}
+export type MecModelState = typeof initialState;
+const initialState = {
+    queue: [] as MecModelAction<keyof IMecModelPlugIns>[],
+    selected: 0,
+    id: "",
+    pausing: true,
+    gravity: false,
+    darkmode: false,
+    nodeLabels: true,
+    constraintLabels: true,
+    grid: false,
+};
 
 const slice = createSlice({
     name: "MecModel",
-    initialState: {
-        queue: [],
-        selected: 0,
-        id: "",
-        pausing: true,
-        gravity: false,
-        darkmode: false,
-        nodeLabels: true,
-        constraintLabels: true,
-        grid: false,
-    } as IMecModelState,
+    initialState,
     reducers: {
         add: (state, action) => {
             // TODO this can be done sleeker...

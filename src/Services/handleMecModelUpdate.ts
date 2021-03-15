@@ -1,16 +1,16 @@
 import { EnhancedStore } from "@reduxjs/toolkit";
-import { IMecModelState } from "../Redux/MecModelSlice";
+import { MecModelState } from "../Redux/MecModelSlice";
 import { IMecElement } from "./Singletons/mecElement";
 import { IMecProperty } from './Singletons/mecModel';
 
-let mecModel: IMecModelState | undefined;
+let mecModel: MecModelState | undefined;
 let counter = 0;
 
 export default function handleMecModelUpdate(store: EnhancedStore, ref: IMecElement) {
     // if mecModel did not change from last time, return
     if (mecModel === store.getState().MecModel) return;
     // Can't be undefined if false.
-    mecModel = store.getState().MecModel as IMecModelState;
+    mecModel = store.getState().MecModel as MecModelState;
     // if true the last action was an update, otherwise it was an undo
     const up = counter < mecModel.selected;
     const action = up

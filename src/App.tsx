@@ -38,7 +38,6 @@ export default function App() {
             className="buttonGrid"
             container
             direction="row">
-
             <ListButton
               onClick={() => dispatch(UIAction.left(true))}
               tooltip="Open drawer">

@@ -1,6 +1,6 @@
 import { IMecElement } from "./Singletons/mecElement";
 
-// Let g2 beg simulate view (beg does not respect cartesian)
+// Let g2 beg simulate view (g2.beg does not respect cartesian)
 export default function g2BegSimView(ref: IMecElement) {
   const v = ref._interactor.view;
   return {
