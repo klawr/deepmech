@@ -27,6 +27,7 @@ export default function DeepmechCanvas() {
     }, [deepmech.mode]);
 
     return <canvas
+        id="DeepmechCanvasIdUsedToAccessThroughReduxState"
         className="deepmechCanvas"
         width={globalThis.innerWidth}
         height={globalThis.innerHeight}

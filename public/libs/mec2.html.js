@@ -508,7 +508,7 @@ globalThis.canvasInteractor = {
  * @namespace mec namespace for the mec library.
  * It includes mainly constants and some general purpose functions.
  */
-const mec = {
+globalThis.mec = {
     /**
      * user language shortcut (for messages)
      * @const

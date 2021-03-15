@@ -3,6 +3,8 @@ import { IG2, IG2Selector } from "./g2";
 import { IMecModel } from "./mecModel";
 
 export interface IMecElement {
+    height: number,
+    width: number,
     _interactor: ICanvasInteractorInstance;
     _model: IMecModel;
     _selector: IG2Selector;
