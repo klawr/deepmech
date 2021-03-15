@@ -8,6 +8,7 @@ import ContextMenu from "../../Utils/ContextMenu";
 import MultiSelect from "../../Utils/MultiSelect";
 import UpdateText from "../../Utils/UpdateText";
 import Mec2Table from "../Utils/Mec2Table";
+import AddMec2Node from "./AddElement/AddMec2Node";
 
 export default function Mec2Nodes() {
     const ref = (globalThis as any).mecElement as any;
@@ -86,7 +87,7 @@ export default function Mec2Nodes() {
                     SanitizedCell={SanitizedCell}
                     head={Object.entries(head).filter(h => h[1]).map(h => h[0])}
                     list={ref._model[name]} />
-                {/* <AddMec2Node /> */}
+                <AddMec2Node />
             </Grid>
         </AccordionDetails>
     </Accordion>
