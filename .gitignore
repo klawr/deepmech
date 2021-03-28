@@ -4,6 +4,10 @@ reports/*/meta
 auth.json
 .vim
 
+# exclude models from source control by default
+*/models/*
+!/models/README.md
+
 # Latex aka
 **/document.aka
 

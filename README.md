@@ -3,7 +3,8 @@
 This is a [Monorepo](https://en.wikipedia.org/wiki/Monorepo) for different projects and reports which revolve around deepmech.
 deepmech aims to bring automatic detection kinematic structures available on different platforms.
 
-The training data used can be found [here](https://drive.google.com/drive/folders/1yZI5v3ws3b8GZMl_ACe4TO_qebdS2fUz?usp=sharing).
+The training data used can be found [here](https://drive.google.com/drive/folders/1yoHZQDhcwV1fuU5Lrqj6s9_T_qJfhMJT?usp=sharing).  
+Trained models can be found [here](https://drive.google.com/drive/folders/1Y7L3aUopblxOBmcKRYSEwN57O9a1yu-N?usp=sharing).
 
 The first steps were to detect symbols used for mechanical linkage sketches to learn about the basics of detection algorithms.
 The respective project can be reviewed in the [student research project](reports/srp).
