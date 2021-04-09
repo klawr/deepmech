@@ -1,15 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Provider } from 'react-redux';
 import store from './src/Redux/store';
-import Mec2 from './src/Components/Mec2/Mec2';
+import App from './src/App';
 
-export default function App() {
+export default function Main() {
   return <View style={styles.container}>
     <Provider store={store}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <Mec2 />
+      <App />
     </Provider>
     <StatusBar style="auto" />
   </View>

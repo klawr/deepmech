@@ -8,6 +8,7 @@ import { g2 } from 'g2-module';
 import { mecModelAction } from '../../Redux/MecModelSlice';
 
 export default function App() {
+  // TODO this is what was previously the Singleton... Maybe make a "mec2 html component for react-native out of this?"
   const model: mec = {
     "gravity": true,
     "nodes": [
