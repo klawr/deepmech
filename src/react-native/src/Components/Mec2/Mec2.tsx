@@ -6,8 +6,9 @@ import Mec2Update from './Mec2Update';
 import { mec } from 'mec2-module';
 import { g2 } from 'g2-module';
 import { mecModelAction } from '../../Redux/MecModelSlice';
+import Header from '../Header';
 
-export default function App() {
+export default function App({ navigation } = {} as any) {
   // TODO this is what was previously the Singleton... Maybe make a "mec2 html component for react-native out of this?"
   const model: mec = {
     "gravity": true,
@@ -38,7 +39,8 @@ export default function App() {
   model.draw(g);
 
   const dispatch = useDispatch();
-  return <View>
+  return <View style={styles.container}>
+    <Header openDrawer={navigation.openDrawer} />
     <Mec2Update model={model} g={g} />
     <Slider
       onValueChange={(v) => dispatch(mecModelAction.updatePhi(v))}
@@ -54,7 +56,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#aaa',
     alignItems: 'center',
     justifyContent: 'center',
   },
