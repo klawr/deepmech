@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import G2SVG from 'react-native-g2';
 import { mecModelSelect } from '../../Redux/MecModelSlice';
 
-export default function UpdateMecAndRender({ model, g } = {} as { model: mec, g: any }) {
+export default function Mec2SVG({ model, g } = {} as { model: mec, g: any }) {
     const phi = useSelector(mecModelSelect).phi;
 
     if (model.constraints[0].ori.inputCallbk) {

@@ -12,12 +12,9 @@ export default function Header({ navigation } = {} as any) {
 
 const styles = StyleSheet.create({
     header: {
-        top: 0,
-        width: "100%",
         position: "absolute",
         height: 60,
         flexDirection: "row",
-        justifyContent: "space-between",
         alignItems: "center",
         paddingHorizontal: 20
     },
