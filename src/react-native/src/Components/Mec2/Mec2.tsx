@@ -40,7 +40,7 @@ export default function App({ navigation } = {} as any) {
 
   const dispatch = useDispatch();
   return <View style={styles.container}>
-    <Header openDrawer={navigation.openDrawer} />
+    <Header navigation={navigation} />
     <Mec2Update model={model} g={g} />
     <Slider
       onValueChange={(v) => dispatch(mecModelAction.updatePhi(v))}

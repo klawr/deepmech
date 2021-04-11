@@ -2,9 +2,9 @@ import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
-export default function Header({ openDrawer } = {} as any) {
+export default function Header({ navigation } = {} as any) {
     return <View style={styles.header}>
-        <TouchableOpacity onPress={() => openDrawer()}>
+        <TouchableOpacity onPress={() => navigation.openDrawer()}>
             <Ionicons name="arrow-forward" size={32} />
         </TouchableOpacity>
     </View>
