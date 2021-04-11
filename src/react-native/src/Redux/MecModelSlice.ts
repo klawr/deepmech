@@ -79,8 +79,7 @@ const slice = createSlice({
             }
         },
         updateId: (state, action) => {
-            mecModelSingleton().id = action.payload;
-            state.id = mecModelSingleton().id;
+            state.model.id = action.payload;
         },
         initialize: (state) => {
             // const ref = mecElementSingleton();

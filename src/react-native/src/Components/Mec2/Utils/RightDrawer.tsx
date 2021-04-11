@@ -3,7 +3,9 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useSelector } from 'react-redux';
-import { mecModelSelect } from '../../Redux/MecModelSlice';
+import { mecModelSelect } from '../../../Redux/MecModelSlice';
+import Mec2Id from '../ModelProperties/Mec2Id';
+import Mec2UndoRedo from './Mec2UndoRedo';
 
 function Header({ navigation } = {} as any) {
     return <View style={styles.header}>
@@ -19,6 +21,10 @@ export default function RightDrawer({ navigation } = {} as any) {
 
     return <View>
         <Header navigation={navigation} />
+        <View style={styles.idUndoRedo}>
+            <Mec2Id />
+            <Mec2UndoRedo />
+        </View>
         <Text>{"TODO Input some text here"}</Text>
     </View>
 };
@@ -33,4 +39,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         paddingHorizontal: 20
     },
+    idUndoRedo: {
+        justifyContent: "space-between",
+    }
 });

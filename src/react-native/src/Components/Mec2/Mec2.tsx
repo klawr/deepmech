@@ -2,7 +2,7 @@ import Slider from '@react-native-community/slider';
 import * as React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import Mec2SVG from './Mec2SVG';
+import Mec2SVG from './Utils/Mec2SVG';
 import { mec } from 'mec2-module';
 import { g2 } from 'g2-module';
 import { mecModelAction, mecModelSelect } from '../../Redux/MecModelSlice';
@@ -10,7 +10,7 @@ import Header from '../Header';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import RightDrawer from './RightDrawer';
+import RightDrawer from './Utils/RightDrawer';
 import { Ionicons } from '@expo/vector-icons';
 
 function OpenRightDrawer({ navigation } = {} as any) {
