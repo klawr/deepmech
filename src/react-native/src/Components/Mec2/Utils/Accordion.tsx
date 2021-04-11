@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Animated, Easing, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-export default function Accordion({ title, children } = { title: "", children: [] }) {
+export default function Accordion({ title, children } = { title: "", children: [] as any }) {
     const [open, setOpen] = React.useState(false);
     const animation = React.useRef(new Animated.Value(0)).current;
     const [contentHeight, setContentHeight] = React.useState(0);

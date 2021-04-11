@@ -11,5 +11,5 @@ export default function Mec2SVG({ model, g } = {} as { model: mec, g: any }) {
         model.constraints[0].ori.inputCallbk(phi);
     }
     model.tick();
-    return <G2SVG cq={g} width={400} height={800} />
+    return <G2SVG cq={g} width={"100%"} height={"90%"} />
 }

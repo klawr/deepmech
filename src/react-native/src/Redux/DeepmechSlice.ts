@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import deepmechPredict from "../Services/deepmech/deepmech";
+// import deepmechPredict from "../Services/deepmech/deepmech";
 import { IStore } from "./store";
 
 export type DeepmechState = typeof initialState;
@@ -30,7 +30,7 @@ const slice = createSlice({
             if (state.extern.canvas) return;
             const canvas = document.getElementById(state.canvas) as HTMLCanvasElement;
             if (canvas && !state.extern.predict) {
-                deepmechPredict(canvas);
+                // deepmechPredict(canvas);
                 return;
             }
         }

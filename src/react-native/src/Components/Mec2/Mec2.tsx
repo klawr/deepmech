@@ -1,6 +1,6 @@
 import Slider from '@react-native-community/slider';
 import * as React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import Mec2SVG from './Utils/Mec2SVG';
 import { mec } from 'mec2-module';
@@ -28,7 +28,8 @@ function SVGThingy({ navigation } = {} as any) {
 
   mec.model.extend(model);
   model.init();
-  const g = g2().view({ x: 0, y: 100, cartesian: true });
+  const y = Platform.OS === 'android' ? -400 : 100
+  const g = g2().view({ x: 0, y, cartesian: true });
   model.draw(g);
 
   const dispatch = useDispatch();
