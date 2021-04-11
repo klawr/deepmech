@@ -9,7 +9,7 @@ import Mec2UndoRedo from './Mec2UndoRedo';
 
 function Header({ navigation } = {} as any) {
     return <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.closeDrawer()}>
+        <TouchableOpacity onPress={navigation.closeDrawer}>
             <Ionicons name="arrow-forward" size={32} />
         </TouchableOpacity>
     </View>
@@ -40,6 +40,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20
     },
     idUndoRedo: {
+        width: "100%",
+        flexDirection: "row",
         justifyContent: "space-between",
     }
 });

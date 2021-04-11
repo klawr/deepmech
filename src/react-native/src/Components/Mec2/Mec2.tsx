@@ -15,7 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 function OpenRightDrawer({ navigation } = {} as any) {
   return <View style={styles.openDrawer}>
-    <TouchableOpacity onPress={() => navigation.openDrawer()}>
+    <TouchableOpacity onPress={navigation.openDrawer}>
       <Ionicons name="arrow-back" size={32} />
     </TouchableOpacity>
   </View>
