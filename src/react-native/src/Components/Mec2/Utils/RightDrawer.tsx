@@ -5,6 +5,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { useSelector } from 'react-redux';
 import { mecModelSelect } from '../../../Redux/MecModelSlice';
 import Mec2Id from '../ModelProperties/Mec2Id';
+import Mec2Nodes from '../ModelProperties/Mec2Nodes';
 import Mec2UndoRedo from './Mec2UndoRedo';
 
 function Header({ navigation } = {} as any) {
@@ -25,7 +26,7 @@ export default function RightDrawer({ navigation } = {} as any) {
             <Mec2Id />
             <Mec2UndoRedo />
         </View>
-        <Text>{"TODO Input some text here"}</Text>
+        <Mec2Nodes />
     </View>
 };
 
