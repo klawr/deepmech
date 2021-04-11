@@ -1,8 +1,6 @@
 import * as tf from "@tensorflow/tfjs";
 import { SymbolicTensor, Tensor, Tensor2D } from "@tensorflow/tfjs";
-import mec2Singleton from "../Singletons/mec2";
-import mecElementSingleton, { IMecElement } from "../Singletons/mecElement";
-import { IConstraint, INode } from "../Singletons/mecModel";
+import { IConstraint, INode } from 'mec2-module';
 
 interface INodePrediction {
     maxIndex: number;
@@ -140,6 +138,7 @@ const deepmech = {
             return nodes;
         },
 
+        // TODO
         /**
          * @param {object} image (tensor) which contains the image on the canvas.
          * @param {object} element element to predict.
@@ -151,8 +150,7 @@ const deepmech = {
          *  crops to detect constraints and info array which contains info about
          *  the mirroring of the respective image (to keep y1, x1, y2, x2 aligned)
          *  and which nodes
-         */
-        getCrops(image: tf.Tensor3D, element: IMecElement, nodes: INode[], constraints: IConstraint[] = []): [tf.Tensor, IInfo[]] | [] {
+        getCrops(image: tf.Tensor3D , element: IMecElement, nodes: INode[], constraints: IConstraint[] = []): [tf.Tensor, IInfo[]] | [] {
             const view = element._interactor.view;
 
             const info: IInfo[] = [];
@@ -228,6 +226,7 @@ const deepmech = {
 
             return [crops, info];
         },
+         */
 
         /**
          * Detect constraints on prepared crops.
@@ -244,6 +243,8 @@ const deepmech = {
         },
     },
 
+    // TODO
+    /*
     predict: async (canvas: HTMLCanvasElement) => {
         if (!canvas) return; // TODO throw something
 
@@ -296,8 +297,12 @@ const deepmech = {
         }
         element._model.draw(element._g);
     },
+
+    */
 };
 
+// TODO
+/*
 export function updateNodes(nodes: INodePrediction[]) {
     if (!nodes) return;
 
@@ -354,4 +359,4 @@ export function updateConstraints(constraints: Partial<IConstraint>[]) {
 export default function deepmechPredict(canvas: HTMLCanvasElement) {
     return deepmech.predict(canvas);
 }
-
+*/

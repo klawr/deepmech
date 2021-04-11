@@ -1,9 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import mecElementSingleton from '../Services/Singletons/mecElement';
-import mecModelSingleton, { IMecModel, IMecModelPlugIns } from '../Services/Singletons/mecModel';
 import { IStore } from './store';
+import { IMec2, IMecPlugins } from 'mec2-module';
 
-export class MecModelAction<K extends keyof IMecModel, T = Partial<IMecModel[K][number]>> {
+export class MecModelAction<K extends keyof IMec2, T = Partial<IMec2[K][number]>> {
     list: K;
     idx: number | string; // idx can be "add" or "remove"
     value: T;
@@ -19,7 +18,7 @@ export class MecModelAction<K extends keyof IMecModel, T = Partial<IMecModel[K][
 
 export type MecModelState = typeof initialState;
 const initialState = {
-    queue: [] as MecModelAction<keyof IMecModelPlugIns>[],
+    queue: [] as MecModelAction<keyof IMecPlugins>[],
     selected: 0,
     id: "",
     phi: 0,

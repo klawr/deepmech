@@ -4080,9 +4080,9 @@ mdn-data@2.0.14:
   version "2.0.14"
   resolved "https://registry.yarnpkg.com/mdn-data/-/mdn-data-2.0.14.tgz#7113fc4281917d63ce29b43446f701e68c25ba50"
 
-mec2-module@^0.9.7:
-  version "0.9.7"
-  resolved "https://registry.yarnpkg.com/mec2-module/-/mec2-module-0.9.7.tgz#c744081ce9e3289ad36527bf78623c0e1f42ab0e"
+mec2-module@^0.9.8:
+  version "0.9.8"
+  resolved "https://registry.yarnpkg.com/mec2-module/-/mec2-module-0.9.8.tgz#cadede65470b1d8f37605be46bff40260c0d4155"
   dependencies:
     g2-module "~3.0.4"
 
