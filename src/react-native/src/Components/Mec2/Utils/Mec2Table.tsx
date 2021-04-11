@@ -1,9 +1,13 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-function DataRow({ head, item, SanitizedCell }: any) {
+function DataRow({ head, item, idx, SanitizedCell }: any) {
     return <View style={styles.datarow}>
-        {head.map((e: string) => <SanitizedCell>{item[e]}</SanitizedCell>)}
+        {head.map((e: string) =>
+            <SanitizedCell
+                idx={idx}
+                elm={item}
+                property={e} />)}
     </View>
 }
 
@@ -12,7 +16,8 @@ export default function DataTable({ head, list, SanitizedCell }: any) {
         <View style={styles.datarow}>
             {head.map((e: string) => <Text>{e}</Text>)}
         </View>
-        {list.map((item: any) => DataRow({ head, item, SanitizedCell }))}
+        {list.map((item: any, idx: number) =>
+            DataRow({ head, item, idx, SanitizedCell }))}
     </View>
 }
 

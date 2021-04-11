@@ -30,11 +30,14 @@ const initialState = {
     grid: false,
 };
 
+// TODO Since model is part of redux now, we can implement undo redo in
+// a redux way. https://redux.js.org/recipes/implementing-undo-history/
+
 const slice = createSlice({
     name: "MecModel",
     initialState,
     reducers: {
-        add: (state, action) => {
+        add: (state, action: { payload: MecModelAction<keyof IMecPlugins> }) => {
             // TODO this can be done sleeker...
             if (JSON.stringify(action.payload.value) ===
                 JSON.stringify(action.payload.previous)) {
@@ -48,6 +51,11 @@ const slice = createSlice({
                 // Remove queue after the respective selected index
                 state.queue = [...state.queue.slice(0, state.selected), state.queue.pop()] as any;
                 state.selected = state.queue.length;
+            }
+            const pl = action.payload;
+
+            for (const e of Object.entries(pl.value)) {
+                state.model[pl.list][pl.idx][e[0]] = e[1];
             }
         },
         toggleGravity: (state) => {
