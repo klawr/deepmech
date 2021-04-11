@@ -28,13 +28,13 @@ function SVGThingy({ navigation } = {} as any) {
 
   mec.model.extend(model);
   model.init();
+  // TODO y should be bound to android screen height
   const y = Platform.OS === 'android' ? -400 : 100
   const g = g2().view({ x: 0, y, cartesian: true });
   model.draw(g);
 
   const dispatch = useDispatch();
   return <View style={styles.container}>
-    <OpenRightDrawer style={styles.openDrawer} navigation={navigation} />
     <Mec2SVG model={model} g={g} />
     <Slider
       onValueChange={(v) => dispatch(mecModelAction.updatePhi(v))}
@@ -44,6 +44,7 @@ function SVGThingy({ navigation } = {} as any) {
       minimumTrackTintColor="#FFFFFF"
       maximumTrackTintColor="#000000"
     />
+    <OpenRightDrawer style={styles.openDrawer} navigation={navigation} />
   </View>
 }
 
@@ -53,6 +54,8 @@ const Drawer = createDrawerNavigator(
   },
   {
     initialRouteName: "Root",
+    // TODO make this variable?
+    drawerWidth: () => 500,
     unmountInactiveRoutes: true,
     drawerPosition: 'right',
     defaultNavigationOptions: {

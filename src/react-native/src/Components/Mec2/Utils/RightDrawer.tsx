@@ -17,9 +17,6 @@ function Header({ navigation } = {} as any) {
 }
 
 export default function RightDrawer({ navigation } = {} as any) {
-    const modelSlice = useSelector(mecModelSelect);
-    const model = modelSlice.model;
-
     return <View>
         <Header navigation={navigation} />
         <View style={styles.idUndoRedo}>
@@ -33,9 +30,10 @@ export default function RightDrawer({ navigation } = {} as any) {
 const styles = StyleSheet.create({
     header: {
         top: 0,
+        right: 0,
         width: "100%",
         height: 60,
-        flexDirection: "row",
+        flexDirection: "row-reverse",
         justifyContent: "space-between",
         alignItems: "center",
         paddingHorizontal: 20
