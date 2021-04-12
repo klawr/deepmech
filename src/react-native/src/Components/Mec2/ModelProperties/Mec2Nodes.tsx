@@ -2,17 +2,17 @@ import React from "react";
 import { StyleSheet, Switch, TextInput, View } from 'react-native';
 import { useDispatch, useSelector } from "react-redux";
 import { mecModelAction, mecModelSelect } from "../../../Redux/MecModelSlice";
-import Accordion from "../Utils/Accordion";
+import Accordion from "../../Utils/Accordion";
 import Mec2Table from "../Utils/Mec2Table";
 import Mec2AddNode from "./Add/Mec2AddNode";
 
 export default function Mec2Nodes() {
     const dispatch = useDispatch();
     const model = useSelector(mecModelSelect);
-    const list = model.model.nodes;
     const name = "nodes";
+    const list = model.model[name];
 
-    const head = ['x', 'y', 'base', 'id'];
+    const head = ['id', 'x', 'y', 'base'];
 
     return <Accordion title={name}>
         <Mec2Table list={list} head={head} SanitizedCell={getSanitizedCell(dispatch, name)} />
@@ -42,7 +42,7 @@ function getSanitizedCell(dispatch: any, name: string) {
                 case 'y':
                     return <TextInput
                         style={styles.sanitizedCell}
-                        value={elm[property]}
+                        value={`${elm[property]}`}
                         placeholder={property}
                         onChangeText={update} />
                 case 'id':

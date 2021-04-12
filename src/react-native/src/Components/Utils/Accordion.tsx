@@ -22,7 +22,7 @@ export default function Accordion({ title, children } = { title: "", children: [
             duration: 300,
             toValue: open ? 0 : 1,
             easing: Easing.bezier(0.645, 0.045, 0.355, 1),
-            useNativeDriver: true,
+            useNativeDriver: false,
         }).start();
         setOpen(!open);
     }
@@ -57,6 +57,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
     },
     body: {
+        width: "100%",
         paddingHorizontal: 20,
         paddingVertical: 20,
         position: 'absolute',
