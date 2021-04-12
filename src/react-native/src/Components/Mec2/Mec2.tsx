@@ -55,7 +55,7 @@ const Drawer = createDrawerNavigator(
   {
     initialRouteName: "Root",
     // TODO make this variable?
-    drawerWidth: () => 500,
+    drawerWidth: () => 400,
     unmountInactiveRoutes: true,
     drawerPosition: 'right',
     defaultNavigationOptions: {
