@@ -12,7 +12,7 @@ function DataRow({ head, item, idx, SanitizedCell }: any) {
 }
 
 export default function DataTable({ head, list, SanitizedCell }: any) {
-    return <View>
+    return <View style={styles.container}>
         <View style={styles.datarow}>
             {head.map((e: string) => <Text>{e}</Text>)}
         </View>
@@ -22,13 +22,18 @@ export default function DataTable({ head, list, SanitizedCell }: any) {
 }
 
 const styles = StyleSheet.create({
+    container: {
+        display: 'flex',
+        flex: 1,
+        justifyContent: 'space-between',
+    },
     datarow: {
+        flex: 1,
         paddingVertical: 20,
         paddingHorizontal: 20,
         borderBottomWidth: 1,
         borderColor: '#efefef',
         justifyContent: 'space-between',
         flexDirection: 'row',
-        display: 'flex'
     }
 })
