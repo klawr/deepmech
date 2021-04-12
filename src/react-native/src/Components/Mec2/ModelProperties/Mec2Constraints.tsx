@@ -68,13 +68,18 @@ function getSanitizedCell(dispatch: any, name: string, model: IMec2) {
                     return <View style={styles.sanitizedCell}>
                         <ModalSelect
                             selected={elm[property]}
-                            options={model.nodes.map((e: INode) => e.id)}
+                            options={model.nodes
+                                .map((e: INode) => e.id)
+                                .filter((e: string) => e !== elm[property])}
                             onPress={update} />
                     </View>
                 case 'len':
                 case 'ori':
                     return <View style={styles.sanitizedCell}>
-                        <ModalSelect options={['x', 'y']} />
+                        <ModalSelect
+                            selected={elm[property]?.type || 'free'}
+                            options={['free', 'const', 'drive']}
+                            onPress={(e) => update({ type: e })} />
                     </View>
                 default: return <div>{elm[property]}</div>
             }
