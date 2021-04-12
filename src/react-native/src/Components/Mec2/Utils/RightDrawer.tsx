@@ -4,6 +4,7 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useSelector } from 'react-redux';
 import { mecModelSelect } from '../../../Redux/MecModelSlice';
+import Mec2Constraints from '../ModelProperties/Mec2Constraints';
 import Mec2Id from '../ModelProperties/Mec2Id';
 import Mec2Nodes from '../ModelProperties/Mec2Nodes';
 import Mec2UndoRedo from './Mec2UndoRedo';
