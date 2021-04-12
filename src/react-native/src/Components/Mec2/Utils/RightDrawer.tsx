@@ -18,7 +18,7 @@ function Header({ navigation } = {} as any) {
 }
 
 export default function RightDrawer({ navigation } = {} as any) {
-    return <ScrollView>
+    return <ScrollView style={styles.container}>
         <Header navigation={navigation} />
         <View style={styles.idUndoRedo}>
             <Mec2Id />
@@ -30,6 +30,9 @@ export default function RightDrawer({ navigation } = {} as any) {
 };
 
 const styles = StyleSheet.create({
+    container: {
+        backgroundColor: 'white',
+    },
     header: {
         top: 0,
         right: 0,

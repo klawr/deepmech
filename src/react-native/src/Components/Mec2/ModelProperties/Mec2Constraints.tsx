@@ -6,6 +6,8 @@ import Accordion from "../../Utils/Accordion";
 import Mec2Table from "../Utils/Mec2Table";
 import Mec2AddConstraint from "./Add/Mec2AddConstraint";
 import { TextInput } from "react-native-gesture-handler";
+import ModalSelect from "../../Utils/ModalSelect";
+import { IMec2, INode } from "mec2-module";
 
 export default function Mec2Constraints() {
     const dispatch = useDispatch();
@@ -16,29 +18,45 @@ export default function Mec2Constraints() {
     const head = ['id', 'p1', 'p2', 'len', 'ori'];
 
     return <Accordion title={name}>
-        <Mec2Table list={list} head={head} SanitizedCell={getSanitizedCell(dispatch, name)} />
+        <Mec2Table list={list} head={head} SanitizedCell={getSanitizedCell(dispatch, name, model.model)} />
         <Mec2AddConstraint />
     </Accordion>
 }
 
-function getSanitizedCell(dispatch: any, name: string) {
+function getSanitizedCell(dispatch: any, name: string, model: IMec2) {
     return function SanitizedCell({ property, idx, elm }: any) {
         function update(value: any, previous = elm[property]) {
+
+            // Turn nodes around if same is picked
+            const next = { [property]: value } as any;
+            const prev = { [property]: previous } as any;
+
+            if (property === 'p1' && value === elm.p2) {
+                next.p2 = elm.p1;
+                prev.p2 = elm.p2;
+            } else if (
+                property === 'p2' && value === elm.p1) {
+                next.p1 = elm.p2;
+                prev.p1 = elm.p1;
+            }
+
             dispatch(mecModelAction.add({
                 list: name, idx,
-                value: { [property]: value },
-                previous: { [property]: previous }
+                value: next,
+                previous: prev,
             }));
         }
 
         function select() {
             switch (property) {
                 case 'id':
-                    return <TextInput
-                        style={styles.sanitizedCell}
-                        value={elm[property]}
-                        placeholder={property}
-                        onChangeText={update} />
+                    return <View style={styles.sanitizedCell}>
+                        <TextInput
+                            style={styles.text}
+                            value={elm[property]}
+                            placeholder={property}
+                            onChangeText={update} />
+                    </View>
                 case 'base':
                     return <View style={styles.sanitizedCell}>
                         <Switch
@@ -47,9 +65,17 @@ function getSanitizedCell(dispatch: any, name: string) {
                     </View>
                 case 'p1':
                 case 'p2':
+                    return <View style={styles.sanitizedCell}>
+                        <ModalSelect
+                            selected={elm[property]}
+                            options={model.nodes.map((e: INode) => e.id)}
+                            onPress={update} />
+                    </View>
                 case 'len':
                 case 'ori':
-                    return <View style={styles.sanitizedCell}></View>
+                    return <View style={styles.sanitizedCell}>
+                        <ModalSelect options={['x', 'y']} />
+                    </View>
                 default: return <div>{elm[property]}</div>
             }
         }
@@ -78,9 +104,15 @@ const styles = StyleSheet.create({
     sanitizedCell: {
         display: 'flex',
         flex: 1,
-        alignItems: "center",
+        alignItems: "flex-end",
         alignContent: "center",
-        width: 100,
+        width: 50,
+        textAlign: 'center',
+    },
+    text: {
+        flex: 1,
+        width: 50,
+        textAlign: 'center',
     }
 })
 
