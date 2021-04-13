@@ -30,7 +30,6 @@ const styles = StyleSheet.create({
     datarow: {
         flex: 1,
         paddingVertical: 20,
-        paddingHorizontal: 20,
         borderBottomWidth: 1,
         borderColor: '#efefef',
         justifyContent: 'space-between',
