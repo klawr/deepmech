@@ -1,6 +1,15 @@
+import { IMec2 } from 'mec2-module';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { mecModelAction } from '../../../Redux/MecModelSlice';
+export interface IMec2Cell {
+    dispatch: () => void,
+    model: IMec2,
+    name: string,
+    mec2cell: {
+        [property: string]: (args: any) => JSX.Element;
+    }
+}
 
 function edgeCases({ name, elm, property, value, previous }: any) {
     const next = { [property]: value } as any;

@@ -5,11 +5,11 @@ import Accordion from "../../Utils/Accordion";
 import Mec2BoolCell from "../Utils/Mec2BoolCell";
 import Mec2Table from "../Utils/Mec2Table";
 import Mec2TextCell from "../Utils/Mec2TextCell";
-import getMec2Cell from "../Utils/Mec2Cell";
+import getMec2Cell, { IMec2Cell } from "../Utils/Mec2Cell";
 import Mec2AddNode from "./Add/Mec2AddNode";
 
 export default function Mec2Nodes() {
-    const args = {
+    const args: IMec2Cell = {
         dispatch: useDispatch(),
         model: useSelector(mecModelSelect).model,
         name: 'nodes',

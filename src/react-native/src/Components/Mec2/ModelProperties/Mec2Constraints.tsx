@@ -6,11 +6,11 @@ import Accordion from "../../Utils/Accordion";
 import ModalSelect from "../../Utils/ModalSelect";
 import Mec2Table from "../Utils/Mec2Table";
 import Mec2TextCell from "../Utils/Mec2TextCell";
-import getMec2Cell from "../Utils/Mec2Cell";
+import getMec2Cell, { IMec2Cell } from "../Utils/Mec2Cell";
 import Mec2AddConstraint from "./Add/Mec2AddConstraint";
 
 export default function Mec2Constraints() {
-    const args = {
+    const args: IMec2Cell = {
         dispatch: useDispatch(),
         model: useSelector(mecModelSelect).model,
         name: 'constraints',
