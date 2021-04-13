@@ -3,7 +3,9 @@ import { StyleSheet, Switch, TextInput, View } from 'react-native';
 import { useDispatch, useSelector } from "react-redux";
 import { mecModelAction, mecModelSelect } from "../../../Redux/MecModelSlice";
 import Accordion from "../../Utils/Accordion";
+import Mec2BoolCell from "../Utils/Mec2BoolCell";
 import Mec2Table from "../Utils/Mec2Table";
+import Mec2TextCell from "../Utils/Mec2TextCell";
 import Mec2AddNode from "./Add/Mec2AddNode";
 
 export default function Mec2Nodes() {
@@ -20,6 +22,13 @@ export default function Mec2Nodes() {
     </Accordion>
 }
 
+const sanitizedCell = {
+    id: (args: any) => <Mec2TextCell {...args} />,
+    x: (args: any) => <Mec2TextCell {...args} />,
+    y: (args: any) => <Mec2TextCell {...args} />,
+    base: (args: any) => <Mec2BoolCell {...args} />,
+}
+
 function getSanitizedCell(dispatch: any, name: string) {
     return function SanitizedCell({ property, idx, elm }: any) {
         function update(value: any, previous = elm[property]) {
@@ -30,32 +39,7 @@ function getSanitizedCell(dispatch: any, name: string) {
             }));
         }
 
-        function select() {
-            switch (property) {
-                case 'base':
-                    return <View style={styles.sanitizedCell}>
-                        <Switch
-                            value={elm[property]}
-                            onValueChange={update} />
-                    </View>
-                case 'x':
-                case 'y':
-                    return <TextInput
-                        style={styles.sanitizedCell}
-                        value={`${elm[property]}`}
-                        placeholder={property}
-                        onChangeText={update} />
-                case 'id':
-                    return <TextInput
-                        style={styles.sanitizedCell}
-                        value={elm[property]}
-                        placeholder={property}
-                        onChangeText={update} />
-                default: return <div>{elm[property]}</div>
-            }
-        }
-
-        return select();
+        return (sanitizedCell as any)[property]({ property, elm, update });
 
         // TODO
         // function removeNode() {
@@ -74,14 +58,3 @@ function getSanitizedCell(dispatch: any, name: string) {
         // </ContextMenu>
     }
 }
-
-const styles = StyleSheet.create({
-    sanitizedCell: {
-        display: 'flex',
-        flex: 1,
-        alignItems: "center",
-        alignContent: "center",
-        width: 100,
-    }
-})
-

@@ -5,9 +5,10 @@ import { mecModelAction, mecModelSelect } from "../../../Redux/MecModelSlice";
 import Accordion from "../../Utils/Accordion";
 import Mec2Table from "../Utils/Mec2Table";
 import Mec2AddConstraint from "./Add/Mec2AddConstraint";
-import { TextInput } from "react-native-gesture-handler";
-import ModalSelect from "../../Utils/ModalSelect";
 import { IMec2, INode } from "mec2-module";
+import Mec2TextCell from "../Utils/Mec2TextCell";
+import Mec2Cell from "../Utils/Mec2Cell";
+import ModalSelect from "../../Utils/ModalSelect";
 
 export default function Mec2Constraints() {
     const dispatch = useDispatch();
@@ -21,6 +22,35 @@ export default function Mec2Constraints() {
         <Mec2Table list={list} head={head} SanitizedCell={getSanitizedCell(dispatch, name, model.model)} />
         <Mec2AddConstraint />
     </Accordion>
+}
+
+function TypeSelect({ property, elm, update }: any) {
+    return <Mec2Cell>
+        <ModalSelect
+            selected={elm[property]?.type || 'free'}
+            options={['free', 'const', 'drive']}
+            onPress={(e: string) => update({ type: e })} />
+    </Mec2Cell>
+}
+
+
+function PointSelect({ property, elm, update, model }: any) {
+    return <Mec2Cell>
+        <ModalSelect
+            selected={elm[property]}
+            options={model.nodes
+                .map((e: INode) => e.id)
+                .filter((e: string) => e !== elm[property])}
+            onPress={update} />
+    </Mec2Cell>
+}
+
+const sanitizedCell = {
+    id: (args: any) => <Mec2TextCell {...args} />,
+    p1: (args: any) => <PointSelect {...args} />,
+    p2: (args: any) => <PointSelect {...args} />,
+    len: (args: any) => <TypeSelect {...args} />,
+    ori: (args: any) => <TypeSelect {...args} />,
 }
 
 function getSanitizedCell(dispatch: any, name: string, model: IMec2) {
@@ -47,45 +77,7 @@ function getSanitizedCell(dispatch: any, name: string, model: IMec2) {
             }));
         }
 
-        function select() {
-            switch (property) {
-                case 'id':
-                    return <View style={styles.sanitizedCell}>
-                        <TextInput
-                            style={styles.text}
-                            value={elm[property]}
-                            placeholder={property}
-                            onChangeText={update} />
-                    </View>
-                case 'base':
-                    return <View style={styles.sanitizedCell}>
-                        <Switch
-                            value={elm[property]}
-                            onValueChange={update} />
-                    </View>
-                case 'p1':
-                case 'p2':
-                    return <View style={styles.sanitizedCell}>
-                        <ModalSelect
-                            selected={elm[property]}
-                            options={model.nodes
-                                .map((e: INode) => e.id)
-                                .filter((e: string) => e !== elm[property])}
-                            onPress={update} />
-                    </View>
-                case 'len':
-                case 'ori':
-                    return <View style={styles.sanitizedCell}>
-                        <ModalSelect
-                            selected={elm[property]?.type || 'free'}
-                            options={['free', 'const', 'drive']}
-                            onPress={(e) => update({ type: e })} />
-                    </View>
-                default: return <div>{elm[property]}</div>
-            }
-        }
-
-        return select();
+        return (sanitizedCell as any)[property]({ property, elm, update, model });
 
         // TODO
         // function removeNode() {
@@ -104,20 +96,3 @@ function getSanitizedCell(dispatch: any, name: string, model: IMec2) {
         // </ContextMenu>
     }
 }
-
-const styles = StyleSheet.create({
-    sanitizedCell: {
-        display: 'flex',
-        flex: 1,
-        alignItems: "flex-end",
-        alignContent: "center",
-        width: 50,
-        textAlign: 'center',
-    },
-    text: {
-        flex: 1,
-        width: 50,
-        textAlign: 'center',
-    }
-})
-
