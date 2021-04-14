@@ -7,6 +7,7 @@ import Mec2Table from "../Utils/Mec2Table";
 import Mec2TextCell from "../Utils/Mec2TextCell";
 import getMec2Cell, { IMec2Cell } from "../Utils/Mec2Cell";
 import Mec2AddNode from "./Add/Mec2AddNode";
+import { IModel } from "mec2-module";
 
 export default function Mec2Nodes() {
     const args: IMec2Cell = {
@@ -21,7 +22,7 @@ export default function Mec2Nodes() {
         },
     };
 
-    const list = args.model[args.name];
+    const list = args.model[args.name as keyof IModel];
     const head = ['id', 'x', 'y', 'base'];
 
     return <Accordion title={args.name}>

@@ -1,4 +1,4 @@
-import { INode } from "mec2-module";
+import { IModel, INode } from "mec2-module";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { mecModelSelect } from "../../../Redux/MecModelSlice";
@@ -23,7 +23,7 @@ export default function Mec2Constraints() {
         },
     };
 
-    const list = args.model[args.name];
+    const list = args.model[args.name as keyof IModel];
     const head = ['id', 'p1', 'p2', 'len', 'ori'];
 
     return <Accordion title={args.name}>

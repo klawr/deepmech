@@ -1,10 +1,10 @@
-import { IMec2 } from 'mec2-module';
+import { IModel } from 'mec2-module';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { mecModelAction } from '../../../Redux/MecModelSlice';
 export interface IMec2Cell {
     dispatch: () => void,
-    model: IMec2,
+    model: IModel,
     name: string,
     mec2cell: {
         [property: string]: (args: any) => JSX.Element;

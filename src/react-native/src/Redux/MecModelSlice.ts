@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { IStore } from './store';
-import { IMec2, IMecPlugins } from 'mec2-module';
+import { IMecPlugIns } from 'mec2-module';
 import { model } from '../Services/model';
-export class MecModelAction<K extends keyof IMec2, T = Partial<IMec2[K][number]>> {
+export class MecModelAction<K extends keyof IMecPlugIns, T = Partial<IMecPlugIns[K][number]>> {
     list: K;
     idx: number | string; // idx can be "add" or "remove"
     value: T;
@@ -18,7 +18,7 @@ export class MecModelAction<K extends keyof IMec2, T = Partial<IMec2[K][number]>
 
 export type MecModelState = typeof initialState;
 const initialState = {
-    queue: [] as MecModelAction<keyof IMecPlugins>[],
+    queue: [] as MecModelAction<keyof IMecPlugIns>[],
     selected: 0,
     model,
     phi: 0,
@@ -37,7 +37,7 @@ const slice = createSlice({
     name: "MecModel",
     initialState,
     reducers: {
-        add: (state, action: { payload: MecModelAction<keyof IMecPlugins> }) => {
+        add: (state, action: { payload: MecModelAction<keyof IMecPlugIns> }) => {
             // TODO this can be done sleeker...
             if (JSON.stringify(action.payload.value) ===
                 JSON.stringify(action.payload.previous)) {
@@ -55,7 +55,9 @@ const slice = createSlice({
             const pl = action.payload;
 
             for (const e of Object.entries(pl.value)) {
-                state.model[pl.list][pl.idx][e[0]] = e[1];
+                if (typeof pl.idx === 'number') {
+                    state.model[pl.list]![pl.idx][e[0]] = e[1];
+                }
             }
         },
         toggleGravity: (state) => {

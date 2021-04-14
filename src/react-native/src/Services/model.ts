@@ -1,6 +1,6 @@
-import { IMec2 } from 'mec2-module';
+import { IModel } from 'mec2-module';
 
-export const model: IMec2 = {
+export const model: IModel = {
     "id": "testModel",
     "gravity": true,
     "nodes": [
