@@ -8,6 +8,7 @@ import Mec2TextCell from "../Utils/Mec2TextCell";
 import getMec2Cell, { IMec2Cell } from "../Utils/Mec2Cell";
 import Mec2AddElement from "./Mec2AddElement";
 import { IModel } from "mec2-module";
+import Mec2NumberCell from "../Utils/Mec2NumberCell";
 
 export default function Mec2Nodes() {
     const args: IMec2Cell = {
@@ -16,8 +17,8 @@ export default function Mec2Nodes() {
         name: 'nodes',
         mec2cell: {
             id: (args) => <Mec2TextCell {...args} />,
-            x: (args) => <Mec2TextCell {...args} />,
-            y: (args) => <Mec2TextCell {...args} />,
+            x: (args) => <Mec2NumberCell {...args} />,
+            y: (args) => <Mec2NumberCell {...args} />,
             base: (args) => <Mec2BoolCell {...args} />,
         },
     };
