@@ -1,8 +1,8 @@
 import { IMecPlugIns } from "mec2-module";
 import React from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
-import { mecModelAction } from "../../../../Redux/MecModelSlice";
-import { IMec2Cell, IMec2CellProperty } from "../../Utils/Mec2Cell";
+import { mecModelAction } from "../../../Redux/MecModelSlice";
+import { IMec2Cell, IMec2CellProperty } from "../Utils/Mec2Cell";
 
 export default function Mec2AddNode(args: IMec2Cell) {
     const [active, setActive] = React.useState(false);

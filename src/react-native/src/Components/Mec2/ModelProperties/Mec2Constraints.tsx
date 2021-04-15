@@ -7,7 +7,7 @@ import ModalSelect from "../../Utils/ModalSelect";
 import Mec2Table from "../Utils/Mec2Table";
 import Mec2TextCell from "../Utils/Mec2TextCell";
 import getMec2Cell, { IMec2Cell } from "../Utils/Mec2Cell";
-import Mec2AddConstraint from "./Add/Mec2AddConstraint";
+import Mec2AddElement from "./Mec2AddElement";
 
 export default function Mec2Constraints() {
     const args: IMec2Cell = {
@@ -28,7 +28,7 @@ export default function Mec2Constraints() {
 
     return <Accordion title={args.name}>
         <Mec2Table list={list} head={head} Mec2Cell={getMec2Cell(args)} />
-        <Mec2AddConstraint />
+        <Mec2AddElement {...args} />
     </Accordion>
 }
 

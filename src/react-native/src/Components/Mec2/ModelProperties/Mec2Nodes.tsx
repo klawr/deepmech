@@ -6,7 +6,7 @@ import Mec2BoolCell from "../Utils/Mec2BoolCell";
 import Mec2Table from "../Utils/Mec2Table";
 import Mec2TextCell from "../Utils/Mec2TextCell";
 import getMec2Cell, { IMec2Cell } from "../Utils/Mec2Cell";
-import Mec2AddNode from "./Add/Mec2AddNode";
+import Mec2AddElement from "./Mec2AddElement";
 import { IModel } from "mec2-module";
 
 export default function Mec2Nodes() {
@@ -27,6 +27,6 @@ export default function Mec2Nodes() {
 
     return <Accordion title={args.name}>
         <Mec2Table list={list} head={head} Mec2Cell={getMec2Cell(args)} />
-        <Mec2AddNode {...args} />
+        <Mec2AddElement {...args} />
     </Accordion>
 }
