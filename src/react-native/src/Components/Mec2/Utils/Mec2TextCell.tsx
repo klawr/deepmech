@@ -1,11 +1,12 @@
 
 import React from 'react';
 import { StyleSheet, TextInput } from 'react-native';
+import { IMec2CellPropertyArgs } from './Mec2Cell';
 
-export default function Mec2TextCell({ property, elm, update }: any) {
+export default function Mec2TextCell({ property, elm, update }: IMec2CellPropertyArgs) {
     return <TextInput
         style={styles.text}
-        value={elm[property]}
+        value={elm[property] as string}
         placeholder={property}
         onChangeText={update} />
 }

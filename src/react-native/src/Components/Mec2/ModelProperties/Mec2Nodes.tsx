@@ -15,10 +15,10 @@ export default function Mec2Nodes() {
         model: useSelector(mecModelSelect).model,
         name: 'nodes',
         mec2cell: {
-            id: (args: any) => <Mec2TextCell {...args} />,
-            x: (args: any) => <Mec2TextCell {...args} />,
-            y: (args: any) => <Mec2TextCell {...args} />,
-            base: (args: any) => <Mec2BoolCell {...args} />,
+            id: (args) => <Mec2TextCell {...args} />,
+            x: (args) => <Mec2TextCell {...args} />,
+            y: (args) => <Mec2TextCell {...args} />,
+            base: (args) => <Mec2BoolCell {...args} />,
         },
     };
 
