@@ -6,8 +6,16 @@ import { IMec2Cell, IMec2CellProperty } from "../Utils/Mec2Cell";
 
 export default function Mec2AddNode(args: IMec2Cell) {
     const [active, setActive] = React.useState(false);
-    const [state, setState] = React.useState(Object.keys(args.mec2cell)
-        .reduce((a: any, c) => { a[c] = null; return a }, {}));
+
+    function resetObject(o: Object) {
+        return Object.keys(o).reduce((a: any, c) => {
+            a[c] = null;
+            return a;
+        }, {});
+    }
+
+    const [state, setState] = React.useState(resetObject(args.mec2cell));
+
 
     function submit() {
         args.dispatch(mecModelAction.add({
@@ -16,6 +24,8 @@ export default function Mec2AddNode(args: IMec2Cell) {
             value: state,
             previous: undefined
         }));
+        setActive(false);
+        setState(resetObject(state));
     }
 
     return <View style={styles.centeredView}>
