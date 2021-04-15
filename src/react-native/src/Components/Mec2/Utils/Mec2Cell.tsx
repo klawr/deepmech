@@ -1,9 +1,9 @@
-import { IConstraint, IModel, INode, IView } from 'mec2-module';
+import { IConstraint, IMecPlugIns, IModel, INode, IView } from 'mec2-module';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { mecModelAction } from '../../../Redux/MecModelSlice';
 export interface IMec2Cell {
-    dispatch: () => void,
+    dispatch: (args: any) => void,
     model: IModel,
     name: string,
     mec2cell: IMec2CellProperty,
@@ -18,6 +18,7 @@ export interface IMec2CellPropertyArgs {
     property: keyof MecElement,
     elm: MecElement,
     update: (args: any) => void,
+    model: IModel,
 }
 
 function edgeCases({ name, elm, property, value, previous }: any) {
@@ -38,11 +39,16 @@ function edgeCases({ name, elm, property, value, previous }: any) {
     return { next, prev };
 }
 
-export default function getMec2Cell({ dispatch, name, model, mec2cell }: any) {
+export default function getMec2Cell({ dispatch, name, model, mec2cell }: IMec2Cell) {
     return function Mec2Cell({ property, idx, elm }: any) {
         function update(value: any, previous = elm[property]) {
             const { next, prev } = edgeCases({ name, elm, property, value, previous });
-            dispatch(mecModelAction.add({ list: name, idx, value: next, previous: prev }));
+            dispatch(mecModelAction.add({
+                list: name as keyof IMecPlugIns,
+                idx,
+                value: next,
+                previous: prev
+            }));
         }
         return <View style={styles.mec2cell}>
             {mec2cell[property]({ property, elm, update, model })}

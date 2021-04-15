@@ -1,11 +1,22 @@
+import { IMecPlugIns } from "mec2-module";
 import React from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { mecModelAction } from "../../../../Redux/MecModelSlice";
 import { IMec2Cell, IMec2CellProperty } from "../../Utils/Mec2Cell";
 
 export default function Mec2AddNode(args: IMec2Cell) {
     const [active, setActive] = React.useState(false);
     const [state, setState] = React.useState(Object.keys(args.mec2cell)
         .reduce((a: any, c) => { a[c] = null; return a }, {}));
+
+    function submit() {
+        args.dispatch(mecModelAction.add({
+            list: args.name as keyof IMecPlugIns,
+            idx: -1,
+            value: state,
+            previous: undefined
+        }));
+    }
 
     return <View style={styles.centeredView}>
         <Modal
@@ -21,9 +32,15 @@ export default function Mec2AddNode(args: IMec2Cell) {
                         {args.mec2cell[key]({
                             property: key,
                             elm: state,
-                            update: (v: any) => setState({ ...state, [key]: v })
+                            update: (v: any) => setState({ ...state, [key]: v }),
+                            model: args.model,
                         })}
                     </View>)}
+                    <Pressable
+                        style={styles.button}
+                        onPress={submit}>
+                        <Text style={styles.textStyle}>Submit</Text>
+                    </Pressable>
                 </View>
             </View>
         </Modal>

@@ -4,11 +4,11 @@ import { IMecPlugIns } from 'mec2-module';
 import { model } from '../Services/model';
 export class MecModelAction<K extends keyof IMecPlugIns, T = Partial<IMecPlugIns[K][number]>> {
     list: K;
-    idx: number | string; // idx can be "add" or "remove"
-    value: T;
-    previous: T;
+    idx: number; // idx can be "add" or "remove"
+    value: T | undefined;
+    previous: T | undefined;
 
-    constructor(list: K, idx: number | string, value: T, previous: T) {
+    constructor(list: K, idx: number, value: T, previous: T) {
         this.list = list;
         this.idx = idx;
         this.value = value;
@@ -54,8 +54,12 @@ const slice = createSlice({
             }
             const pl = action.payload;
 
-            for (const e of Object.entries(pl.value)) {
-                if (typeof pl.idx === 'number') {
+            // Add or remove action:
+            if (pl.idx === -1) {
+                state.model[pl.list]?.push(pl.value as any);
+            }
+            else {
+                for (const e of Object.entries(pl.value || {})) {
                     state.model[pl.list]![pl.idx][e[0]] = e[1];
                 }
             }
