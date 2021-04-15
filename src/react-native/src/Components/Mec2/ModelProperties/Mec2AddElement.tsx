@@ -2,9 +2,9 @@ import { IMecPlugIns } from "mec2-module";
 import React from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { mecModelAction } from "../../../Redux/MecModelSlice";
-import { IMec2Cell, IMec2CellProperty } from "../Utils/Mec2Cell";
+import { IMec2Cell } from "../Utils/Mec2Cell";
 
-export default function Mec2AddNode(args: IMec2Cell) {
+export default function Mec2AddNode({ args, text }: { args: IMec2Cell, text: string }) {
     const [active, setActive] = React.useState(false);
 
     function resetObject(o: Object) {
@@ -36,7 +36,7 @@ export default function Mec2AddNode(args: IMec2Cell) {
             onRequestClose={() => setActive(!active)}>
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                    <Text>Add object to {args.name}</Text>
+                    <Text>{text}</Text>
                     {Object.keys(state).map((key: any) => <View style={styles.row}>
                         <Text>{key}: </Text>
                         {args.mec2cell[key]({
@@ -57,7 +57,7 @@ export default function Mec2AddNode(args: IMec2Cell) {
         <Pressable
             style={styles.button}
             onPress={() => setActive(true)} >
-            <Text style={styles.textStyle}>Add Node</Text>
+            <Text style={styles.textStyle}>{text}</Text>
         </Pressable>
     </View>
 }

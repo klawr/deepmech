@@ -28,6 +28,6 @@ export default function Mec2Nodes() {
 
     return <Accordion title={args.name}>
         <Mec2Table list={list} head={head} Mec2Cell={getMec2Cell(args)} />
-        <Mec2AddElement {...args} />
+        <Mec2AddElement args={args} text="Add node" />
     </Accordion>
 }
