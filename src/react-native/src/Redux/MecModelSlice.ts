@@ -16,11 +16,6 @@ const initialState = {
     selected: 0,
     model,
     phi: 0,
-    pausing: true,
-    gravity: false,
-    darkmode: false,
-    nodeLabels: true,
-    constraintLabels: true,
     grid: false,
 };
 
@@ -109,24 +104,6 @@ const slice = createSlice({
                 }
             }
         },
-        toggleGravity: (state) => {
-            state.gravity = !state.gravity;
-        },
-        setNodeLabels: (state, action) => {
-            state.nodeLabels = action.payload;
-        },
-        setConstraintLabels: (state, action) => {
-            state.constraintLabels = action.payload;
-        },
-        pause: (state, action) => {
-            state.pausing = action.payload;
-        },
-        togglePausing: (state) => {
-            state.pausing = !state.pausing;
-        },
-        setDarkmode: (state, action) => {
-            state.darkmode = action.payload;
-        },
         undo: (state) => {
             if (state.selected > 0) {
                 state.selected -= 1;
@@ -139,15 +116,6 @@ const slice = createSlice({
         },
         updateId: (state, action) => {
             state.model.id = action.payload;
-        },
-        initialize: (state) => {
-            // const ref = mecElementSingleton();
-            // ref._show.darkmode = state.darkmode;
-            // ref._ctx.canvas.style.backgroundColor = state.darkmode ? '#777' : '#eee';
-            // ref._show.nodeLabels = state.nodeLabels;
-            // ref._show.constraintLabels = state.constraintLabels;
-            // ref.grid = state.grid;
-            // state.id = mecModelSingleton().id;
         },
         updatePhi: (state: any, action: any) => {
             state.phi = action.payload;
