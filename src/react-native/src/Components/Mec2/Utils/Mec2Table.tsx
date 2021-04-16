@@ -6,6 +6,7 @@ import { mecModelAction, mecModelSelectModel } from '../../../Redux/MecModelSlic
 import { IModel } from "mec2-module";
 import getMec2Cell, { IMec2Cell } from "../Utils/Mec2Cell";
 import { MecElement } from './Mec2Cell';
+import Confirm from '../../Utils/Confirm';
 
 function DataRow({ head, name, item, idx, Mec2Cell }: any) {
     const dispatch = useDispatch();
@@ -22,9 +23,11 @@ function DataRow({ head, name, item, idx, Mec2Cell }: any) {
                 idx={idx}
                 elm={item}
                 property={e} />)}
-        <Pressable onPress={remove}>
+        <Confirm
+            text={`Are you sure you want to remove ${item.id}`}
+            onPress={remove}>
             <Ionicons name="remove" size={32} />
-        </Pressable>
+        </Confirm>
     </View>
 }
 
