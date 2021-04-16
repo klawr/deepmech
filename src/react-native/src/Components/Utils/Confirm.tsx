@@ -2,8 +2,8 @@ import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 
-export default function Confirm({ text, onPress, children }:
-    { text: string, onPress: (args: any) => void, children: any }) {
+export default function Confirm({ text, onPress, children, bonusChildren }:
+    { text: string, onPress: (args: any) => void, children: any, bonusChildren?: any }) {
     const [active, setActive] = React.useState(false);
 
     function submit(e: any) {
@@ -24,6 +24,7 @@ export default function Confirm({ text, onPress, children }:
                         onPress={() => setActive(false)}>
                         <Ionicons name="close" size={20} />
                     </Pressable>
+                    {bonusChildren}
                     <Text style={styles.modalText}>{text}</Text>
                     <View style={styles.buttonRow}>
                         <Pressable

@@ -3,17 +3,44 @@ import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { mecModelAction, mecModelSelectModel } from '../../../Redux/MecModelSlice';
-import { IModel } from "mec2-module";
+import { IMecPlugIns, IModel } from "mec2-module";
 import getMec2Cell, { IMec2Cell } from "../Utils/Mec2Cell";
 import { MecElement } from './Mec2Cell';
 import Confirm from '../../Utils/Confirm';
 
-function DataRow({ head, name, item, idx, Mec2Cell }: any) {
+function DeleteButton({ id, list, idx }:
+    { id: string, list: keyof IMecPlugIns, idx: number }) {
     const dispatch = useDispatch();
+    const model = useSelector(mecModelSelectModel);
+
     function remove() {
-        dispatch(mecModelAction.add({ list: name, idx, value: {} }))
+        constraints.forEach(r => dispatch(mecModelAction.add(
+            { list: "constraints", idx: r.idx, value: {} })))
+        dispatch(mecModelAction.add({ list, idx, value: {} }))
     }
 
+    const constraints = model.constraints
+        .map((c, i) => ({ id: c.id, p1: c.p1, p2: c.p2, idx: i }))
+        .filter(c => c.p1 === id || c.p2 === id);
+
+    const bonusChildren = <View>
+        {!!constraints.length &&
+            <View>
+                <Text>If you delete this the following</Text>
+                <Text>constraints will be removed:</Text>
+            </View>}
+        {constraints.map(r => <Text>{r.id}</Text>)}
+    </View>
+
+    return <Confirm
+        text={`Are you sure you want to remove ${id}?`}
+        bonusChildren={bonusChildren}
+        onPress={remove}>
+        <Ionicons name="remove" size={32} />
+    </Confirm>
+}
+
+function DataRow({ head, name, item, idx, Mec2Cell }: any) {
     return <View
         key={`dataRow_${idx}`}
         style={styles.datarow}>
@@ -23,11 +50,7 @@ function DataRow({ head, name, item, idx, Mec2Cell }: any) {
                 idx={idx}
                 elm={item}
                 property={e} />)}
-        <Confirm
-            text={`Are you sure you want to remove ${item.id}`}
-            onPress={remove}>
-            <Ionicons name="remove" size={32} />
-        </Confirm>
+        <DeleteButton list={name} id={item.id} idx={idx} />
     </View>
 }
 
