@@ -94,9 +94,12 @@ const slice = createSlice({
             const invalid = edgeCases(state.model, pl);
             if (invalid) return;
 
-            // Add or remove action:
             if (pl.idx === -1) {
                 state.model[pl.list]!.push(pl.value as any);
+            }
+            else if (!Object.keys(pl.value).length) {
+                // TODO check if dependsOn is true.
+                state.model[pl.list] = state.model[pl.list]!.filter((_, i: number) => i !== pl.idx);
             }
             else {
                 for (const e of Object.entries(pl.value || {})) {
