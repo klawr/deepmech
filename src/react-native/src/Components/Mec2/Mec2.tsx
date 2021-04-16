@@ -1,11 +1,10 @@
-import Slider from '@react-native-community/slider';
 import * as React from 'react';
 import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Mec2SVG from './Utils/Mec2SVG';
 import { IConstraintExtended, mec } from 'mec2-module';
 import { g2 } from 'g2-module';
-import { mecModelAction, mecModelSelectModel } from '../../Redux/MecModelSlice';
+import { mecModelSelectModel } from '../../Redux/MecModelSlice';
 import Header from '../Header';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createAppContainer } from 'react-navigation';
@@ -22,7 +21,6 @@ function OpenRightDrawer({ navigation } = {} as any) {
 }
 
 function SVGThingy({ navigation } = {} as any) {
-  const dispatch = useDispatch();
   const modelSlice = useSelector(mecModelSelectModel);
   // We know that mec2 model is only written in JSON format.
   const model = JSON.parse(JSON.stringify(modelSlice));
@@ -37,14 +35,6 @@ function SVGThingy({ navigation } = {} as any) {
 
   return <View style={styles.container}>
     <Mec2SVG {...{ model, g, drive }} />
-    <Slider
-      onValueChange={(v) => dispatch(mecModelAction.updatePhi(v))}
-      style={{ width: 200, height: 40 }}
-      minimumValue={0}
-      maximumValue={360}
-      minimumTrackTintColor="#FFFFFF"
-      maximumTrackTintColor="#000000"
-    />
     <OpenRightDrawer style={styles.openDrawer} navigation={navigation} />
   </View>
 }
@@ -92,5 +82,5 @@ const styles = StyleSheet.create({
     flexDirection: "row-reverse",
     alignItems: "center",
     paddingHorizontal: 20
-  },
+  }
 });
