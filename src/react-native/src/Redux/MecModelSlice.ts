@@ -12,9 +12,9 @@ export interface MecModelAction<K extends keyof IMecPlugIns> {
 
 export type MecModelState = typeof initialState;
 const initialState = {
-    queue: [] as MecModelAction<keyof IMecPlugIns>[],
-    selected: 0,
+    pastModels: <IModel[]>[],
     model,
+    futureModels: <IModel[]>[],
     phi: 0,
 };
 
@@ -88,6 +88,8 @@ const slice = createSlice({
     initialState,
     reducers: {
         add: (state, action: { payload: MecModelAction<keyof IMecPlugIns> }) => {
+            state.pastModels.push(JSON.parse(JSON.stringify(state.model)));
+            state.futureModels = [];
             const pl = action.payload;
 
             const invalid = edgeCases(state.model, pl);
@@ -98,7 +100,8 @@ const slice = createSlice({
             }
             else if (!Object.keys(pl.value).length) {
                 // TODO check if dependsOn is true.
-                state.model[pl.list] = state.model[pl.list]!.filter((_, i: number) => i !== pl.idx);
+                state.model[pl.list] = state.model[pl.list]!
+                    .filter((_, i: number) => i !== pl.idx);
             }
             else {
                 for (const e of Object.entries(pl.value || {})) {
@@ -109,13 +112,15 @@ const slice = createSlice({
             state.phi = 0;
         },
         undo: (state) => {
-            if (state.selected > 0) {
-                state.selected -= 1;
+            state.futureModels.push(state.model);
+            if (state.pastModels.length) {
+                state.model = state.pastModels.pop()!;
             }
         },
         redo: (state) => {
-            if (state.selected < state.queue.length) {
-                state.selected += 1;
+            state.pastModels.push(state.model);
+            if (state.futureModels.length) {
+                state.model = state.futureModels.shift()!;
             }
         },
         updateId: (state, action) => {
