@@ -25,6 +25,25 @@ function edgeCases({ name, elm, property, value, previous, model, dispatch }: an
     const next = { [property]: value } as any;
     const prev = { [property]: previous } as any;
 
+    let short = false;
+    if (property === 'id') {
+        if (!value) {
+            short = true;
+        }
+        else {
+            Object.values(model).filter(v => Array.isArray(v)).flat().forEach(
+                (e: any | MecElement, idx: number) => {
+                    if (!short && e.id === value) {
+                        console.warn(`id ${value} is already taken on ${name} at index ${idx}`);
+                        short = true;
+                    }
+                });
+        }
+
+    }
+
+    if (short) return { next: undefined, prev: undefined }
+
     if (name === 'nodes') {
         if (property === 'id') {
             model.constraints.forEach((c: IConstraint, idx: number) => {
@@ -60,6 +79,8 @@ export default function getMec2Cell({ dispatch, name, model, mec2cell }: IMec2Ce
     return function Mec2Cell({ property, idx, elm }: any) {
         function update(value: any, previous = elm[property]) {
             const { next, prev } = edgeCases({ name, elm, property, value, previous, model, dispatch });
+            // shorted
+            if (next === undefined) return;
             dispatch(mecModelAction.add({
                 list: name as keyof IMecPlugIns,
                 idx,
