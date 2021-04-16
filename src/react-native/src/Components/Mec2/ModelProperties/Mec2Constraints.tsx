@@ -1,18 +1,16 @@
-import { IModel, INode } from "mec2-module";
+import { INode } from "mec2-module";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { mecModelSelect } from "../../../Redux/MecModelSlice";
 import Accordion from "../../Utils/Accordion";
 import ModalSelect from "../../Utils/ModalSelect";
 import Mec2Table from "../Utils/Mec2Table";
 import Mec2TextCell from "../Utils/Mec2TextCell";
-import getMec2Cell, { IMec2Cell } from "../Utils/Mec2Cell";
+import { IMec2Cell } from "../Utils/Mec2Cell";
 import Mec2AddElement from "./Mec2AddElement";
+import { useSelector } from "react-redux";
+import { mecModelSelectModel } from "../../../Redux/MecModelSlice";
 
 export default function Mec2Constraints() {
     const args: IMec2Cell = {
-        dispatch: useDispatch(),
-        model: useSelector(mecModelSelect).model,
         name: 'constraints',
         mec2cell: {
             id: (args: any) => <Mec2TextCell {...args} />,
@@ -23,11 +21,10 @@ export default function Mec2Constraints() {
         },
     };
 
-    const list = args.model[args.name as keyof IModel];
     const head = ['id', 'p1', 'p2', 'len', 'ori'];
 
     return <Accordion title={args.name}>
-        <Mec2Table list={list} head={head} Mec2Cell={getMec2Cell(args)} />
+        <Mec2Table args={args} head={head} />
         <Mec2AddElement args={args} text="Add constraint" />
     </Accordion>
 }
@@ -40,7 +37,8 @@ function TypeSelect({ property, elm, update }: any) {
         onPress={(e: string) => update({ type: e })} />
 }
 
-function PointSelect({ property, elm, update, model }: any) {
+function PointSelect({ property, elm, update }: any) {
+    const model = useSelector(mecModelSelectModel);
     return <ModalSelect
         selected={elm[property]}
         options={model.nodes

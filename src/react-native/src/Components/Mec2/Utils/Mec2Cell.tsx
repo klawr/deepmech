@@ -1,10 +1,9 @@
 import { IConstraint, IMecPlugIns, IModel, INode, IView } from 'mec2-module';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import { useDispatch } from 'react-redux';
 import { mecModelAction } from '../../../Redux/MecModelSlice';
 export interface IMec2Cell {
-    dispatch: (args: any) => void,
-    model: IModel,
     name: string,
     mec2cell: IMec2CellProperty,
 }
@@ -18,10 +17,10 @@ export interface IMec2CellPropertyArgs {
     property: keyof MecElement,
     elm: MecElement,
     update: (args: any) => void,
-    model: IModel,
 }
 
-export default function getMec2Cell({ dispatch, name, model, mec2cell }: IMec2Cell) {
+export default function getMec2Cell({ name, mec2cell }: IMec2Cell) {
+    const dispatch = useDispatch();
     return function Mec2Cell({ property, idx, elm }: any) {
         function update(value: any, previous = elm[property]) {
             dispatch(mecModelAction.add({
@@ -32,7 +31,7 @@ export default function getMec2Cell({ dispatch, name, model, mec2cell }: IMec2Ce
             }));
         }
         return <View style={styles.mec2cell}>
-            {mec2cell[property]({ property, elm, update, model })}
+            {mec2cell[property]({ property, elm, update })}
         </View>
 
     }

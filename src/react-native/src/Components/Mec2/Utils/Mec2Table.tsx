@@ -1,5 +1,11 @@
+import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useSelector } from 'react-redux';
+import { mecModelSelectModel } from '../../../Redux/MecModelSlice';
+import { IModel } from "mec2-module";
+import getMec2Cell, { IMec2Cell } from "../Utils/Mec2Cell";
+import { MecElement } from './Mec2Cell';
 
 function DataRow({ head, item, idx, Mec2Cell }: any) {
     return <View
@@ -14,7 +20,11 @@ function DataRow({ head, item, idx, Mec2Cell }: any) {
     </View>
 }
 
-export default function DataTable({ head, list, Mec2Cell }: any) {
+export default function DataTable({ args, head }: { args: IMec2Cell, head: string[] }) {
+    const model = useSelector(mecModelSelectModel);
+    const Mec2Cell = getMec2Cell(args);
+    const list = model[args.name as keyof IModel] as MecElement[];
+
     return <View style={styles.container}>
         <View style={styles.datarow}>
             {head.map((e: string, idx: number) => <Text key={`text_${idx}`}>{e}</Text>)}

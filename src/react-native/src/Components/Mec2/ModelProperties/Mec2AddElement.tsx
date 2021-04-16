@@ -1,10 +1,13 @@
 import { IMecPlugIns } from "mec2-module";
 import React from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { useDispatch } from "react-redux";
 import { mecModelAction } from "../../../Redux/MecModelSlice";
 import { IMec2Cell } from "../Utils/Mec2Cell";
 
 export default function Mec2AddElement({ args, text }: { args: IMec2Cell, text: string }) {
+    const dispatch = useDispatch();
+
     const [active, setActive] = React.useState(false);
 
     function resetObject(o: Object) {
@@ -18,7 +21,7 @@ export default function Mec2AddElement({ args, text }: { args: IMec2Cell, text: 
 
 
     function submit() {
-        args.dispatch(mecModelAction.add({
+        dispatch(mecModelAction.add({
             list: args.name as keyof IMecPlugIns,
             idx: -1,
             value: state,
@@ -44,8 +47,7 @@ export default function Mec2AddElement({ args, text }: { args: IMec2Cell, text: 
                         {args.mec2cell[key]({
                             property: key,
                             elm: state,
-                            update: (v: any) => setState({ ...state, [key]: v }),
-                            model: args.model,
+                            update: (v: any) => setState({ ...state, [key]: v })
                         })}
                     </View>)}
                     <Pressable
