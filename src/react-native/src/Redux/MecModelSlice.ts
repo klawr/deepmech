@@ -7,7 +7,6 @@ export interface MecModelAction<K extends keyof IMecPlugIns> {
     list: K;
     idx: number; // idx can be "add" or "remove"
     value: Partial<MecElement>;
-    previous: Partial<MecElement>;
 }
 
 export type MecModelState = typeof initialState;
@@ -51,9 +50,10 @@ function edgeCases(model: IModel, payload: MecModelAction<keyof IMecPlugIns>): b
 
         if (payload.list === 'nodes') {
             if (property === 'id' && typeof value === 'string') {
+                const previous = model.nodes[payload.idx].id;
                 model.constraints.forEach((c: IConstraint) => {
-                    if (c.p1 === payload.previous[property]) c.p1 = value;
-                    if (c.p2 === payload.previous[property]) c.p2 = value;
+                    if (c.p1 === previous) c.p1 = value;
+                    if (c.p2 === previous) c.p2 = value;
                 });
             }
         }

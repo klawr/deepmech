@@ -24,8 +24,7 @@ export default function Mec2AddElement({ args, text }: { args: IMec2Cell, text: 
         dispatch(mecModelAction.add({
             list: args.name as keyof IMecPlugIns,
             idx: -1,
-            value: state,
-            previous: {}
+            value: state
         }));
         setActive(false);
         setState(resetObject(state));

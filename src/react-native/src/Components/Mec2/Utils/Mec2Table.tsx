@@ -11,7 +11,7 @@ import Confirm from '../../Utils/Confirm';
 function DataRow({ head, name, item, idx, Mec2Cell }: any) {
     const dispatch = useDispatch();
     function remove() {
-        dispatch(mecModelAction.add({ list: name, idx, value: {}, previous: {} }))
+        dispatch(mecModelAction.add({ list: name, idx, value: {} }))
     }
 
     return <View

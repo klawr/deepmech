@@ -22,12 +22,11 @@ export interface IMec2CellPropertyArgs {
 export default function getMec2Cell({ name, mec2cell }: IMec2Cell) {
     const dispatch = useDispatch();
     return function Mec2Cell({ property, idx, elm }: any) {
-        function update(value: any, previous = elm[property]) {
+        function update(value: any) {
             dispatch(mecModelAction.add({
                 list: name as keyof IMecPlugIns,
                 idx,
-                value: { [property]: value },
-                previous: { [property]: previous }
+                value: { [property]: value }
             }));
         }
         return <View style={styles.mec2cell}>
