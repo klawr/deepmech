@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { IStore } from './store';
-import { IConstraint, IMecPlugIns, IModel } from 'mec2-module';
+import { IConstraint, IMecConstraintType, IMecPlugIns, IModel } from 'mec2-module';
 import { model } from '../Services/model';
 import { MecElement } from '../Components/Mec2/Utils/Mec2Cell';
 export interface MecModelAction<K extends keyof IMecPlugIns> {
@@ -56,8 +56,8 @@ function edgeCases(model: IModel, payload: MecModelAction<keyof IMecPlugIns>): b
         if (short) continue;
 
         if (payload.list === 'nodes') {
-            if (property === 'id') {
-                model.constraints.forEach((c: IConstraint, idx: number) => {
+            if (property === 'id' && typeof value === 'string') {
+                model.constraints.forEach((c: IConstraint) => {
                     if (c.p1 === payload.previous[property]) c.p1 = value;
                     if (c.p2 === payload.previous[property]) c.p2 = value;
                 });
@@ -69,6 +69,17 @@ function edgeCases(model: IModel, payload: MecModelAction<keyof IMecPlugIns>): b
             if (payload.idx >= 0) {
                 if (property === 'p1' && value === constraint.p2) constraint.p2 = constraint.p1;
                 if (property === 'p2' && value === constraint.p1) constraint.p1 = constraint.p2;
+            }
+            // There must not be two drives in the mechanism.
+            const v = property === 'ori' || property === 'len' ? <IMecConstraintType>value : false;
+            if (v && v.type === 'drive') {
+                v.Dw = Math.PI * 2;
+                v.input = 1;
+                model.constraints.forEach((c: IConstraint) => {
+                    const a = <IConstraint>c;
+                    if (c.len && c.len.type === 'drive') c.len.type = 'free';
+                    if (c.ori && c.ori.type === 'drive') c.ori.type = 'free';
+                })
             }
         }
     }

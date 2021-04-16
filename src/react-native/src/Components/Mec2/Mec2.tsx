@@ -33,10 +33,10 @@ function SVGThingy({ navigation } = {} as any) {
   const y = Platform.OS === 'android' ? -400 : 100
   const g = g2().view({ x: 0, y, cartesian: true });
   model.draw(g);
+  const drive = model.constraints.find((c: IConstraintExtended) => c.ori.type === 'drive' || c.len.type === 'drive');
 
-  const dispatch = useDispatch();
   return <View style={styles.container}>
-    <Mec2SVG model={model} g={g} />
+    <Mec2SVG {...{ model, g, drive }} />
     <Slider
       onValueChange={(v) => dispatch(mecModelAction.updatePhi(v))}
       style={{ width: 200, height: 40 }}
