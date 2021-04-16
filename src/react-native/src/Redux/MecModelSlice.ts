@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { IStore } from './store';
-import { IConstraint, IMecPlugIns } from 'mec2-module';
+import { IConstraint, IMecPlugIns, IModel } from 'mec2-module';
 import { model } from '../Services/model';
 import { MecElement } from '../Components/Mec2/Utils/Mec2Cell';
 export interface MecModelAction<K extends keyof IMecPlugIns> {
@@ -24,6 +24,58 @@ const initialState = {
     grid: false,
 };
 
+function edgeCases(model: IModel, payload: MecModelAction<keyof IMecPlugIns>): boolean {
+    // short is used to stop creating this payload. It is invalid and should not be added
+    let short = false;
+    if (payload.idx === -1) {
+        if (payload.list === 'constraints') {
+            if (payload.value.len === null) payload.value.len = { type: 'free' };
+            if (payload.value.ori === null) payload.value.ori = { type: 'free' };
+        }
+    }
+    for (const pl of Object.entries(payload.value)) {
+        const [property, value] = pl;
+
+        if (property === 'id') {
+            if (!value) {
+                short = true;
+            }
+            else {
+                // Check if property 'id' is unique.
+                Object.values(model).filter(v => Array.isArray(v)).flat().every(
+                    (e: any | MecElement, idx: number) => {
+                        if (!short && e.id === value) {
+                            console.warn(`id ${value} is already taken on ${payload.list} at index ${idx}`);
+                            short = true;
+                            return false;
+                        }
+                        return true;
+                    });
+            }
+        }
+        if (short) continue;
+
+        if (payload.list === 'nodes') {
+            if (property === 'id') {
+                model.constraints.forEach((c: IConstraint, idx: number) => {
+                    if (c.p1 === payload.previous[property]) c.p1 = value;
+                    if (c.p2 === payload.previous[property]) c.p2 = value;
+                });
+            }
+        }
+
+        if (payload.list === 'constraints') {
+            const constraint = model.constraints[payload.idx];
+            if (payload.idx >= 0) {
+                if (property === 'p1' && value === constraint.p2) constraint.p2 = constraint.p1;
+                if (property === 'p2' && value === constraint.p1) constraint.p1 = constraint.p2;
+            }
+        }
+    }
+
+    return short;
+}
+
 // TODO Since model is part of redux now, we can implement undo redo in
 // a redux way. https://redux.js.org/recipes/implementing-undo-history/
 
@@ -32,31 +84,14 @@ const slice = createSlice({
     initialState,
     reducers: {
         add: (state, action: { payload: MecModelAction<keyof IMecPlugIns> }) => {
-            // TODO this can be done sleeker...
-            // if (JSON.stringify(action.payload.value) ===
-            //     JSON.stringify(action.payload.previous)) {
-            //     return;
-            // }
-            // const selected = state.queue.push(action.payload);
-            // if (state.selected > selected) { // Regular update
-            //     state.selected = selected
-            // }
-            // else { // Change after undo
-            //     // Remove queue after the respective selected index
-            //     state.queue = [...state.queue.slice(0, state.selected), state.queue.pop()] as any;
-            //     state.selected = state.queue.length;
-            // }
             const pl = action.payload;
+
+            const invalid = edgeCases(state.model, pl);
+            if (invalid) return;
 
             // Add or remove action:
             if (pl.idx === -1) {
-                if (pl.list === "constraints") {
-                    // TODO think about something better?
-                    if (pl.value.len === null) pl.value.len = { type: 'free' };
-                    if (pl.value.ori === null) pl.value.ori = { type: 'free' };
-                }
-
-                state.model[pl.list]?.push(pl.value as any);
+                state.model[pl.list]!.push(pl.value as any);
             }
             else {
                 for (const e of Object.entries(pl.value || {})) {

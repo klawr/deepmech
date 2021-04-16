@@ -21,71 +21,14 @@ export interface IMec2CellPropertyArgs {
     model: IModel,
 }
 
-function edgeCases({ name, elm, property, value, previous, model, dispatch }: any) {
-    const next = { [property]: value } as any;
-    const prev = { [property]: previous } as any;
-
-    let short = false;
-    if (property === 'id') {
-        if (!value) {
-            short = true;
-        }
-        else {
-            Object.values(model).filter(v => Array.isArray(v)).flat().forEach(
-                (e: any | MecElement, idx: number) => {
-                    if (!short && e.id === value) {
-                        console.warn(`id ${value} is already taken on ${name} at index ${idx}`);
-                        short = true;
-                    }
-                });
-        }
-
-    }
-
-    if (short) return { next: undefined, prev: undefined }
-
-    if (name === 'nodes') {
-        if (property === 'id') {
-            model.constraints.forEach((c: IConstraint, idx: number) => {
-                if (c.p1 === previous) {
-                    dispatch(mecModelAction.add({
-                        list: 'constraints', idx, value: { p1: value }, previous: { p1: c.p1 }
-                    }));
-                }
-                if (c.p2 === previous) {
-                    dispatch(mecModelAction.add({
-                        list: 'constraints', idx, value: { p2: value }, previous: { p1: c.p2 }
-                    }));
-                }
-            })
-        }
-    }
-
-    if (name === 'constraints') {
-        if (property === 'p1' && value === elm.p2) {
-            next.p2 = elm.p1;
-            prev.p2 = elm.p2;
-        } else if (
-            property === 'p2' && value === elm.p1) {
-            next.p1 = elm.p2;
-            prev.p1 = elm.p1;
-        }
-    }
-
-    return { next, prev };
-}
-
 export default function getMec2Cell({ dispatch, name, model, mec2cell }: IMec2Cell) {
     return function Mec2Cell({ property, idx, elm }: any) {
         function update(value: any, previous = elm[property]) {
-            const { next, prev } = edgeCases({ name, elm, property, value, previous, model, dispatch });
-            // shorted
-            if (next === undefined) return;
             dispatch(mecModelAction.add({
                 list: name as keyof IMecPlugIns,
                 idx,
-                value: next,
-                previous: prev
+                value: { [property]: value },
+                previous: { [property]: previous }
             }));
         }
         return <View style={styles.mec2cell}>
