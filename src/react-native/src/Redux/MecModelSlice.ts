@@ -76,8 +76,7 @@ function edgeCases(model: IModel, payload: MecModelAction<keyof IMecPlugIns>): b
                 v.Dw = Math.PI * 2;
                 v.input = 1;
                 model.constraints.forEach((c: IConstraint) => {
-                    const a = <IConstraint>c;
-                    if (c.len && c.len.type === 'drive') c.len.type = 'free';
+                    if (c.len && c.len.type === 'drive') c.len.type = 'const';
                     if (c.ori && c.ori.type === 'drive') c.ori.type = 'free';
                 })
             }

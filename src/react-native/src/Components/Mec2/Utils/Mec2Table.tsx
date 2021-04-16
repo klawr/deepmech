@@ -5,9 +5,9 @@ function DataRow({ head, item, idx, Mec2Cell }: any) {
     return <View
         key={`dataRow_${idx}`}
         style={styles.datarow}>
-        {head.map((e: string, idx: number) =>
+        {head.map((e: string, i: number) =>
             <Mec2Cell
-                key={`cell_${e}_${idx}`}
+                key={`cell_${e}_${i}`}
                 idx={idx}
                 elm={item}
                 property={e} />)}

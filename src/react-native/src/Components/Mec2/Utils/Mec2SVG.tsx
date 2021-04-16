@@ -11,17 +11,23 @@ export default function Mec2SVG({ model, g, drive } = {} as { model: IMecModel, 
     const dispatch = useDispatch();
     const phi = useSelector(mecModelSelect).phi;
 
-    if (drive.ori.inputCallbk) {
-        drive.ori.inputCallbk(phi);
+    let ori;
+    if (drive) {
+        if (drive.ori.inputCallbk) {
+            ori = true;
+            drive.ori.inputCallbk!(phi);
+        }
+        else if (drive.len.inputCallbk) {
+            ori = false;
+            drive.len.inputCallbk!(phi);
+        }
     }
-    if (drive.len.inputCallbk) {
-        drive.len.inputCallbk(phi);
-    }
+
     model.tick();
     return <View style={styles.container}>
         <G2SVG cq={g} width={global.innerWidth} height={"90%"} />
-        <View style={styles.sliderrow}>
-            <Text style={styles.phitext}>{Math.round(phi)}°</Text>
+        {!!drive && <View style={styles.sliderrow}>
+            <Text style={styles.phitext}>{Math.round(phi)}{ori && "°"}</Text>
             <Slider
                 onValueChange={(v) => dispatch(mecModelAction.updatePhi(v))}
                 style={{ width: 200, height: 40 }}
@@ -30,7 +36,7 @@ export default function Mec2SVG({ model, g, drive } = {} as { model: IMecModel, 
                 minimumTrackTintColor="#FFFFFF"
                 maximumTrackTintColor="#000000"
             />
-        </View>
+        </View>}
     </View>
 }
 

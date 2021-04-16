@@ -2,7 +2,6 @@ import { IModel } from 'mec2-module';
 
 export const model: IModel = {
     "id": "testModel",
-    "gravity": true,
     "nodes": [
         { "id": "A0", "x": 75, "y": 50, "base": true },
         { "id": "A", "x": 70, "y": 100 },
