@@ -36,6 +36,7 @@ function TypeSelect({ property, elm, update }: any) {
     return <ModalSelect
         selected={elm[property]?.type || 'free'}
         options={['free', 'const', 'drive']}
+        header={`Select ${property} type of constraint ${elm.id}`}
         onPress={(e: string) => update({ type: e })} />
 }
 
@@ -45,5 +46,6 @@ function PointSelect({ property, elm, update, model }: any) {
         options={model.nodes
             .map((e: INode) => e.id)
             .filter((e: string) => e !== elm[property])}
+        header={`Select ${property} of constraint ${elm.id}`}
         onPress={update} />
 }

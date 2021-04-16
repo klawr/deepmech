@@ -14,6 +14,9 @@ export default function Mec2SVG({ model, g, drive } = {} as { model: IMecModel, 
     if (drive.ori.inputCallbk) {
         drive.ori.inputCallbk(phi);
     }
+    if (drive.len.inputCallbk) {
+        drive.len.inputCallbk(phi);
+    }
     model.tick();
     return <View style={styles.container}>
         <G2SVG cq={g} width={global.innerWidth} height={"90%"} />

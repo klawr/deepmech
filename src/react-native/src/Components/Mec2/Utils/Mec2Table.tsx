@@ -2,9 +2,12 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 function DataRow({ head, item, idx, Mec2Cell }: any) {
-    return <View style={styles.datarow}>
-        {head.map((e: string) =>
+    return <View
+        key={`dataRow_${idx}`}
+        style={styles.datarow}>
+        {head.map((e: string, idx: number) =>
             <Mec2Cell
+                key={`cell_${e}_${idx}`}
                 idx={idx}
                 elm={item}
                 property={e} />)}
@@ -14,7 +17,7 @@ function DataRow({ head, item, idx, Mec2Cell }: any) {
 export default function DataTable({ head, list, Mec2Cell }: any) {
     return <View style={styles.container}>
         <View style={styles.datarow}>
-            {head.map((e: string) => <Text>{e}</Text>)}
+            {head.map((e: string, idx: number) => <Text key={`text_${idx}`}>{e}</Text>)}
         </View>
         {list.map((item: any, idx: number) =>
             DataRow({ head, item, idx, Mec2Cell }))}

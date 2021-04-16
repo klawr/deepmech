@@ -1,8 +1,9 @@
 import React from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { Ionicons } from '@expo/vector-icons';
 
-export default function ModalSelect({ selected, options, onPress }:
-    { selected: string, options: string[], onPress: (any: any) => void }) {
+export default function ModalSelect({ selected, options, onPress, header }:
+    { selected: string, options: string[], onPress: (any: any) => void, header: string }) {
     const [active, setActive] = React.useState(false);
 
     function press(e: any) {
@@ -11,13 +12,18 @@ export default function ModalSelect({ selected, options, onPress }:
 
     return <View style={styles.centeredView}>
         <Modal
-            animationType="slide"
+            animationType="fade"
             transparent={true}
             visible={active}
             onRequestClose={() => setActive(!active)}>
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                    <Text style={styles.modalText}>Hello World!</Text>
+                    <Pressable
+                        style={styles.closeButton}
+                        onPress={() => setActive(false)}>
+                        <Ionicons name="close" size={20} />
+                    </Pressable>
+                    <Text style={styles.modalText}>{header}</Text>
                     {options.map(option => <Pressable
                         key={`modalOption${option}`}
                         style={[styles.button, styles.modalButton]}
@@ -37,10 +43,16 @@ export default function ModalSelect({ selected, options, onPress }:
 
 const styles = StyleSheet.create({
     centeredView: {
+        backgroundColor: '#000000aa',
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        marginTop: 22
+    },
+    closeButton: {
+        flexDirection: "row-reverse",
+        position: "absolute",
+        top: 10,
+        right: 10,
     },
     modalView: {
         margin: 20,

@@ -4,7 +4,7 @@ import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { mecModelAction } from "../../../Redux/MecModelSlice";
 import { IMec2Cell } from "../Utils/Mec2Cell";
 
-export default function Mec2AddNode({ args, text }: { args: IMec2Cell, text: string }) {
+export default function Mec2AddElement({ args, text }: { args: IMec2Cell, text: string }) {
     const [active, setActive] = React.useState(false);
 
     function resetObject(o: Object) {
@@ -37,7 +37,9 @@ export default function Mec2AddNode({ args, text }: { args: IMec2Cell, text: str
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
                     <Text>{text}</Text>
-                    {Object.keys(state).map((key: any) => <View style={styles.row}>
+                    {Object.keys(state).map((key: any, idx: number) => <View
+                        key={`addElement_${idx}`}
+                        style={styles.row}>
                         <Text>{key}: </Text>
                         {args.mec2cell[key]({
                             property: key,
