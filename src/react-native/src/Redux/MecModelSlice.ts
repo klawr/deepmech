@@ -1,19 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { IStore } from './store';
-import { IMecPlugIns } from 'mec2-module';
+import { IConstraint, IMecPlugIns } from 'mec2-module';
 import { model } from '../Services/model';
-export class MecModelAction<K extends keyof IMecPlugIns, T = Partial<IMecPlugIns[K][number]>> {
+import { MecElement } from '../Components/Mec2/Utils/Mec2Cell';
+export interface MecModelAction<K extends keyof IMecPlugIns> {
     list: K;
     idx: number; // idx can be "add" or "remove"
-    value: T | undefined;
-    previous: T | undefined;
-
-    constructor(list: K, idx: number, value: T, previous: T) {
-        this.list = list;
-        this.idx = idx;
-        this.value = value;
-        this.previous = previous;
-    }
+    value: Partial<MecElement>;
+    previous: Partial<MecElement>;
 }
 
 export type MecModelState = typeof initialState;
@@ -39,23 +33,29 @@ const slice = createSlice({
     reducers: {
         add: (state, action: { payload: MecModelAction<keyof IMecPlugIns> }) => {
             // TODO this can be done sleeker...
-            if (JSON.stringify(action.payload.value) ===
-                JSON.stringify(action.payload.previous)) {
-                return;
-            }
-            const selected = state.queue.push(action.payload);
-            if (state.selected > selected) { // Regular update
-                state.selected = selected
-            }
-            else { // Change after undo
-                // Remove queue after the respective selected index
-                state.queue = [...state.queue.slice(0, state.selected), state.queue.pop()] as any;
-                state.selected = state.queue.length;
-            }
+            // if (JSON.stringify(action.payload.value) ===
+            //     JSON.stringify(action.payload.previous)) {
+            //     return;
+            // }
+            // const selected = state.queue.push(action.payload);
+            // if (state.selected > selected) { // Regular update
+            //     state.selected = selected
+            // }
+            // else { // Change after undo
+            //     // Remove queue after the respective selected index
+            //     state.queue = [...state.queue.slice(0, state.selected), state.queue.pop()] as any;
+            //     state.selected = state.queue.length;
+            // }
             const pl = action.payload;
 
             // Add or remove action:
             if (pl.idx === -1) {
+                if (pl.list === "constraints") {
+                    // TODO think about something better?
+                    if (pl.value.len === null) pl.value.len = { type: 'free' };
+                    if (pl.value.ori === null) pl.value.ori = { type: 'free' };
+                }
+
                 state.model[pl.list]?.push(pl.value as any);
             }
             else {

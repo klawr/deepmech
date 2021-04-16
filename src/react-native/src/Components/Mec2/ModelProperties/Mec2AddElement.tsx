@@ -22,7 +22,7 @@ export default function Mec2AddNode({ args, text }: { args: IMec2Cell, text: str
             list: args.name as keyof IMecPlugIns,
             idx: -1,
             value: state,
-            previous: undefined
+            previous: {}
         }));
         setActive(false);
         setState(resetObject(state));
