@@ -3,9 +3,9 @@ import * as React from 'react';
 import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import Mec2SVG from './Utils/Mec2SVG';
-import { mec } from 'mec2-module';
+import { IConstraintExtended, mec } from 'mec2-module';
 import { g2 } from 'g2-module';
-import { mecModelAction, mecModelSelect } from '../../Redux/MecModelSlice';
+import { mecModelAction, mecModelSelectModel } from '../../Redux/MecModelSlice';
 import Header from '../Header';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createAppContainer } from 'react-navigation';
@@ -22,9 +22,10 @@ function OpenRightDrawer({ navigation } = {} as any) {
 }
 
 function SVGThingy({ navigation } = {} as any) {
-  const modelSlice = useSelector(mecModelSelect);
+  const dispatch = useDispatch();
+  const modelSlice = useSelector(mecModelSelectModel);
   // We know that mec2 model is only written in JSON format.
-  const model = JSON.parse(JSON.stringify(modelSlice.model));
+  const model = JSON.parse(JSON.stringify(modelSlice));
 
   mec.model.extend(model);
   model.init();

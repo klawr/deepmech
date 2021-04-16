@@ -147,5 +147,6 @@ const slice = createSlice({
 
 export const mecModelAction = slice.actions;
 export const mecModelSelect = (store: IStore) => store.MecModel;
+export const mecModelSelectModel = (store: IStore) => store.MecModel.model;
 
 export default slice.reducer;
