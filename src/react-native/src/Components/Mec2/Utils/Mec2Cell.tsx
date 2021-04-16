@@ -21,9 +21,26 @@ export interface IMec2CellPropertyArgs {
     model: IModel,
 }
 
-function edgeCases({ name, elm, property, value, previous }: any) {
+function edgeCases({ name, elm, property, value, previous, model, dispatch }: any) {
     const next = { [property]: value } as any;
     const prev = { [property]: previous } as any;
+
+    if (name === 'nodes') {
+        if (property === 'id') {
+            model.constraints.forEach((c: IConstraint, idx: number) => {
+                if (c.p1 === previous) {
+                    dispatch(mecModelAction.add({
+                        list: 'constraints', idx, value: { p1: value }, previous: { p1: c.p1 }
+                    }));
+                }
+                if (c.p2 === previous) {
+                    dispatch(mecModelAction.add({
+                        list: 'constraints', idx, value: { p2: value }, previous: { p1: c.p2 }
+                    }));
+                }
+            })
+        }
+    }
 
     if (name === 'constraints') {
         if (property === 'p1' && value === elm.p2) {
@@ -42,7 +59,7 @@ function edgeCases({ name, elm, property, value, previous }: any) {
 export default function getMec2Cell({ dispatch, name, model, mec2cell }: IMec2Cell) {
     return function Mec2Cell({ property, idx, elm }: any) {
         function update(value: any, previous = elm[property]) {
-            const { next, prev } = edgeCases({ name, elm, property, value, previous });
+            const { next, prev } = edgeCases({ name, elm, property, value, previous, model, dispatch });
             dispatch(mecModelAction.add({
                 list: name as keyof IMecPlugIns,
                 idx,
