@@ -39,7 +39,6 @@ function TypeSelect({ property, elm, update }: any) {
         onPress={(e: string) => update({ type: e })} />
 }
 
-
 function PointSelect({ property, elm, update, model }: any) {
     return <ModalSelect
         selected={elm[property]}

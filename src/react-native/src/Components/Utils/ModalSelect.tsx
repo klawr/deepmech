@@ -1,13 +1,12 @@
 import React from "react";
-import { Alert, Modal, Platform, Pressable, StyleSheet, Text, View } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function ModalSelect({ selected, options, onPress }:
     { selected: string, options: string[], onPress: (any: any) => void }) {
     const [active, setActive] = React.useState(false);
 
     function press(e: any) {
-        onPress(e.target.innerHTML);
+        onPress(e.target.innerText);
     }
 
     return <View style={styles.centeredView}>
