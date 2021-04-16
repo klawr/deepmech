@@ -16,7 +16,6 @@ const initialState = {
     selected: 0,
     model,
     phi: 0,
-    grid: false,
 };
 
 function edgeCases(model: IModel, payload: MecModelAction<keyof IMecPlugIns>): boolean {
@@ -106,6 +105,8 @@ const slice = createSlice({
                     state.model[pl.list]![pl.idx][e[0]] = e[1];
                 }
             }
+
+            state.phi = 0;
         },
         undo: (state) => {
             if (state.selected > 0) {

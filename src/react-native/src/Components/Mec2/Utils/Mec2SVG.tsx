@@ -30,7 +30,7 @@ export default function Mec2SVG({ model, g, drive } = {} as { model: IMecModel, 
             <Text style={styles.phitext}>{Math.round(phi)}{ori && "°"}</Text>
             <Slider
                 onValueChange={(v) => dispatch(mecModelAction.updatePhi(v))}
-                style={{ width: 200, height: 40 }}
+                value={phi}
                 minimumValue={0}
                 maximumValue={360}
                 minimumTrackTintColor="#FFFFFF"
