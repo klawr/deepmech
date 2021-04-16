@@ -18,19 +18,24 @@ function Header({ navigation } = {} as any) {
 }
 
 export default function RightDrawer({ navigation } = {} as any) {
-    return <ScrollView style={styles.container}>
-        <Header navigation={navigation} />
-        <View style={styles.idUndoRedo}>
-            <Mec2Id />
-            <Mec2UndoRedo />
-        </View>
-        <Mec2Nodes />
-        <Mec2Constraints />
+    return <ScrollView horizontal={true}>
+        <ScrollView style={styles.container}>
+            <Header navigation={navigation} />
+            <View style={styles.idUndoRedo}>
+                <Mec2Id />
+                <Mec2UndoRedo />
+            </View>
+            <Mec2Nodes />
+            <Mec2Constraints />
+        </ScrollView>
     </ScrollView>
 };
 
 const styles = StyleSheet.create({
     container: {
+        // Same as parent, but 100% does not work...
+        width: 400,
+        // After modal deselect the background becomes transparent if it is not defined here:
         backgroundColor: 'white',
     },
     header: {
