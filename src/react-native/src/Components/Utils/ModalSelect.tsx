@@ -8,6 +8,7 @@ export default function ModalSelect({ selected, options, onPress, header }:
 
     function press(e: any) {
         onPress(e.target.innerText);
+        setActive(false);
     }
 
     return <View>
