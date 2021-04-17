@@ -30,9 +30,11 @@ export default function Mec2Constraints() {
 }
 
 function TypeSelect({ property, elm, update }: any) {
+    const selected = elm[property]?.type || 'free';
+
     return <ModalSelect
-        selected={elm[property]?.type || 'free'}
-        options={['free', 'const', 'drive']}
+        selected={selected}
+        options={['free', 'const', 'drive'].filter(e => e !== selected)}
         header={`Select ${property} type of constraint ${elm.id}`}
         onPress={(e: string) => update({ type: e })} />
 }
