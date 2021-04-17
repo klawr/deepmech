@@ -32,7 +32,7 @@ export default function Mec2SVG({ model, g, drive } = {} as { model: IMecModel, 
                 onValueChange={(v) => dispatch(mecModelAction.updatePhi(v))}
                 value={phi}
                 minimumValue={0}
-                maximumValue={360}
+                maximumValue={ori ? 360 : 100}
                 minimumTrackTintColor="#FFFFFF"
                 maximumTrackTintColor="#000000"
             />
