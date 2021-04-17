@@ -10,7 +10,7 @@ export default function ModalSelect({ selected, options, onPress, header }:
         onPress(e.target.innerText);
     }
 
-    return <View style={styles.centeredView}>
+    return <View>
         <Modal
             animationType="fade"
             transparent={true}
@@ -43,7 +43,7 @@ export default function ModalSelect({ selected, options, onPress, header }:
 
 const styles = StyleSheet.create({
     centeredView: {
-        backgroundColor: '#000000aa',
+        backgroundColor: '#000a',
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
@@ -55,19 +55,11 @@ const styles = StyleSheet.create({
         right: 10,
     },
     modalView: {
+        backgroundColor: '#fff',
         margin: 20,
-        backgroundColor: "white",
         borderRadius: 20,
         padding: 35,
         alignItems: "center",
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5
     },
     button: {
         padding: 10,

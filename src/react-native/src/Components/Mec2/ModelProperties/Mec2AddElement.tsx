@@ -48,7 +48,7 @@ export default function Mec2AddElement({ args, text }: { args: IMec2Cell, text: 
                     {Object.keys(state).map((key: any, idx: number) => <View
                         key={`addElement_${idx}`}
                         style={styles.row}>
-                        <Text>{key}: </Text>
+                        <Text style={styles.rowText}>{key}: </Text>
                         {args.mec2cell[key]({
                             property: key,
                             elm: state,
@@ -72,11 +72,15 @@ export default function Mec2AddElement({ args, text }: { args: IMec2Cell, text: 
 }
 
 const styles = StyleSheet.create({
+    rowText: {
+        width: 30,
+        marginHorizontal: 20,
+    },
     row: {
-        flex: 1,
         flexDirection: "row",
-        paddingVertical: 20,
+        paddingVertical: 10,
         paddingHorizontal: 20,
+        alignItems: 'center',
     },
     centeredView: {
         flex: 1,
@@ -91,27 +95,14 @@ const styles = StyleSheet.create({
         right: 10,
     },
     modalView: {
-        margin: 20,
+        marginHorizontal: 20,
         backgroundColor: "white",
         borderRadius: 20,
         padding: 35,
-        alignItems: "center",
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5
     },
     button: {
         padding: 10,
-        backgroundColor: '#efefef',
-    },
-    modalButton: {
-        width: 100,
-        margin: 10,
+        color: '#efefef',
     },
     textStyle: {
         textAlign: "center"
