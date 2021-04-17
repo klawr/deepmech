@@ -1,3 +1,4 @@
+import { Ionicons } from "@expo/vector-icons";
 import { IMecPlugIns } from "mec2-module";
 import React from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
@@ -38,6 +39,11 @@ export default function Mec2AddElement({ args, text }: { args: IMec2Cell, text: 
             onRequestClose={() => setActive(!active)}>
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
+                    <Pressable
+                        style={styles.closeButton}
+                        onPress={() => setActive(false)}>
+                        <Ionicons name="close" size={20} />
+                    </Pressable>
                     <Text>{text}</Text>
                     {Object.keys(state).map((key: any, idx: number) => <View
                         key={`addElement_${idx}`}
@@ -77,6 +83,12 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         marginTop: 22
+    },
+    closeButton: {
+        flexDirection: "row-reverse",
+        position: "absolute",
+        top: 10,
+        right: 10,
     },
     modalView: {
         margin: 20,
