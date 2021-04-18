@@ -29,7 +29,7 @@ function DeleteButton({ id, list, idx }:
                 <Text>If you delete this the following</Text>
                 <Text>constraints will be removed:</Text>
             </View>}
-        {constraints.map(r => <Text>{r.id}</Text>)}
+        {constraints.map((r, i) => <Text key={`bonus_${i}`}>{r.id}</Text>)}
     </View>
 
     return <Confirm
