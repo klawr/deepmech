@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "react-native",
-    "slug": "react-native",
-    "version": "1.0.0",
+    "name": "deepmech",
+    "slug": "deepmech",
+    "version": "0.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -23,7 +23,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "klawr.deepmech.client"
     },
     "web": {
       "favicon": "./assets/favicon.png"
