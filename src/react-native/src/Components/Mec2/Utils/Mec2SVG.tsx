@@ -1,7 +1,7 @@
 import { IConstraintExtended, IMecModel } from 'mec2-module';
 import * as React from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import G2SVG from 'react-native-g2';
+import G2SVG from '../G2/G2SVG';
 import { mecModelAction, mecModelSelect } from '../../../Redux/MecModelSlice';
 import { g2 } from 'g2-module';
 import { StyleSheet, Text, View } from 'react-native';
@@ -25,10 +25,11 @@ export default function Mec2SVG({ model, g, drive } = {} as { model: IMecModel, 
 
     model.tick();
     return <View style={styles.container}>
-        <G2SVG cq={g} width={global.innerWidth} height={"90%"} />
+        <G2SVG width={"100%"} height={"90%"} cq={g} />
         {!!drive && <View style={styles.sliderrow}>
             <Text style={styles.phitext}>{Math.round(phi)}{ori && "°"}</Text>
             <Slider
+                style={{ width: "80%" }}
                 onValueChange={(v) => dispatch(mecModelAction.updatePhi(v))}
                 value={phi}
                 minimumValue={0}
@@ -42,12 +43,13 @@ export default function Mec2SVG({ model, g, drive } = {} as { model: IMecModel, 
 
 const styles = StyleSheet.create({
     container: {
+        width: "100%",
         flex: 1,
     },
     sliderrow: {
-        paddingHorizontal: 50,
+        marginHorizontal: 20,
         flexDirection: 'row',
-        alignItems: 'center',
+        // alignItems: 'center',
     },
     phitext: {
         width: 50,

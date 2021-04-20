@@ -1,24 +1,23 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 
 function Header({ navigation } = {} as any) {
     return <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.closeDrawer()}>
+        <Pressable onPress={() => navigation.closeDrawer()}>
             <Ionicons name="arrow-back" size={32} />
-        </TouchableOpacity>
+        </Pressable>
     </View>
 }
 
 function Item({ item, navigation } = {} as any) {
-    return <TouchableOpacity onPress={() => {
+    return <Pressable onPress={() => {
         navigation.navigate(item.name);
         navigation.closeDrawer();
     }}>
         <Ionicons name={item.icon} size={32} />
         <Text>{item.name}</Text>
-    </TouchableOpacity>
+    </Pressable>
 }
 
 export default function LeftDrawer({ navigation } = {} as any) {
@@ -26,7 +25,6 @@ export default function LeftDrawer({ navigation } = {} as any) {
         routes: [
             {
                 name: "Mec2",
-                // icon: "ios-home"
             },
         ],
     }

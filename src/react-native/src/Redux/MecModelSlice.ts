@@ -22,8 +22,8 @@ function edgeCases(model: IModel, payload: MecModelAction<keyof IMecPlugIns>): b
     let short = false;
     if (payload.idx === -1) {
         if (payload.list === 'constraints') {
-            if (payload.value.len === null) payload.value.len = { type: 'free' };
-            if (payload.value.ori === null) payload.value.ori = { type: 'free' };
+            if (payload.value.len === undefined) payload.value.len = { type: 'free' };
+            if (payload.value.ori === undefined) payload.value.ori = { type: 'free' };
         }
     }
     for (const pl of Object.entries(payload.value)) {

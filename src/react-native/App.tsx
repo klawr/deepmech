@@ -1,11 +1,11 @@
 import React from 'react';
-import { Provider } from 'react-redux';
-import store from './src/Redux/store';
-import { createStackNavigator } from 'react-navigation-stack';
-import { createDrawerNavigator } from 'react-navigation-drawer';
-import LeftDrawer from './src/Components/LeftDrawer';
 import { createAppContainer } from 'react-navigation';
+import { createDrawerNavigator } from 'react-navigation-drawer';
+import { createStackNavigator } from 'react-navigation-stack';
+import { Provider } from 'react-redux';
+import LeftDrawer from './src/Components/LeftDrawer';
 import Mec2 from './src/Components/Mec2/Mec2';
+import store from './src/Redux/store';
 
 const Drawer = createDrawerNavigator(
   {
@@ -36,7 +36,7 @@ const AppContainer = createAppContainer(AppNavigator);
 export default function Main() {
   return <Provider store={store}>
     <AppContainer />
-  </Provider>
+  </Provider >
 }
 
 

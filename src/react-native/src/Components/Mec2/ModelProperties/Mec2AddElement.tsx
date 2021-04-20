@@ -13,7 +13,7 @@ export default function Mec2AddElement({ args, text }: { args: IMec2Cell, text: 
 
     function resetObject(o: Object) {
         return Object.keys(o).reduce((a: any, c) => {
-            a[c] = null;
+            a[c] = undefined;
             return a;
         }, {});
     }
