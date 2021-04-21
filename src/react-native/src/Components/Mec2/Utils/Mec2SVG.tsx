@@ -15,11 +15,11 @@ export default function Mec2SVG({ model, g, drive } = {} as { model: IMecModel, 
     if (drive) {
         if (drive.ori.inputCallbk) {
             ori = true;
-            drive.ori.inputCallbk!(phi);
+            drive.ori.inputCallbk(phi);
         }
         else if (drive.len.inputCallbk) {
             ori = false;
-            drive.len.inputCallbk!(phi);
+            drive.len.inputCallbk(phi);
         }
     }
 
@@ -27,7 +27,7 @@ export default function Mec2SVG({ model, g, drive } = {} as { model: IMecModel, 
     return <View style={styles.container}>
         <G2SVG width={"100%"} height={"90%"} cq={g} />
         {!!drive && <View style={styles.sliderrow}>
-            <Text style={styles.phitext}>{Math.round(phi)}{ori && "°"}</Text>
+            <Text style={styles.phitext}>{`${Math.round(phi)}${ori && "°"}`}</Text>
             <Slider
                 style={{ width: "80%" }}
                 onValueChange={(v) => dispatch(mecModelAction.updatePhi(v))}

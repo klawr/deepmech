@@ -26,9 +26,7 @@ function edgeCases(model: IModel, payload: MecModelAction<keyof IMecPlugIns>): b
             if (payload.value.ori === undefined) payload.value.ori = { type: 'free' };
         }
     }
-    for (const pl of Object.entries(payload.value)) {
-        const [property, value] = pl;
-
+    for (const [property, value] of Object.entries(payload.value)) {
         if (property === 'id') {
             if (!value) {
                 short = true;
@@ -65,14 +63,16 @@ function edgeCases(model: IModel, payload: MecModelAction<keyof IMecPlugIns>): b
                 if (property === 'p2' && value === constraint.p1) constraint.p1 = constraint.p2;
             }
             // There must not be two drives in the mechanism.
-            const v = property === 'ori' || property === 'len' ? <IMecConstraintType>value : false;
-            if (v && v.type === 'drive') {
-                v.Dw = Math.PI * 2;
-                v.input = 1;
-                model.constraints.forEach((c: IConstraint) => {
-                    if (c.len && c.len.type === 'drive') c.len.type = 'const';
-                    if (c.ori && c.ori.type === 'drive') c.ori.type = 'free';
-                })
+            if (property === 'ori' || property === 'len') {
+                const v = <IMecConstraintType>value;
+                if (v.type === 'drive') {
+                    v.Dw = Math.PI * 2;
+                    v.input = 1;
+                    model.constraints.forEach((c: IConstraint) => {
+                        if (c.len && c.len.type === 'drive') c.len.type = 'const';
+                        if (c.ori && c.ori.type === 'drive') c.ori.type = 'free';
+                    });
+                }
             }
         }
     }

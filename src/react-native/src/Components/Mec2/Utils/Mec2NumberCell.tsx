@@ -6,7 +6,7 @@ import { IMec2CellPropertyArgs } from './Mec2Cell';
 export default function Mec2TextCell({ property, elm, update }: IMec2CellPropertyArgs) {
     return <TextInput
         style={styles.text}
-        value={elm[property] as string}
+        value={`${elm[property]}`}
         placeholder={property}
         onChangeText={(v) => update(+v)} />
 }
