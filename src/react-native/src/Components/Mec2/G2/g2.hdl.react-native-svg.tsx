@@ -144,28 +144,46 @@ const reactNativeSVG = {
         this.path += "Z";
     }, // TODO
     stack: [] as any,
+    applyRefStyle(s: { [prop: string]: any }, key: string) {
+        if (typeof s[key] === 'string' && s[key][0] === '@') {
+            let ref = s[key].substr(1);
+            const symbol = s[ref] || (g2 as any).symbol[ref];
+            if (symbol) {
+                return symbol;
+            }
+        }
+        return s[key];
+    },
     setStyle(s: any) {
         const ds = (g2 as any).defaultStyle;
         const getStyle = (key: string) => {
-            let stack
-            for (let i = 0; i < this.stack.length; ++i) {
-                if (this.stack[i][key]) {
-                    stack = this.stack[i][key];
-                    break;
+            if (typeof s[key] === 'string' && s[key][0] === '@') {
+                const symbol = this.applyRefStyle(s, key);
+                if (symbol) {
+                    return symbol;
+                }
+            } else if (s[key]) {
+                return s[key];
+            } else {
+                for (let i = 0; i < this.stack.length; ++i) {
+                    if (this.stack[i][key]) {
+                        const symbol = this.applyRefStyle(this.stack[i], key);
+                        if (symbol) {
+                            return symbol;
+                        }
+                    }
                 }
             }
-            let symbol;
-            if (typeof s[key] === 'string' && s[key][0] === '@') {
-                let ref = s[key].substr(1);
-                symbol = (g2 as any).symbol[ref];
-            }
-            return symbol || s[key] || stack || ds[key]
+
+            return ds[key];
         }
-        return {
+        const e = {
             fill: getStyle('fs'),
             stroke: getStyle('ls'),
             strokeWidth: getStyle('lw'),
             key: `$queueElement${this.stash.length}/${this.ctx.length}`,
         }
+
+        return e;
     },
 };
