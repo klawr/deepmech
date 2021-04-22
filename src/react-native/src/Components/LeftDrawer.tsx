@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from "react";
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { FlatList, Pressable, Platform, StyleSheet, Text, View } from "react-native";
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import Mec2 from './Mec2/Mec2';
 import Deepmech from './Deepmech/Deepmech';
@@ -49,7 +49,7 @@ function Drawer({ navigation } = {} as any) {
         ],
     }
 
-    return <View>
+    return <View style={{ flex: 1 }}>
         <Header navigation={navigation} />
         <FlatList
             style={styles.list}
@@ -71,11 +71,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20
     },
     list: {
-        marginVertical: 10,
+        flex: 1,
         marginHorizontal: 30,
-        width: "100%",
     },
     listItem: {
-        height: 40,
+        paddingVertical: Platform.OS === 'web' ? 10 : 0,
     }
 });
