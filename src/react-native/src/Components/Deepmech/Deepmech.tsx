@@ -1,5 +1,6 @@
+import { Ionicons } from '@expo/vector-icons';
 import * as React from 'react';
-import { Animated, StyleSheet, PanResponder, Text, View } from 'react-native';
+import { Animated, StyleSheet, PanResponder, Pressable, View } from 'react-native';
 import { Svg, Path } from 'react-native-svg';
 import Header from '../Header';
 
@@ -28,9 +29,21 @@ export default function Deepmech({ navigation } = {} as any) {
                     strokeWidth={3} />
             </Svg>
         </Animated.View>
+        <View style={styles.buttonRow}>
+            <Pressable>
+                <Ionicons name="refresh" onPress={() => setPath("")} size={64} />
+            </Pressable>
+        </View>
 
         <Header navigation={navigation} />
     </View >
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+    buttonRow: {
+        bottom: 0,
+        width: "100%",
+        position: "absolute",
+        alignItems: 'center',
+    }
+});
