@@ -1,6 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from "react";
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { createDrawerNavigator } from 'react-navigation-drawer';
+import Mec2 from './Mec2/Mec2';
+import Deepmech from './Deepmech/Deepmech';
 
 function Header({ navigation } = {} as any) {
     return <View style={styles.header}>
@@ -20,12 +23,27 @@ function Item({ item, navigation } = {} as any) {
     </Pressable>
 }
 
-export default function LeftDrawer({ navigation } = {} as any) {
+const LeftDrawer = createDrawerNavigator(
+    {
+        Mec2: { screen: Mec2 },
+        Deepmech: { screen: Deepmech, }
+    },
+    {
+        initialRouteName: "Mec2",
+        unmountInactiveRoutes: true,
+        defaultNavigationOptions: {
+            drawerLockMode: 'locked-closed',
+        },
+        contentComponent: props => <Drawer {...props} />
+    }
+);
+export default LeftDrawer;
+
+function Drawer({ navigation } = {} as any) {
     const state = {
         routes: [
-            {
-                name: "Mec2",
-            },
+            { name: "Mec2", },
+            { name: "Deepmech", }
         ],
     }
 
