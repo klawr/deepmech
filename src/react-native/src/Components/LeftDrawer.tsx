@@ -14,10 +14,12 @@ function Header({ navigation } = {} as any) {
 }
 
 function Item({ item, navigation } = {} as any) {
-    return <Pressable onPress={() => {
-        navigation.navigate(item.name);
-        navigation.closeDrawer();
-    }}>
+    return <Pressable
+        style={styles.listItem}
+        onPress={() => {
+            navigation.navigate(item.name);
+            navigation.closeDrawer();
+        }}>
         <Ionicons name={item.icon} size={32} />
         <Text>{item.name}</Text>
     </Pressable>
@@ -50,7 +52,7 @@ function Drawer({ navigation } = {} as any) {
     return <View>
         <Header navigation={navigation} />
         <FlatList
-            style={{ width: "100%", marginLeft: 30 }}
+            style={styles.list}
             data={state.routes}
             renderItem={({ item }) => <Item item={item} navigation={navigation} />}
             keyExtractor={item => item.name}
@@ -68,4 +70,12 @@ const styles = StyleSheet.create({
         alignItems: "center",
         paddingHorizontal: 20
     },
+    list: {
+        marginVertical: 10,
+        marginHorizontal: 30,
+        width: "100%",
+    },
+    listItem: {
+        height: 40,
+    }
 });
