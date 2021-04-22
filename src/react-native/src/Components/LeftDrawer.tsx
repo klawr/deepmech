@@ -4,6 +4,7 @@ import { FlatList, Pressable, Platform, StyleSheet, Text, View } from "react-nat
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import Mec2 from './Mec2/Mec2';
 import Deepmech from './Deepmech/Deepmech';
+import Camera from './Deepmech/Camera';
 
 function Header({ navigation } = {} as any) {
     return <View style={styles.header}>
@@ -28,7 +29,8 @@ function Item({ item, navigation } = {} as any) {
 const LeftDrawer = createDrawerNavigator(
     {
         Mec2: { screen: Mec2 },
-        Deepmech: { screen: Deepmech, }
+        Deepmech: { screen: Deepmech, },
+        Camera: { screen: Camera, }
     },
     {
         initialRouteName: "Mec2",
@@ -45,7 +47,8 @@ function Drawer({ navigation } = {} as any) {
     const state = {
         routes: [
             { name: "Mec2", },
-            { name: "Deepmech", }
+            { name: "Deepmech", },
+            { name: "Camera", },
         ],
     }
 
