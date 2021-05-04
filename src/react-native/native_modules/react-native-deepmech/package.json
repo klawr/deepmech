@@ -16,8 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/github_account/react-native-deepmech.git",
-    "baseUrl": "https://github.com/github_account/react-native-deepmech"
+    "url": "git+https://github.com/klawr/deepmech.git"
   },
   "keywords": [
     "react-native"

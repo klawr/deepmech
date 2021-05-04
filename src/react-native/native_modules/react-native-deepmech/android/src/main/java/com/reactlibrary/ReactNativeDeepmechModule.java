@@ -22,8 +22,8 @@ public class ReactNativeDeepmechModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void sampleMethod(String stringArgument, int numberArgument, Callback callback) {
+    public void sample(String str, Callback cb) {
         // TODO: Implement some actually useful functionality
-        callback.invoke("Received numberArgument: " + numberArgument + " stringArgument: " + stringArgument);
+        cb.invoke(str + "world");
     }
 }
