@@ -56,6 +56,9 @@ android {
 }
 
 repositories {
+    // https://pytorch.org/mobile/android/#3-gradle-dependencies
+    jcenter()
+
     // ref: https://www.baeldung.com/maven-local-repository
     mavenLocal()
     maven {
@@ -72,6 +75,9 @@ repositories {
 dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'  // From node_modules
+
+    implementation 'org.pytorch:pytorch_android:1.5.0'
+    implementation 'org.pytorch:pytorch_android_torchvision:1.5.0'
 }
 
 def configureReactNativePom(def pom) {
