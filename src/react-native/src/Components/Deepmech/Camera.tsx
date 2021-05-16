@@ -3,6 +3,8 @@ import React from 'react';
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import Header from '../Header';
 import { Camera } from 'expo-camera';
+import * as tf from '@tensorflow/tfjs';
+import * as tfrn from '@tensorflow/tfjs-react-native';
 
 function Wrap({ navigation, children } = {} as any) {
     return <View style={styles.container}>
@@ -12,6 +14,15 @@ function Wrap({ navigation, children } = {} as any) {
 }
 
 export default function ACamera({ navigation } = {} as any) {
+    const model: React.MutableRefObject<tf.LayersModel> = React.useRef(null) as any;
+
+    tf.ready().then(() => {
+        const modelJson = require('../../../assets/model.json');
+        const modelWeights = require('../../../assets/group1-shard1of1.bin');
+        tf.loadLayersModel(tfrn.bundleResourceIO(modelJson, modelWeights))
+            .then(r => model.current = r);
+    });
+
     const [granted, setGranted] = React.useState(false);
 
     if (Platform.OS === 'android') {
