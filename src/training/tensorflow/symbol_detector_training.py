@@ -7,11 +7,12 @@ from tensorflow.keras.optimizers import Adam
 from tqdm import tqdm
 from spot import Spot
 
+import cv2
 import json
 
 print("Finished imports...")
 
-root = path.join("tensorflow", "data", "iftomm_dach_interim_01")
+root = path.join("data", "iftomm_dach_interim_01")
 
 x = []
 y = []
@@ -19,8 +20,9 @@ y = []
 with open(path.join(root, "config.json")) as file:
     data = json.load(file)
     for example in tqdm(data):
-        img = tf.io.read_file(path.join("tensorflow", example["image_path"]))
+        img = tf.io.read_file(path.join(example["image_path"]))
         img = tf.image.decode_png(img, channels=1)
+        img = 255 - img
         x.append(img)
         label = [int(x == example["label"]) for x in ["n", "o", "x"]]
         label = tf.convert_to_tensor(label)
@@ -65,8 +67,8 @@ history = model.fit(
     validation_split=0.2,
 )
 
-model_path = path.join("tensorflow", "model.h5")
+model_path = "model.h5"
 model.save(model_path)
 
-with Spot("tensorflow/spot.json") as spot:
+with Spot("spot.json") as spot:
     spot.message("Saved model to disk (" + model_path + ")")
