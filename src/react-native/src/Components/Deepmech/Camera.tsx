@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Platform, StyleSheet, Text, View } from 'react-native';
 import Header from '../Header';
 import { Camera } from 'expo-camera';
 import * as tf from '@tensorflow/tfjs';
@@ -9,7 +9,8 @@ import { g2 } from 'g2-module';
 import G2SVG from '../G2/G2SVG';
 import { mecModelSelectModel } from '../../Redux/MecModelSlice';
 import { useSelector } from 'react-redux';
-import { mec } from 'mec2-module';
+import { IMecModel, mec } from 'mec2-module';
+import Svg, { Rect } from 'react-native-svg';
 
 function Wrap({ navigation, children } = {} as any) {
     return <View style={styles.container}>
@@ -17,29 +18,33 @@ function Wrap({ navigation, children } = {} as any) {
         <Header navigation={navigation} />
     </View>
 }
-
 const TensorCamera = cameraWithTensors(Camera);
 
 export default function ACamera({ navigation } = {} as any) {
-    const modelSlice = useSelector(mecModelSelectModel);
-    const mecModel = JSON.parse(JSON.stringify(modelSlice));
-    mec.model.extend(mecModel);
-    mecModel.init();
-    const y = Platform.OS === 'android' ? -400 : 100;
-    const g = g2().view({ x: 0, y, cartesian: true });
-    mecModel.draw(g);
+
+    const width = Dimensions.get("window").width;
+    const height = Dimensions.get("window").height;
 
     const tensorCameraProps = {
-        cameraTextureHeight: 1200,
-        cameraTextureWidth: 600,
-        resizeHeight: 152, // inputTensorHeight
-        resizeWidth: 200, // inputTensorWidth
+        cameraTextureHeight: height,
+        cameraTextureWidth: width,
+        resizeHeight: height,
+        resizeWidth: width,
         resizeDepth: 3,
         onReady: onReady,
         autorender: true,
     }
 
     const model: React.MutableRefObject<tf.LayersModel> = React.useRef(null) as any;
+    const [mecModel, setMecModel] = React.useState({} as IMecModel);
+
+    const [text, setText] = React.useState("");
+
+    mec.model.extend(mecModel);
+    mecModel.init();
+    const y = Platform.OS === 'android' ? - height * 0.96 : 100;
+    const g = g2().view({ y, cartesian: true });
+    mecModel.draw(g);
     // Should later be used to be able to cancel animationframe. 
     // If this were a class it would be:
     /**
@@ -52,25 +57,48 @@ export default function ACamera({ navigation } = {} as any) {
     // So it should be implemented using React.useEffect or sth...
     let rafId: number;
 
+    const modelJson = require('../../../assets/models/symbol_detector.json');
+    const modelWeights = require('../../../assets/models/symbol_detector.bin');
+
     tf.ready().then(() => {
-        const modelJson = require('../../../assets/models/symbol_detector.json');
-        const modelWeights = require('../../../assets/models/symbol_detector.bin');
         tf.loadLayersModel(bundleResourceIO(modelJson, modelWeights))
             .then(r => model.current = r);
     });
 
     async function onReady(images: IterableIterator<tf.Tensor3D>) {
+        const rgb = tf.tensor1d([0.2989, 0.587, 0.114]);
         const loop = async () => {
             if (model.current != null) {
-                const imageTensor = images.next().value;
-                model.current.predict(imageTensor)
-                if (imageTensor) {
-                    // TODO Create command queue
+
+                let image = images.next().value;
+
+                if (image) {
+                    const imageTensor = tf
+                        .sum(image.mul(rgb), 2)
+                        .div(255)
+                        .round()
+                        .expandDims(-1)
+                        .expandDims(0)
+
+                    const pred = model.current.predict(imageTensor) as tf.Tensor<tf.Rank>;
+                    tf.dispose([imageTensor]);
+                    if (pred) {
+                        setText(tf.argMax(tf.squeeze(pred), -1).greater(0).toString());
+                        // tf.whereAsync(tf.argMax(tf.squeeze(pred), -1).greater(0)).then(a => {
+                        // setMecModel({
+                        //     nodes: a.arraySync().map((e: any) => ({
+                        //         x: e[1] * image.shape[1] / pred.shape[2]!,
+                        //         y: e[0] * image.shape[0] / pred.shape[1]!
+                        //     }))
+                        // } as any);
+                        // rafId = requestAnimationFrame(loop);
+                        // });
+                        requestAnimationFrame(loop);
+                    }
                 }
-                tf.dispose([imageTensor]);
+                tf.dispose([image]);
             }
 
-            rafId = requestAnimationFrame(loop);
         };
 
         loop();
@@ -103,6 +131,8 @@ export default function ACamera({ navigation } = {} as any) {
         {granted ?
             <View style={styles.container}>
                 <TensorCamera style={{ ...styles.container, zIndex: 1 }} type={Camera.Constants.Type.back}  {...tensorCameraProps} />
+                <Text style={{ ...styles.container, position: "absolute", backgroundColor: "transparent", zIndex: 20 }}>{text}</Text>
+                <Svg style={{ ...styles.container, position: "absolute", backgroundColor: "transparent", zIndex: 20 }}><Rect x={60} y={0} width={32} height={32} /></Svg>
                 <G2SVG style={{ ...styles.container, position: "absolute", backgroundColor: "transparent", zIndex: 20 }} cq={g} />
             </View> :
             <View style={styles.warning}><Text>No permission to use camera.</Text></View>
