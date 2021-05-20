@@ -8,7 +8,7 @@ import { bundleResourceIO, cameraWithTensors } from '@tensorflow/tfjs-react-nati
 import { ScrollView } from 'react-native-gesture-handler';
 
 function Wrap({ navigation, children } = {} as any) {
-    return <View style={styles.camera}>
+    return <View style={styles.container}>
         {children}
         <Header navigation={navigation} />
     </View>
@@ -90,7 +90,9 @@ export default function ACamera({ navigation } = {} as any) {
 
     return <Wrap navigation={navigation}>
         {granted ?
-            <TensorCamera style={styles.camera} type={Camera.Constants.Type.back}  {...tensorCameraProps} /> :
+            <View style={styles.container}>
+                <TensorCamera style={styles.container} type={Camera.Constants.Type.back}  {...tensorCameraProps} />
+            </View> :
             <View style={styles.warning}><Text>No permission to use camera.</Text></View>
         }
     </Wrap>
@@ -102,7 +104,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         alignContent: 'center',
     },
-    camera: {
+    container: {
         flex: 1,
         flexDirection: 'column',
         backgroundColor: '#aaa',
