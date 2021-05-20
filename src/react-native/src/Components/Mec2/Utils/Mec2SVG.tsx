@@ -25,7 +25,7 @@ export default function Mec2SVG({ model, g, drive } = {} as { model: IMecModel, 
 
     model.tick();
     return <View style={styles.container}>
-        <G2SVG width={"100%"} height={"90%"} cq={g} />
+        <G2SVG style={styles.g2} cq={g} />
         {!!drive && <View style={styles.sliderrow}>
             <Text style={styles.phitext}>{`${Math.round(phi)}${ori && "°"}`}</Text>
             <Slider
@@ -42,6 +42,10 @@ export default function Mec2SVG({ model, g, drive } = {} as { model: IMecModel, 
 }
 
 const styles = StyleSheet.create({
+    g2: {
+        width: "100%",
+        height: "90%",
+    },
     container: {
         width: "100%",
         flex: 1,
