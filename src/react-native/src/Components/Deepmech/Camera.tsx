@@ -5,7 +5,11 @@ import Header from '../Header';
 import { Camera } from 'expo-camera';
 import * as tf from '@tensorflow/tfjs';
 import { bundleResourceIO, cameraWithTensors } from '@tensorflow/tfjs-react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { g2 } from 'g2-module';
+import G2SVG from '../G2/G2SVG';
+import { mecModelSelectModel } from '../../Redux/MecModelSlice';
+import { useSelector } from 'react-redux';
+import { mec } from 'mec2-module';
 
 function Wrap({ navigation, children } = {} as any) {
     return <View style={styles.container}>
@@ -17,6 +21,14 @@ function Wrap({ navigation, children } = {} as any) {
 const TensorCamera = cameraWithTensors(Camera);
 
 export default function ACamera({ navigation } = {} as any) {
+    const modelSlice = useSelector(mecModelSelectModel);
+    const mecModel = JSON.parse(JSON.stringify(modelSlice));
+    mec.model.extend(mecModel);
+    mecModel.init();
+    const y = Platform.OS === 'android' ? -400 : 100;
+    const g = g2().view({ x: 0, y, cartesian: true });
+    mecModel.draw(g);
+
     const tensorCameraProps = {
         cameraTextureHeight: 1200,
         cameraTextureWidth: 600,
@@ -39,7 +51,6 @@ export default function ACamera({ navigation } = {} as any) {
      */
     // So it should be implemented using React.useEffect or sth...
     let rafId: number;
-    const [test, setTest] = React.useState("not ready");
 
     tf.ready().then(() => {
         const modelJson = require('../../../assets/models/symbol_detector.json');
@@ -52,9 +63,9 @@ export default function ACamera({ navigation } = {} as any) {
         const loop = async () => {
             if (model.current != null) {
                 const imageTensor = images.next().value;
-                // model.current.predict(imageTensor)
+                model.current.predict(imageTensor)
                 if (imageTensor) {
-                    setTest(imageTensor.toString())
+                    // TODO Create command queue
                 }
                 tf.dispose([imageTensor]);
             }
@@ -91,7 +102,8 @@ export default function ACamera({ navigation } = {} as any) {
     return <Wrap navigation={navigation}>
         {granted ?
             <View style={styles.container}>
-                <TensorCamera style={styles.container} type={Camera.Constants.Type.back}  {...tensorCameraProps} />
+                <TensorCamera style={{ ...styles.container, zIndex: 1 }} type={Camera.Constants.Type.back}  {...tensorCameraProps} />
+                <G2SVG style={{ ...styles.container, position: "absolute", backgroundColor: "transparent", zIndex: 20 }} cq={g} />
             </View> :
             <View style={styles.warning}><Text>No permission to use camera.</Text></View>
         }

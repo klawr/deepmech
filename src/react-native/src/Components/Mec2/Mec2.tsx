@@ -28,7 +28,7 @@ function SVGThingy({ navigation } = {} as any) {
   mec.model.extend(model);
   model.init();
   // TODO y should be bound to android screen height
-  const y = Platform.OS === 'android' ? -400 : 100
+  const y = Platform.OS === 'android' ? -400 : 100;
   const g = g2().view({ x: 0, y, cartesian: true });
   model.draw(g);
   const drive = model.constraints.find((c: IConstraintExtended) => c.ori.type === 'drive' || c.len.type === 'drive');
