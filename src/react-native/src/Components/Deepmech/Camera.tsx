@@ -42,8 +42,8 @@ export default function ACamera({ navigation } = {} as any) {
     const [test, setTest] = React.useState("not ready");
 
     tf.ready().then(() => {
-        const modelJson = require('../../../assets/model.json');
-        const modelWeights = require('../../../assets/group1-shard1of1.bin');
+        const modelJson = require('../../../assets/models/symbol_detector.json');
+        const modelWeights = require('../../../assets/models/symbol_detector.bin');
         tf.loadLayersModel(bundleResourceIO(modelJson, modelWeights))
             .then(r => model.current = r);
     });
