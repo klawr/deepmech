@@ -1,7 +1,7 @@
 import { IConstraintExtended, IMecModel } from 'mec2-module';
 import * as React from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import G2SVG from '../G2/G2SVG';
+import G2SVG from '../../G2/G2SVG';
 import { mecModelAction, mecModelSelect } from '../../../Redux/MecModelSlice';
 import { g2 } from 'g2-module';
 import { StyleSheet, Text, View } from 'react-native';
